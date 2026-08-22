@@ -1,0 +1,143 @@
+<!doctype html>
+<!-- CANDIDATE B — react-flow DAG dev tab prototype (throwaway, CDN-loaded).
+     Same mock data as Candidate A; library handles pan/zoom/layout. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dev Tab — Candidate B (react-flow)</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<link href="https://unpkg.com/reactflow@11/dist/style.css" rel="stylesheet" />
+<script src="https://unpkg.com/reactflow@11/dist/umd/index.js"></script>
+<style>
+  body { margin:0; font:13px/1.45 ui-sans-serif, system-ui, sans-serif; }
+  #app { display:flex; height:100vh; }
+  .graphwrap { flex:1; position:relative; }
+  .hint { position:absolute; top:8px; left:10px; z-index:5; color:#555; font-size:12px;
+          background:#fff; border:1px solid #eee; border-radius:6px; padding:4px 10px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  aside { width:340px; border-left:1px solid #ddd; background:#fff; display:flex; flex-direction:column; }
+  aside header { padding:10px 14px; border-bottom:1px solid #eee; font-weight:600; }
+  #inspector { flex:1; overflow:auto; padding:10px 14px; font:11px/1.5 ui-monospace, Menlo, monospace; white-space:pre-wrap; }
+  .controls { padding:10px 14px; border-top:1px solid #eee; display:flex; gap:8px; }
+  button { padding:7px 12px; font-size:12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+  button.primary { background:#111; color:#fff; border-color:#111; }
+  button:disabled { opacity:.4; }
+  #statusbar { padding:6px 14px; font-size:11px; color:#666; border-top:1px solid #eee; }
+  .rfnode { width:200px; background:#fff; border:1.4px solid #bbb; border-radius:8px; padding:8px 10px; font-size:12px; }
+  .rfnode.done { border-color:#16a34a; box-shadow:0 0 0 2px #dcfce7; }
+  .rfnode.selected { outline:2px solid #111; }
+  .rfnode .id { font-weight:600; }
+  .rfnode .cls { font-size:10px; text-transform:uppercase; letter-spacing:.04em; }
+  .rfnode .emits { font-size:10px; color:#666; }
+  .deterministic { color:#2563eb; } .ai-bounded { color:#9333ea; } .human { color:#d97706; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="graphwrap">
+    <div class="hint">Candidate B — <b>react-flow</b>: drag to pan, scroll to zoom, nodes draggable.</div>
+    <div id="flow" style="width:100%;height:100%"></div>
+  </div>
+  <aside>
+    <header id="inspect-title">Click a node to inspect shared state</header>
+    <div id="inspector">—</div>
+    <div class="controls">
+      <button id="step" class="primary">Step ▸ next node</button>
+      <button id="runto">Run-to-node</button>
+      <button id="reset">Reset</button>
+    </div>
+    <div id="statusbar">Same mock data + batch order as Candidate A (describe() shape).</div>
+  </aside>
+</div>
+
+<script src="graph-data.js"></script>
+<script>
+const DATA = window.__GRAPH_DATA__;
+const BATCH = DATA.nodes.filter(n => n.executed_in_batch).map(n => n.id);
+const { useState, useCallback, createElement: h } = React;
+const ReactFlow = window.ReactFlow.default || window.ReactFlow;
+
+function depthOf(n, depth) {
+  return Math.max(0, ...n.depends_on.map(d => (depth[d] ?? -1) + 1));
+}
+function buildGraph() {
+  const depth = {};
+  DATA.nodes.forEach(n => depth[n.id] = depthOf(n, depth));
+  const COL_W = 250, ROW_H = 110;
+  const perCol = {};
+  const nodes = DATA.nodes.map(n => {
+    const col = depth[n.id];
+    const row = perCol[col] = (perCol[col] ?? -1) + 1;
+    return {
+      id: n.id,
+      position: { x: col * COL_W, y: row * ROW_H + 30 },
+      data: {
+        n,
+        label: h("div", { style: { textAlign: "left" } },
+          h("div", { className: "id", style: { fontWeight: 600 } }, n.id),
+          h("div", { className: "cls " + n.class }, n.class + (n.executed_in_batch ? "" : " · step-only")),
+          h("div", { className: "emits" }, "emits " + n.emits)
+        ),
+      },
+      type: "default",
+      className: "rfnode",
+      draggable: true,
+    };
+  });
+  const edges = [];
+  for (const n of DATA.nodes)
+    for (const d of n.depends_on)
+      edges.push({ id: d+"->"+n.id, source: d, target: n.id, animated: false,
+                   style: { stroke: "#9ca3af", strokeWidth: 1.4 } });
+  return { nodes, edges };
+}
+
+function App() {
+  const initial = buildGraph();
+  const [nodes, setNodes, onNodesChange] = window.ReactFlow.useNodesState(initial.nodes);
+  const [edges, , onEdgesChange] = window.ReactFlow.useEdgesState(initial.edges);
+  const [stepIdx, setStepIdx] = useState(-1);
+  const [sel, setSel] = useState(null);
+
+  const showInspector = useCallback((n) => {
+    document.getElementById("inspect-title").textContent = `${n.id} — ${n.name}`;
+    const state = DATA.mockSharedState[n.id] ?? { "(slice)": "not yet executed" };
+    document.getElementById("inspector").textContent = JSON.stringify({
+      descriptor: { emits: n.emits, depends_on: n.depends_on },
+      shared_state_after: state,
+    }, null, 2);
+  }, []);
+
+  const onNodeClick = useCallback((_, node) => {
+    setSel(node.id);
+    showInspector(node.data.n);
+  }, [showInspector]);
+
+  // repaint done/selected classes
+  nodes.forEach(nd => {
+    nd.className = "rfnode"
+      + (BATCH.indexOf(nd.id) <= stepIdx ? " done" : "")
+      + (sel === nd.id ? " selected" : "");
+    if (!nd.data.styleDone) {
+      nd.data = { ...nd.data };
+    }
+  });
+
+  const step = () => { if (stepIdx < BATCH.length-1) { setStepIdx(stepIdx+1); const n = byId(BATCH[stepIdx+1]); showInspector(n); } };
+  const runto = () => { if (!sel) return alert("select a node first"); const t = BATCH.indexOf(sel); if (t > stepIdx) { setStepIdx(t); showInspector(byId(sel)); } };
+  const reset = () => setStepIdx(-1);
+  function byId(id){ return DATA.nodes.find(n=>n.id===id); }
+
+  return h(ReactFlow, {
+    nodes, edges, onNodesChange, onEdgesChange, onNodeClick,
+    fitView: true, fitViewOptions: { padding: 0.2 }, minZoom: 0.4,
+    nodesConnectable: false, edgesUpdatable: false,
+  });
+}
+
+const root = ReactDOM.createRoot(document.getElementById("flow"));
+root.createElement ? null : null;
+root.render(h(window.ReactFlow.ReactFlowProvider, {}, h(App)));
+</script>
+</body>
+</html>

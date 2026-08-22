@@ -1,0 +1,130 @@
+<!doctype html>
+<!-- CANDIDATE A — zero-dependency SVG/CSS DAG dev tab prototype (throwaway).
+     Same mock data as Candidate B; hand-rolled layered layout. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dev Tab — Candidate A (zero-dep SVG/CSS)</title>
+<style>
+  :root { --det:#2563eb; --ai:#9333ea; --human:#d97706; --edge:#a3a3a3; }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 13px/1.45 ui-sans-serif, system-ui, sans-serif; display:flex; height:100vh; }
+  #graph { flex:1; overflow:auto; background:#fafafa; padding:16px; }
+  h1 { font-size:14px; margin:0 0 12px; color:#555; }
+  .legend { display:flex; gap:10px; font-size:11px; color:#666; margin-bottom:8px; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
+  .layer { display:flex; gap:26px; justify-content:center; margin-bottom:46px; position:relative; }
+  .node { width:190px; border:1.5px solid #ccc; border-radius:8px; background:#fff; padding:8px 10px;
+          cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.06); transition:transform .06s; }
+  .node:hover { transform:translateY(-1px); }
+  .node.selected { outline:2px solid #111; }
+  .node.done { border-color:#16a34a; }
+  .node .id { font-weight:600; font-size:12px; }
+  .node .cls { font-size:10px; text-transform:uppercase; letter-spacing:.04em; }
+  .node .emits { font-size:10px; color:#666; margin-top:2px; }
+  .cls.deterministic { color:var(--det); } .cls.ai-bounded { color:var(--ai); } .cls.human { color:var(--human); }
+  svg.edges { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  aside { width:340px; border-left:1px solid #ddd; background:#fff; display:flex; flex-direction:column; }
+  aside header { padding:10px 14px; border-bottom:1px solid #eee; font-weight:600; }
+  #inspector { flex:1; overflow:auto; padding:10px 14px; font:11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space:pre-wrap; color:#333; }
+  .controls { padding:10px 14px; border-top:1px solid #eee; display:flex; gap:8px; }
+  button { padding:7px 12px; font-size:12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+  button.primary { background:#111; color:#fff; border-color:#111; }
+  button:disabled { opacity:.4; cursor:default; }
+  #statusbar { padding:6px 14px; font-size:11px; color:#666; border-top:1px solid #eee; }
+</style>
+</head>
+<body>
+<div id="graph">
+  <h1>Candidate A — zero-dependency SVG/CSS DAG (hand-rolled layered layout)</h1>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--det)"></span>deterministic</span>
+    <span><span class="dot" style="background:var(--ai)"></span>ai-bounded</span>
+    <span><span class="dot" style="background:var(--human)"></span>human</span>
+    <span><span class="dot" style="background:#16a34a"></span>stepped (done)</span>
+  </div>
+  <div id="layers"></div>
+</div>
+<aside>
+  <header id="inspect-title">Click a node to inspect shared state</header>
+  <div id="inspector">—</div>
+  <div class="controls">
+    <button id="step" class="primary">Step ▸ next node</button>
+    <button id="runto">Run-to-node</button>
+    <button id="reset">Reset</button>
+  </div>
+  <div id="statusbar">Batch order mirrors AuditPipeline.describe() / graph-state.json.</div>
+</aside>
+
+<script src="graph-data.js"></script>
+<script>
+const DATA = window.__GRAPH_DATA__;
+const BATCH = DATA.nodes.filter(n => n.executed_in_batch).map(n => n.id);
+let stepIdx = -1;            // index into BATCH of last executed node
+let selected = null;
+
+// Layer assignment: longest-path depth from roots.
+function layers() {
+  const depth = {};
+  for (const n of DATA.nodes) {
+    depth[n.id] = Math.max(0, ...n.depends_on.map(d => (depth[d] ?? 0) + 1));
+  }
+  const byDepth = {};
+  for (const n of DATA.nodes) (byDepth[depth[n.id]] ||= []).push(n);
+  return Object.entries(byDepth).sort((a,b)=>a[0]-b[0]).map(([,ns])=>ns);
+}
+
+function render() {
+  const root = document.getElementById("layers");
+  root.innerHTML = "";
+  let li = 0;
+  for (const layerNodes of layers()) {
+    const div = document.createElement("div");
+    div.className = "layer";
+    for (const n of layerNodes) {
+      const el = document.createElement("div");
+      el.className = "node" + (BATCH.indexOf(n.id) <= stepIdx ? " done" : "") + (selected===n.id?" selected":"");
+      el.innerHTML = `<div class="id">${n.id}</div>
+        <div class="cls ${n.class}">${n.class}${n.executed_in_batch ? "" : " · step-only"}</div>
+        <div class="emits">emits ${n.emits}</div>`;
+      el.onclick = () => { selected = n.id; showInspector(n); render(); };
+      if (li > 0) {
+        // draw simple connector lines from previous layer with an inline svg
+        const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+        svg.classList.add("edges");
+        div.appendChild(svg);
+      }
+      div.appendChild(el);
+    }
+    root.appendChild(div);
+    li++;
+  }
+}
+
+function showInspector(n) {
+  document.getElementById("inspect-title").textContent = `${n.id} — ${n.name}`;
+  const state = DATA.mockSharedState[n.id] ?? { "(slice)": "not yet executed" };
+  const payload = {
+    descriptor: { reads: n.reads ?? "…", writes: n.writes ?? "…", emits: n.emits, depends_on: n.depends_on },
+    shared_state_after: state,
+    artifacts_emitted: [`${n.emits} (ART-…) `],
+  };
+  document.getElementById("inspector").textContent = JSON.stringify(payload, null, 2);
+}
+
+document.getElementById("step").onclick = () => {
+  if (stepIdx < BATCH.length - 1) { stepIdx++; render(); showInspector(byId(BATCH[stepIdx])); }
+};
+document.getElementById("runto").onclick = () => {
+  if (!selected) return alert("select a node first");
+  const target = BATCH.indexOf(selected);
+  while (stepIdx < target && stepIdx < BATCH.length - 1) stepIdx++;
+  render(); showInspector(byId(BATCH[stepIdx]));
+};
+document.getElementById("reset").onclick = () => { stepIdx = -1; render(); };
+
+function byId(id){ return DATA.nodes.find(n=>n.id===id); }
+render();
+</script>
+</body>
+</html>
