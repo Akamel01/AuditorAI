@@ -1,0 +1,30 @@
+name: deploy
+
+# Deploys to Vercel production on every push to main once repository secrets
+# are configured (VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID).
+# Until then this job exits early — no failed runs.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Vercel (skips cleanly when secrets are not yet configured)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN not configured — skipping deployment."
+            echo "Configure repo secrets (see docs/deployment.md) to enable automatic deploys."
+            exit 0
+          fi
+          npx --yes vercel@latest pull --yes --environment=production \
+            --token="$VERCEL_TOKEN"
+          npx --yes vercel@latest build --prod --token="$VERCEL_TOKEN"
+          npx --yes vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
