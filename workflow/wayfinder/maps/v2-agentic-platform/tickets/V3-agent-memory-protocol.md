@@ -4,6 +4,7 @@ title: Agent memory protocol
 type: grilling
 hitl: false
 status: open
+issue: #11
 assignee:
 blocked_by: [V2]
 blocks: []

@@ -4,6 +4,7 @@ title: Image storage constraints + decision
 type: research
 hitl: false
 status: open
+issue: #6
 assignee:
 blocked_by: []
 blocks: [M2]

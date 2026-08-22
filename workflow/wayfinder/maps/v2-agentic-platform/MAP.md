@@ -36,6 +36,9 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
   loop ("inference must conduct the audit"); corpus licensing government/public-domain only
   with recorded provenance.
 
+- [ox-alpha programmatic brain access (R6)](tickets/R6-ox-alpha-programmatic-brain-access.md): OpenCode Zen gateway (`https://opencode.ai/zen/v1`, Bearer key) serves `x-preview-f-free`; vision YES; effort via low/high/max variants + temperature; `opencode serve` is wrong plane (agent APIs, not completions); fallbacks OpenRouter→Groq behind same adapter.
+- [Public-domain drawing corpus (E2)](tickets/E2-public-domain-drawing-corpus-sourcing.md): 29 verified sources — FHWA case studies + CFL plan sheets (PD), two real NSIP Stage-1 RSA reports w/ swept paths (OGL), DMRB GG 119 (OGL), Wikimedia PD diagrams; CC BY-SA rejected.
+
 ## Not yet specified
 
 - Judge-drift measurement: how to detect the judge model itself degrading over time

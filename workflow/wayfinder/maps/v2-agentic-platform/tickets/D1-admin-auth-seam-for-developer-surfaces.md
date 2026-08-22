@@ -4,6 +4,7 @@ title: Admin auth seam for developer surfaces
 type: task
 hitl: false
 status: open
+issue: #2
 assignee:
 blocked_by: []
 blocks: [D3]

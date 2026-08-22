@@ -4,6 +4,7 @@ title: Vault compile scripts both directions
 type: task
 hitl: false
 status: open
+issue: #10
 assignee:
 blocked_by: [V1]
 blocks: [V3]

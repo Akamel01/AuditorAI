@@ -4,6 +4,7 @@ title: Sample projects from corpus
 type: task
 hitl: false
 status: open
+issue: #16
 assignee:
 blocked_by: [E1, E2]
 blocks: [E4]

@@ -4,6 +4,7 @@ title: Input model extension for attachments
 type: task
 hitl: false
 status: open
+issue: #14
 assignee:
 blocked_by: [M1]
 blocks: [M3]

@@ -4,6 +4,7 @@ title: Node-artifact persistence layout
 type: grilling
 hitl: false
 status: open
+issue: #9
 assignee:
 blocked_by: [N2]
 blocks: []

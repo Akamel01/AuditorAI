@@ -4,6 +4,7 @@ title: Vision reasoning path
 type: task
 hitl: false
 status: open
+issue: #17
 assignee:
 blocked_by: [M2, A1]
 blocks: []

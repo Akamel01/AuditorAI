@@ -4,6 +4,7 @@ title: Step-mode pipeline executor refactor
 type: task
 hitl: false
 status: open
+issue: #8
 assignee:
 blocked_by: [N1]
 blocks: [N3, D3, A1, E4]

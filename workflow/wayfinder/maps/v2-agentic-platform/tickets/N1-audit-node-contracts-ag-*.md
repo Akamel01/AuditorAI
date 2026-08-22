@@ -4,6 +4,7 @@ title: Audit node contracts (AG-*)
 type: grilling
 hitl: false
 status: open
+issue: #1
 assignee:
 blocked_by: []
 blocks: [N2]

@@ -4,6 +4,7 @@ title: Gate enforcement policy
 type: grilling
 hitl: true
 status: open
+issue: #19
 assignee:
 blocked_by: [E4]
 blocks: []

@@ -4,6 +4,7 @@ title: Vault charter + structure (hybrid)
 type: grilling
 hitl: true
 status: open
+issue: #4
 assignee:
 blocked_by: []
 blocks: [V2]

@@ -4,6 +4,7 @@ title: Dev-tab UX prototype
 type: prototype
 hitl: true
 status: open
+issue: #3
 assignee:
 blocked_by: []
 blocks: [D3]

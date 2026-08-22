@@ -4,6 +4,7 @@ title: Inference contracts per node
 type: grilling
 hitl: false
 status: open
+issue: #13
 assignee:
 blocked_by: [A1]
 blocks: []

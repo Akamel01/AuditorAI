@@ -4,6 +4,7 @@ title: Eval gate ladder design
 type: grilling
 hitl: true
 status: open
+issue: #7
 assignee:
 blocked_by: []
 blocks: [E3]

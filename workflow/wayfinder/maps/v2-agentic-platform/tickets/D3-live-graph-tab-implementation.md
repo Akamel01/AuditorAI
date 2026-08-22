@@ -4,6 +4,7 @@ title: Live graph tab implementation
 type: task
 hitl: false
 status: open
+issue: #15
 assignee:
 blocked_by: [N2, D1, D2]
 blocks: []

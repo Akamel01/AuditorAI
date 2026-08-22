@@ -4,6 +4,7 @@ title: Inference topology decision
 type: grilling
 hitl: true
 status: open
+issue: #5
 assignee:
 blocked_by: [R6]
 blocks: [A1]

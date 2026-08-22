@@ -4,6 +4,13 @@ No external tracker is configured, so Wayfinder uses a **local-markdown tracker*
 committed to the repository. Git is part of shared state; any session can reconstruct
 the frontier from these files alone.
 
+## Trackers
+
+- **mvp map**: local-markdown only (below).
+- **v2-agentic-platform map**: canonical on **GitHub Issues** — map issue #20, child issues #1–#19
+  (labels `wayfinder:*`, `ready-for-agent`, `blocked`, `hitl`). Local `tickets/*.md` mirror each issue
+  via an `issue:` front-matter line; resolutions are posted as issue comments AND appended locally.
+
 ## Layout
 
 ```text
