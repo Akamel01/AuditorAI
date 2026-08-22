@@ -4,13 +4,37 @@
   "graphs": {
     "development_graph": {
       "purpose": "Graph used by orchestrator + subagents to build the product",
-      "nodes": [],
-      "edges": []
+      "nodes": [
+        { "id": "ORCH", "role": "Orchestrator/Principal Architect" },
+        { "id": "MAP", "artifact": "workflow/wayfinder/maps/mvp/MAP.md", "role": "Wayfinder map + frontier" },
+        { "id": "DEV-R1", "role": "International researcher" },
+        { "id": "DEV-R2", "role": "UK researcher" },
+        { "id": "DEV-R3", "role": "USA researcher" },
+        { "id": "DEV-R4", "role": "Canada researcher" },
+        { "id": "DEV-R5", "role": "UAE researcher" },
+        { "id": "DEV-EV", "role": "Evidence Manager (compiles evidence-registry.json)" },
+        { "id": "DEV-G2", "role": "Canonical stage model decision node" }
+      ],
+      "edges": [
+        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R1", "payload": "node contract + ticket R1" },
+        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R2", "payload": "node contract + ticket R2" },
+        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R3", "payload": "node contract + ticket R3" },
+        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R4", "payload": "node contract + ticket R4" },
+        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R5", "payload": "node contract + ticket R5" },
+        { "from": "MAP", "type": "CONTEXT", "to": "ORCH", "payload": "destination, fog, frontier" },
+        { "from": "DEV-R1", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/international-rsa-research.md front-matter records" },
+        { "from": "DEV-R2", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/uk-rsa-research.md front-matter records" },
+        { "from": "DEV-R3", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/usa-rsa-research.md front-matter records" },
+        { "from": "DEV-R4", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/canada-rsa-research.md front-matter records" },
+        { "from": "DEV-R5", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/uae-rsa-research.md front-matter records" },
+        { "from": "DEV-EV", "type": "CONTEXT", "to": "DEV-G2", "payload": "compiled evidence registry" }
+      ]
     },
     "audit_graph": {
       "purpose": "Bounded-context graph the product executes to run an actual audit (§19)",
       "nodes": [],
       "edges": []
     }
-  }
+  },
+  "updated_at": "2026-08-22T04:01:56Z"
 }

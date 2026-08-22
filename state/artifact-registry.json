@@ -1,4 +1,25 @@
 {
   "schema_version": "1.0.0",
-  "artifacts": []
+  "artifacts": [
+    {
+      "artifact_id": "ART-MAP-MVP",
+      "path": "workflow/wayfinder/maps/mvp/MAP.md",
+      "producer_node": "ORCH",
+      "version": "1.0.0",
+      "created_at": "2026-08-22T04:01:56Z",
+      "contract_version": "workflow/wayfinder/TRACKER.md",
+      "validation_status": "valid",
+      "notes": "Canonical plan artifact; tickets are its children."
+    },
+    {
+      "artifact_id": "ART-TRACKER",
+      "path": "workflow/wayfinder/TRACKER.md",
+      "producer_node": "ORCH",
+      "version": "1.0.0",
+      "created_at": "2026-08-22T04:01:56Z",
+      "contract_version": null,
+      "validation_status": "valid",
+      "notes": "Local-markdown tracker conventions (Wayfinding operations)."
+    }
+  ]
 }
