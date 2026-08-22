@@ -5,7 +5,6 @@
 // ran_at, which is injected by the caller. No randomness, no I/O beyond pack
 // loading, no AI involvement here (AI candidates arrive post-hoc, labelled).
 import {
-  CANONICAL_STAGES,
   type AuditContext,
   type AuditResult,
   type Finding,
@@ -155,7 +154,7 @@ export function runAudit(project: Project, ranAtIso: string): AuditResult {
     canonical_stages: stage.canonical_stages,
     mapping_confidence: stage.confidence,
     ran_at: ranAtIso,
-    input_manifest: manifest.map(({ conditional_on, ...rest }) => rest),
+    input_manifest: manifest.map(({ conditional_on: _c, ...rest }) => rest),
     findings,
     missing_information,
     audit_questions: questions,
