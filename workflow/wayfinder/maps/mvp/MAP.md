@@ -37,6 +37,7 @@ AI-assisted but not AI-defined. Docker out of scope.
 - [Stack + hosting (G1)](tickets/G1-stack-hosting.md): Next.js + Vercel free tier; provider-agnostic AI adapter OFF by default; hosted-KV persistence behind a seam. ADR-0001.
 - [MVP scope (G3)](tickets/G3-mvp-scope.md): forms + uploads WITH text extraction (InputSource seam, security gate); JSON+Markdown report with browser-print PDF; anonymous workspace keys. DEC-0002.
 - [Canonical stage model (G2)](tickets/G2-canonical-stage-model.md): three-point internal key; namespaced native ids; authoritative/interpreted/inferred confidence; exceptions as data (UK no Stage 0, UAE combined S1/2). ADR-0002.
+- [Finding + risk model (G4)](tickets/G4-finding-risk-model.md): safety_concern vs compliance_question distinct; null-safe framework-relative risk components; canonical recommendation-wording discipline; reviewer workflow. ADR-0003.
 
 ## Not yet specified
 

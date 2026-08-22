@@ -27,6 +27,15 @@
       "status": "accepted",
       "date": "2026-08-22T05:55:00Z",
       "decided_by": "ORCH (delegated authority, evidence-grounded)"
+    },
+    {
+      "decision_id": "DEC-0004",
+      "adr_path": "docs/adr/0003-finding-risk-model.md",
+      "wayfinder_ticket": "G4",
+      "title": "Finding model: distinct safety/compliance kinds; null-safe framework-relative risk components; canonical recommendation-wording discipline; reviewer workflow",
+      "status": "accepted",
+      "date": "2026-08-22T06:05:00Z",
+      "decided_by": "ORCH (delegated authority, evidence-grounded)"
     }
   ]
 }
