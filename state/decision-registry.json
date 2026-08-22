@@ -9,6 +9,15 @@
       "status": "accepted",
       "date": "2026-08-22T05:20:00Z",
       "decided_by": "project owner (HITL) + ORCH"
+    },
+    {
+      "decision_id": "DEC-0002",
+      "adr_path": null,
+      "wayfinder_ticket": "G3",
+      "title": "MVP scope: forms + uploads with text extraction; JSON+Markdown report (browser-print PDF); anonymous workspace keys",
+      "status": "accepted",
+      "date": "2026-08-22T05:30:00Z",
+      "decided_by": "project owner (HITL) + ORCH"
     }
   ]
 }
