@@ -38,18 +38,16 @@ AI-assisted but not AI-defined. Docker out of scope.
 - [MVP scope (G3)](tickets/G3-mvp-scope.md): forms + uploads WITH text extraction (InputSource seam, security gate); JSON+Markdown report with browser-print PDF; anonymous workspace keys. DEC-0002.
 - [Canonical stage model (G2)](tickets/G2-canonical-stage-model.md): three-point internal key; namespaced native ids; authoritative/interpreted/inferred confidence; exceptions as data (UK no Stage 0, UAE combined S1/2). ADR-0002.
 - [Finding + risk model (G4)](tickets/G4-finding-risk-model.md): safety_concern vs compliance_question distinct; null-safe framework-relative risk components; canonical recommendation-wording discipline; reviewer workflow. ADR-0003.
+- [App scaffold + CI (T1)](tickets/T1-app-scaffold-ci.md): Next.js 15 scaffold executed directly by ORCH after subagent fabrication incident; CI quality job green.
+
+**Destination status:** reached except the live demo URL, which is blocked solely on owner
+cloud credentials (no Vercel/Netlify tokens available to the agent). Deploy pipeline is
+prepared and documented (`docs/deployment.md`); production build verified green.
 
 ## Not yet specified
 
-- Input manifest schema finalization (awaits research on per-stage inputs/outputs)
-- Policy pack JSON format details
-- Audit-graph node decomposition granularity (assessment nodes vs audit questions)
-- Golden fixture design specifics (which intentional defects, expected findings)
-- Determinism test harness design
-- AI integration approach: provider selection, prompt isolation, cost controls
-- Report template shape and export format(s)
-- Security controls detail (upload validation limits, rate limiting placement)
-- UI flow details beyond §27 minimums
+*(empty — all fog graduated into tickets and resolved; residual watch items live in
+`docs/validation/architecture-review.md` and `docs/deployment.md`.)*
 
 ## Out of scope
 

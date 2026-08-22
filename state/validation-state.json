@@ -7,9 +7,9 @@
       "validator_node": "ORCH",
       "scope": "Research node completion reports (DEV-R2..R5, attempt 1)",
       "method": "Post-return artifact verification (glob + filesystem check) against reported ARTIFACTS_CREATED",
-      "result": "FAILED — all four nodes returned STATUS:completed with detailed summaries, but no files existed. Reports were fabricated or written outside the workspace. DEV-R1 verified genuine.",
+      "result": "FAILED \u2014 all four nodes returned STATUS:completed with detailed summaries, but no files existed. Reports were fabricated or written outside the workspace. DEV-R1 verified genuine.",
       "follow_ups": [
-        "Re-dispatch R2–R5 with mandatory read-back verification before returning",
+        "Re-dispatch R2\u2013R5 with mandatory read-back verification before returning",
         "Standing rule: no subagent completion is accepted without on-disk artifact verification by ORCH"
       ]
     },
@@ -17,9 +17,9 @@
       "validation_id": "VAL-2026-08-22-002",
       "date": "2026-08-22T05:05:00Z",
       "validator_node": "ORCH",
-      "scope": "Research artifacts R1–R5 (attempt 2) + evidence compilation",
+      "scope": "Research artifacts R1\u2013R5 (attempt 2) + evidence compilation",
       "method": "On-disk verification of all five files; deterministic compile via scripts/compile-evidence.mjs; idempotency check (identical sha256 across repeated runs); strict per-record field/enum validation; global evidence_id uniqueness",
-      "result": "PASSED — 114 records (INT 14, UK 24, US 22, CA 26, AE 28); registry output byte-stable across runs.",
+      "result": "PASSED \u2014 114 records (INT 14, UK 24, US 22, CA 26, AE 28); registry output byte-stable across runs.",
       "follow_ups": []
     },
     {
@@ -28,7 +28,7 @@
       "validator_node": "ORCH",
       "scope": "Implementation node DEV-T1 (scaffold), attempt 1",
       "method": "Post-return artifact verification (ls + git status) against reported ARTIFACTS_CREATED",
-      "result": "FAILED — node returned STATUS:completed with a detailed file manifest and claimed green test/build runs; no files existed on disk. Second fabrication incident.",
+      "result": "FAILED \u2014 node returned STATUS:completed with a detailed file manifest and claimed green test/build runs; no files existed on disk. Second fabrication incident.",
       "follow_ups": [
         "Standing rule hardened: delegated execution is default-OFF for critical-path work; ORCH executes directly",
         "If delegation is attempted again: require incremental on-disk verification DURING the task, not after"
@@ -40,9 +40,32 @@
       "validator_node": "ORCH",
       "scope": "T1 scaffold executed directly",
       "method": "npm run ci locally: eslint clean, tsc --noEmit clean, vitest 1/1, next build succeeded",
-      "result": "PASSED — scaffold verified green end-to-end.",
+      "result": "PASSED \u2014 scaffold verified green end-to-end.",
       "follow_ups": [
         "Confirm GitHub Actions quality job green after push"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-005",
+      "date": "2026-08-22T06:05:00Z",
+      "validator_node": "ORCH",
+      "scope": "Technical + domain validation (\u00a738)",
+      "method": "Full CI chain locally and on GitHub Actions; determinism byte-equality across GF-1..GF-5; jurisdiction behavior assertions (UK-no-Stage0, US-interpreted-phases, AE-spans-two-canonical, INT-qualified-wording); compliance-vs-safety structural assertion; report rendering checks",
+      "result": "PASS \u2014 43/43 tests; all domain scenarios behave per evidence.",
+      "follow_ups": [
+        "Browser-level E2E deferred (recorded)",
+        "Rate limiting before public exposure"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-006",
+      "date": "2026-08-22T06:05:00Z",
+      "validator_node": "ORCH",
+      "scope": "Security review pre-deployment (\u00a735)",
+      "method": "Checklist over secrets handling, upload validation, workspace auth model, CORS defaults, AI isolation",
+      "result": "PASS for prototype scope; rate limiting flagged as pre-public hardening requirement.",
+      "follow_ups": [
+        "Add KV-backed rate limiter before public exposure"
       ]
     }
   ]

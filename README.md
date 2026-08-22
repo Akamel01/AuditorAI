@@ -68,9 +68,19 @@ scripts/                deterministic tooling (e.g. state validation)
 ## Development
 
 ```bash
+npm ci                            # install
+npm run dev                       # run locally
+npm run ci                        # lint + typecheck + test + build
+node scripts/compile-evidence.mjs # regenerate evidence registry from research docs
 node scripts/validate-state.mjs   # validate shared state
-npm ci && npm run ci              # full CI suite (once app scaffold lands)
 ```
+
+## Deployment
+
+Vercel free tier — two options in [`docs/deployment.md`](docs/deployment.md)
+(dashboard import ≈ 5 minutes, or automatic CI deploys once `VERCEL_*` secrets exist).
+Persistence uses an Upstash/Vercel-KV free Redis via env vars; without it the app runs on
+an in-memory fallback.
 
 ## License
 

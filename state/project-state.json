@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "project": {
     "id": "auditorai",
-    "name": "AuditorAI — Road Safety Auditor Platform",
+    "name": "AuditorAI \u2014 Road Safety Auditor Platform",
     "repo": "https://github.com/Akamel01/AuditorAI",
     "objective": "Production-quality MVP of an AI-assisted, evidence-grounded Road Safety Audit platform for International/UK/USA/Canada/UAE practice, Stages 0-2, deployed on free hosting."
   },
@@ -11,10 +11,10 @@
     "quality_gate": "docs/validation/final-quality-gate.md all boxes checked"
   },
   "current_state": {
-    "phase": "grilling-and-domain-modeling",
-    "milestone": "research complete (5 jurisdictions, 114 evidence records, registry compiled deterministically)",
+    "phase": "verification-complete/deployment-blocked-on-owner-credentials",
+    "milestone": "All \u00a739 gate items green except live demo URL (no cloud credentials available to agent). Deploy pipeline prepared: .github/workflows/deploy.yml + docs/deployment.md.",
     "wayfinder_map": "workflow/wayfinder/maps/mvp/MAP.md",
-    "notes": "R1–R5 closed. Frontier: G1 (stack/hosting, HITL). G2/G4 unblocked by research. G3 blocked by G1. T1 blocked by G1."
+    "notes": "43 tests green incl. 5 golden fixtures + API-level e2e flow. Owner action to go live: docs/deployment.md Option A (~5 min dashboard) or B (add VERCEL_* repo secrets)."
   },
   "state_separation": {
     "desired_state": "target phase/milestones",
@@ -25,6 +25,6 @@
     "validation_state": "state/validation-state.json",
     "execution_state": "state/graph-state.json + state/agent-registry.json"
   },
-  "updated_at": "2026-08-22T04:51:39Z",
+  "updated_at": "2026-08-22T06:10:00Z",
   "updated_by": "orchestrator"
 }
