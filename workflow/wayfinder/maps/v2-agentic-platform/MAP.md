@@ -46,6 +46,7 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Eval gate ladder E1](tickets/E1-eval-gate-ladder-design.md): pass = all dims ≥1 AND substance=2 AND evidence=2; corpus mark 90 %; zero-drop regression tolerance; Tier-2 triggers confirmed; dry-run GF-1..5 first.
 - [Step-mode pipeline executor N2](tickets/N2-step-mode-pipeline-executor-refactor.md): AuditPipeline seam (sync runAll/runNode/describe, async persistRun); 11-node registry mirrors graph-state edges; AI-CANDIDATES seam-wired with Off default; goldens byte-stable, folded-runNode ≡ runAll proven; 75/75 green.
 - [Live AiAdapter A1](tickets/A1-aiadapter-live-implementation.md): ZenAiAdapter fetch-only env-gated client; ajv boundary + one repair retry + graceful empty; R7 budgets encoded (60s/3-calls/breaker/fallback); async runAllLive driver conducts AI-CANDIDATES; sync path byte-identical.
+- [Inference contracts A2](tickets/A2-inference-contracts-per-node.md): AI-CANDIDATES bounded+active; QUESTIONS missing-info proposals allowed-but-dormant (declared shape); recommendation drafting rejected for now; behavior tests enforce emitted⊆declared, field-subset projection, refusal artifacts.
 
 ## Not yet specified
 
@@ -58,6 +59,8 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - Vault sync-conflict UX for concurrent human+agent edits (after V2 shows real patterns).
 - Report-generation LLM assist (narrative sections of reports) — suspected follow-on once
   L4 lands; not yet sharp.
+- Recommendation-drafting LLM assist: rejected by A2 until the eval corpus shows a quality
+  baseline; revisits after E4 scorecards exist.
 
 ## Out of scope
 

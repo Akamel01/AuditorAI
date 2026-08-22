@@ -3,7 +3,7 @@ id: A2
 title: Inference contracts per node
 type: grilling
 hitl: false
-status: open
+status: resolved
 issue: #13
 assignee:
 blocked_by: [A1]
