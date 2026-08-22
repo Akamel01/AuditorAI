@@ -19,7 +19,7 @@ function projectFrom(fx: {
   return {
     project_id: "P-GF1",
     workspace_key_hash: "gf",
-    metadata: fx.metadata as Project["metadata"],
+    metadata: fx.metadata as unknown as Project["metadata"],
     stage_selection: {
       jurisdiction: fx.jurisdiction as Project["stage_selection"]["jurisdiction"],
       native_stage_id: fx.native_stage_id,

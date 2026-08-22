@@ -10,6 +10,7 @@ import type { InputValueState, JurisdictionId, Project } from "@/domain/types";
 const T0 = "2026-08-22T00:00:00.000Z";
 
 interface Fixture {
+  fixture_id?: string;
   jurisdiction: string;
   native_stage_id: string;
   metadata: Project["metadata"];
