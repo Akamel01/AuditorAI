@@ -3,9 +3,9 @@ id: N2
 title: Step-mode pipeline executor refactor
 type: task
 hitl: false
-status: open
+status: claimed
 issue: #8
-assignee:
+assignee: Akamel01
 blocked_by: [N1]
 blocks: [N3, D3, A1, E4]
 created: 2026-08-22

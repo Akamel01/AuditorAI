@@ -42,6 +42,8 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Audit node contracts N1](tickets/N1-audit-node-contracts-ag-*.md): SHARED-STATE.md defines SharedState slices + AuditArtifact envelope + closed payload_kind set; 11 contracts validated via js-yaml emitter script; classes deterministic x9 / ai-bounded AI-CANDIDATES / human ADJUDICATION.
 - [Admin auth seam D1](tickets/D1-admin-auth-seam-for-developer-surfaces.md): requireAdmin fail-closed (byte-equal denials), timing-safe digest compare, 30/min bucket; 5 unit tests; suite 57/57.
 - [Image storage decision M1](tickets/M1-image-storage-constraints-plus-decision.md): inline data-URLs <=500KB/image <=12/project (measured: Upstash 10MiB req cap, Vercel 4.5MB body, ~0.7s@500KB); Blob escape hatch documented; side-finding fixed: pipeline-form bodies had silently disabled KV-mode rate limiting.
+- [Inference topology R7](tickets/R7-inference-topology-decision.md): Direct Zen fetch from Vercel functions; effort cand=high/sum=low/judge=max; ≤60s per call, ≤3 calls per audit, $0 free-tier cap; chain Zen→OpenRouter→Groq→Off; 4-probe smoke gate precedes A1.
+- [Eval gate ladder E1](tickets/E1-eval-gate-ladder-design.md): pass = all dims ≥1 AND substance=2 AND evidence=2; corpus mark 90 %; zero-drop regression tolerance; Tier-2 triggers confirmed; dry-run GF-1..5 first.
 
 ## Not yet specified
 

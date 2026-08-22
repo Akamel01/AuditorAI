@@ -3,13 +3,13 @@ id: E1
 title: Eval gate ladder design
 type: grilling
 hitl: true
-status: open
+status: resolved
 issue: #7
-assignee:
+assignee: Akamel01
 blocked_by: []
 blocks: [E3]
 created: 2026-08-22
-resolved:
+resolved: 2026-08-22
 ---
 
 ## Question
@@ -18,4 +18,4 @@ Three tiers proposed: Tier0 CI deterministic (goldens+schemas, exists); Tier1 co
 
 ## Resolution
 
-*(appended on resolution; assets linked, not pasted)*
+Owner live session 2026-08-22 (Checkpoint α). Pass gate: **all dims ≥1 AND substance=2 AND evidence-grounding=2**; corpus pass mark **90 %**; regression tolerance **zero-drop** (any mean decline ⇒ Tier-2 review); Tier-2 triggers confirmed (adapter/prompt/engine-semantics/jurisdiction-pack). Judge effort=max. Dry-run on GF-1..GF-5 pre-corpus. Full table: GitHub issue #7 resolution comment.
