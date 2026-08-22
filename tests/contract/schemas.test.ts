@@ -8,9 +8,6 @@ import Ajv from "ajv/dist/2020.js";
 import { runAudit } from "@/domain/engine";
 import type { AuditResult, JurisdictionId, Project } from "@/domain/types";
 
-const SCHEMA_DIR = path.join(process.cwd(), "contracts/schemas");
-const FIXTURE_DIR = path.join(process.cwd(), "tests/fixtures");
-
 function loadJson(rel: string): unknown {
   return JSON.parse(readFileSync(path.join(process.cwd(), rel), "utf8"));
 }
