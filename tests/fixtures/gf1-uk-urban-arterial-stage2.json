@@ -1,0 +1,33 @@
+{
+  "fixture_id": "GF-1",
+  "name": "Urban arterial corridor upgrade — UK Stage 2 with intentional issues",
+  "jurisdiction": "UK",
+  "native_stage_id": "uk:S2",
+  "metadata": {
+    "name": "Millbrook Corridor Upgrade",
+    "description": "Duplication of a 1.2 km urban arterial section with two new signalised junctions.",
+    "scheme_summary": "Widening to dual carriageway; new signals at School Lane and Depot Road; shared-use footway/cycleway on north side.",
+    "authority": "Millbrook City Council",
+    "location": "Millbrook, UK"
+  },
+  "inputs": {
+    "scheme_description_objectives": { "state": "provided", "value": "Corridor duplication to relieve congestion; objectives include improved bus journey times." },
+    "design_standards_applied": { "state": "provided", "value": "DMRB CD 109, CD 123, LTN 1/20 for the cycleway." },
+    "design_speeds_and_speed_limits": { "state": "provided", "value": "Design speed 60 km/h; proposed limit 30 mph." },
+    "traffic_flows_existing_forecast": { "state": "provided", "value": "2026 base 18,400 AADT; 2041 forecast 24,900 AADT." },
+    "vru_desire_lines": { "state": "provided", "value": "Strong school desire line crossing Depot Road; commuter cycling along corridor." },
+    "environmental_constraints_locality": { "state": "provided", "value": "Conservation area at northern end." },
+    "collision_data_analysis_36mo": { "state": "provided", "value": "36-month STATS19 extract: 4 slight injury collisions, cluster at Depot Road junction (rear-end shunts)." },
+    "departures_from_standards": { "state": "not_applicable" },
+    "previous_rsa_reports_and_responses": { "state": "required_missing" },
+    "drawing_document_register": { "state": "provided", "value": "Drawing register v3: GA-001..GA-014." }
+  },
+  "expected": {
+    "finding_ids_present": ["F-R-UK-PREVRESP-uk-S2"],
+    "finding_ids_absent": ["F-R-UK-CRASH36"],
+    "missing_information_input_ids": [],
+    "questions_min_count": 2,
+    "mapping_confidence": "authoritative"
+  },
+  "notes": "Intentional defect: Stage 1 response reports not provided although a Stage 1 audit occurred -> process gap must surface. All other required inputs provided."
+}

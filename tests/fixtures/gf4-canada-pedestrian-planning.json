@@ -1,0 +1,28 @@
+{
+  "fixture_id": "GF-4",
+  "name": "Pedestrian/cycling improvement — Canada (TAC) planning stage",
+  "jurisdiction": "CA",
+  "native_stage_id": "ca-tac:planning",
+  "metadata": {
+    "name": "Riverside Active Travel Corridor",
+    "description": "New multi-use pathway and two crossing upgrades along a river corridor.",
+    "scheme_summary": "3 km multi-use path; signalised crossings at Riverside Dr and Mill Lane; ties into existing network at three points.",
+    "authority": "City transportation services",
+    "location": "Provincial city, Canada"
+  },
+  "inputs": {
+    "drawings_minimum": { "state": "provided", "value": "Concept drawings C-101..C-118." },
+    "design_parameters_standards_departures": { "state": "provided", "value": "Design criteria memo; no departures anticipated." },
+    "known_unresolved_safety_issues": { "state": "provided", "value": "History of speeding on Riverside Drive noted." },
+    "design_criteria_and_volumes_planning": { "state": "provided", "value": "Volumes from 2026 counts; school commute demand." },
+    "route_choice_project_scope": { "state": "provided", "value": "Preferred route after options study." },
+    "access_management_adjacent_developments": { "state": "not_available" },
+    "network_continuity_constraints": { "state": "provided", "value": "Tie-ins identified." },
+    "community_consultation_input": { "state": "unknown" }
+  },
+  "expected": {
+    "finding_ids_present_any_of": [],
+    "canonical_stages": ["FEASIBILITY_CONCEPT"],
+    "mapping_confidence": "authoritative"
+  }
+}

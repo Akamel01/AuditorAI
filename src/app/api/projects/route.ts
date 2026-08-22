@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       updated_at: now,
     };
     await auth.repo.saveProject(auth.ws, project);
-    return NextResponse.json(project, { status: 201 });
+    return NextResponse.json({ project }, { status: 201 });
   } catch (e) {
     return serverError(e);
   }

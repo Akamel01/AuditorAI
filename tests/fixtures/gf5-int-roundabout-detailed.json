@@ -1,0 +1,26 @@
+{
+  "fixture_id": "GF-5",
+  "name": "Roundabout conversion — International baseline, detailed design",
+  "jurisdiction": "INT",
+  "native_stage_id": "int:detailed-design",
+  "metadata": {
+    "name": "Harbour Roundabout Conversion",
+    "description": "Signalised crossroads converted to a single-lane roundabout.",
+    "scheme_summary": "Single-lane roundabout; raised crossings on each leg; LED lighting; truck apron.",
+    "authority": "Port authority",
+    "location": "Harbour district"
+  },
+  "inputs": {
+    "project_description_objectives": { "state": "provided", "value": "Safety-driven conversion after injury crash pattern." },
+    "plans_appropriate_to_stage": { "state": "provided", "value": "Detailed design drawing set D-001..D-040." },
+    "traffic_data_expected_users": { "state": "unknown" },
+    "crash_history_context": { "state": "provided", "value": "3-year injury crash history at the signals." },
+    "independence_declaration": { "state": "not_available" }
+  },
+  "expected": {
+    "finding_ids_present_any_of": ["F-int-r-independence"],
+    "canonical_stages": ["DETAILED_DESIGN"],
+    "mapping_confidence": "interpreted",
+    "limitations_contain": ["qualified"]
+  }
+}

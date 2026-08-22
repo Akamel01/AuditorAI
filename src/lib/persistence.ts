@@ -55,11 +55,16 @@ export class KvRestStore implements DataStore {
   }
 }
 
+let storeSingleton: DataStore | null = null;
+
 export function getDataStore(): DataStore {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (url && token) return new KvRestStore(url, token);
-  return new MemoryStore(); // dev/test fallback — product stays fully functional
+  if (!storeSingleton) {
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
+    storeSingleton =
+      url && token ? new KvRestStore(url, token) : new MemoryStore();
+  }
+  return storeSingleton;
 }
 
 export function workspaceHash(workspaceKey: string): string {

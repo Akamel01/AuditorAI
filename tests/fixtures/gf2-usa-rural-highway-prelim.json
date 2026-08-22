@@ -1,0 +1,24 @@
+{
+  "fixture_id": "GF-2",
+  "name": "Rural highway passing lanes — USA preliminary design phase",
+  "jurisdiction": "US",
+  "native_stage_id": "us-fhwa:preliminary-design",
+  "metadata": {
+    "name": "SR-47 Passing Lanes",
+    "description": "Two 1.6 km passing lane segments on a rural two-lane highway.",
+    "scheme_summary": "Rural two-lane; ADT 4,800; heavy agricultural vehicles; horizontal curve cluster with run-off-road history.",
+    "authority": "State DOT District 3",
+    "location": "Rural district, US"
+  },
+  "inputs": {
+    "project_information_package": { "state": "provided", "value": "Owner-supplied project information package v2." },
+    "design_drawings_current_phase": { "state": "provided", "value": "Preliminary design plans, sheets 1-22." },
+    "operational_geometric_hf_context": { "state": "provided", "value": "Speed study and human factors review of passing sight distance." },
+    "crash_history": { "state": "provided", "value": "5-year crash file: run-off-road dominant on curves." }
+  },
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "mapping_confidence": "interpreted"
+  }
+}

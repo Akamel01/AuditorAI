@@ -1,0 +1,49 @@
+{
+  "fixture_id": "GF-3",
+  "name": "Roundabout scheme \u2014 UAE Abu Dhabi combined Stage 1/2 (smaller scheme)",
+  "jurisdiction": "AE",
+  "native_stage_id": "ae-ad:S1_2",
+  "metadata": {
+    "name": "Al Bahya Roundabout Upgrade",
+    "description": "Conversion of a priority intersection to a two-lane roundabout on a district distributor.",
+    "scheme_summary": "Two-lane roundabout with apron; pedestrian refuge crossings on each arm; street lighting; palm planting within central island kept outside sight triangles.",
+    "authority": "Abu Dhabi Municipality",
+    "location": "Abu Dhabi"
+  },
+  "inputs": {
+    "audit_brief_project_description_purpose": {
+      "state": "provided",
+      "value": "Clause 5.10.2 brief completed."
+    },
+    "markable_plans_a4_a3": {
+      "state": "provided",
+      "value": "A3 plans set v4."
+    },
+    "traffic_pedestrian_flow_data": {
+      "state": "provided",
+      "value": "Turning counts AM/PM peaks; mosque Friday peak noted."
+    },
+    "junction_interchange_layouts": {
+      "state": "provided",
+      "value": "Roundabout layout with truck apron."
+    },
+    "detailed_design_drawing_set": {
+      "state": "provided",
+      "value": "Cross-sections, lighting, signage/markings schedule."
+    },
+    "departures_relaxations": {
+      "state": "not_applicable"
+    }
+  },
+  "expected": {
+    "finding_ids_present_prefix": [
+      "F-ae-r-review-prev-stage"
+    ],
+    "missing_information_input_ids": [],
+    "mapping_confidence": "authoritative",
+    "canonical_stages": [
+      "PRELIMINARY_DESIGN",
+      "DETAILED_DESIGN"
+    ]
+  }
+}
