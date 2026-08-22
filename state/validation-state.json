@@ -67,6 +67,15 @@
       "follow_ups": [
         "Add KV-backed rate limiter before public exposure"
       ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-007",
+      "date": "2026-08-22T06:06:00Z",
+      "validator_node": "ORCH",
+      "scope": "HTTP smoke test on production server + rate limiting",
+      "method": "next start (production build); curl through real HTTP surface: landing 200, /api/jurisdictions, project create, audit run (expected process finding + missing info present), unauthenticated request -> 401. Rate limiter wired into requireWorkspace (KV INCR+TTL when configured; memory fallback in dev).",
+      "result": "PASS \u2014 full HTTP surface behaves correctly including auth rejection.",
+      "follow_ups": []
     }
   ]
 }

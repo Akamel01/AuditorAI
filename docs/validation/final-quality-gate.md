@@ -38,6 +38,6 @@ ticked.
 1. **Live demo URL** — blocked solely on cloud credentials; everything else deploy-ready.
 2. **Browser-level Playwright E2E** — API-level flow test covers the pipeline end-to-end.
 3. **AI provider adapters** — seam shipped OFF; enabling requires only an adapter + env key.
-4. **Server-side rate limiting** — noted in security review as pre-public hardening.
+4. **Rate limiting** — implemented over the KV seam (fixed window, atomic INCR+TTL) after initial review; strictness can be raised before public exposure.
 5. **TR-540 delta / Dubai manual contents** — external sources inaccessible during research;
    carried as Unknown with revisit triggers in conflict-analysis C8.
