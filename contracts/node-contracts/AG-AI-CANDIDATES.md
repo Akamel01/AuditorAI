@@ -61,3 +61,23 @@ failure:
   retry_policy: At most one repair attempt on invalid JSON, then degrade to empty.
   escalation_policy: Repeated provider failure trips a circuit-breaker and reports a degraded status artifact.
 ```
+
+## Inference contract (locked by A2, issue #13)
+
+- **Bounded emission:** this node emits exactly `CandidateFinding[]` (payload_kind
+  `candidates.ai`, `validation_status=draft` when live, `rejected` when refusing). No other
+  artifact kind may originate here.
+- **Producer identity is enforced at the boundary:** adapters cannot self-label; both the
+  adapter (`ZenAiAdapter`) and the pipeline (`generateCandidatesLive`) overwrite `producer`
+  to `safety-reasoning-agent`.
+- **Uniform refusal semantics** (deterministic path unaffected in every case):
+  - Adapter OFF (default): null slice, zero provider calls, no artifact.
+  - Enabled but only sync context available: null slice + rejected artifact recording the skip.
+  - Live failure (transport/schema after one repair retry/budget exhaustion): null slice +
+    rejected artifact carrying the reason.
+- **Live driver:** inference conducts through `AuditPipeline.runAllLive`; the sync batch
+  fold never performs provider calls.
+- **Budgets (R7):** per-call timeout ≤60 s; ≤3 calls per audit run; circuit-breaker after
+  repeated failures; fallback chain Zen→OpenRouter→Groq behind env config.
+- **Vision (M3/#17) pre-declaration:** prompt user-content accepts image blocks; candidates
+  citing attachments must reference `attachment_ids` considered. Wiring arrives with M3.

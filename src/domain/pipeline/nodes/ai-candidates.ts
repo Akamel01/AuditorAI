@@ -43,6 +43,20 @@ export const runAiCandidates: NodeFn = (_state, ctx) => {
   return { artifacts: [], patch: { candidate_findings: null } };
 };
 
+/** The bounded CandidateFinding subset — nothing outside these keys survives. */
+const CANDIDATE_FIELDS = [
+  "kind",
+  "category",
+  "location",
+  "road_users",
+  "scenario",
+  "statement",
+  "evidence",
+  "assumptions",
+  "rationale",
+  "recommendation",
+] as const;
+
 /**
  * Live path used by DefaultAuditPipeline.runAllLive: assembles the provisional
  * audit result from current slices and asks the adapter for bounded
@@ -55,9 +69,16 @@ export async function generateCandidatesLive(
 ): Promise<NodeResult> {
   const provisional = assembleAuditResult(state, ctx.ranAtIso);
   try {
-    // Producer identity is enforced at the boundary; adapters cannot self-label.
+    // Boundary enforcement: project onto the declared subset (adapters cannot
+    // widen it) and re-assert producer identity (adapters cannot self-label).
     const candidates: CandidatesSlice = (await adapter.generateCandidates(provisional)).map(
-      (c) => ({ ...c, producer: "safety-reasoning-agent" }),
+      (c) => {
+        const bounded: Record<string, unknown> = { producer: "safety-reasoning-agent" };
+        for (const f of CANDIDATE_FIELDS) {
+          if (f in c) bounded[f] = c[f as keyof typeof c];
+        }
+        return bounded as CandidatesSlice[number];
+      },
     );
     return {
       artifacts: [

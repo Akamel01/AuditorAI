@@ -51,3 +51,18 @@ failure:
   retry_policy: 'Deterministic: no retry.'
   escalation_policy: N/A.
 ```
+
+## Inference contract (locked by A2, issue #13)
+
+- **Decision — AI-proposed missing-information questions: ALLOWED (declared, dormant).**
+  When activated, AI may propose missing-information questions bounded to the exact
+  `MissingInformationQuestion` shape; each must cite registry-resolvable `evidence_ids`,
+  enter as draft requiring human confirmation, and be visibly marked AI-proposed.
+  Emission stays within payload_kind `questions.set` (`validation_status=draft`,
+  `ai_proposed: true` marker on the artifact payload); the deterministic pack-derived
+  questions are never replaced or filtered by AI output.
+- **Dormant today:** nothing emits this yet; behavior tests assert emitted kinds stay a
+  subset of declared kinds, so activation later cannot silently widen the boundary.
+- **Recommendation drafting: REJECTED for now** — deferred until the eval corpus shows a
+  quality baseline (fog item on map issue #20). Free-text narrative generation and final
+  determinations remain forbidden everywhere.
