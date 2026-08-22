@@ -3,6 +3,7 @@
 // Swapping stores = env change, never code change.
 import { createHash } from "node:crypto";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
+import type { AuditArtifact } from "@/domain/pipeline/types";
 
 export interface DataStore {
   readonly kind: "memory" | "kv";
@@ -87,6 +88,28 @@ export function workspaceHash(workspaceKey: string): string {
 const P = (ws: string, id: string) => `ws:${ws}:project:${id}`;
 const A = (ws: string, pid: string, aid: string) => `ws:${ws}:audit:${pid}:${aid}`;
 const ATT = (ws: string, pid: string, id: string) => `ws:${ws}:attachment:${pid}:${id}`;
+const ART = (ws: string, pid: string, aid: string, node: string, seq: number) =>
+  `ws:${ws}:art:${pid}:${aid}:${node}:${seq}`;
+
+/** N3: per-artifact byte cap at write time (Upstash 10 MiB request cap measured
+ * in M1; 512 KB keeps a wide margin while covering any node payload). */
+export const MAX_ARTIFACT_BYTES = 512 * 1000;
+
+export class ArtifactTooLargeError extends Error {
+  constructor(nodeId: string, seq: number, bytes: number) {
+    super(`artifact ${nodeId}#${seq} is ${bytes} bytes; cap is ${MAX_ARTIFACT_BYTES}`);
+    this.name = "ArtifactTooLargeError";
+  }
+}
+
+/** Summary record kept for pruned (non-latest) runs. */
+export interface ArtifactSummary {
+  audit_id: string;
+  ran_at: string;
+  artifact_count: number;
+  nodes: { node_id: string; payload_kind: string; validation_status: string }[];
+  pruned_at: string;
+}
 
 /** Workspace-scoped repository over the store seam. */
 export class Repository {
@@ -145,6 +168,83 @@ export class Repository {
       if (a) out.push(a);
     }
     return out.sort((a, b) => a.created_at.localeCompare(b.created_at));
+  }
+
+  // ---- Node-artifact persistence (N3) -----------------------------------------
+
+  /** Store the full artifact trail of one audit run under
+   *  ws:{ws}:art:{projectId}:{auditId}:{nodeId}:{seq}; prune any previous full
+   *  trail for the same audit to a summary record first (retention policy). */
+  async saveArtifactTrailFor(
+    ws: string,
+    identity: { projectId: string; auditId: string },
+    artifacts: AuditArtifact[],
+  ) {
+    await this.pruneArtifactTrail(ws, identity.projectId, identity.auditId);
+
+    let seq = 0;
+    for (const art of artifacts) {
+      seq += 1;
+      const bytes = Buffer.byteLength(JSON.stringify(art));
+      if (bytes > MAX_ARTIFACT_BYTES) {
+        throw new ArtifactTooLargeError(art.node_id, seq, bytes);
+      }
+      await this.store.put(ART(ws, identity.projectId, identity.auditId, art.node_id, seq), art);
+    }
+    return { stored: seq };
+  }
+
+  async getArtifact(
+    ws: string,
+    projectId: string,
+    auditId: string,
+    nodeId: string,
+    seq: number,
+  ): Promise<AuditArtifact | null> {
+    return this.store.get<AuditArtifact>(ART(ws, projectId, auditId, nodeId, seq));
+  }
+
+  async listArtifacts(ws: string, projectId: string, auditId: string): Promise<AuditArtifact[]> {
+    const keys = await this.store.keys(`ws:${ws}:art:${projectId}:${auditId}:`);
+    const out: AuditArtifact[] = [];
+    for (const k of keys.sort()) {
+      // Skip the summary record; it lives in the same namespace.
+      if (k.endsWith(":_summary")) continue;
+      const a = await this.store.get<AuditArtifact>(k);
+      if (a) out.push(a);
+    }
+    return out;
+  }
+
+  /** Replay rule: verified artifacts are trusted as-is; anything else must be
+   *  regenerated deterministically before use. */
+  replayPlan(artifacts: AuditArtifact[]): { trusted: AuditArtifact[]; regenerate: AuditArtifact[] } {
+    return {
+      trusted: artifacts.filter((a) => a.validation_status === "verified"),
+      regenerate: artifacts.filter((a) => a.validation_status !== "verified"),
+    };
+  }
+
+  private async pruneArtifactTrail(ws: string, projectId: string, auditId: string) {
+    const prior = await this.listArtifacts(ws, projectId, auditId);
+    if (prior.length === 0) return;
+    const summary: ArtifactSummary = {
+      audit_id: auditId,
+      ran_at: String(prior[0].created_at ?? ""),
+      artifact_count: prior.length,
+      nodes: prior.map((a) => ({
+        node_id: a.node_id,
+        payload_kind: a.payload_kind,
+        validation_status: a.validation_status,
+      })),
+      pruned_at: new Date().toISOString(),
+    };
+    await this.store.put(`ws:${ws}:art:${projectId}:${auditId}:_summary`, summary);
+    const keys = await this.store.keys(`ws:${ws}:art:${projectId}:${auditId}:`);
+    for (const k of keys) {
+      if (k.endsWith(":_summary")) continue;
+      await this.store.del(k);
+    }
   }
 }
 
