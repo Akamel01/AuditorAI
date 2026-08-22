@@ -3,6 +3,8 @@
 // introspects the graph; persistRun performs the storage receipt.
 import { BATCH_NODES, DESCRIPTORS, NODE_FNS } from "@/domain/pipeline/registry";
 import { persistRun } from "@/domain/pipeline/nodes/persist";
+import { generateCandidatesLive } from "@/domain/pipeline/nodes/ai-candidates";
+import type { AiAdapter } from "@/lib/ai";
 import type {
   AgNodeId,
   AuditArtifact,
@@ -26,6 +28,21 @@ export interface AuditPipeline {
   runAll(project: Project, ranAtIso: string): AuditResult;
   /** Batch run that also returns the artifact trail and final shared state. */
   runAllArtifacts(project: Project, ranAtIso: string): PipelineRun;
+  /**
+   * Async driver for live inference: identical fold, but AG-AI-CANDIDATES
+   * awaits the adapter. Deterministic nodes stay synchronous.
+   */
+  runAllLiveArtifacts(
+    project: Project,
+    ranAtIso: string,
+    opts?: { aiAdapter?: AiAdapter },
+  ): Promise<PipelineRun>;
+  /** Live driver returning just the AuditResult (report bundle JSON). */
+  runAllLive(
+    project: Project,
+    ranAtIso: string,
+    opts?: { aiAdapter?: AiAdapter },
+  ): Promise<AuditResult>;
   /** Execute a single node against a shared state; caller merges the patch. */
   runNode(nodeId: AgNodeId, state: SharedState, ctx: NodeRunCtx): NodeResult;
   /** Storage side effect for step mode; batch runs never persist. */
@@ -49,6 +66,47 @@ export function mergeState(state: SharedState, patch: SharedState): SharedState 
 export class DefaultAuditPipeline implements AuditPipeline {
   runAll(project: Project, ranAtIso: string): AuditResult {
     return this.runAllArtifacts(project, ranAtIso).result;
+  }
+
+  async runAllLive(
+    project: Project,
+    ranAtIso: string,
+    opts?: { aiAdapter?: AiAdapter },
+  ): Promise<AuditResult> {
+    return (await this.runAllLiveArtifacts(project, ranAtIso, opts)).result;
+  }
+
+  async runAllLiveArtifacts(
+    project: Project,
+    ranAtIso: string,
+    opts?: { aiAdapter?: AiAdapter },
+  ): Promise<PipelineRun> {
+    const adapter = opts?.aiAdapter;
+    let state = this.initialState();
+    const artifacts: AuditArtifact[] = [];
+    for (const id of BATCH_NODES) {
+      let res: NodeResult;
+      if (id === "AG-AI-CANDIDATES" && adapter?.enabled) {
+        res = await generateCandidatesLive(state, {
+          ranAtIso,
+          project,
+          versionStart: artifacts.length + 1,
+          aiAdapter: adapter,
+        }, adapter);
+      } else {
+        res = this.runNode(id, state, {
+          ranAtIso,
+          project,
+          versionStart: artifacts.length + 1,
+        });
+      }
+      state = mergeState(state, res.patch);
+      artifacts.push(...res.artifacts);
+    }
+    if (!state.report_bundle) {
+      throw new Error("pipeline batch run finished without a report bundle");
+    }
+    return { result: state.report_bundle.json, artifacts, state };
   }
 
   runAllArtifacts(project: Project, ranAtIso: string): PipelineRun {
