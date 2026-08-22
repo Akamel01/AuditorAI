@@ -53,6 +53,8 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Dev-tab prototype D2](tickets/D2-dev-tab-ux-prototype.md): owner verdict **Candidate A (zero-dep SVG/CSS)** carries into #15 D3; prototypes inspectable in scratch/devtab.
 - [Vault charter V1](tickets/V1-vault-charter-plus-structure-hybrid.md): charter **blessed as written**; vault/ live on main (zones: append-only journals / human-curated notes / machine views; state/ wins ties); unblocks #10.
 - [Artifact persistence N3](tickets/N3-node-artifact-persistence-layout.md): Repository artifact trails under ws:{ws}:art:{pid}:{aid}:{node}:{seq}; retention latest-full/prior-summary; 512KB write-time cap; replay trusts verified else regenerates.
+- [Vault compilers V2](tickets/V2-vault-compile-scripts-both-directions.md): export registries→117 view notes byte-deterministic; import chartered zones→state/vault-notes.json with charter contract enforcement; CI drift job.
+- [Memory protocol V3](tickets/V3-agent-memory-protocol.md): workflow/vault-protocol.md — MUST-READ/MUST-WRITE per session type + graduation rules; wired into TRACKER.md; small by design.
 
 ## Not yet specified
 

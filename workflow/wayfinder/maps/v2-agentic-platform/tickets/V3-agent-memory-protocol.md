@@ -3,7 +3,7 @@ id: V3
 title: Agent memory protocol
 type: grilling
 hitl: false
-status: open
+status: resolved
 issue: #11
 assignee:
 blocked_by: [V2]
