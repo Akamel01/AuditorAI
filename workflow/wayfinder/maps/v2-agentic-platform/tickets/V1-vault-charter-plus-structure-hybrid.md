@@ -3,7 +3,7 @@ id: V1
 title: Vault charter + structure (hybrid)
 type: grilling
 hitl: true
-status: open
+status: resolved
 issue: #4
 assignee:
 blocked_by: []

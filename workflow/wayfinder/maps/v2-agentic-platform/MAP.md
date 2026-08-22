@@ -47,6 +47,11 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Step-mode pipeline executor N2](tickets/N2-step-mode-pipeline-executor-refactor.md): AuditPipeline seam (sync runAll/runNode/describe, async persistRun); 11-node registry mirrors graph-state edges; AI-CANDIDATES seam-wired with Off default; goldens byte-stable, folded-runNode ≡ runAll proven; 75/75 green.
 - [Live AiAdapter A1](tickets/A1-aiadapter-live-implementation.md): ZenAiAdapter fetch-only env-gated client; ajv boundary + one repair retry + graceful empty; R7 budgets encoded (60s/3-calls/breaker/fallback); async runAllLive driver conducts AI-CANDIDATES; sync path byte-identical.
 - [Inference contracts A2](tickets/A2-inference-contracts-per-node.md): AI-CANDIDATES bounded+active; QUESTIONS missing-info proposals allowed-but-dormant (declared shape); recommendation drafting rejected for now; behavior tests enforce emitted⊆declared, field-subset projection, refusal artifacts.
+- [Corpus fixtures E3](tickets/E3-sample-projects-from-corpus.md): GF-6..10 across UK S1 / US prelim+final / INT prelim / CA planning; OGL-explicit + PD-explicit provenance; ORCH-as-judge baselines schema-validated; Tier-0 snapshots recorded; UAE absent pending licensing.
+- [Attachment inputs M2](tickets/M2-input-model-extension-for-attachments.md): Attachment model per M1 shape; magic-byte intake on existing upload route; inline data-URLs via Repository seam; paste/picker UI with thumbnails; DataStore.del(); PATCH preserves links on text edits.
+- [Eval harness E4](tickets/E4-eval-harness-runner-plus-judge-scorecards.md): runner + gate math + workflow_dispatch CI job; first LIVE archive judged by ox-alpha@max over all 5 fixtures — honest FAILs (0–50% vs 90% mark) recorded with Tier-2 flags; judge-drift fog graduates.
+- [Dev-tab prototype D2](tickets/D2-dev-tab-ux-prototype.md): owner verdict **Candidate A (zero-dep SVG/CSS)** carries into #15 D3; prototypes inspectable in scratch/devtab.
+- [Vault charter V1](tickets/V1-vault-charter-plus-structure-hybrid.md): charter **blessed as written**; vault/ live on main (zones: append-only journals / human-curated notes / machine views; state/ wins ties); unblocks #10.
 
 ## Not yet specified
 

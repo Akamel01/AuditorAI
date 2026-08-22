@@ -3,7 +3,7 @@ id: D2
 title: Dev-tab UX prototype
 type: prototype
 hitl: true
-status: open
+status: resolved
 issue: #3
 assignee:
 blocked_by: []
