@@ -87,6 +87,19 @@
       "follow_ups": [
         "Owner should rotate the Upstash REST token (was shared in conversation) and update the two Vercel env vars"
       ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-009",
+      "date": "2026-08-22T18:45:36Z",
+      "validator_node": "ORCH",
+      "scope": "v2 batch: N1 node contracts (#1), D1 admin auth seam (#2), M1 image storage decision (#6) - ORCH-direct after subagent delegation incident",
+      "method": "verify-on-disk discipline (empty subagent results caught, git status clean); js-yaml round-trip validation of all 11 contracts; vitest 57/57 incl. 5 new admin-auth tests; empirical KV probes (10MiB cap, sha256-intact round-trips, cleanup verified)",
+      "result": "PASS. Side-finding fixed en route: Upstash REST rejects pipeline-form bodies -> production KV-mode rate limiting was silently disabled; ratelimit.ts rewritten flat-command.",
+      "follow_ups": [
+        "Owner: rotate Upstash token (still pending)",
+        "#15 D3 consumes requireAdmin",
+        "#8 N2 implements SHARED-STATE.md slices"
+      ]
     }
   ]
 }

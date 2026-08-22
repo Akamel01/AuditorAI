@@ -39,6 +39,10 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [ox-alpha programmatic brain access (R6)](tickets/R6-ox-alpha-programmatic-brain-access.md): OpenCode Zen gateway (`https://opencode.ai/zen/v1`, Bearer key) serves `x-preview-f-free`; vision YES; effort via low/high/max variants + temperature; `opencode serve` is wrong plane (agent APIs, not completions); fallbacks OpenRouter→Groq behind same adapter.
 - [Public-domain drawing corpus (E2)](tickets/E2-public-domain-drawing-corpus-sourcing.md): 29 verified sources — FHWA case studies + CFL plan sheets (PD), two real NSIP Stage-1 RSA reports w/ swept paths (OGL), DMRB GG 119 (OGL), Wikimedia PD diagrams; CC BY-SA rejected.
 
+- [Audit node contracts N1](tickets/N1-audit-node-contracts-ag-*.md): SHARED-STATE.md defines SharedState slices + AuditArtifact envelope + closed payload_kind set; 11 contracts validated via js-yaml emitter script; classes deterministic x9 / ai-bounded AI-CANDIDATES / human ADJUDICATION.
+- [Admin auth seam D1](tickets/D1-admin-auth-seam-for-developer-surfaces.md): requireAdmin fail-closed (byte-equal denials), timing-safe digest compare, 30/min bucket; 5 unit tests; suite 57/57.
+- [Image storage decision M1](tickets/M1-image-storage-constraints-plus-decision.md): inline data-URLs <=500KB/image <=12/project (measured: Upstash 10MiB req cap, Vercel 4.5MB body, ~0.7s@500KB); Blob escape hatch documented; side-finding fixed: pipeline-form bodies had silently disabled KV-mode rate limiting.
+
 ## Not yet specified
 
 - Judge-drift measurement: how to detect the judge model itself degrading over time
