@@ -7,7 +7,7 @@ import { runAudit } from "@/domain/engine";
 type Ctx = { params: Promise<{ projectId: string }> };
 
 export async function POST(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const { projectId } = await ctx.params;
@@ -23,7 +23,7 @@ export async function POST(req: Request, ctx: Ctx) {
 }
 
 export async function GET(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const { projectId } = await ctx.params;

@@ -10,7 +10,7 @@ import { getPack } from "@/domain/packs";
 import type { JurisdictionId, Project } from "@/domain/types";
 
 export async function POST(req: Request) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const body = (await req.json()) as {
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const projects = await auth.repo.listProjects(auth.ws);

@@ -1,12 +1,13 @@
-// Shared API helpers: workspace auth, JSON responses, error mapping.
+// Shared API helpers: workspace auth (+ rate limiting), JSON responses, error mapping.
 import { NextResponse } from "next/server";
 import { Repository, getDataStore, workspaceHash } from "./persistence";
+import { checkRateLimit } from "./ratelimit";
 
 export const WORKSPACE_HEADER = "x-workspace-key";
 
-export function requireWorkspace(
+export async function requireWorkspace(
   req: Request,
-): { ok: true; ws: string; repo: Repository } | { ok: false; res: NextResponse } {
+): Promise<{ ok: true; ws: string; repo: Repository } | { ok: false; res: NextResponse }> {
   const key = req.headers.get(WORKSPACE_HEADER);
   if (!key || key.length < 16) {
     return {
@@ -17,7 +18,18 @@ export function requireWorkspace(
       ),
     };
   }
-  return { ok: true, ws: workspaceHash(key), repo: new Repository(getDataStore()) };
+  const ws = workspaceHash(key);
+  const limit = await checkRateLimit(ws);
+  if (!limit.allowed) {
+    return {
+      ok: false,
+      res: NextResponse.json(
+        { error: "rate limit exceeded; retry shortly" },
+        { status: 429, headers: { "retry-after": String(limit.retryAfterSeconds ?? 60) } },
+      ),
+    };
+  }
+  return { ok: true, ws, repo: new Repository(getDataStore()) };
 }
 
 export function badRequest(message: string) {
@@ -32,8 +44,8 @@ export function serverError(e: unknown) {
   if (e instanceof Error && e.name === "StageNotEligibleError") {
     return NextResponse.json({ error: e.message }, { status: 422 });
   }
-  const message = e instanceof Error ? e.message : String(e);
   console.error("[api]", e);
+  const message = e instanceof Error ? e.message : String(e);
   return NextResponse.json({ error: message }, { status: 500 });
 }
 

@@ -8,7 +8,7 @@ import type { Finding } from "@/domain/types";
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
 
 export async function GET(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   const { projectId, auditId } = await ctx.params;
   const audit = await auth.repo.getAudit(auth.ws, projectId, auditId);
@@ -17,7 +17,7 @@ export async function GET(req: Request, ctx: Ctx) {
 }
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const { projectId, auditId } = await ctx.params;

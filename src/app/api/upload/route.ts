@@ -4,7 +4,7 @@ import { badRequest, requireWorkspace, serverError } from "@/lib/api";
 import { MAX_UPLOAD_BYTES, UploadError, extractText } from "@/lib/extract";
 
 export async function POST(req: Request) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const form = await req.formData();

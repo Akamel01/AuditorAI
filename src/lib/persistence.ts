@@ -5,12 +5,14 @@ import { createHash } from "node:crypto";
 import type { AuditResult, Project } from "@/domain/types";
 
 export interface DataStore {
+  readonly kind: "memory" | "kv";
   put(key: string, value: unknown): Promise<void>;
   get<T>(key: string): Promise<T | null>;
   keys(prefix: string): Promise<string[]>;
 }
 
 export class MemoryStore implements DataStore {
+  readonly kind = "memory" as const;
   private m = new Map<string, string>();
   async put(key: string, value: unknown) {
     this.m.set(key, JSON.stringify(value));
@@ -26,6 +28,7 @@ export class MemoryStore implements DataStore {
 
 /** Vercel KV / Upstash share the REST protocol; no SDK dependency needed. */
 export class KvRestStore implements DataStore {
+  readonly kind = "kv" as const;
   constructor(private baseUrl: string, private token: string) {}
 
   private async call(command: unknown[]): Promise<{ result?: unknown } | null> {

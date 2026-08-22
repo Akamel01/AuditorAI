@@ -12,7 +12,7 @@ import type { InputValueState, Project } from "@/domain/types";
 type Ctx = { params: Promise<{ projectId: string }> };
 
 export async function GET(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   const { projectId } = await ctx.params;
   const project = await auth.repo.getProject(auth.ws, projectId);
@@ -21,7 +21,7 @@ export async function GET(req: Request, ctx: Ctx) {
 }
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const auth = requireWorkspace(req);
+  const auth = await requireWorkspace(req);
   if (!auth.ok) return auth.res;
   try {
     const { projectId } = await ctx.params;
