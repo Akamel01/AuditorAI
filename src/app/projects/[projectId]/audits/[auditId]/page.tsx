@@ -8,7 +8,7 @@ import { renderReportMarkdown } from "@/lib/report";
 import type { AuditResult, Finding } from "@/domain/types";
 
 export default function AuditPage() {
-  const { id, auditId } = useParams<{ id: string; auditId: string }>();
+  const { projectId: id, auditId } = useParams<{ projectId: string; auditId: string }>();
   const [audit, setAudit] = useState<AuditResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -190,8 +190,9 @@ function FindingCard({
               : "bg-blue-100 text-blue-800"
           }`}
         >
-          {f.kind.replace("_", " ")}
+          {f.kind.replace(/_/g, " ")}
         </span>
+        <code className="text-[11px] text-neutral-500">{f.finding_id}</code>
         <span className="text-[11px] uppercase tracking-wide text-neutral-400">
           {f.reviewer_status}
         </span>
@@ -227,7 +228,7 @@ function FindingCard({
             onClick={() => patch(s)}
             className="rounded border bg-neutral-50 px-2 py-1 text-xs hover:bg-neutral-100 disabled:opacity-40"
           >
-            {s.replace("_", " ")}
+            {s.replace(/_/g, " ")}
           </button>
         ))}
         <button

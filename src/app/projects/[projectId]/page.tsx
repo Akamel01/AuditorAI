@@ -29,7 +29,7 @@ const STATE_OPTIONS: { value: InputValueState; label: string }[] = [
 ];
 
 export default function ProjectPage() {
-  const { id } = useParams<{ id: string }>();
+  const { projectId: id } = useParams<{ projectId: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [stageInfo, setStageInfo] = useState<StageInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
