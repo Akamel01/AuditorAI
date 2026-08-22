@@ -3,7 +3,7 @@ id: M2
 title: Input model extension for attachments
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #14
 assignee:
 blocked_by: [M1]
