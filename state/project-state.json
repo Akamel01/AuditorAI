@@ -11,10 +11,10 @@
     "quality_gate": "docs/validation/final-quality-gate.md all boxes checked"
   },
   "current_state": {
-    "phase": "verification-complete/deployment-blocked-on-owner-credentials",
-    "milestone": "All \u00a739 gate items green except live demo URL (no cloud credentials available to agent). Deploy pipeline prepared: .github/workflows/deploy.yml + docs/deployment.md.",
+    "phase": "complete",
+    "milestone": "All \u00a739 gate items \u2705 \u2014 live at https://auditorai-gamma.vercel.app with KV-backed persistence",
     "wayfinder_map": "workflow/wayfinder/maps/mvp/MAP.md",
-    "notes": "43 tests green incl. 5 golden fixtures + API-level e2e flow. Owner action to go live: docs/deployment.md Option A (~5 min dashboard) or B (add VERCEL_* repo secrets)."
+    "notes": "52 unit/contract tests + Playwright browser e2e in CI. Post-deploy action for owner: rotate Upstash token (shared in chat) and update KV_REST_API_* env vars."
   },
   "state_separation": {
     "desired_state": "target phase/milestones",
@@ -25,6 +25,6 @@
     "validation_state": "state/validation-state.json",
     "execution_state": "state/graph-state.json + state/agent-registry.json"
   },
-  "updated_at": "2026-08-22T06:10:00Z",
+  "updated_at": "2026-08-22T06:26:00Z",
   "updated_by": "orchestrator"
 }

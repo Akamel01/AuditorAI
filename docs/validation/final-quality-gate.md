@@ -29,13 +29,13 @@ ticked.
 | 28 | Jurisdiction tests exist | ✅ | UK-no-Stage-0, US-interpreted-confidence, AE-spans-two-canonical, INT-qualified-wording |
 | 29 | End-to-end tests pass | ✅* | API-level e2e through real route handlers (43/43). Browser E2E deferred — recorded below |
 | 30 | Architecture review completed | ✅ | Two deepening fixes applied; review record in `docs/validation/architecture-review.md` |
-| 31 | Deployment works | ⚠️ BLOCKED on owner credentials | No Vercel/Netlify tokens available to the agent. Pipeline fully prepared (`deploy.yml`, `docs/deployment.md`); production build verified green. Owner action ≈ 5 minutes (Option A or B) |
-| 32 | Demo URL verified | ⚠️ follows item 31 | Will resolve immediately once deployed; not fabricated |
+| 31 | Deployment works | ✅ | Live on Vercel: **https://auditorai-gamma.vercel.app** (Git-integrated auto-deploys; Upstash Redis persistence verified via cross-request round-trip) |
+| 32 | Demo URL verified | ✅ | Smoke-tested live: landing 200, jurisdictions API, unauth→401, create(UAE S0)→list persistence→audit run returning FEASIBILITY_CONCEPT |
 | 33 | Documentation sufficient for handover | ✅ | README + architecture overview + research corpus + gate |
 
 ## Explicit deferrals (not silent gaps)
 
-1. **Live demo URL** — blocked solely on cloud credentials; everything else deploy-ready.
+1. ~~Live demo URL~~ — deployed and smoke-tested at https://auditorai-gamma.vercel.app.
 2. **Browser-level Playwright E2E** — API-level flow test covers the pipeline end-to-end.
 3. **AI provider adapters** — seam shipped OFF; enabling requires only an adapter + env key.
 4. **Rate limiting** — implemented over the KV seam (fixed window, atomic INCR+TTL) after initial review; strictness can be raised before public exposure.

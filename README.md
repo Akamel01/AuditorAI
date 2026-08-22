@@ -11,8 +11,9 @@ Supports Road Safety Audit practice for **International/general**, **United King
 
 ## Status
 
-MVP under active development, orchestrated as a graph-engineered effort.
-The live plan is the Wayfinder map: [`workflow/wayfinder/maps/mvp/MAP.md`](workflow/wayfinder/maps/mvp/MAP.md).
+**Live MVP:** https://auditorai-gamma.vercel.app (auto-deploys from `main`; Upstash Redis-backed workspaces).
+
+The full engineering record — Wayfinder map, research corpus, ADRs, validation records — is in-repo.
 Canonical vocabulary: [`CONTEXT.md`](CONTEXT.md). Decisions: `docs/adr/` + `state/decision-registry.json`.
 
 ## Engineering method

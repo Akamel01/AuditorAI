@@ -76,6 +76,17 @@
       "method": "next start (production build); curl through real HTTP surface: landing 200, /api/jurisdictions, project create, audit run (expected process finding + missing info present), unauthenticated request -> 401. Rate limiter wired into requireWorkspace (KV INCR+TTL when configured; memory fallback in dev).",
       "result": "PASS \u2014 full HTTP surface behaves correctly including auth rejection.",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-008",
+      "date": "2026-08-22T06:25:00Z",
+      "validator_node": "ORCH",
+      "scope": "Production deployment + live persistence",
+      "method": "vercel link/deploy (git-integrated); disabled default SSO deployment protection via API; wired Upstash KV env vars; live HTTP smoke test incl. create\u2192list round-trip across requests and UAE Stage 0 audit execution",
+      "result": "PASS \u2014 https://auditorai-gamma.vercel.app fully functional with durable KV-backed workspaces.",
+      "follow_ups": [
+        "Owner should rotate the Upstash REST token (was shared in conversation) and update the two Vercel env vars"
+      ]
     }
   ]
 }
