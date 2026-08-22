@@ -49,6 +49,9 @@ resolved:
 
 ## Operations
 
+- **Memory protocol**: every session follows `workflow/vault-protocol.md` — MUST-READ at
+  start (CONTEXT.md, MAP.md, latest journal), MUST-WRITE at end (journal entry, gotchas,
+  mirror flips). Graduation rules live there too.
 - **Frontier**: open + unassigned + every `blocked_by` closed. Work only frontier tickets.
 - **Claim**: set `assignee` + `status: claimed` before any work.
 - **Resolve**: append `## Resolution`, set `status: closed` (+ `resolved:` date), add one

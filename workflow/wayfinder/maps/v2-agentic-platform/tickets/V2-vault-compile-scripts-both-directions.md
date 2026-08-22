@@ -3,7 +3,7 @@ id: V2
 title: Vault compile scripts both directions
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #10
 assignee:
 blocked_by: [V1]
