@@ -1,0 +1,35 @@
+name: eval
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "corpus (GF-6..10) or dry-run (GF-1..5)"
+        default: "corpus"
+        type: choice
+        options: [corpus, dry-run]
+
+# Manual Tier-1 judged evaluation only: uploads scorecards as artifacts.
+# Never gates PRs; never runs on a schedule (E4 doctrine).
+permissions:
+  contents: read
+
+jobs:
+  judge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: run eval harness
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        run: npx tsx scripts/run-eval.ts ${{ inputs.mode == 'dry-run' && '--dry-run' || '' }}
+      - name: upload scorecards
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-scorecards-${{ github.run_id }}
+          path: state/eval-scorecards/
+          if-no-files-found: error

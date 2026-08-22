@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-22T22-13-39-170Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0,
+  "passes_corpus_mark": false,
+  "mean_score": 6.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 1,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Decision-load risk at express-collector transfers during simultaneous signage/re-marking is a real human-factors concern, but the finding names no measured sight-distance deficiency, interchange specifics, or design speed, leaving it plausible yet under-quantified.",
+        "evidence_grounding": "EV-CA-003 is referenced as defining a requirement but carries no quote or stated requirement text, and the core sight-distance claim rests on an unquantified scenario rather than cited measurements; only the detector-volume assumption traces to recorded input.",
+        "jurisdiction_correctness": "Correctly typed as a safety_concern with no compliance claim or fabricated normative basis note, keeping safety and compliance categories distinct under CRSAG semantics despite the planning-stage framing stretching toward implementation detail.",
+        "recommendation_quality": "Phased one-interchange-per-quarter rollout with before/after speed-differential monitoring is specific, actionable, and verifiable, though it omits trigger thresholds or criteria for pausing further phases.",
+        "vru_coverage": "Freeway mainline transfer sections carry negligible pedestrian/cyclist exposure and road_users is scoped to vehicle occupants, but the finding never explicitly acknowledges VRU non-applicability as the rubric expects."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 1,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 0
+      },
+      "justifications": {
+        "substance": "Resolving conflicting network-continuity records has real but indirect bearing on confirming the planning-stage scope boundary; it is process hygiene rather than a direct safety deficiency, hence marginal.",
+        "evidence_grounding": "Only one context-use evidence id (EV-CA-006) with null quote is cited, which cannot substantiate the claimed conflict between two source records; grounded in recorded inputs but materially under-cited.",
+        "jurisdiction_correctness": "Correctly framed as a compliance_question kept categorically distinct from safety concerns, and network-continuity scope verification fits CRSAG planning-stage semantics, though the normative_basis_note is null.",
+        "recommendation_quality": "Specific and viable: names the responsible party (ministry planning office), the action (reconcile the two constraint records), and requires recording the outcome before finalisation.",
+        "vru_coverage": "Corridor-wide network continuity at planning stage typically encompasses pedestrian and cycling route continuity, yet road_users is empty and no VRU impact or non-applicability is acknowledged."
+      }
+    }
+  ],
+  "generated_at": "2026-08-22T22:29:36.155Z"
+}
