@@ -3,7 +3,7 @@ id: E4
 title: Eval harness runner + judge scorecards
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #18
 assignee:
 blocked_by: [E3, N2, A1]
