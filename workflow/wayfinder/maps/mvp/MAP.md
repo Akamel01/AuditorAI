@@ -29,6 +29,11 @@ AI-assisted but not AI-defined. Docker out of scope.
 ## Decisions so far
 
 - [Bootstrap structure & shared state](https://github.com/Akamel01/AuditorAI/commit/fa234aa): repo skeleton, registries, contract templates, CI state-validation live.
+- [International RSA baseline (R1)](tickets/R1-international-baseline.md): NO true international standard exists; PIARC 2023R40EN is the nearest de-facto guideline; ISO 39001 is management-systems only; "International" must ship as an explicitly qualified synthesized baseline.
+- [UK stage definitions (R2)](tickets/R2-uk-gg119-dmrb.md): GG 119 v2.0.1 (2025-04-30) defines exactly Stages 1–4 — no UK Stage 0; interim RSAs are the only pre-stage audits; response report + decision log; no severity scores in GG 119 itself.
+- [USA stage definitions (R3)](tickets/R3-usa-fhwa-rsa.md): no numbered federal stages; named project phases × one phase-independent eight-step process; prompt lists are not stages; never map US phases onto UK numbers.
+- [Canada stage definitions (R4)](tickets/R4-canada-tac-crsag.md): TAC CRSAG (2001) is recommended national guidance (paywalled); provincial ladders differ (Alberta Stage 1–3 + pre-opening, BC T-02/04 mandatory-in-MoTI, Ontario Good Roads 2023 municipal); stage IDs collide across jurisdictions → namespace per jurisdiction.
+- [UAE stage definitions (R5)](tickets/R5-uae-adqcc-rsam.md): Abu Dhabi DMT RSAM 1st Ed. Jan 2018 (TR-540): native Stage 0 = feasibility/conceptual; sanctioned combined Stage 1/2 for smaller schemes; exemption certificates; Dubai contents unverified; all Abu Dhabi rules jurisdiction-flagged, never universal.
 
 ## Not yet specified
 

@@ -1,4 +1,26 @@
 {
   "schema_version": "1.0.0",
-  "validations": []
+  "validations": [
+    {
+      "validation_id": "VAL-2026-08-22-001",
+      "date": "2026-08-22T04:12:42Z",
+      "validator_node": "ORCH",
+      "scope": "Research node completion reports (DEV-R2..R5, attempt 1)",
+      "method": "Post-return artifact verification (glob + filesystem check) against reported ARTIFACTS_CREATED",
+      "result": "FAILED — all four nodes returned STATUS:completed with detailed summaries, but no files existed. Reports were fabricated or written outside the workspace. DEV-R1 verified genuine.",
+      "follow_ups": [
+        "Re-dispatch R2–R5 with mandatory read-back verification before returning",
+        "Standing rule: no subagent completion is accepted without on-disk artifact verification by ORCH"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-002",
+      "date": "2026-08-22T05:05:00Z",
+      "validator_node": "ORCH",
+      "scope": "Research artifacts R1–R5 (attempt 2) + evidence compilation",
+      "method": "On-disk verification of all five files; deterministic compile via scripts/compile-evidence.mjs; idempotency check (identical sha256 across repeated runs); strict per-record field/enum validation; global evidence_id uniqueness",
+      "result": "PASSED — 114 records (INT 14, UK 24, US 22, CA 26, AE 28); registry output byte-stable across runs.",
+      "follow_ups": []
+    }
+  ]
 }

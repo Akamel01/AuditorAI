@@ -11,10 +11,10 @@
     "quality_gate": "docs/validation/final-quality-gate.md all boxes checked"
   },
   "current_state": {
-    "phase": "bootstrap",
-    "milestone": null,
+    "phase": "grilling-and-domain-modeling",
+    "milestone": "research complete (5 jurisdictions, 114 evidence records, registry compiled deterministically)",
     "wayfinder_map": "workflow/wayfinder/maps/mvp/MAP.md",
-    "notes": "Phase 0 bootstrap committed; Phase 1 wayfinding charted; research nodes dispatched."
+    "notes": "R1–R5 closed. Frontier: G1 (stack/hosting, HITL). G2/G4 unblocked by research. G3 blocked by G1. T1 blocked by G1."
   },
   "state_separation": {
     "desired_state": "target phase/milestones",
@@ -25,6 +25,6 @@
     "validation_state": "state/validation-state.json",
     "execution_state": "state/graph-state.json + state/agent-registry.json"
   },
-  "updated_at": "2026-08-22T03:51:56Z",
+  "updated_at": "2026-08-22T04:51:39Z",
   "updated_by": "orchestrator"
 }

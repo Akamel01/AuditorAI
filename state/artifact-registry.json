@@ -5,11 +5,11 @@
       "artifact_id": "ART-MAP-MVP",
       "path": "workflow/wayfinder/maps/mvp/MAP.md",
       "producer_node": "ORCH",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "created_at": "2026-08-22T04:01:56Z",
       "contract_version": "workflow/wayfinder/TRACKER.md",
       "validation_status": "valid",
-      "notes": "Canonical plan artifact; tickets are its children."
+      "notes": "Canonical plan artifact; R1-R5 closed with resolutions."
     },
     {
       "artifact_id": "ART-TRACKER",
@@ -20,6 +20,61 @@
       "contract_version": null,
       "validation_status": "valid",
       "notes": "Local-markdown tracker conventions (Wayfinding operations)."
+    },
+    {
+      "artifact_id": "ART-RES-INT",
+      "path": "docs/research/international-rsa-research.md",
+      "producer_node": "DEV-R1",
+      "version": "1.0.0",
+      "created_at": "2026-08-22T03:59:00Z",
+      "contract_version": "contracts/node-contracts/TEMPLATE.md",
+      "validation_status": "verified-on-disk",
+      "evidence_records": 14,
+      "notes": "No international standard exists; PIARC 2023R40EN spine."
+    },
+    {
+      "artifact_id": "ART-RES-UK",
+      "path": "docs/research/uk-rsa-research.md",
+      "producer_node": "DEV-R2",
+      "version": "2.0.0",
+      "created_at": "2026-08-22T04:26:00Z",
+      "contract_version": "contracts/node-contracts/TEMPLATE.md",
+      "validation_status": "verified-on-disk",
+      "evidence_records": 24,
+      "notes": "Attempt 2 (attempt 1 fabricated completion; see VAL-2026-08-22-001)."
+    },
+    {
+      "artifact_id": "ART-RES-US",
+      "path": "docs/research/usa-rsa-research.md",
+      "producer_node": "DEV-R3",
+      "version": "2.0.0",
+      "created_at": "2026-08-22T04:22:00Z",
+      "contract_version": "contracts/node-contracts/TEMPLATE.md",
+      "validation_status": "verified-on-disk",
+      "evidence_records": 22,
+      "notes": "Attempt 2 (attempt 1 fabricated completion; see VAL-2026-08-22-001)."
+    },
+    {
+      "artifact_id": "ART-RES-CA",
+      "path": "docs/research/canada-rsa-research.md",
+      "producer_node": "DEV-R4",
+      "version": "2.0.0",
+      "created_at": "2026-08-22T04:43:00Z",
+      "contract_version": "contracts/node-contracts/TEMPLATE.md",
+      "validation_status": "verified-on-disk",
+      "evidence_records": 26,
+      "notes": "Attempt 2 (attempt 1 fabricated completion; see VAL-2026-08-22-001)."
+    },
+    {
+      "artifact_id": "ART-RES-AE",
+      "path": "docs/research/uae-rsa-research.md",
+      "producer_node": "DEV-R5",
+      "version": "2.0.0",
+      "created_at": "2026-08-22T04:45:00Z",
+      "contract_version": "contracts/node-contracts/TEMPLATE.md",
+      "validation_status": "verified-on-disk",
+      "evidence_records": 28,
+      "notes": "Attempt 2 (attempt 1 fabricated completion; see VAL-2026-08-22-001)."
     }
   ]
 }
