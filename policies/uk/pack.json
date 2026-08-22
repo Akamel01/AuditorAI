@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "pack_version": "1.0.0",
+  "jurisdiction": "UK",
+  "jurisdiction_label": "United Kingdom",
+  "framework": {
+    "name": "DMRB GG 119 Road safety audit",
+    "publisher": "National Highways (on behalf of the Overseeing Organisations)",
+    "revision": "Version 2.0.1",
+    "publication_date": "2025-04-30",
+    "status": "authoritative_current",
+    "qualification_note": "Applies to the motorway and trunk road network of the four Overseeing Organisations; local authorities commonly adopt it voluntarily.",
+    "evidence_ids": ["EV-UK-001", "EV-UK-019"]
+  },
+  "stages": [
+    {
+      "native_stage_id": "uk:S1",
+      "display_name": "Stage 1 (Completion of preliminary design)",
+      "definition": "RSA at completion of preliminary design, normally before publication of draft orders; last practical point to influence land take.",
+      "trigger": "completion of preliminary design",
+      "canonical_stages": ["PRELIMINARY_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 1,
+      "evidence_ids": ["EV-UK-002", "EV-UK-008"]
+    },
+    {
+      "native_stage_id": "uk:S2",
+      "display_name": "Stage 2 (Completion of detailed design)",
+      "definition": "RSA at completion of detailed design; must review actions from the Stage 1 response report.",
+      "trigger": "completion of detailed design",
+      "canonical_stages": ["DETAILED_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 2,
+      "evidence_ids": ["EV-UK-002", "EV-UK-009"]
+    },
+    {
+      "native_stage_id": "uk:S3",
+      "display_name": "Stage 3 (Construction complete)",
+      "definition": "RSA when construction is complete, ideally before opening; daytime and darkness site visits.",
+      "trigger": "construction complete / before opening",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 3,
+      "notes": "Outside MVP scope; architecture extends.",
+      "evidence_ids": ["EV-UK-002", "EV-UK-010"]
+    },
+    {
+      "native_stage_id": "uk:S4",
+      "display_name": "Stage 4 (Post-opening monitoring)",
+      "definition": "Monitoring with 12 months validated post-opening collision data; response report not produced.",
+      "trigger": "12 months of post-opening collision data",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 4,
+      "notes": "Outside MVP scope; architecture extends.",
+      "evidence_ids": ["EV-UK-002", "EV-UK-011"]
+    },
+    {
+      "native_stage_id": "uk:INTERIM",
+      "display_name": "Interim RSA (not a stage)",
+      "definition": "Application of the RSA process to part or all of a scheme at any time during design/construction; neither mandatory nor a stage substitute; Overseeing Organisation decides.",
+      "trigger": null,
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 99,
+      "notes": "Offered as alternative when users seek feasibility-stage audits under UK practice.",
+      "evidence_ids": ["EV-UK-005"]
+    }
+  ],
+  "exceptions": [
+    {
+      "exception_id": "uk:no-feasibility-native",
+      "kind": "no_native_equivalent",
+      "condition": "GG 119 clause 1.3 four-stage list is exhaustive; no Stage 0 exists in UK national guidance.",
+      "alternative": "interim RSA offered as clearly-labelled non-stage audit",
+      "spans_native_stage_ids": [],
+      "evidence_ids": ["EV-UK-004", "EV-UK-005", "EV-UK-022"]
+    },
+    {
+      "exception_id": "uk:s1-s2-combine",
+      "kind": "combined_audit",
+      "condition": "Permitted to combine Stage 1 with Stage 2 where preliminary design was not undertaken.",
+      "spans_native_stage_ids": ["uk:S1", "uk:S2"],
+      "alternative": null,
+      "evidence_ids": ["EV-UK-008"]
+    }
+  ],
+  "inputs": [
+    { "input_id": "scheme_description_objectives", "stage_ids": ["uk:S1", "uk:S2"], "label": "Scheme description, objectives and extents", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "design_standards_applied", "stage_ids": ["uk:S1", "uk:S2"], "label": "Design standards applied", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "design_speeds_and_speed_limits", "stage_ids": ["uk:S1", "uk:S2"], "label": "Design speeds and speed limits", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "traffic_flows_existing_forecast", "stage_ids": ["uk:S1", "uk:S2"], "label": "Existing and forecast traffic flows/queues", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "collision_data_analysis_36mo", "stage_ids": ["uk:S1", "uk:S2"], "label": "Collision data analysis (most recent 36 months minimum)", "requirement_level": "required", "evidence_ids": ["EV-UK-011", "EV-UK-014"] },
+    { "input_id": "vru_desire_lines", "stage_ids": ["uk:S1", "uk:S2"], "label": "Pedestrian/cyclist/equestrian desire lines (walking, cycling, horse-riding provision)", "requirement_level": "recommended", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "environmental_constraints_locality", "stage_ids": ["uk:S1", "uk:S2"], "label": "Environmental constraints and locality description", "requirement_level": "recommended", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "departures_from_standards", "stage_ids": ["uk:S1", "uk:S2"], "label": "Departures from standards with approval status", "requirement_level": "required", "conditional_on": "any departures exist", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "previous_rsa_reports_and_responses", "stage_ids": ["uk:S2"], "label": "Previous RSA reports, response reports and evidence of agreed actions", "requirement_level": "required", "conditional_on": "a previous stage audit exists", "evidence_ids": ["EV-UK-009", "EV-UK-014"] },
+    { "input_id": "drawing_document_register", "stage_ids": ["uk:S1", "uk:S2"], "label": "Drawing/document register", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "input_id": "strategic_decisions_excluded", "stage_ids": ["uk:S1", "uk:S2"], "label": "Strategic decisions identified as outside the audit's ability to change", "requirement_level": "recommended", "evidence_ids": ["EV-UK-015"] }
+  ],
+  "outputs": [
+    { "output_id": "rsa_report", "stage_ids": ["uk:S1", "uk:S2"], "label": "Road Safety Audit report", "description": "Scheme description, information provided list, team membership/approvals, site visit attendance/conditions, location plan, signed compliance statement, problems and recommendations.", "requirement_level": "required", "evidence_ids": ["EV-UK-014"] },
+    { "output_id": "response_report_decision_log", "stage_ids": ["uk:S1", "uk:S2"], "label": "Response report with decision log", "description": "Design organisation accepts, accepts-with-alternative, or disagrees per item; Overseeing Organisation response and agreed action; signatures.", "requirement_level": "required", "evidence_ids": ["EV-UK-016"] }
+  ],
+  "audit_questions": [
+    { "question_id": "uk-q-alignment-visibility", "text": "Do horizontal/vertical alignment and junction arrangements provide adequate visibility and meet driver expectations for all road users?", "topic": "alignment_visibility", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "road_users": ["drivers", "motorcyclists", "cyclists"], "source_note": "Appendix B checklist themes [EV-UK-002]" },
+    { "question_id": "uk-q-vru-crossing", "text": "Are pedestrian, cyclist and equestrian desire lines served safely (crossing provision, diversions, guarding)?", "topic": "vulnerable_users", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "road_users": ["pedestrians", "cyclists", "horse_riders"], "source_note": "Brief contents reference walking/cycling/horse-riding assessment [EV-UK-014]" },
+    { "question_id": "uk-q-junction-conflicts", "text": "Are turning movements, merging/weaving and conflicting flows at junctions minimised and made clear to drivers?", "topic": "junctions_interchanges", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "road_users": ["drivers", "motorcyclists", "cyclists"], "source_note": "Appendix B checklist themes [EV-UK-002]" },
+    { "question_id": "uk-q-new-existing-interface", "text": "Is the interface between the new scheme and the existing road/network safe and consistent (standards transitions, continuity)?", "topic": "network_continuity", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "road_users": [], "source_note": "Appendix B checklist themes [EV-UK-002]" },
+    { "question_id": "uk-q-signage-markings-lighting", "text": "Are signs, markings, lighting and street furniture located and designed so they inform without obscuring or creating hazards (including darkness conditions)?", "topic": "signage_markings_lighting", "applies_to_canonical": ["DETAILED_DESIGN"], "road_users": [], "source_note": "Appendix B checklist themes [EV-UK-002]" },
+    { "question_id": "uk-q-roadside-hazards", "text": "Are roadside hazards identified, and are clear zones/passive provisions appropriate where needed?", "topic": "roadside_hazards", "applies_to_canonical": ["DETAILED_DESIGN"], "road_users": [], "source_note": "Appendix B checklist themes [EV-UK-002]" }
+  ],
+  "rules": [
+    { "rule_id": "R-UK-CRASH36", "kind": "completeness", "description": "Collision data analysis covering at least the most recent 36 months must be included in the brief for Stages 1-3.", "applies_to_native_stage_ids": ["uk:S1", "uk:S2"], "requires_input_ids": ["collision_data_analysis_36mo"], "effects": { "finding_kind": "missing_information" }, "severity_hint": null, "evidence_ids": ["EV-UK-011", "EV-UK-014"] },
+    { "rule_id": "R-UK-PREVRESP", "kind": "process", "description": "Stage 2 audit must review Stage 1 response-report actions and reiterate incomplete problems/recommendations.", "applies_to_native_stage_ids": ["uk:S2"], "requires_input_ids": ["previous_rsa_reports_and_responses"], "effects": { "finding_kind": "process_gap" }, "severity_hint": null, "evidence_ids": ["EV-UK-009"] },
+    { "rule_id": "R-UK-NOSTAGE0", "kind": "eligibility", "description": "No feasibility/conceptual stage exists under GG 119; requests map to interim RSA or are declined.", "applies_to_native_stage_ids": [], "requires_input_ids": [], "effects": { "finding_kind": "not_eligible" }, "severity_hint": null, "evidence_ids": ["EV-UK-004", "EV-UK-005"] },
+    { "rule_id": "R-UK-RECWORDING", "kind": "output_discipline", "description": "Recommendations must be proportionate and viable; the words 'consider' and 'must' are banned in recommendations.", "applies_to_native_stage_ids": ["uk:S1", "uk:S2"], "requires_input_ids": [], "effects": { "finding_kind": "recommendation_wording" }, "severity_hint": null, "evidence_ids": ["EV-UK-015"] }
+  ],
+  "road_user_categories": ["drivers", "motorcyclists", "cyclists", "pedestrians", "horse_riders", "passengers"],
+  "issue_categories": ["alignment_visibility", "junctions_interchanges", "vulnerable_users", "signage_markings_lighting", "roadside_hazards", "network_continuity", "access_management", "human_factors", "drainage_structures"],
+  "sources": [
+    { "title": "GG 119 Road safety audit v2.0.1", "publisher": "National Highways / Standards for Highways", "url": "https://www.standardsforhighways.co.uk", "revision": "Version 2.0.1", "date": "2025-04-30", "accessed": "2026-08-22", "evidence_ids": ["EV-UK-001", "EV-UK-002", "EV-UK-004", "EV-UK-005", "EV-UK-008", "EV-UK-009", "EV-UK-010", "EV-UK-011", "EV-UK-014", "EV-UK-015", "EV-UK-016"] },
+    { "title": "Stages of Audit (SoRSA Guidance Manual)", "publisher": "CIHT / Society of Road Safety Auditors", "url": "https://www.ciht.org.uk/sorsa/manual-home/stages-of-audit/", "revision": null, "date": null, "accessed": "2026-08-22", "evidence_ids": ["EV-UK-022"] }
+  ]
+}

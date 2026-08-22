@@ -1,0 +1,145 @@
+// Canonical domain types. Vocabulary is governed by CONTEXT.md.
+// ADR-0002 governs stage semantics; ADR-0003 governs finding semantics.
+
+export type CanonicalStage =
+  | "FEASIBILITY_CONCEPT"
+  | "PRELIMINARY_DESIGN"
+  | "DETAILED_DESIGN";
+
+export const CANONICAL_STAGES: CanonicalStage[] = [
+  "FEASIBILITY_CONCEPT",
+  "PRELIMINARY_DESIGN",
+  "DETAILED_DESIGN",
+];
+
+export type JurisdictionId = "INT" | "UK" | "US" | "CA" | "AE";
+
+/** §14 input states — never conflate Unknown with No. */
+export type InputRequirementLevel =
+  | "required"
+  | "recommended"
+  | "optional"
+  | "unknown";
+
+export type InputValueState =
+  | "provided"
+  | "required_missing"
+  | "recommended_missing"
+  | "optional_missing"
+  | "unknown"
+  | "not_applicable"
+  | "not_available"
+  | "conflicting";
+
+export interface ProjectMetadata {
+  name: string;
+  description: string;
+  scheme_summary: string;
+  authority: string;
+  location: string;
+}
+
+export interface StageSelection {
+  jurisdiction: JurisdictionId;
+  native_stage_id: string;
+}
+
+export interface Project {
+  project_id: string;
+  workspace_key_hash: string;
+  metadata: ProjectMetadata;
+  stage_selection: StageSelection;
+  /** input_id -> provided value/state */
+  input_values: Record<string, { state: InputValueState; value?: string }>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FindingEvidence {
+  evidence_id: string;
+  quote: string | null;
+  use: "supports_concern" | "defines_requirement" | "context";
+}
+
+export interface SourceTrace {
+  origin: "deterministic_rule" | "audit_question" | "ai_candidate" | "auditor_manual";
+  rule_id?: string | null;
+  question_id?: string | null;
+  producer?: string | null;
+}
+
+/** ADR-0003 finding model. */
+export interface Finding {
+  finding_id: string;
+  kind: "safety_concern" | "compliance_question";
+  category: string;
+  location: string | null;
+  road_users: string[];
+  scenario: string | null;
+  statement: { text: string; normative_basis_note: string | null };
+  evidence: FindingEvidence[];
+  assumptions: { text: string; basis: string | null }[];
+  risk_components: {
+    severity: string | null;
+    likelihood: string | null;
+    exposure: string | null;
+    scale_id: string | null;
+  };
+  confidence: { label: "high" | "medium" | "low"; basis: string };
+  rationale: string;
+  recommendation: string | null;
+  source_trace: SourceTrace[];
+  reviewer_status: "draft" | "accepted" | "accepted_with_edits" | "rejected" | "escalated";
+  reviewer_note: string | null;
+}
+
+export interface MissingInformationQuestion {
+  question_id: string;
+  input_id: string;
+  label: string;
+  requirement_level: InputRequirementLevel;
+  note: string;
+  evidence_ids: string[];
+}
+
+export interface AuditContext {
+  project_id: string;
+  jurisdiction: JurisdictionId;
+  framework_name: string;
+  native_stage_id: string;
+  canonical_stages: CanonicalStage[];
+  mapping_confidence: "authoritative" | "interpreted" | "inferred";
+  input_states: Record<string, InputValueState>;
+}
+
+export interface AuditResult {
+  audit_id: string;
+  project_id: string;
+  jurisdiction: JurisdictionId;
+  framework_name: string;
+  native_stage_id: string;
+  native_stage_display_name: string;
+  canonical_stages: CanonicalStage[];
+  mapping_confidence: "authoritative" | "interpreted" | "inferred";
+  ran_at: string;
+  input_manifest: {
+    input_id: string;
+    label: string;
+    requirement_level: InputRequirementLevel;
+    state: InputValueState;
+    evidence_ids: string[];
+  }[];
+  findings: Finding[];
+  missing_information: MissingInformationQuestion[];
+  audit_questions: {
+    question_id: string;
+    text: string;
+    topic: string;
+    applies_to_canonical: CanonicalStage[];
+    road_users: string[];
+    source_note: string | null;
+    addressed: boolean;
+  }[];
+  limitations: string[];
+  disclaimer: string;
+}

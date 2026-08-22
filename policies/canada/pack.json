@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "pack_version": "1.0.0",
+  "jurisdiction": "CA",
+  "jurisdiction_label": "Canada",
+  "framework": {
+    "name": "TAC Canadian Road Safety Audit Guide (CRSAG) + provincial instruments",
+    "publisher": "Transportation Association of Canada; provincial ministries",
+    "revision": "PTM-CRSAG-E (2001); Alberta Guidelines Mar 2004; BC T-02/04",
+    "publication_date": "2001-12-19",
+    "status": "provincial_instruments",
+    "qualification_note": "National CRSAG text is paywalled (recorded, not guessed [EV-CA-001]); operative rules verified through provincial instruments that quote it verbatim. Stage numbers differ per province — Alberta's S3 = detailed design ≠ UK S3.",
+    "evidence_ids": ["EV-CA-001", "EV-CA-003", "EV-CA-004", "EV-CA-006"]
+  },
+  "stages": [
+    {
+      "native_stage_id": "ca-tac:planning",
+      "display_name": "Planning Stage RSA (Alberta: Stage 1)",
+      "definition": "Reviews fundamental design/planning elements: alignment, laning, facility classification, access management concept, project limits, design speed and criteria.",
+      "trigger": "Once the desired functional-planning option is selected [EV-CA-008].",
+      "canonical_stages": ["FEASIBILITY_CONCEPT"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 1,
+      "notes": "Alberta equivalency table fixes the mapping [EV-CA-006].",
+      "evidence_ids": ["EV-CA-005", "EV-CA-006", "EV-CA-007"]
+    },
+    {
+      "native_stage_id": "ca-tac:preliminary-design",
+      "display_name": "Preliminary Design Stage RSA (Alberta: Stage 2)",
+      "definition": "Reviews elements still changeable: cross-sections, alignment details, visibility, clear zones, channelization, interchange/intersection layouts and controls, signals, VRUs, driver expectancy.",
+      "trigger": "At 95% of the Functional Plan before final submission [EV-CA-008].",
+      "canonical_stages": ["PRELIMINARY_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 2,
+      "notes": null,
+      "evidence_ids": ["EV-CA-005", "EV-CA-006", "EV-CA-007"]
+    },
+    {
+      "native_stage_id": "ca-tac:detailed-design",
+      "display_name": "Detailed Design Stage RSA (Alberta: Stage 3)",
+      "definition": "Undertaken just prior to submission of final design plans; addresses remaining issues before construction.",
+      "trigger": "Before milestone 'Modify Design Based on Recommendations from Others' (~90–95% design) [EV-CA-008].",
+      "canonical_stages": ["DETAILED_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 3,
+      "notes": null,
+      "evidence_ids": ["EV-CA-005", "EV-CA-006", "EV-CA-007"]
+    },
+    {
+      "native_stage_id": "ca-tac:pre-opening",
+      "display_name": "Pre-opening Stage RSA",
+      "definition": "Verifies correct implementation: signing location/visibility, markings/delineation, connectivity.",
+      "trigger": "Substantially complete; mandatory for new green-field roads [EV-CA-008].",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 4,
+      "notes": "Outside MVP scope.",
+      "evidence_ids": ["EV-CA-007", "EV-CA-008"]
+    }
+  ],
+  "exceptions": [
+    {
+      "exception_id": "ca:stage-id-collision-with-uk",
+      "kind": "no_native_equivalent",
+      "spans_native_stage_ids": [],
+      "condition": "Alberta Stage 3 = detailed design while UK Stage 3 = post-construction — bare stage numbers are meaningless across jurisdictions; identifiers are always namespaced.",
+      "alternative": null,
+      "evidence_ids": ["EV-CA-006", "EV-UK-002"]
+    }
+  ],
+  "inputs": [
+    { "input_id": "design_criteria", "stage_ids": ["ca-tac:planning"], "label": "Design criteria (incl. design speed)", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "design_volume_traffic_characteristics", "stage_ids": ["ca-tac:planning"], "label": "Design volume / traffic characteristics and traffic mix", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "route_choice_project_scope", "stage_ids": ["ca-tac:planning"], "label": "Route choice, project scope, function", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "access_management_adjacent_developments", "stage_ids": ["ca-tac:planning"], "label": "Access management concept and adjacent developments", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "network_continuity_constraints", "stage_ids": ["ca-tac:planning"], "label": "Continuity with existing network; environmental constraints", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "typical_cross_sections_variations", "stage_ids": ["ca-tac:preliminary-design"], "label": "Typical cross-sections and variations", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "alignment_details_visibility", "stage_ids": ["ca-tac:preliminary-design"], "label": "Horizontal/vertical alignment details; visibility and sight distance", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "shoulders_clearzones_roadside_features", "stage_ids": ["ca-tac:preliminary-design"], "label": "Shoulder treatments, clear zones, roadside features/hazards", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "interchange_intersection_layouts_controls", "stage_ids": ["ca-tac:preliminary-design"], "label": "Interchange/intersection spacing, layouts, traffic controls; signals; channelization", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "vru_provisions_expectancy", "stage_ids": ["ca-tac:preliminary-design"], "label": "Vulnerable road user provisions; driver expectancy considerations", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "previous_audit_actions", "stage_ids": ["ca-tac:detailed-design"], "label": "Actions taken as a result of previous audits", "requirement_level": "required", "conditional_on": "previous audits exist", "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "signing_markings_lighting_drainage", "stage_ids": ["ca-tac:detailed-design"], "label": "Signing/pavement marking placement & visibility; lighting (night visit); drainage", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "structures_bridges_culverts", "stage_ids": ["ca-tac:detailed-design"], "label": "Bridges/culverts treatment", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "ties_existing_network_furniture", "stage_ids": ["ca-tac:detailed-design"], "label": "Ties into existing network; street furniture and landscaping", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-CA-007"] },
+    { "input_id": "crash_history_optional", "stage_ids": ["ca-tac:planning", "ca-tac:preliminary-design", "ca-tac:detailed-design"], "label": "Crash history (optional at design stages)", "requirement_level": "optional", "conditional_on": null, "evidence_ids": ["EV-CA-021"] }
+  ],
+  "outputs": [
+    { "output_id": "rsa_report", "stage_ids": ["ca-tac:planning", "ca-tac:preliminary-design", "ca-tac:detailed-design"], "label": "RSA report of findings/suggestions", "description": "Formal independent review addressing safety for all road users.", "requirement_level": "required", "evidence_ids": ["EV-CA-003"] },
+    { "output_id": "response_documentation", "stage_ids": ["ca-tac:planning", "ca-tac:preliminary-design", "ca-tac:detailed-design"], "label": "Response documentation from the project owner/designer", "requirement_level": "recommended", "evidence_ids": ["EV-CA-003"] }
+  ],
+  "audit_questions": [
+    { "question_id": "ca-q-planning-fundamentals", "text": "Do fundamental planning elements (alignment concept, facility classification, access concept, project limits) serve all road users safely?", "applies_to_canonical": ["FEASIBILITY_CONCEPT"], "topic": "planning_fundamentals", "road_users": [], "source_note": "Alberta Appendix A Stage 1 scope [EV-CA-007]" },
+    { "question_id": "ca-q-crosssection-roadside", "text": "Are cross-sections, clear zones and roadside features consistent with safety for errant vehicles and VRUs?", "applies_to_canonical": ["PRELIMINARY_DESIGN"], "topic": "cross_sections_roadside", "road_users": [], "source_note": "Stage 2 scope [EV-CA-007]" },
+    { "question_id": "ca-q-interchange-intersection", "text": "Are interchange/intersection spacings, layouts, and traffic controls safe and consistent with driver expectancy?", "applies_to_canonical": ["PRELIMINARY_DESIGN"], "topic": "junctions_interchanges", "road_users": [], "source_note": "Stage 2 scope [EV-CA-007]" },
+    { "question_id": "ca-q-detailed-implementables", "text": "Are signing, markings, lighting and drainage detailed so they will function safely in operation, including at night?", "applies_to_canonical": ["DETAILED_DESIGN"], "topic": "signage_markings_lighting", "road_users": [], "source_note": "Stage 3 scope incl. night lighting [EV-CA-007]" },
+    { "question_id": "ca-q-prev-actions", "text": "Have all previous audit recommendations been addressed or formally dispositioned before final design submission?", "applies_to_canonical": ["DETAILED_DESIGN"], "topic": "process_continuity", "road_users": [], "source_note": "Stage 3 scope 'actions taken as result of previous audits' [EV-CA-007]" }
+  ],
+  "rules": [
+    { "rule_id": "R-CA-NAMESPACED-STAGES", "kind": "eligibility", "description": "Canadian stage identifiers must be namespaced with their instrument (ca-tac/ca-ab); bare numbers forbidden due to cross-jurisdiction collisions.", "applies_to_native_stage_ids": [], "requires_input_ids": [], "effects": { "finding_kind": "not_eligible" }, "severity_hint": null, "evidence_ids": ["EV-CA-006"] },
+    { "rule_id": "R-CA-PREV-ACTIONS", "kind": "process", "description": "Detailed-design audits require documented actions taken as a result of previous audits when such audits exist.", "applies_to_native_stage_ids": ["ca-tac:detailed-design"], "requires_input_ids": ["previous_audit_actions"], "effects": { "finding_kind": "missing_information" }, "severity_hint": null, "evidence_ids": ["EV-CA-007"] }
+  ],
+  "road_user_categories": ["drivers", "passengers", "motorcyclists", "cyclists", "pedestrians", "horse_riders"],
+  "issue_categories": ["alignment_visibility", "cross_sections_roadside", "junctions_interchanges", "vulnerable_users", "signage_markings_lighting", "access_management", "human_factors_expectancy", "network_continuity", "drainage_structures", "public_transport"],
+  "sources": [
+    { "title": "The Canadian Road Safety Audit Guide (CRSAG), PTM-CRSAG-E", "publisher": "Transportation Association of Canada", "url": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/publications/ptm-crsag-e/", "revision": null, "date": "2001-12-19", "accessed": "2026-08-21", "evidence_ids": ["EV-CA-001", "EV-CA-002", "EV-CA-005"] },
+    { "title": "Alberta Transportation Road Safety Audit Guidelines", "publisher": "Alberta Transportation", "url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf", "revision": "Final Report ver 2", "date": "2004-03-19", "accessed": "2026-08-21", "evidence_ids": ["EV-CA-003", "EV-CA-006", "EV-CA-007", "EV-CA-008"] },
+    { "title": "BC MoTI Technical Circular T-02/04 Road Safety Audit Policy", "publisher": "British Columbia Ministry of Transportation", "url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf", "revision": "T-02/04", "date": "2004-03-08", "accessed": "2026-08-21", "evidence_ids": ["EV-CA-004", "EV-CA-014"] }
+  ]
+}

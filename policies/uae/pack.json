@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "pack_version": "1.0.0",
+  "jurisdiction": "AE",
+  "jurisdiction_label": "United Arab Emirates — Emirate of Abu Dhabi",
+  "framework": {
+    "name": "Emirate of Abu Dhabi Road Safety Audit Manual (DMT) / QCC TR-540",
+    "publisher": "Department of Municipalities and Transport, Abu Dhabi; standardized by Abu Dhabi Quality and Conformity Council",
+    "revision": "First Edition, January 2018 (TR-540 designation)",
+    "publication_date": "2018-01-01",
+    "status": "authoritative_current",
+    "qualification_note": "Scope is the Emirate of Abu Dhabi road network only [EV-AE-001]; Abu Dhabi semantics are jurisdiction-specific, never universal. Dubai RTA manual exists but contents unverified; other Emirates: none found.",
+    "evidence_ids": ["EV-AE-001", "EV-AE-002", "EV-AE-004", "EV-AE-025"]
+  },
+  "stages": [
+    {
+      "native_stage_id": "ae-ad:S0",
+      "display_name": "Stage 0 — Feasibility / conceptual design audit",
+      "definition": "Audit of concept/master-plan options, route alignments, plan conformance, tie-ins to the existing network, junction formats and land-take constraints; attaches to Master Plan and Traffic Impact Study submissions when triggered.",
+      "trigger": "Master Plan / Traffic Impact Study submission [EV-AE-005].",
+      "canonical_stages": ["FEASIBILITY_CONCEPT"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 0,
+      "notes": "Native Stage 0 — jurisdiction-specific; must not be presented as a neutral default.",
+      "evidence_ids": ["EV-AE-004", "EV-AE-005"]
+    },
+    {
+      "native_stage_id": "ae-ad:S1",
+      "display_name": "Stage 1 — Preliminary design audit",
+      "definition": "Audit of general-arrangement drawings (route alignment, vertical profile, typical cross-sections) and junction/interchange layouts at larger scale; reviews prior Stage 0 report/responses.",
+      "trigger": "Preliminary design complete [EV-AE-006].",
+      "canonical_stages": ["PRELIMINARY_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 1,
+      "notes": null,
+      "evidence_ids": ["EV-AE-006"]
+    },
+    {
+      "native_stage_id": "ae-ad:S1_2",
+      "display_name": "Combined Stage 1/2 audit (smaller schemes)",
+      "definition": "Single combined preliminary+detailed-design audit explicitly permitted for smaller schemes; brief covers the union of both input sets in one report.",
+      "trigger": "Scheme meets manual's smaller-scheme criteria [EV-AE-012].",
+      "canonical_stages": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 2,
+      "notes": "Combined-audit exception is jurisdiction-specific behavior.",
+      "evidence_ids": ["EV-AE-007", "EV-AE-012"]
+    },
+    {
+      "native_stage_id": "ae-ad:S2",
+      "display_name": "Stage 2 — Detailed design audit",
+      "definition": "Full detailed-design set plus departures/relaxations from standard, traffic signal phasing diagrams, all prior audit reports/response forms.",
+      "trigger": "Detailed design complete [EV-AE-007].",
+      "canonical_stages": ["DETAILED_DESIGN"],
+      "confidence": "authoritative",
+      "mvp_scope": true,
+      "order": 3,
+      "notes": null,
+      "evidence_ids": ["EV-AE-007"]
+    },
+    {
+      "native_stage_id": "ae-ad:S3",
+      "display_name": "Stage 3 — Pre-opening / post-construction audit",
+      "definition": "Substantially-complete works audited on site with police and highway-authority representatives; ITC detour permits hard-wire Stage 3 approval into close-out.",
+      "trigger": "Construction substantially complete; before opening [EV-AE-008], [EV-AE-024].",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 4,
+      "notes": "Outside MVP scope.",
+      "evidence_ids": ["EV-AE-008", "EV-AE-024"]
+    }
+  ],
+  "exceptions": [
+    {
+      "exception_id": "ae-ad:s12-combined",
+      "kind": "combined_audit",
+      "spans_native_stage_ids": ["ae-ad:S1", "ae-ad:S2"],
+      "condition": "Explicitly permitted for smaller schemes per the manual.",
+      "alternative": null,
+      "evidence_ids": ["EV-AE-012"]
+    },
+    {
+      "exception_id": "ae-abudhabi-not-uae-wide",
+      "kind": "no_native_equivalent",
+      "spans_native_stage_ids": [],
+      "condition": "This pack represents Abu Dhabi only; it does not bind Dubai or other Emirates. Dubai manual contents Unknown; no other Emirates manuals found.",
+      "alternative": null,
+      "evidence_ids": ["EV-AE-001", "EV-AE-002", "EV-AE-025"]
+    }
+  ],
+  "inputs": [
+    { "input_id": "audit_brief_project_description_purpose", "stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "Audit brief with project description and purpose (clause 5.10.2 checklist)", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-019"] },
+    { "input_id": "markable_plans_a4_a3", "stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "A4/A3 markable plans for annotation by the team", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-019"] },
+    { "input_id": "traffic_pedestrian_flow_data", "stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "Traffic/pedestrian flow data where available", "requirement_level": "recommended", "conditional_on": null, "evidence_ids": ["EV-AE-019"] },
+    { "input_id": "concept_masterplan_options", "stage_ids": ["ae-ad:S0"], "label": "Concept/master-plan options, route alignments, development/transport plan", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-005"] },
+    { "input_id": "tieins_existing_network_junction_formats_landtake", "stage_ids": ["ae-ad:S0"], "label": "Tie-ins to existing network; junction formats; land-take constraints", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-005"] },
+    { "input_id": "general_arrangement_drawings", "stage_ids": ["ae-ad:S1"], "label": "General-detail drawings: route alignment, vertical profile, typical cross-sections", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-006"] },
+    { "input_id": "junction_interchange_layouts", "stage_ids": ["ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "Junction/interchange layouts at larger scale (with control devices/signage/markings)", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-006", "EV-AE-007"] },
+    { "input_id": "previous_stage_report_responses", "stage_ids": ["ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "Previous stage audit report(s) and response forms", "requirement_level": "required", "conditional_on": "A previous stage audit exists", "evidence_ids": ["EV-AE-006", "EV-AE-007"] },
+    { "input_id": "detailed_design_drawing_set", "stage_ids": ["ae-ad:S1_2", "ae-ad:S2"], "label": "Detailed-design drawing set: horizontal/vertical alignment, cross-sections (lanes, shoulders, drainage, medians, sidewalks, clear zone, barriers/hazards), intersection layouts with control devices/signage/markings, interchange details (advance/exit signage, accel/decel lanes, gore treatment)", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-AE-007", "EV-AE-012"] },
+    { "input_id": "departures_relaxations", "stage_ids": ["ae-ad:S2"], "label": "Departures/relaxations from standard", "requirement_level": "required", "conditional_on": "Any exist", "evidence_ids": ["EV-AE-007"] },
+    { "input_id": "signal_phasing_diagrams", "stage_ids": ["ae-ad:S2"], "label": "Traffic signal phasing diagrams", "requirement_level": "required", "conditional_on": "Signalized elements exist", "evidence_ids": ["EV-AE-007"] }
+  ],
+  "outputs": [
+    { "output_id": "rsa_report_findings_recommendations", "stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "RSA report with problems/findings and recommendations", "requirement_level": "required", "evidence_ids": ["EV-AE-001"] },
+    { "output_id": "response_form", "stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "label": "Client/designer response form to findings", "requirement_level": "required", "description": "Response forms carried forward between stages.", "evidence_ids": ["EV-AE-006", "EV-AE-007"] }
+  ],
+  "audit_questions": [
+    { "question_id": "ae-q-concept-options", "text": "Do the concept/master-plan options differ in safety performance for expected users, and are tie-ins to the existing network safe?", "applies_to_canonical": ["FEASIBILITY_CONCEPT"], "topic": "concept_options", "road_users": [], "source_note": "Stage 0 scope [EV-AE-005]" },
+    { "question_id": "ae-q-cross-section-vru", "text": "Are sidewalks, median provisions, clear zones and roadside treatments consistent and safe for all user types in the cross-section?", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "cross_sections_vru", "road_users": ["pedestrians", "cyclists", "drivers"], "source_note": "Detailed-design set contents [EV-AE-007]" },
+    { "question_id": "ae-q-interchange-details", "text": "Are interchange details (advance/exit signage, accel/decel lanes, gore treatment) adequate for design vehicles and driver expectancy?", "applies_to_canonical": ["DETAILED_DESIGN"], "topic": "interchanges", "road_users": ["drivers", "motorcyclists"], "source_note": "Detailed-design set contents [EV-AE-007]" },
+    { "question_id": "ae-q-signal-phasing", "text": "Do signal phasing arrangements protect conflicting movements, including pedestrians?", "applies_to_canonical": ["DETAILED_DESIGN"], "topic": "signals", "road_users": ["pedestrians", "drivers", "cyclists"], "source_note": "Signal phasing diagrams required at Stage 2 [EV-AE-007]" }
+  ],
+  "rules": [
+    { "rule_id": "ae-r-combined-eligibility", "kind": "eligibility", "description": "Combined Stage 1/2 audits apply only where the scheme meets the manual's smaller-scheme criteria; eligibility must be recorded.", "applies_to_native_stage_ids": ["ae-ad:S1_2"], "requires_input_ids": [], "effects": { "finding_kind": "not_eligible" }, "severity_hint": null, "evidence_ids": ["EV-AE-012"] },
+    { "rule_id": "ae-r-review-prev-stage", "kind": "process", "description": "Each stage's brief includes previous reports/responses; unresolved issues are reiterated at the following stage.", "applies_to_native_stage_ids": ["ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "requires_input_ids": ["previous_stage_report_responses"], "effects": { "finding_kind": "process_gap" }, "severity_hint": null, "evidence_ids": ["EV-AE-006", "EV-AE-007"] },
+    { "rule_id": "ae-r-team-may-demand-info", "kind": "completeness", "description": "The team may demand further information if the brief is inadequate; inadequacy surfaces as missing-information artifacts.", "applies_to_native_stage_ids": ["ae-ad:S0", "ae-ad:S1", "ae-ad:S1_2", "ae-ad:S2"], "requires_input_ids": [], "effects": { "finding_kind": "missing_information" }, "severity_hint": null, "evidence_ids": ["EV-AE-019"] }
+  ],
+  "road_user_categories": ["drivers", "passengers", "motorcyclists", "cyclists", "pedestrians"],
+  "issue_categories": ["alignment", "visibility_sightlines", "junctions_interchanges", "vulnerable_users", "signage_markings_lighting", "roadside_hazards_clear_zone", "access_management", "network_continuity_tie_ins", "human_factors_expectancy", "signals_phasing", "drainage_structures", "master_plan_conformance"],
+  "sources": [
+    { "title": "Emirate of Abu Dhabi Road Safety Audit Manual (First Edition)", "publisher": "Department of Municipal Affairs and Transport / DMT", "url": "https://www.dmt.gov.ae", "revision": "First Edition Jan 2018; QCC TR-540", "date": "2018-01-01", "accessed": "2026-08-21", "evidence_ids": ["EV-AE-001", "EV-AE-004", "EV-AE-005", "EV-AE-006", "EV-AE-007", "EV-AE-008", "EV-AE-012", "EV-AE-019", "EV-AE-022"] }
+  ]
+}

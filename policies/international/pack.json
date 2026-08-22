@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "pack_version": "1.0.0",
+  "jurisdiction": "INT",
+  "jurisdiction_label": "International (qualified baseline)",
+  "framework": {
+    "name": "International RSA baseline — PIARC-derived, explicitly qualified",
+    "publisher": "AuditorAI synthesis of named authoritative sources",
+    "revision": "Pinned to PIARC 2023R40EN + Road Safety Manual (4th ed.)",
+    "publication_date": "2023-01-01",
+    "status": "qualified_baseline",
+    "qualification_note": "No true international RSA standard exists [EV-IN-006..008]. This baseline synthesizes PIARC guidance and UN Global Plan expectations; wording must never imply compliance with an international standard.",
+    "evidence_ids": ["EV-IN-001", "EV-IN-002", "EV-IN-003", "EV-IN-006", "EV-IN-007", "EV-IN-010"]
+  },
+  "stages": [
+    {
+      "native_stage_id": "int:feasibility-concept",
+      "display_name": "Feasibility / concept stage check",
+      "definition": "Safety check at initial planning/impact-assessment era; options still open.",
+      "trigger": "Concept option selection.",
+      "canonical_stages": ["FEASIBILITY_CONCEPT"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 0,
+      "notes": "PIARC enumerates feasibility-study checklists; UN Global Plan expects audits pre-feasibility→detailed design.",
+      "evidence_ids": ["EV-IN-004", "EV-IN-010"]
+    },
+    {
+      "native_stage_id": "int:preliminary-design",
+      "display_name": "Preliminary design stage audit",
+      "definition": "Audit through preliminary design development per PIARC process skeleton (commissioning/undertaking/completion).",
+      "trigger": "Preliminary design developed.",
+      "canonical_stages": ["PRELIMINARY_DESIGN"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 1,
+      "notes": null,
+      "evidence_ids": ["EV-IN-001", "EV-IN-004"]
+    },
+    {
+      "native_stage_id": "int:detailed-design",
+      "display_name": "Detailed design stage audit",
+      "definition": "Audit of detailed design prior to construction.",
+      "trigger": "Detailed design developed.",
+      "canonical_stages": ["DETAILED_DESIGN"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 2,
+      "notes": null,
+      "evidence_ids": ["EV-IN-001", "EV-IN-004"]
+    }
+  ],
+  "exceptions": [
+    {
+      "exception_id": "int:qualified-baseline",
+      "kind": "no_native_equivalent",
+      "spans_native_stage_ids": [],
+      "condition": "No binding international standard exists; this pack is a qualified synthesis. EU Directive 2008/96/EC is regional law, not global practice.",
+      "alternative": null,
+      "evidence_ids": ["EV-IN-006", "EV-IN-007", "EV-IN-013"]
+    }
+  ],
+  "inputs": [
+    { "input_id": "project_description_objectives", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Project description and objectives", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-IN-001"] },
+    { "input_id": "plans_appropriate_to_stage", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Plans/drawings appropriate to the project stage", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-IN-004"] },
+    { "input_id": "traffic_data_expected_users", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Traffic demand and expected road-user mix incl. VRUs", "requirement_level": "recommended", "conditional_on": null, "evidence_ids": ["EV-IN-001"] },
+    { "input_id": "crash_history_context", "stage_ids": ["int:preliminary-design", "int:detailed-design"], "label": "Crash history for existing network context where available", "requirement_level": "optional", "conditional_on": null, "evidence_ids": ["EV-IN-003"] },
+    { "input_id": "safety_targets_overlay", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Optional global-targets overlay (UN KPI / iRAP star-rating objectives)", "requirement_level": "optional", "conditional_on": "Owner opts into reporting layer C", "evidence_ids": ["EV-IN-009", "EV-IN-010"] }
+  ],
+  "outputs": [
+    { "output_id": "audit_report_findings_recommendations", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Audit report with findings and recommendations per PIARC completion phase", "requirement_level": "required", "description": "Process skeleton: commissioning → undertaking → completion.", "evidence_ids": ["EV-IN-001", "EV-IN-004"] },
+    { "output_id": "response_summary", "stage_ids": ["int:feasibility-concept", "int:preliminary-design", "int:detailed-design"], "label": "Owner/designer response summary", "requirement_level": "recommended", "evidence_ids": ["EV-IN-001"] }
+  ],
+  "audit_questions": [
+    { "question_id": "int-q-all-users-safe-system", "text": "Does the scheme manage crash energy and separate/mistake-proof conflicting movements consistent with Safe System thinking?", "applies_to_canonical": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "safe_system", "road_users": [], "source_note": "PIARC RISM framing [EV-IN-002], [EV-IN-003]" },
+    { "question_id": "int-q-vru-provision", "text": "Are pedestrians, cyclists and motorcyclists provided for safely across the scheme lifecycle?", "applies_to_canonical": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "vulnerable_users", "road_users": ["pedestrians", "cyclists", "motorcyclists"], "source_note": "PIARC prompt-list themes [EV-IN-001]" },
+    { "question_id": "int-q-network-consistency", "text": "Is the scheme consistent and self-explaining within the surrounding network's standards and operation?", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "network_continuity", "road_users": [], "source_note": "PIARC prompt-list themes [EV-IN-001]" }
+  ],
+  "rules": [
+    { "rule_id": "int-r-qualified-wording", "kind": "output_discipline", "description": "Reports must state the qualified-baseline status; claims of compliance with an international standard are forbidden.", "applies_to_native_stage_ids": [], "requires_input_ids": [], "effects": { "finding_kind": "recommendation_wording" }, "severity_hint": null, "evidence_ids": ["EV-IN-006", "EV-IN-007"] }
+  ],
+  "road_user_categories": ["drivers", "passengers", "motorcyclists", "cyclists", "pedestrians"],
+  "issue_categories": ["safe_system_energy", "vulnerable_users", "network_continuity", "alignment_visibility", "junctions_interchanges", "signage_markings_lighting", "roadside_hazards"],
+  "sources": [
+    { "title": "PIARC Road Safety Audits: Guidelines for Road Projects (2023R40EN)", "publisher": "PIARC / World Road Association", "url": "https://www.piarc.org", "revision": "2023R40EN", "date": "2023-01-01", "accessed": "2026-08-21", "evidence_ids": ["EV-IN-001", "EV-IN-004"] },
+    { "title": "PIARC Road Safety Manual (web, 4th ed.)", "publisher": "PIARC", "url": "https://roadsafety.piarc.org", "revision": "updated 2025-05", "date": "2025-05-01", "accessed": "2026-08-21", "evidence_ids": ["EV-IN-002", "EV-IN-003"] },
+    { "title": "Global Plan for the Decade of Action for Road Safety 2021–2030", "publisher": "WHO + UN Regional Commissions", "url": "https://www.who.int", "revision": null, "date": "2021-10-20", "accessed": "2026-08-21", "evidence_ids": ["EV-IN-010"] }
+  ]
+}

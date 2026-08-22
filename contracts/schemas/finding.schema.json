@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/finding.schema.json",
+  "title": "Finding",
+  "type": "object",
+  "required": [
+    "finding_id",
+    "kind",
+    "category",
+    "location",
+    "road_users",
+    "scenario",
+    "statement",
+    "evidence",
+    "assumptions",
+    "risk_components",
+    "confidence",
+    "rationale",
+    "recommendation",
+    "source_trace",
+    "reviewer_status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "finding_id": { "type": "string" },
+    "kind": { "enum": ["safety_concern", "compliance_question"] },
+    "category": { "type": "string", "description": "issue_categories id from the pack" },
+    "location": { "type": ["string", "null"] },
+    "road_users": { "type": "array", "items": { "type": "string" } },
+    "scenario": { "type": ["string", "null"] },
+    "statement": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "normative_basis_note": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "use"],
+        "additionalProperties": false,
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "quote": { "type": ["string", "null"] },
+          "use": { "enum": ["supports_concern", "defines_requirement", "context"] }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "additionalProperties": false,
+        "properties": { "text": { "type": "string" }, "basis": { "type": ["string", "null"] } }
+      }
+    },
+    "risk_components": {
+      "type": "object",
+      "required": ["severity", "likelihood", "exposure", "scale_id"],
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "type": ["string", "null"] },
+        "likelihood": { "type": ["string", "null"] },
+        "exposure": { "type": ["string", "null"] },
+        "scale_id": { "type": ["string", "null"], "description": "framework scale these labels come from; null when unscored" }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["label", "basis"],
+      "additionalProperties": false,
+      "properties": { "label": { "enum": ["high", "medium", "low"] }, "basis": { "type": "string" } }
+    },
+    "rationale": { "type": "string", "description": "inference-labelled reasoning" },
+    "recommendation": {
+      "type": ["string", "null"],
+      "description": "proportionate and viable; vague wording banned (ADR-0003)"
+    },
+    "source_trace": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["origin"],
+        "additionalProperties": false,
+        "properties": {
+          "origin": { "enum": ["deterministic_rule", "audit_question", "ai_candidate", "auditor_manual"] },
+          "rule_id": { "type": ["string", "null"] },
+          "question_id": { "type": ["string", "null"] },
+          "producer": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "reviewer_status": {
+      "enum": ["draft", "accepted", "accepted_with_edits", "rejected", "escalated"]
+    },
+    "reviewer_note": { "type": ["string", "null"] }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0.0",
+  "pack_version": "1.0.0",
+  "jurisdiction": "US",
+  "jurisdiction_label": "United States",
+  "framework": {
+    "name": "FHWA Road Safety Audit guidance (incl. FHWA-SA-06-06 lineage)",
+    "publisher": "Federal Highway Administration, U.S. DOT",
+    "revision": "FHWA-SA-06-06 (2006) + current program materials",
+    "publication_date": "2006-02-01",
+    "status": "recommended_practice",
+    "qualification_note": "Federal guidance expressly does not constitute a standard, specification, or regulation [EV-US-007]; states operate their own programs. US practice uses named project phases, never numbered stages.",
+    "evidence_ids": ["EV-US-001", "EV-US-006", "EV-US-007"]
+  },
+  "stages": [
+    {
+      "native_stage_id": "us-fhwa:planning",
+      "display_name": "Planning Stage Audit",
+      "definition": "Pre-construction audit during the planning phase, while design options and alternatives are being explored.",
+      "trigger": "Project in planning phase [EV-US-002], [EV-US-005].",
+      "canonical_stages": ["FEASIBILITY_CONCEPT"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 1,
+      "notes": "Named phase of the FHWA prompt-list architecture; not a numbered stage.",
+      "evidence_ids": ["EV-US-006"]
+    },
+    {
+      "native_stage_id": "us-fhwa:preliminary-design",
+      "display_name": "Preliminary Design Stage Audit",
+      "definition": "Pre-construction audit during preliminary engineering/design development.",
+      "trigger": "Project in preliminary design phase [EV-US-006].",
+      "canonical_stages": ["PRELIMINARY_DESIGN"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 2,
+      "notes": null,
+      "evidence_ids": ["EV-US-006"]
+    },
+    {
+      "native_stage_id": "us-fhwa:final-design",
+      "display_name": "Final Design Stage Audit",
+      "definition": "Pre-construction audit during final/detailed design before construction documents are finalized.",
+      "trigger": "Project in final design phase [EV-US-006].",
+      "canonical_stages": ["DETAILED_DESIGN"],
+      "confidence": "interpreted",
+      "mvp_scope": true,
+      "order": 3,
+      "notes": null,
+      "evidence_ids": ["EV-US-006"]
+    },
+    {
+      "native_stage_id": "us-fhwa:work-zone",
+      "display_name": "Work Zone Traffic Control Plan Audit",
+      "definition": "Audit of traffic control during construction.",
+      "trigger": "Construction phase [EV-US-006].",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 4,
+      "notes": "Outside MVP scope.",
+      "evidence_ids": ["EV-US-006"]
+    },
+    {
+      "native_stage_id": "us-fhwa:pre-opening",
+      "display_name": "Pre-Opening Stage Audit",
+      "definition": "Audit after construction but before the roadway opens.",
+      "trigger": "Construction complete, pre-opening [EV-US-015].",
+      "canonical_stages": [],
+      "confidence": "authoritative",
+      "mvp_scope": false,
+      "order": 5,
+      "notes": "Outside MVP scope.",
+      "evidence_ids": ["EV-US-006", "EV-US-015"]
+    }
+  ],
+  "exceptions": [
+    {
+      "exception_id": "us:named-phases-not-stages",
+      "kind": "named_phase_not_numbered_stage",
+      "spans_native_stage_ids": [],
+      "condition": "US federal guidance defines no numbered audit stages; prompt lists 1–7 are checklist identifiers. One phase-independent eight-step process applies to all phases.",
+      "alternative": null,
+      "evidence_ids": ["EV-US-003", "EV-US-006"]
+    }
+  ],
+  "inputs": [
+    { "input_id": "project_information_package", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Project information package supplied by the owner/design team", "description": "Owner supplies necessary materials; team specifies information it needs; reviewed at start-up meeting.", "requirement_level": "required", "conditional_on": null, "evidence_ids": ["EV-US-003", "EV-US-011"] },
+    { "input_id": "design_drawings_current_phase", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Drawings/plans appropriate to the phase", "description": "Itemized per-phase lists live in FHWA-SA-06-06 Chs. 5–7 and were not verbatim-verifiable this pass — recorded as Unknown rather than invented.", "requirement_level": "recommended", "conditional_on": null, "evidence_ids": ["EV-US-006"] },
+    { "input_id": "crash_history", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Crash history for the project or existing road", "requirement_level": "optional", "conditional_on": "Required in practice for existing-road audits, where crash patterns are reviewed [EV-US-011]", "evidence_ids": ["EV-US-011"] },
+    { "input_id": "operational_geometric_hf_context", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Operational, geometric and human factors context", "requirement_level": "recommended", "conditional_on": null, "evidence_ids": ["EV-US-011"] }
+  ],
+  "outputs": [
+    { "output_id": "rsa_report_findings", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Written RSA report of findings presented to the owner/design team", "requirement_level": "required", "evidence_ids": ["EV-US-003", "EV-US-013"] },
+    { "output_id": "owner_formal_response", "stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "label": "Formal owner response (agreement/disagreement + actions)", "description": "Serves as the closure document for the RSA.", "requirement_level": "required", "evidence_ids": ["EV-US-004", "EV-US-012"] }
+  ],
+  "audit_questions": [
+    { "question_id": "us-q-all-users", "text": "Does the design accommodate all expected road users, including pedestrians, bicyclists, motorcyclists, and combinations thereof?", "applies_to_canonical": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "all_users", "road_users": ["pedestrians", "cyclists", "motorcyclists", "drivers"], "source_note": "RSA focus may target user groups [EV-US-005]" },
+    { "question_id": "us-q-crash-patterns", "text": "Do known crash patterns on or near the project indicate issues the design should address?", "applies_to_canonical": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "crash_history", "road_users": [], "source_note": "Issue identification draws on crash data analysis and/or operational/geometric/human factors review [EV-US-011]" },
+    { "question_id": "us-q-human-factors", "text": "Where might driver expectation, decision load, or sight distance conflict with the intended operation?", "applies_to_canonical": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"], "topic": "human_factors", "road_users": ["drivers"], "source_note": "Human factors review is part of issue identification [EV-US-011]" },
+    { "question_id": "us-q-alternatives", "text": "Are there safety-relevant differences between alternatives still under consideration that should inform option selection?", "applies_to_canonical": ["FEASIBILITY_CONCEPT"], "topic": "alternatives", "road_users": [], "source_note": "Earliest-stage RSAs explore all options/alternatives [EV-US-005]" }
+  ],
+  "rules": [
+    { "rule_id": "us-r-independent-multidisciplinary-team", "kind": "process", "description": "The RSA must be performed by a team independent of the project and multidisciplinary in composition; formal report and formal response required.", "applies_to_native_stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "requires_input_ids": [], "effects": { "finding_kind": "process_gap" }, "severity_hint": null, "evidence_ids": ["EV-US-013"] },
+    { "rule_id": "us-r-field-review", "kind": "process", "description": "Field reviews under various conditions are part of the eight-step process (step 4).", "applies_to_native_stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "requires_input_ids": [], "effects": { "finding_kind": "process_gap" }, "severity_hint": null, "evidence_ids": ["EV-US-003"] },
+    { "rule_id": "us-r-risk-matrix-optional", "kind": "output_discipline", "description": "Prioritization via frequency×severity matrix is optional; when used, labels travel with the matrix id.", "applies_to_native_stage_ids": ["us-fhwa:planning", "us-fhwa:preliminary-design", "us-fhwa:final-design"], "requires_input_ids": [], "effects": { "finding_kind": "recommendation_wording" }, "severity_hint": null, "evidence_ids": ["EV-US-016", "EV-US-017"] }
+  ],
+  "road_user_categories": ["drivers", "passengers", "motorcyclists", "cyclists", "pedestrians"],
+  "issue_categories": ["alignment", "visibility_sightlines", "junctions_interchanges", "vulnerable_users", "signage_markings_lighting", "roadside_hazards", "access_management", "human_factors_expectancy", "crash_history_patterns", "work_zones", "public_transport"],
+  "sources": [
+    { "title": "Road Safety Audits (RSA) program pages + FHWA Road Safety Audit Guidelines FHWA-SA-06-06", "publisher": "FHWA, U.S. DOT", "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audits-rsa", "revision": "FHWA-SA-06-06", "date": "2006-02-01", "accessed": "2026-08-21", "evidence_ids": ["EV-US-001", "EV-US-006", "EV-US-007"] }
+  ]
+}
