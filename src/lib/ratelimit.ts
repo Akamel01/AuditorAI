@@ -13,19 +13,33 @@ function kvConfigured(): boolean {
 
 async function kvIncrement(key: string): Promise<number | null> {
   try {
-    const res = await fetch(process.env.KV_REST_API_URL as string, {
+    // Upstash REST accepts ONE flat command per request; pipeline-form bodies
+    // ([[..],[..]]) are rejected as a malformed single command (found via the
+    // M1 storage probes, issue #6) — which silently disabled KV-mode limiting.
+    const incr = await fetch(process.env.KV_REST_API_URL as string, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([["INCR", key], ["EXPIRE", key, WINDOW_SECONDS]]),
+      body: JSON.stringify(["INCR", key]),
       cache: "no-store",
     });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { result?: [number, number] | number };
-    const count = Array.isArray(json.result) ? json.result[0] : json.result;
-    return typeof count === "number" ? count : null;
+    if (!incr.ok) return null;
+    const incrJson = (await incr.json()) as { result?: number };
+    if (typeof incrJson.result !== "number") return null;
+    if (incrJson.result === 1) {
+      await fetch(process.env.KV_REST_API_URL as string, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(["EXPIRE", key, WINDOW_SECONDS]),
+        cache: "no-store",
+      });
+    }
+    return incrJson.result;
   } catch {
     return null; // fail-open rather than block auditors on infra hiccups
   }
