@@ -52,6 +52,7 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Eval harness E4](tickets/E4-eval-harness-runner-plus-judge-scorecards.md): runner + gate math + workflow_dispatch CI job; first LIVE archive judged by ox-alpha@max over all 5 fixtures — honest FAILs (0–50% vs 90% mark) recorded with Tier-2 flags; judge-drift fog graduates.
 - [Dev-tab prototype D2](tickets/D2-dev-tab-ux-prototype.md): owner verdict **Candidate A (zero-dep SVG/CSS)** carries into #15 D3; prototypes inspectable in scratch/devtab.
 - [Vault charter V1](tickets/V1-vault-charter-plus-structure-hybrid.md): charter **blessed as written**; vault/ live on main (zones: append-only journals / human-curated notes / machine views; state/ wins ties); unblocks #10.
+- [Artifact persistence N3](tickets/N3-node-artifact-persistence-layout.md): Repository artifact trails under ws:{ws}:art:{pid}:{aid}:{node}:{seq}; retention latest-full/prior-summary; 512KB write-time cap; replay trusts verified else regenerates.
 
 ## Not yet specified
 

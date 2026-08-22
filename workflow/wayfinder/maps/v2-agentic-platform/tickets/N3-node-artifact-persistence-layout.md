@@ -3,7 +3,7 @@ id: N3
 title: Node-artifact persistence layout
 type: grilling
 hitl: false
-status: ready
+status: resolved
 issue: #9
 assignee:
 blocked_by: [N2]
