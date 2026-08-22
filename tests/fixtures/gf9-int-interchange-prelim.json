@@ -1,0 +1,139 @@
+{
+  "fixture_id": "GF-9",
+  "name": "Cloverleaf-to-urban interchange conversion — INT preliminary design (Wikimedia PD geometry)",
+  "jurisdiction": "INT",
+  "native_stage_id": "int:preliminary-design",
+  "metadata": {
+    "name": "Rivergate Interchange Reconfiguration",
+    "description": "Conversion of an aging full cloverleaf interchange to a two-ramp-terminal urban interchange with collector-distributor roads, reducing weaving intensity.",
+    "scheme_summary": "Removal of two loop ramps; new signalised ramp terminals; CD road weaving section retained at reduced length; shared-use paths through the interchange.",
+    "authority": "National roads authority (qualified PIARC baseline)",
+    "location": "International reference scheme"
+  },
+  "inputs": {
+    "project_description_objectives": {
+      "state": "provided",
+      "value": "Eliminate substandard loop-ramp weaving; raise interchange capacity; improve pedestrian and cycle continuity across the corridor."
+    },
+    "plans_appropriate_to_stage": {
+      "state": "provided",
+      "value": "Preliminary GA drawings: loop ramp removal, ramp terminal layouts, CD-road weave between entry and exit."
+    },
+    "traffic_data_expected_users": {
+      "state": "provided",
+      "value": "Design-year flows: 38,000 vpd mainline; peak-hour weave volume 1,100 pcu/h."
+    },
+    "independence_declaration": {
+      "state": "not_applicable"
+    },
+    "safety_targets_overlay": {
+      "state": "optional_missing"
+    }
+  },
+  "provenance": {
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cloverleaf_(PSF).svg",
+    "license": "Public domain (PD-author / PD-ScottForesman; attribution not required; Commons extmetadata verified 2026-08-22)",
+    "retrieved": "2026-08-22",
+    "extractor": "ORCH used the PD cloverleaf line-art as the base geometry narrative (four loop ramps, no channelised right turns) and described its conversion to a two-ramp-terminal layout per PIARC-baseline audit scope."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF9-001",
+      "kind": "safety_concern",
+      "category": "weaving_conflict_intensity",
+      "location": "Collector-distributor weaving section",
+      "road_users": [
+        "vehicle occupants"
+      ],
+      "scenario": "Shortened CD-road weave concentrates lane-change conflicts where remaining loop traffic merges with new terminal traffic.",
+      "statement": {
+        "text": "Check the retained weave length against design-year weaving volume and consider lengthening or signalising the CD exit.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-IN-001",
+          "quote": null,
+          "use": "defines_requirement"
+        }
+      ],
+      "assumptions": [
+        {
+          "text": "Peak-hour weave volume forecast holds.",
+          "basis": "traffic data input"
+        }
+      ],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "medium",
+        "basis": "Standard cloverleaf-conversion concern."
+      },
+      "rationale": "ORCH-as-judge baseline over public-domain interchange geometry.",
+      "recommendation": "Lengthen the CD weaving section by 80 m or install ramp metering at the entry.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF9-002",
+      "kind": "safety_concern",
+      "category": "vru_continuity",
+      "location": "Ramp terminals and crossing points",
+      "road_users": [
+        "pedestrians",
+        "cyclists"
+      ],
+      "scenario": "Free-flowing ramp entries at the retained loops leave uncontrolled crossings for path users moving through the interchange.",
+      "statement": {
+        "text": "Provide controlled or grade-separated crossings where the shared-use path meets each remaining free-flow ramp terminal.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-IN-001",
+          "quote": null,
+          "use": "context"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "VRU continuity is a stated scheme objective."
+      },
+      "rationale": "VRU dimension of the interchange baseline.",
+      "recommendation": "Signalise the northern loop-ramp path crossing and provide raised tables elsewhere.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 3,
+    "mapping_confidence": "interpreted",
+    "snapshot_recorded": "2026-08-22"
+  },
+  "notes": "safety_targets_overlay optional_missing exercises non-blocking optional state on the INT pack. Geometry grounded in Wikimedia PD cloverleaf diagram."
+}

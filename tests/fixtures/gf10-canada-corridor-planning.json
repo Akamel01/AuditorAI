@@ -1,0 +1,137 @@
+{
+  "fixture_id": "GF-10",
+  "name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "jurisdiction": "CA",
+  "native_stage_id": "ca-tac:planning",
+  "metadata": {
+    "name": "Highway 401 Express-Collector Corridor Study (context analog)",
+    "description": "Planning-stage safety review of express-collector lane management along a major urban freeway corridor, including interchange spacing and weaving assessment.",
+    "scheme_summary": "Re-striping of express-collector transfer lanes; revised interchange access permissions; corridor signage rationalisation; no new rights-of-way.",
+    "authority": "Ontario Ministry of Transportation (context analog)",
+    "location": "Toronto, Ontario, Canada"
+  },
+  "inputs": {
+    "design_criteria": {
+      "state": "provided",
+      "value": "TAC geometric design guide for Canadian roads; ministry freeway design supplement."
+    },
+    "design_volume_traffic_characteristics": {
+      "state": "provided",
+      "value": "AADT 420,000 across the corridor; peak-hour transfer volumes from loop detectors."
+    },
+    "route_choice_project_scope": {
+      "state": "provided",
+      "value": "Lane-management restriping only; no mainline realignment; transfer-lane permissions revised at three interchanges."
+    },
+    "access_management_adjacent_developments": {
+      "state": "provided",
+      "value": "No changes to adjacent-development access; ramp terminals unchanged."
+    },
+    "network_continuity_constraints": {
+      "state": "conflicting"
+    }
+  },
+  "provenance": {
+    "source_url": "https://commons.wikimedia.org/wiki/File:The_Basketweave.svg",
+    "license": "Public domain (PD-self per Commons extmetadata verified 2026-08-22); Toronto OGL context via open.toronto.ca licence text",
+    "retrieved": "2026-08-22",
+    "extractor": "ORCH used the PD Basketweave diagram (Highway 401 express-collector multi-level weaving) as the geometric context narrative and shaped a TAC planning-stage Project per EV-CA-006 stage terminology."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF10-001",
+      "kind": "safety_concern",
+      "category": "transfer_lane_decision_load",
+      "location": "Express-collector transfer points at three interchanges",
+      "road_users": [
+        "vehicle occupants"
+      ],
+      "scenario": "Reduced decision sight distance to new transfer-lane markings may cause late, erratic lane changes where signage is rationalised simultaneously.",
+      "statement": {
+        "text": "Stage the signage rationalisation so transfer-permission changes are introduced with advance guidance rather than all-at-once re-marking.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-003",
+          "quote": null,
+          "use": "defines_requirement"
+        }
+      ],
+      "assumptions": [
+        {
+          "text": "Detector-based volumes represent typical peak demand.",
+          "basis": "traffic characteristics input"
+        }
+      ],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "medium",
+        "basis": "Corridor complexity evident in basketweave geometry."
+      },
+      "rationale": "ORCH-as-judge baseline for Canadian-flavour corridor context.",
+      "recommendation": "Introduce changes one interchange per quarter with before/after speed-differential monitoring.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "kind": "compliance_question",
+      "category": "network_continuity",
+      "location": "Corridor-wide",
+      "road_users": [],
+      "scenario": "Recorded network-continuity constraints are conflicting between source documents; scope boundary cannot be confirmed.",
+      "statement": {
+        "text": "Resolve the conflicting network-continuity constraint records before the planning recommendation is finalised.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-006",
+          "quote": null,
+          "use": "context"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "Conflicting state recorded directly in inputs."
+      },
+      "rationale": "Process-style compliance question surfaced by recorded input conflict.",
+      "recommendation": "Reconcile the two constraint records with the ministry planning office and record the outcome.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 1,
+    "mapping_confidence": "authoritative",
+    "snapshot_recorded": "2026-08-22"
+  },
+  "notes": "conflicting network_continuity_constraints exercises the blocking 'conflicting' MI path on the CA pack. Fills the corpus coverage gap noted as thin for Canada."
+}

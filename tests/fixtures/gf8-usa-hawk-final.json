@@ -1,0 +1,136 @@
+{
+  "fixture_id": "GF-8",
+  "name": "Six HAWK pedestrian crossings — US final design (FHWA case study, PD)",
+  "jurisdiction": "US",
+  "native_stage_id": "us-fhwa:final-design",
+  "metadata": {
+    "name": "Tucson-Style HAWK Crossing Program (case study analog)",
+    "description": "Installation of six high-intensity activated crosswalk (HAWK) signal crossings along an arterial corridor, audited at detailed design stage.",
+    "scheme_summary": "Six mid-block pedestrian crossings with HAWK beacons; refuge medians; school-adjacent sites; corridor speed limit 40 mph.",
+    "authority": "City of Tucson (case study analog)",
+    "location": "Tucson, Arizona, USA"
+  },
+  "inputs": {
+    "project_information_package": {
+      "state": "provided",
+      "value": "Detailed design report for six HAWK crossings; site spacing 300-800 m; two school-fronting sites."
+    },
+    "design_drawings_current_phase": {
+      "state": "provided",
+      "value": "Final plan set: crossing sheets C1-C6, beacon placement details, signing/markings plans."
+    },
+    "crash_history": {
+      "state": "optional_missing"
+    },
+    "operational_geometric_hf_context": {
+      "state": "provided",
+      "value": "85th-percentile speeds 43 mph; documented driver-comprehension research basis for HAWK sequence."
+    }
+  },
+  "provenance": {
+    "source_url": "https://rosap.ntl.bts.gov/view/dot/42592/dot_42592_DS1.pdf",
+    "license": "Public Domain (explicit ROSA-P rights metadata; 17 USC §105)",
+    "retrieved": "2026-08-22",
+    "extractor": "ORCH transformed FHWA-SA-06-017 Table 1 entry 'Tucson, AZ: six pedestrian crossings with HAWK signals, detailed design stage' into a Project input set."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF8-001",
+      "kind": "safety_concern",
+      "category": "signal_comprehension",
+      "location": "All six HAWK crossing sites",
+      "road_users": [
+        "pedestrians",
+        "vehicle occupants"
+      ],
+      "scenario": "First-time drivers encountering the dark-phase HAWK display may treat it as malfunctioning and proceed through an active pedestrian phase at adjacent sites.",
+      "statement": {
+        "text": "Provide public-education signage or advance plaque wording clarifying HAWK operation where crossings are closely spaced.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-001",
+          "quote": null,
+          "use": "context"
+        }
+      ],
+      "assumptions": [
+        {
+          "text": "Driver familiarity with HAWK is low outside Tucson.",
+          "basis": "case-study program rationale"
+        }
+      ],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "medium",
+        "basis": "Documented comprehension concern in HAWH literature."
+      },
+      "rationale": "ORCH-as-judge baseline grounded in the Tucson case study selection.",
+      "recommendation": "Install EDUCATIONAL-type plaques above beacons at the two outermost crossings.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF8-002",
+      "kind": "safety_concern",
+      "category": "vru_school_exposure",
+      "location": "School-fronting crossing sites",
+      "road_users": [
+        "pedestrians"
+      ],
+      "scenario": "School arrival/discharge surges concentrate child pedestrians during the crossing's clearance interval; running time may be insufficient for slower children.",
+      "statement": {
+        "text": "Verify clearance intervals against child walking speeds at the two school-fronting crossings and consider extended timing during term-time peaks.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-016",
+          "quote": null,
+          "use": "defines_requirement"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "VRU exposure directly recorded in scheme description."
+      },
+      "rationale": "VRU coverage dimension baseline authored by ORCH.",
+      "recommendation": "Programme pedestrian clearance to 3.5 ft/s at both school sites with term-time coordination.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 3,
+    "mapping_confidence": "interpreted",
+    "snapshot_recorded": "2026-08-22"
+  },
+  "notes": "optional_missing crash_history exercises the non-blocking optional state. Grounded in FHWA-SA-06-017 (PD)."
+}
