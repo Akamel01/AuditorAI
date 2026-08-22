@@ -3,12 +3,12 @@ id: G4
 title: Finding + risk model semantics
 type: grilling
 hitl: true
-status: open
-assignee:
+status: closed
+assignee: orchestrator (delegated authority — owner directed continuous execution)
 blocked_by: [G2]
 blocks: []
 created: 2026-08-22
-resolved:
+resolved: 2026-08-22
 ---
 
 ## Question
