@@ -1,4 +1,14 @@
 {
   "schema_version": "1.0.0",
-  "decisions": []
+  "decisions": [
+    {
+      "decision_id": "DEC-0001",
+      "adr_path": "docs/adr/0001-platform-baseline.md",
+      "wayfinder_ticket": "G1",
+      "title": "Platform baseline: Next.js on Vercel; provider-agnostic AI adapter off by default; hosted-KV persistence behind a seam",
+      "status": "accepted",
+      "date": "2026-08-22T05:20:00Z",
+      "decided_by": "project owner (HITL) + ORCH"
+    }
+  ]
 }

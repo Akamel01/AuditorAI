@@ -34,6 +34,7 @@ AI-assisted but not AI-defined. Docker out of scope.
 - [USA stage definitions (R3)](tickets/R3-usa-fhwa-rsa.md): no numbered federal stages; named project phases × one phase-independent eight-step process; prompt lists are not stages; never map US phases onto UK numbers.
 - [Canada stage definitions (R4)](tickets/R4-canada-tac-crsag.md): TAC CRSAG (2001) is recommended national guidance (paywalled); provincial ladders differ (Alberta Stage 1–3 + pre-opening, BC T-02/04 mandatory-in-MoTI, Ontario Good Roads 2023 municipal); stage IDs collide across jurisdictions → namespace per jurisdiction.
 - [UAE stage definitions (R5)](tickets/R5-uae-adqcc-rsam.md): Abu Dhabi DMT RSAM 1st Ed. Jan 2018 (TR-540): native Stage 0 = feasibility/conceptual; sanctioned combined Stage 1/2 for smaller schemes; exemption certificates; Dubai contents unverified; all Abu Dhabi rules jurisdiction-flagged, never universal.
+- [Stack + hosting (G1)](tickets/G1-stack-hosting.md): Next.js + Vercel free tier; provider-agnostic AI adapter OFF by default; hosted-KV persistence behind a seam. ADR-0001.
 
 ## Not yet specified
 
