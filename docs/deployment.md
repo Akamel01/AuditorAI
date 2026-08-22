@@ -11,6 +11,9 @@ Target: **Vercel free (Hobby) tier** — ADR-0001. Docker explicitly out of scop
    - `KV_REST_API_URL`, `KV_REST_API_TOKEN` — from an [Upstash](https://upstash.com)
      free Redis (or Vercel Marketplace KV). Without them the app still builds and runs,
      but persistence falls back to per-instance memory (documented behavior).
+   - `ADMIN_KEY` *(optional, developer-only)* — gates the `/dev` page and `/api/dev/*`
+     routes. Leave unset in production unless developer tooling is wanted; routes
+     fail closed (unset key is indistinguishable from a wrong one).
 
 ## Option B — Automatic deploys from CI
 
