@@ -44,13 +44,32 @@ export interface StageSelection {
   native_stage_id: string;
 }
 
+/** One pasted/uploaded drawing stored inline as a data-URL (M1 decision). */
+export interface Attachment {
+  attachment_id: string;
+  project_id: string;
+  input_id: string | null;
+  file_name: string;
+  mime: "image/png" | "image/jpeg" | "image/webp";
+  bytes: number;
+  data_url: string;
+  created_at: string;
+}
+
+export interface InputValue {
+  state: InputValueState;
+  value?: string;
+  /** Attachment ids referencing this input's drawings (≤12 per project). */
+  attachments?: string[];
+}
+
 export interface Project {
   project_id: string;
   workspace_key_hash: string;
   metadata: ProjectMetadata;
   stage_selection: StageSelection;
   /** input_id -> provided value/state */
-  input_values: Record<string, { state: InputValueState; value?: string }>;
+  input_values: Record<string, InputValue>;
   created_at: string;
   updated_at: string;
 }

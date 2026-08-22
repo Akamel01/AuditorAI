@@ -3,7 +3,7 @@ id: E3
 title: Sample projects from corpus
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #16
 assignee:
 blocked_by: [E1, E2]

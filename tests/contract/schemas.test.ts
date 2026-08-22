@@ -19,6 +19,8 @@ const auditResultSchema = loadJson(
 const projectSchema = loadJson("contracts/schemas/project.schema.json") as object;
 
 const ajv = new Ajv({ strict: false, allErrors: true });
+
+const pngMagic = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 ajv.addSchema(findingSchema);
 const validateAuditResult = ajv.compile<AuditResult>(auditResultSchema);
 const validateProject = ajv.compile<Project>(projectSchema);
@@ -157,5 +159,79 @@ describe("projects conform to project.schema.json", () => {
         updated_at: T0,
       }),
     ).toBe(false);
+  });
+});
+
+describe("attachments conform to attachment.schema.json (M2)", () => {
+  const attachmentSchema = loadJson("contracts/schemas/attachment.schema.json") as object;
+  const validateAttachment = ajv.compile(attachmentSchema);
+
+  it("a realistic stored attachment round-trips", () => {
+    const attachment = {
+      attachment_id: "ATT-schema01-abc123",
+      project_id: "P-schema01",
+      input_id: "drawing_document_register",
+      file_name: "plan-sheet.png",
+      mime: "image/png",
+      bytes: 1234,
+      data_url: `data:image/png;base64,${Buffer.from(pngMagic).toString("base64")}`,
+      created_at: T0,
+    };
+    const ok = validateAttachment(attachment);
+    if (!ok) {
+      throw new Error(
+        (validateAttachment.errors ?? [])
+          .map((e) => `${e.instancePath} ${e.message}`)
+          .join("; "),
+      );
+    }
+    expect(ok).toBe(true);
+  });
+
+  it("rejects oversize byte counts and non-image data urls", () => {
+    expect(
+      validateAttachment({
+        attachment_id: "ATT-big0000000001",
+        project_id: "P-schema01",
+        input_id: null,
+        file_name: "big.png",
+        mime: "image/png",
+        bytes: 600_000,
+        data_url: `data:image/png;base64,${Buffer.from(pngMagic).toString("base64")}`,
+        created_at: T0,
+      }),
+    ).toBe(false);
+    expect(
+      validateAttachment({
+        attachment_id: "ATT-badurl00001",
+        project_id: "P-schema01",
+        input_id: null,
+        file_name: "x.png",
+        mime: "image/png",
+        bytes: 10,
+        data_url: "http://example.com/x.png",
+        created_at: T0,
+      }),
+    ).toBe(false);
+  });
+
+  it("project.schema accepts the attachments array on an input value", () => {
+    expect(
+      validateProject({
+        project_id: "P-attach01",
+        workspace_key_hash: "abcdef1234567890",
+        metadata: { name: "Attach" },
+        stage_selection: { jurisdiction: "UK", native_stage_id: "uk:S1" },
+        input_values: {
+          drawing_document_register: {
+            state: "provided",
+            value: "",
+            attachments: ["ATT-p-abc123"],
+          },
+        },
+        created_at: T0,
+        updated_at: T0,
+      }),
+    ).toBe(true);
   });
 });

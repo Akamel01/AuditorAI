@@ -60,7 +60,12 @@
               "conflicting"
             ]
           },
-          "value": { "type": "string" }
+          "value": { "type": "string" },
+          "attachments": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^ATT-[A-Za-z0-9_-]+$" },
+            "maxItems": 12
+          }
         }
       }
     },

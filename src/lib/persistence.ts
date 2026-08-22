@@ -2,13 +2,14 @@
 // Adapters: in-memory (tests/dev), Upstash/Vercel-KV REST (production free tier).
 // Swapping stores = env change, never code change.
 import { createHash } from "node:crypto";
-import type { AuditResult, Project } from "@/domain/types";
+import type { Attachment, AuditResult, Project } from "@/domain/types";
 
 export interface DataStore {
   readonly kind: "memory" | "kv";
   put(key: string, value: unknown): Promise<void>;
   get<T>(key: string): Promise<T | null>;
   keys(prefix: string): Promise<string[]>;
+  del(key: string): Promise<void>;
 }
 
 export class MemoryStore implements DataStore {
@@ -23,6 +24,9 @@ export class MemoryStore implements DataStore {
   }
   async keys(prefix: string): Promise<string[]> {
     return [...this.m.keys()].filter((k) => k.startsWith(prefix)).sort();
+  }
+  async del(key: string): Promise<void> {
+    this.m.delete(key);
   }
 }
 
@@ -56,6 +60,10 @@ export class KvRestStore implements DataStore {
     const json = await this.call(["KEYS", `${prefix}*`]);
     return Array.isArray(json?.result) ? (json.result as string[]).sort() : [];
   }
+
+  async del(key: string): Promise<void> {
+    await this.call(["DEL", key]);
+  }
 }
 
 let storeSingleton: DataStore | null = null;
@@ -78,6 +86,7 @@ export function workspaceHash(workspaceKey: string): string {
 
 const P = (ws: string, id: string) => `ws:${ws}:project:${id}`;
 const A = (ws: string, pid: string, aid: string) => `ws:${ws}:audit:${pid}:${aid}`;
+const ATT = (ws: string, pid: string, id: string) => `ws:${ws}:attachment:${pid}:${id}`;
 
 /** Workspace-scoped repository over the store seam. */
 export class Repository {
@@ -112,6 +121,30 @@ export class Repository {
       if (a) out.push(a);
     }
     return out.sort((a, b) => b.ran_at.localeCompare(a.ran_at));
+  }
+
+  async saveAttachment(ws: string, attachment: Attachment) {
+    await this.store.put(
+      ATT(ws, attachment.project_id, attachment.attachment_id),
+      attachment,
+    );
+  }
+  async getAttachment(ws: string, projectId: string, id: string): Promise<Attachment | null> {
+    return this.store.get<Attachment>(ATT(ws, projectId, id));
+  }
+  async deleteAttachment(ws: string, projectId: string, id: string) {
+    const existing = await this.getAttachment(ws, projectId, id);
+    if (!existing) throw new Error(`unknown attachment ${id}`);
+    await this.store.del(ATT(ws, projectId, id));
+  }
+  async listAttachments(ws: string, projectId: string): Promise<Attachment[]> {
+    const keys = await this.store.keys(`ws:${ws}:attachment:${projectId}:`);
+    const out: Attachment[] = [];
+    for (const k of keys) {
+      const a = await this.store.get<Attachment>(k);
+      if (a) out.push(a);
+    }
+    return out.sort((a, b) => a.created_at.localeCompare(b.created_at));
   }
 }
 

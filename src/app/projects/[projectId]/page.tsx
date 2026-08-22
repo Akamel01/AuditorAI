@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/client";
-import type { InputValueState, Project } from "@/domain/types";
+import { shrinkImage } from "@/lib/image";
+import type { Attachment, InputValueState, Project } from "@/domain/types";
 
 interface StageInfo {
   framework: { name: string; publisher: string; revision: string | null; status: string; qualification_note: string | null };
@@ -123,6 +124,46 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
     await setInput(inputId, "provided", data.extracted_text ?? "");
   }
 
+  async function attachImage(inputId: string, file: File) {
+    const shrunk = await shrinkImage(file);
+    const form = new FormData();
+    form.append("kind", "image");
+    form.append("project_id", project.project_id);
+    form.append("input_id", inputId);
+    form.append("file", new File([shrunk], file.name || "pasted-image.png", { type: shrunk.type }));
+    const key = localStorage.getItem("auditorai.workspace_key") ?? "";
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "x-workspace-key": key },
+      body: form,
+    });
+    const data = (await res.json()) as { attachment?: Attachment; error?: string };
+    if (!res.ok || !data.attachment) throw new Error(data.error ?? "attach failed");
+    const current = project.input_values[inputId];
+    await api(`/api/projects/${project.project_id}`, {
+      method: "PATCH",
+      json: {
+        input_values: {
+          [inputId]: {
+            state: "provided" as InputValueState,
+            value: current?.value ?? "",
+            attachments: [...(current?.attachments ?? []), data.attachment.attachment_id],
+          },
+        },
+      },
+    });
+    onChanged();
+  }
+
+  async function detachImage(inputId: string, attachmentId: string) {
+    const key = localStorage.getItem("auditorai.workspace_key") ?? "";
+    await fetch(`/api/projects/${project.project_id}/attachments/${attachmentId}`, {
+      method: "DELETE",
+      headers: { "x-workspace-key": key },
+    });
+    onChanged();
+  }
+
   return (
     <section className="mt-8">
       <h2 className="text-lg font-semibold">Stage inputs</h2>
@@ -180,22 +221,59 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
                   <textarea
                     defaultValue={current?.value ?? ""}
                     onBlur={(e) => setInput(i.input_id, "provided", e.target.value)}
+                    onPaste={(e) => {
+                      const img = Array.from(e.clipboardData.items).find((it) =>
+                        it.type.startsWith("image/"),
+                      );
+                      if (img) {
+                        e.preventDefault();
+                        const f = img.getAsFile();
+                        if (f)
+                          attachImage(i.input_id, f).catch((err) => alert(err.message));
+                      }
+                    }}
                     rows={3}
                     className="mt-2 w-full rounded border px-2 py-1.5 text-sm"
-                    placeholder="Paste or edit the provided information…"
+                    placeholder="Paste or edit the provided information… (paste an image to attach a drawing)"
                   />
-                  <label className="mt-1 inline-block cursor-pointer text-[11px] text-blue-600 underline">
-                    upload PDF/TXT/MD → extract text
-                    <input
-                      type="file"
-                      accept=".pdf,.txt,.md"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) uploadFor(i.input_id, f).catch((err) => alert(err.message));
-                      }}
-                    />
-                  </label>
+                  {current?.attachments && current.attachments.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {current.attachments.map((attId) => (
+                        <AttachmentThumb
+                          key={attId}
+                          projectId={project.project_id}
+                          attachmentId={attId}
+                          onRemove={() => detachImage(i.input_id, attId).catch((err) => alert(err.message))}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-1 flex gap-3 text-[11px]">
+                    <label className="cursor-pointer text-blue-600 underline">
+                      upload PDF/TXT/MD → extract text
+                      <input
+                        type="file"
+                        accept=".pdf,.txt,.md"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) uploadFor(i.input_id, f).catch((err) => alert(err.message));
+                        }}
+                      />
+                    </label>
+                    <label className="cursor-pointer text-blue-600 underline" data-testid={`attach-${i.input_id}`}>
+                      attach image (PNG/JPEG/WebP, ≤500 KB)
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) attachImage(i.input_id, f).catch((err) => alert(err.message));
+                        }}
+                      />
+                    </label>
+                  </div>
                 </>
               )}
               {i.evidence_ids.length > 0 && (
@@ -206,6 +284,48 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
         })}
       </ul>
     </section>
+  );
+}
+
+function AttachmentThumb({
+  projectId,
+  attachmentId,
+  onRemove,
+}: {
+  projectId: string;
+  attachmentId: string;
+  onRemove: () => void;
+}) {
+  const [src, setSrc] = useState<string | null>(null);
+  const [meta, setMeta] = useState<{ file_name: string; bytes: number } | null>(null);
+  useEffect(() => {
+    api<{ attachment: { data_url: string; file_name: string; bytes: number } }>(
+      `/api/projects/${projectId}/attachments/${attachmentId}`,
+    )
+      .then((d) => {
+        setSrc(d.attachment.data_url);
+        setMeta({ file_name: d.attachment.file_name, bytes: d.attachment.bytes });
+      })
+      .catch(() => setSrc(null));
+  }, [projectId, attachmentId]);
+  return (
+    <div className="relative rounded border bg-white p-1" data-testid={`thumb-${attachmentId}`}>
+      {src ? (
+        <img src={src} alt={meta?.file_name ?? attachmentId} className="h-16 w-24 rounded object-cover" />
+      ) : (
+        <div className="h-16 w-24 animate-pulse rounded bg-neutral-100" />
+      )}
+      <div className="mt-0.5 max-w-24 truncate text-[10px] text-neutral-500">
+        {meta ? `${meta.file_name} · ${Math.round(meta.bytes / 1000)} KB` : attachmentId}
+      </div>
+      <button
+        onClick={onRemove}
+        aria-label={`Remove ${attachmentId}`}
+        className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full border bg-white text-[10px] leading-none text-red-600"
+      >
+        ×
+      </button>
+    </div>
   );
 }
 

@@ -83,3 +83,52 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await expect(page.locator('a[download$=".md"]')).toBeAttached();
   await expect(page.locator('a[download$=".json"]')).toBeAttached();
 });
+
+test("M2: paste image → thumbnail → persists across reload (KV-backed)", async ({ page }) => {
+  await page.addInitScript(
+    ([k]) => localStorage.setItem("auditorai.workspace_key", k as string),
+    ["m2-e2e-workspace-key-0000000"],
+  );
+
+  // Create a project.
+  await page.goto("/projects");
+  await page.getByPlaceholder(/mill road junction upgrade/i).fill("Playwright Attachments");
+  await page.locator("select").first().selectOption("UK");
+  await page.locator("#stage-select").selectOption("uk:S1");
+  await page.getByRole("button", { name: /create project/i }).click();
+  await expect(page.getByText("Playwright Attachments")).toBeVisible();
+  await page.locator("li", { hasText: "Playwright Attachments" }).locator("a").click();
+  await expect(page.getByText(/Stage 1 \(completion of preliminary design\)/i)).toBeVisible();
+
+  // Provide one input so the attach affordances render.
+  await page.locator("select").nth(1).selectOption("Provided");
+  const firstTextarea = page.locator("textarea").first();
+  await expect(firstTextarea).toBeVisible();
+  await firstTextarea.blur();
+
+  // Paste a small PNG via the clipboard event on the textarea.
+  const pngBase64 =
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+  await firstTextarea.click();
+  await page.evaluate((b64) => {
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+    const dt = new DataTransfer();
+    dt.items.add(new File([bytes], "pasted-plan.png", { type: "image/png" }));
+    const target = document.querySelector("textarea")!;
+    target.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }),
+    );
+  }, pngBase64);
+
+  // Thumbnail appears.
+  const thumb = page.locator('[data-testid^="thumb-"]').first();
+  await expect(thumb).toBeVisible({ timeout: 15_000 });
+  await expect(thumb.locator("img")).toBeVisible();
+
+  // Reload → thumbnail persists (KV-backed).
+  await page.reload();
+  await expect(page.locator('[data-testid^="thumb-"]').first()).toBeVisible({
+    timeout: 15_000,
+  });
+});

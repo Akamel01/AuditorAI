@@ -30,7 +30,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
 
     const body = (await req.json()) as {
       metadata?: Partial<Project["metadata"]>;
-      input_values?: Record<string, { state: InputValueState; value?: string }>;
+      input_values?: Record<string, { state: InputValueState; value?: string; attachments?: string[] }>;
       native_stage_id?: string;
     };
 
@@ -47,7 +47,19 @@ export async function PATCH(req: Request, ctx: Ctx) {
     if (body.input_values) {
       for (const [inputId, v] of Object.entries(body.input_values)) {
         if (!v || typeof v.state !== "string") return badRequest(`bad value for ${inputId}`);
-        project.input_values[inputId] = { state: v.state, value: v.value ?? "" };
+        const existing =
+          project.input_values[inputId] ?? { state: v.state, value: "" };
+        project.input_values[inputId] = {
+          state: v.state,
+          value: v.value ?? existing.value ?? "",
+          // Omitting attachments in a patch preserves the existing links
+          // (text edits must never silently detach drawings).
+          ...(v.attachments !== undefined
+            ? { attachments: v.attachments }
+            : existing.attachments
+              ? { attachments: existing.attachments }
+              : {}),
+        };
       }
     }
     project.updated_at = new Date().toISOString();
