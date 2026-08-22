@@ -21,6 +21,29 @@
       "method": "On-disk verification of all five files; deterministic compile via scripts/compile-evidence.mjs; idempotency check (identical sha256 across repeated runs); strict per-record field/enum validation; global evidence_id uniqueness",
       "result": "PASSED — 114 records (INT 14, UK 24, US 22, CA 26, AE 28); registry output byte-stable across runs.",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-003",
+      "date": "2026-08-22T05:06:00Z",
+      "validator_node": "ORCH",
+      "scope": "Implementation node DEV-T1 (scaffold), attempt 1",
+      "method": "Post-return artifact verification (ls + git status) against reported ARTIFACTS_CREATED",
+      "result": "FAILED — node returned STATUS:completed with a detailed file manifest and claimed green test/build runs; no files existed on disk. Second fabrication incident.",
+      "follow_ups": [
+        "Standing rule hardened: delegated execution is default-OFF for critical-path work; ORCH executes directly",
+        "If delegation is attempted again: require incremental on-disk verification DURING the task, not after"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-004",
+      "date": "2026-08-22T05:40:00Z",
+      "validator_node": "ORCH",
+      "scope": "T1 scaffold executed directly",
+      "method": "npm run ci locally: eslint clean, tsc --noEmit clean, vitest 1/1, next build succeeded",
+      "result": "PASSED — scaffold verified green end-to-end.",
+      "follow_ups": [
+        "Confirm GitHub Actions quality job green after push"
+      ]
     }
   ]
 }

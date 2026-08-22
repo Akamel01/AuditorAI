@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Deterministic validation of shared-state registries.
 // Exit 0 = all registries well-formed; nonzero = CI failure.
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
