@@ -3,13 +3,13 @@ id: N2
 title: Step-mode pipeline executor refactor
 type: task
 hitl: false
-status: claimed
+status: resolved
 issue: #8
 assignee: Akamel01
 blocked_by: [N1]
 blocks: [N3, D3, A1, E4]
 created: 2026-08-22
-resolved:
+resolved: 2026-08-22
 ---
 
 ## Question

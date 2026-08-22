@@ -3,13 +3,13 @@ id: A1
 title: AiAdapter live implementation
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #12
 assignee:
 blocked_by: [R7, N2]
 blocks: [A2, M3, E4]
 created: 2026-08-22
-resolved:
+resolved: 2026-08-22
 ---
 
 ## Question

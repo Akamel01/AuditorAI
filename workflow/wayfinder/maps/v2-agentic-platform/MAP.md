@@ -44,6 +44,8 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Image storage decision M1](tickets/M1-image-storage-constraints-plus-decision.md): inline data-URLs <=500KB/image <=12/project (measured: Upstash 10MiB req cap, Vercel 4.5MB body, ~0.7s@500KB); Blob escape hatch documented; side-finding fixed: pipeline-form bodies had silently disabled KV-mode rate limiting.
 - [Inference topology R7](tickets/R7-inference-topology-decision.md): Direct Zen fetch from Vercel functions; effort cand=high/sum=low/judge=max; ≤60s per call, ≤3 calls per audit, $0 free-tier cap; chain Zen→OpenRouter→Groq→Off; 4-probe smoke gate precedes A1.
 - [Eval gate ladder E1](tickets/E1-eval-gate-ladder-design.md): pass = all dims ≥1 AND substance=2 AND evidence=2; corpus mark 90 %; zero-drop regression tolerance; Tier-2 triggers confirmed; dry-run GF-1..5 first.
+- [Step-mode pipeline executor N2](tickets/N2-step-mode-pipeline-executor-refactor.md): AuditPipeline seam (sync runAll/runNode/describe, async persistRun); 11-node registry mirrors graph-state edges; AI-CANDIDATES seam-wired with Off default; goldens byte-stable, folded-runNode ≡ runAll proven; 75/75 green.
+- [Live AiAdapter A1](tickets/A1-aiadapter-live-implementation.md): ZenAiAdapter fetch-only env-gated client; ajv boundary + one repair retry + graceful empty; R7 budgets encoded (60s/3-calls/breaker/fallback); async runAllLive driver conducts AI-CANDIDATES; sync path byte-identical.
 
 ## Not yet specified
 

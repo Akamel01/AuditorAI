@@ -3,13 +3,13 @@ id: N3
 title: Node-artifact persistence layout
 type: grilling
 hitl: false
-status: open
+status: ready
 issue: #9
 assignee:
 blocked_by: [N2]
 blocks: []
 created: 2026-08-22
-resolved:
+resolved: 2026-08-22
 ---
 
 ## Question
