@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/project.schema.json",
+  "title": "Project",
+  "description": "One auditing effort: metadata, jurisdiction/framework/stage selection, and input values with §14 states.",
+  "type": "object",
+  "required": [
+    "project_id",
+    "workspace_key_hash",
+    "metadata",
+    "stage_selection",
+    "input_values",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "project_id": { "type": "string", "pattern": "^P-[a-z0-9]+$" },
+    "workspace_key_hash": { "type": "string", "minLength": 8 },
+    "metadata": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "scheme_summary": { "type": "string" },
+        "authority": { "type": "string" },
+        "location": { "type": "string" }
+      }
+    },
+    "stage_selection": {
+      "type": "object",
+      "required": ["jurisdiction", "native_stage_id"],
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": { "enum": ["INT", "UK", "US", "CA", "AE"] },
+        "native_stage_id": {
+          "type": "string",
+          "pattern": "^[a-z]{2,8}(-[a-z0-9]+)*:[A-Za-z0-9_-]+$"
+        }
+      }
+    },
+    "input_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["state"],
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "provided",
+              "required_missing",
+              "recommended_missing",
+              "optional_missing",
+              "unknown",
+              "not_applicable",
+              "not_available",
+              "conflicting"
+            ]
+          },
+          "value": { "type": "string" }
+        }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}
