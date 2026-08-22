@@ -28,6 +28,21 @@ jobs:
       - name: fail if committed registry differs from compiled output
         run: git diff --exit-code -- state/evidence-registry.json
 
+  vault:
+    name: vault compile determinism (V2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: export registries -> views; import chartered front-matter -> JSON
+        run: |
+          node scripts/vault-export.mjs
+          node scripts/vault-import.mjs
+      - name: fail if committed vault views/notes differ from compiled output
+        run: git diff --exit-code -- vault/views state/vault-notes.json
+
   quality:
     name: lint / typecheck / test / build
     runs-on: ubuntu-latest
