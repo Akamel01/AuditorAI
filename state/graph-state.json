@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "edge_types": ["CONTROL", "DATA", "CONTEXT", "CONTRACT", "DEPENDENCY", "EVIDENCE", "VALIDATION", "FEEDBACK", "ESCALATION", "SPAWN", "MERGE", "LOOP"],
+  "graphs": {
+    "development_graph": {
+      "purpose": "Graph used by orchestrator + subagents to build the product",
+      "nodes": [],
+      "edges": []
+    },
+    "audit_graph": {
+      "purpose": "Bounded-context graph the product executes to run an actual audit (§19)",
+      "nodes": [],
+      "edges": []
+    }
+  }
+}

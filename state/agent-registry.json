@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "agents": [
+    { "id": "orchestrator", "role": "Persistent Orchestrator + Principal Architect; sole architectural authority", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "domain-architect", "role": "Maintains canonical domain model and CONTEXT.md discipline", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "researcher-international", "role": "International RSA baseline research (PIARC, ISO, iRAP, WHO, UN)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "researcher-uk", "role": "UK research (National Highways, GG 119, DMRB)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "researcher-usa", "role": "USA research (FHWA RSA guidance)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "researcher-canada", "role": "Canada research (TAC, Canadian Road Safety Audit Guide, CRaSH)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "researcher-uae", "role": "UAE research (AD QCC, Abu Dhabi RSAM, DMT, Dubai/RTA)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "jurisdiction-mapper", "role": "Maps native stages to canonical stages with provenance and confidence", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "evidence-manager", "role": "Compiles evidence records into state/evidence-registry.json", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "input-modeler", "role": "Models per-stage required/recommended/optional inputs and outputs", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "audit-rules-engineer", "role": "Encodes deterministic policy-pack rules", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "safety-reasoning-agent", "role": "Generates candidate findings from audit context (AI-bounded)", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "finding-adjudicator", "role": "Validates candidate findings against evidence and rules", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "ux-agent", "role": "Audit workflow UI under §27 requirements", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "implementation-agent", "role": "Implements modules to contract", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "test-agent", "role": "Writes/executes test suites per §30", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "verification-agent", "role": "Independent verification of architecture/domain/standards/graph/state/determinism/safety/UX/tests", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "validation-agent", "role": "Technical + domain validation per §38", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "architecture-review-agent", "role": "Runs deepening reviews using codebase-design vocabulary", "contract_template": "contracts/node-contracts/TEMPLATE.md" },
+    { "id": "security-privacy-agent", "role": "Security review per §35 before deployment", "contract_template": "contracts/node-contracts/TEMPLATE.md" }
+  ]
+}

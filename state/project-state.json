@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "id": "auditorai",
+    "name": "AuditorAI — Road Safety Auditor Platform",
+    "repo": "https://github.com/Akamel01/AuditorAI",
+    "objective": "Production-quality MVP of an AI-assisted, evidence-grounded Road Safety Audit platform for International/UK/USA/Canada/UAE practice, Stages 0-2, deployed on free hosting."
+  },
+  "desired_state": {
+    "phase": "deployed-mvp",
+    "quality_gate": "docs/validation/final-quality-gate.md all boxes checked"
+  },
+  "current_state": {
+    "phase": "bootstrap",
+    "milestone": null,
+    "wayfinder_map": "workflow/wayfinder/maps/mvp/MAP.md",
+    "notes": "Phase 0 bootstrap committed; Phase 1 wayfinding charted; research nodes dispatched."
+  },
+  "state_separation": {
+    "desired_state": "target phase/milestones",
+    "current_state": "where the project actually is",
+    "decision_state": "state/decision-registry.json",
+    "evidence_state": "state/evidence-registry.json",
+    "artifact_state": "state/artifact-registry.json",
+    "validation_state": "state/validation-state.json",
+    "execution_state": "state/graph-state.json + state/agent-registry.json"
+  },
+  "updated_at": "2026-08-22T03:51:56Z",
+  "updated_by": "orchestrator"
+}

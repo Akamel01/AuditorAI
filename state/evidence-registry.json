@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_records": [],
+  "compilation_rule": "Records are compiled by the evidence-manager node from YAML front matter in docs/research/*.md; researchers never write this file directly."
+}
