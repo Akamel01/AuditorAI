@@ -1,40 +1,262 @@
 {
   "schema_version": "1.0.0",
-  "edge_types": ["CONTROL", "DATA", "CONTEXT", "CONTRACT", "DEPENDENCY", "EVIDENCE", "VALIDATION", "FEEDBACK", "ESCALATION", "SPAWN", "MERGE", "LOOP"],
+  "edge_types": [
+    "CONTROL",
+    "DATA",
+    "CONTEXT",
+    "CONTRACT",
+    "DEPENDENCY",
+    "EVIDENCE",
+    "VALIDATION",
+    "FEEDBACK",
+    "ESCALATION",
+    "SPAWN",
+    "MERGE",
+    "LOOP"
+  ],
   "graphs": {
     "development_graph": {
       "purpose": "Graph used by orchestrator + subagents to build the product",
       "nodes": [
-        { "id": "ORCH", "role": "Orchestrator/Principal Architect", "status": "active" },
-        { "id": "MAP", "artifact": "workflow/wayfinder/maps/mvp/MAP.md", "role": "Wayfinder map + frontier", "status": "active" },
-        { "id": "DEV-R1", "role": "International researcher", "status": "completed", "artifact": "docs/research/international-rsa-research.md" },
-        { "id": "DEV-R2", "role": "UK researcher", "status": "completed", "artifact": "docs/research/uk-rsa-research.md" },
-        { "id": "DEV-R3", "role": "USA researcher", "status": "completed", "artifact": "docs/research/usa-rsa-research.md" },
-        { "id": "DEV-R4", "role": "Canada researcher", "status": "completed", "artifact": "docs/research/canada-rsa-research.md" },
-        { "id": "DEV-R5", "role": "UAE researcher", "status": "completed", "artifact": "docs/research/uae-rsa-research.md" },
-        { "id": "DEV-EV", "role": "Evidence Manager (compiles evidence-registry.json)", "status": "completed", "artifact": "scripts/compile-evidence.mjs + state/evidence-registry.json (114 records)" },
-        { "id": "DEV-G2", "role": "Canonical stage model decision node", "status": "unblocked" }
+        {
+          "id": "ORCH",
+          "role": "Orchestrator/Principal Architect",
+          "status": "active"
+        },
+        {
+          "id": "MAP",
+          "artifact": "workflow/wayfinder/maps/mvp/MAP.md",
+          "role": "Wayfinder map + frontier",
+          "status": "active"
+        },
+        {
+          "id": "DEV-R1",
+          "role": "International researcher",
+          "status": "completed",
+          "artifact": "docs/research/international-rsa-research.md"
+        },
+        {
+          "id": "DEV-R2",
+          "role": "UK researcher",
+          "status": "completed",
+          "artifact": "docs/research/uk-rsa-research.md"
+        },
+        {
+          "id": "DEV-R3",
+          "role": "USA researcher",
+          "status": "completed",
+          "artifact": "docs/research/usa-rsa-research.md"
+        },
+        {
+          "id": "DEV-R4",
+          "role": "Canada researcher",
+          "status": "completed",
+          "artifact": "docs/research/canada-rsa-research.md"
+        },
+        {
+          "id": "DEV-R5",
+          "role": "UAE researcher",
+          "status": "completed",
+          "artifact": "docs/research/uae-rsa-research.md"
+        },
+        {
+          "id": "DEV-EV",
+          "role": "Evidence Manager (compiles evidence-registry.json)",
+          "status": "completed",
+          "artifact": "scripts/compile-evidence.mjs + state/evidence-registry.json (114 records)"
+        },
+        {
+          "id": "DEV-G2",
+          "role": "Canonical stage model decision node",
+          "status": "unblocked"
+        }
       ],
       "edges": [
-        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R1", "payload": "node contract + ticket R1" },
-        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R2", "payload": "node contract + ticket R2" },
-        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R3", "payload": "node contract + ticket R3" },
-        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R4", "payload": "node contract + ticket R4" },
-        { "from": "ORCH", "type": "SPAWN", "to": "DEV-R5", "payload": "node contract + ticket R5" },
-        { "from": "MAP", "type": "CONTEXT", "to": "ORCH", "payload": "destination, fog, frontier" },
-        { "from": "DEV-R1", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/international-rsa-research.md front-matter records" },
-        { "from": "DEV-R2", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/uk-rsa-research.md front-matter records" },
-        { "from": "DEV-R3", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/usa-rsa-research.md front-matter records" },
-        { "from": "DEV-R4", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/canada-rsa-research.md front-matter records" },
-        { "from": "DEV-R5", "type": "EVIDENCE", "to": "DEV-EV", "payload": "docs/research/uae-rsa-research.md front-matter records" },
-        { "from": "DEV-EV", "type": "CONTEXT", "to": "DEV-G2", "payload": "compiled evidence registry" }
+        {
+          "from": "ORCH",
+          "type": "SPAWN",
+          "to": "DEV-R1",
+          "payload": "node contract + ticket R1"
+        },
+        {
+          "from": "ORCH",
+          "type": "SPAWN",
+          "to": "DEV-R2",
+          "payload": "node contract + ticket R2"
+        },
+        {
+          "from": "ORCH",
+          "type": "SPAWN",
+          "to": "DEV-R3",
+          "payload": "node contract + ticket R3"
+        },
+        {
+          "from": "ORCH",
+          "type": "SPAWN",
+          "to": "DEV-R4",
+          "payload": "node contract + ticket R4"
+        },
+        {
+          "from": "ORCH",
+          "type": "SPAWN",
+          "to": "DEV-R5",
+          "payload": "node contract + ticket R5"
+        },
+        {
+          "from": "MAP",
+          "type": "CONTEXT",
+          "to": "ORCH",
+          "payload": "destination, fog, frontier"
+        },
+        {
+          "from": "DEV-R1",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "docs/research/international-rsa-research.md front-matter records"
+        },
+        {
+          "from": "DEV-R2",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "docs/research/uk-rsa-research.md front-matter records"
+        },
+        {
+          "from": "DEV-R3",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "docs/research/usa-rsa-research.md front-matter records"
+        },
+        {
+          "from": "DEV-R4",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "docs/research/canada-rsa-research.md front-matter records"
+        },
+        {
+          "from": "DEV-R5",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "docs/research/uae-rsa-research.md front-matter records"
+        },
+        {
+          "from": "DEV-EV",
+          "type": "CONTEXT",
+          "to": "DEV-G2",
+          "payload": "compiled evidence registry"
+        }
       ]
     },
     "audit_graph": {
-      "purpose": "Bounded-context graph the product executes to run an actual audit (§19)",
-      "nodes": [],
-      "edges": []
+      "purpose": "Bounded-context graph the product executes to run an actual audit (\u00a719)",
+      "nodes": [
+        {
+          "id": "AUD-PROJECT",
+          "role": "Project + metadata + stage selection",
+          "impl": "src/domain/types.ts (Project)"
+        },
+        {
+          "id": "AUD-CONTEXT",
+          "role": "Assemble Audit Context (jurisdiction/framework/native stage/inputs)",
+          "impl": "src/domain/engine.ts buildAuditContext"
+        },
+        {
+          "id": "AUD-MANIFEST",
+          "role": "Input normalization: manifest + \u00a727 states",
+          "impl": "engine.runAudit"
+        },
+        {
+          "id": "AUD-EVIDENCE",
+          "role": "Evidence selection/lookup with provenance",
+          "impl": "src/lib/evidence.ts"
+        },
+        {
+          "id": "AUD-RULES",
+          "role": "Deterministic checks from policy pack",
+          "impl": "engine.runAudit rules loop"
+        },
+        {
+          "id": "AUD-QUESTIONS",
+          "role": "Stage assessment questions for human reasoning",
+          "impl": "engine.runAudit questions"
+        },
+        {
+          "id": "AUD-AI-CANDIDATES",
+          "role": "Bounded AI candidate findings (OFF by default)",
+          "impl": "src/lib/ai.ts"
+        },
+        {
+          "id": "AUD-ADJUDICATION",
+          "role": "Human review: reviewer_status/recommendation; wording discipline",
+          "impl": "PATCH /api/projects/:id/audits/:aid"
+        },
+        {
+          "id": "AUD-REPORT",
+          "role": "Report rendering JSON+Markdown+print-PDF",
+          "impl": "src/lib/report.ts"
+        },
+        {
+          "id": "AUD-FINALIZE",
+          "role": "Final audit owned by qualified auditor/authority (out of software scope)",
+          "impl": null
+        }
+      ],
+      "edges": [
+        {
+          "from": "AUD-PROJECT",
+          "type": "DATA",
+          "to": "AUD-CONTEXT",
+          "payload": "project record"
+        },
+        {
+          "from": "AUD-CONTEXT",
+          "type": "CONTRACT",
+          "to": "AUD-MANIFEST",
+          "payload": "policy pack stage definition"
+        },
+        {
+          "from": "AUD-EVIDENCE",
+          "type": "EVIDENCE",
+          "to": "AUD-RULES",
+          "payload": "evidence ids cited by rules"
+        },
+        {
+          "from": "AUD-MANIFEST",
+          "type": "DATA",
+          "to": "AUD-RULES",
+          "payload": "input states"
+        },
+        {
+          "from": "AUD-RULES",
+          "type": "DATA",
+          "to": "AUD-ADJUDICATION",
+          "payload": "draft compliance questions + missing information"
+        },
+        {
+          "from": "AUD-QUESTIONS",
+          "type": "CONTEXT",
+          "to": "AUD-ADJUDICATION",
+          "payload": "stage questions"
+        },
+        {
+          "from": "AUD-AI-CANDIDATES",
+          "type": "DATA",
+          "to": "AUD-ADJUDICATION",
+          "payload": "CandidateFinding[] (labelled, optional, off by default)"
+        },
+        {
+          "from": "AUD-ADJUDICATION",
+          "type": "VALIDATION",
+          "to": "AUD-RULES",
+          "payload": "recommendation wording rule (reject banned words)"
+        },
+        {
+          "from": "AUD-ADJUDICATION",
+          "type": "CONTROL",
+          "to": "AUD-REPORT",
+          "payload": "reviewed findings"
+        }
+      ]
     }
   },
-  "updated_at": "2026-08-22T05:05:00Z"
+  "updated_at": "2026-08-22T06:00:00Z"
 }
