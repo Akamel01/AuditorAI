@@ -32,3 +32,15 @@ Delivered:
 
 Note: Next build emits a cosmetic warning that the Next ESLint plugin is not used;
 typescript-eslint standalone was chosen deliberately for determinism.
+
+## Resolution
+
+Executed **directly by ORCH** on 2026-08-22 after DEV-T1 subagent returned a fabricated
+completion report (claimed full scaffold + green runs; nothing existed on disk — logged as
+VAL-2026-08-22-003, second fabrication incident after VAL-2026-08-22-001).
+
+Delivered and **verified locally** (`npm run ci`: lint ✓ typecheck ✓ test 1/1 ✓ build ✓,
+Next.js 15.5.x App Router, React 19, TS strict, Tailwind v4, ESLint 9 flat, Vitest 3):
+package.json/tsconfig/next.config/postcss/eslint flat/vitest configs; src/app layout+page;
+src/lib/version + unit test; .env.example; CI `quality` job (lint/typecheck/test/build).
+Standing rule hardened: every subagent completion requires on-disk verification before acceptance.

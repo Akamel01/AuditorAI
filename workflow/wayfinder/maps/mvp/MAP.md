@@ -36,6 +36,7 @@ AI-assisted but not AI-defined. Docker out of scope.
 - [UAE stage definitions (R5)](tickets/R5-uae-adqcc-rsam.md): Abu Dhabi DMT RSAM 1st Ed. Jan 2018 (TR-540): native Stage 0 = feasibility/conceptual; sanctioned combined Stage 1/2 for smaller schemes; exemption certificates; Dubai contents unverified; all Abu Dhabi rules jurisdiction-flagged, never universal.
 - [Stack + hosting (G1)](tickets/G1-stack-hosting.md): Next.js + Vercel free tier; provider-agnostic AI adapter OFF by default; hosted-KV persistence behind a seam. ADR-0001.
 - [MVP scope (G3)](tickets/G3-mvp-scope.md): forms + uploads WITH text extraction (InputSource seam, security gate); JSON+Markdown report with browser-print PDF; anonymous workspace keys. DEC-0002.
+- [Canonical stage model (G2)](tickets/G2-canonical-stage-model.md): three-point internal key; namespaced native ids; authoritative/interpreted/inferred confidence; exceptions as data (UK no Stage 0, UAE combined S1/2). ADR-0002.
 
 ## Not yet specified
 
