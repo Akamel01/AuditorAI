@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 19,
+  "note_count": 20,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -257,6 +257,21 @@
         "adr": []
       },
       "body_chars": 2585
+    },
+    {
+      "path": "vault/journal/2026-08-23-phase1-reference-library.md",
+      "zone": "vault/journal",
+      "title": "Phase 1 complete: RSA reference library for all four jurisdictions",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2555
     },
     {
       "path": "vault/journal/2026-08-23-ticket-21-verify-close.md",
