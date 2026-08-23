@@ -41,24 +41,24 @@ evidence_records:
     normative_status: informative
     confidence: high
   - evidence_id: EV-IN-004
-    claim: The PIARC 2023 audit guide provides step-by-step audit procedure with stage-specific checklists at feasibility study, preliminary design, detailed design, and pre- and post-traffic opening stages, and organises the auditing process into three parts (commissioning, undertaking, completion), per PIARC's Road Safety Manual description of that guide.
+    claim: PIARC's Road Safety Manual Chapter 10.4 states that PIARC developed a Road Safety Audit Guide (PIARC, 2023) providing a comprehensive step-by-step procedure for conducting road safety audits, with detailed individual checklists for motorways, inter-urban and urban main roads at each design stage (feasibility study, preliminary design, detailed design, and pre- and post-traffic opening). It also references the Highway Safety Manual (AASHTO, 2025) Part C providing crash prediction models for different road types including intersections with various control devices, and the Interactive Highway Safety Design Model (IHSDM) for evaluating safety and operational effects of geometric design decisions from design plans.
     source_url: https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification
-    source_title: "PIARC Road Safety Manual, Chapter 10.4 (describing PIARC 2023R40EN)"
+    source_title: "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification"
     publisher: PIARC (World Road Association)
     revision: "2025-05"
     publication_date: 2025
-    retrieved_date: "2026-08-21"
-    normative_status: recommended
+    retrieved_date: "2026-08-23"
+    normative_status: informative
     confidence: high
   - evidence_id: EV-IN-005
-    claim: PIARC's earlier international guideline "Road safety audit guidelines for safety checks of new road projects" (PIARC Ref 2011R01EN, ISBN 2-84060-199-0, bilingual French/English, 385 pages) was published in 2011 by Technical Committee 3.1 Road Safety with input from experts from over 15 countries.
-    source_url: https://www.piarc.org/en/order-library/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects
-    source_title: Road safety audit guidelines for safety checks of new road projects
+    claim: PIARC's Road Safety Manual Chapter 10.4 states that a road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) introduces thematic audits considering specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. The manual identifies vulnerable road user needs — pedestrian, cyclist, scooter/moped and motorbike rider needs — as a necessary topic for road safety inspections. PIARC developed the Walkability Checklist and the Checklist for Quality and Safety Inspections of Pedestrian Infrastructure (CQSI) for pedestrian audits, building on the Pedestrian Quality Needs (PQN) inspection process.
+    source_url: https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification
+    source_title: "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification"
     publisher: PIARC (World Road Association)
-    revision: "2011R01EN"
-    publication_date: 2011
-    retrieved_date: "2026-08-21"
-    normative_status: recommended
+    revision: "2025-05"
+    publication_date: 2025
+    retrieved_date: "2026-08-23"
+    normative_status: informative
     confidence: high
   - evidence_id: EV-IN-006
     claim: ISO 39001:2012 ("Road traffic safety (RTS) management systems — Requirements with guidance for use") specifies requirements for an organizational road traffic safety management system, not a project-stage road safety audit procedure for road infrastructure.

@@ -6,7 +6,7 @@
         "file": "international-rsa-research.md",
         "jurisdiction": "INT",
         "record_count": 14,
-        "sha256": "6841be424bcf53f6f52adb13d0a9be45834b037ef8e24196a092801126aa7d60"
+        "sha256": "460c76dccf151f8ace85c8472ce41a6747d95e75f95ab9ed06541ccca6e06582"
       },
       {
         "file": "uk-rsa-research.md",
@@ -24,7 +24,7 @@
         "file": "canada-rsa-research.md",
         "jurisdiction": "CA",
         "record_count": 26,
-        "sha256": "f0fea97edaaee076cb0de50b4ff355b52e42c9536a32199730002d5d239b30a3"
+        "sha256": "82e517402f0fed9774669a6a1ae3301a64187f29a52957301fbe8c6169d5fb70"
       },
       {
         "file": "uae-rsa-research.md",
@@ -78,27 +78,27 @@
     },
     {
       "evidence_id": "EV-IN-004",
-      "claim": "The PIARC 2023 audit guide provides step-by-step audit procedure with stage-specific checklists at feasibility study, preliminary design, detailed design, and pre- and post-traffic opening stages, and organises the auditing process into three parts (commissioning, undertaking, completion), per PIARC's Road Safety Manual description of that guide.",
+      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that PIARC developed a Road Safety Audit Guide (PIARC, 2023) providing a comprehensive step-by-step procedure for conducting road safety audits, with detailed individual checklists for motorways, inter-urban and urban main roads at each design stage (feasibility study, preliminary design, detailed design, and pre- and post-traffic opening). It also references the Highway Safety Manual (AASHTO, 2025) Part C providing crash prediction models for different road types including intersections with various control devices, and the Interactive Highway Safety Design Model (IHSDM) for evaluating safety and operational effects of geometric design decisions from design plans.",
       "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
-      "source_title": "PIARC Road Safety Manual, Chapter 10.4 (describing PIARC 2023R40EN)",
+      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
       "publisher": "PIARC (World Road Association)",
       "revision": "2025-05",
       "publication_date": "2025",
-      "retrieved_date": "2026-08-21",
-      "normative_status": "recommended",
+      "retrieved_date": "2026-08-23",
+      "normative_status": "informative",
       "confidence": "high",
       "jurisdiction": "INT"
     },
     {
       "evidence_id": "EV-IN-005",
-      "claim": "PIARC's earlier international guideline \"Road safety audit guidelines for safety checks of new road projects\" (PIARC Ref 2011R01EN, ISBN 2-84060-199-0, bilingual French/English, 385 pages) was published in 2011 by Technical Committee 3.1 Road Safety with input from experts from over 15 countries.",
-      "source_url": "https://www.piarc.org/en/order-library/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects",
-      "source_title": "Road safety audit guidelines for safety checks of new road projects",
+      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that a road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) introduces thematic audits considering specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. The manual identifies vulnerable road user needs — pedestrian, cyclist, scooter/moped and motorbike rider needs — as a necessary topic for road safety inspections. PIARC developed the Walkability Checklist and the Checklist for Quality and Safety Inspections of Pedestrian Infrastructure (CQSI) for pedestrian audits, building on the Pedestrian Quality Needs (PQN) inspection process.",
+      "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
+      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
       "publisher": "PIARC (World Road Association)",
-      "revision": "2011R01EN",
-      "publication_date": "2011",
-      "retrieved_date": "2026-08-21",
-      "normative_status": "recommended",
+      "revision": "2025-05",
+      "publication_date": "2025",
+      "retrieved_date": "2026-08-23",
+      "normative_status": "informative",
       "confidence": "high",
       "jurisdiction": "INT"
     },
@@ -897,13 +897,13 @@
     },
     {
       "evidence_id": "EV-CA-007",
-      "claim": "Alberta Transportation defines each audit stage's scope: the Stage 1 (Planning) audit reviews fundamental design/planning elements such as alignment, laning, facility classification, access management concept, project limits, design speed and design criteria; the Stage 2 (Preliminary Design) audit reviews elements that can still be changed such as cross-section dimensions, interchange/intersection layout, traffic operations, access, drainage, clear zones and interaction of road users; the Stage 3 (Detailed Design) audit is undertaken just prior to submission of final design plans to address remaining issues before construction; and the Pre-opening audit verifies correct implementation, focusing on signing location and visibility, pavement markings and delineation, visual impacts and connectivity with existing infrastructure.",
-      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf",
-      "source_title": "Alberta Transportation Road Safety Audit Guidelines (Appendix A)",
+      "claim": "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA.",
+      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf",
+      "source_title": "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register",
       "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
       "revision": "Final Report ver 2",
       "publication_date": "2004-03-19",
-      "retrieved_date": "2026-08-21",
+      "retrieved_date": "2026-08-23",
       "normative_status": "mandatory",
       "confidence": "high",
       "jurisdiction": "CA"
@@ -1518,45 +1518,6 @@
       "normative_status": "informative",
       "confidence": "low",
       "jurisdiction": "AE"
-    },
-    {
-      "evidence_id": "EV-IN-004",
-      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that PIARC developed a Road Safety Audit Guide (PIARC, 2023) providing a comprehensive step-by-step procedure for conducting road safety audits, with detailed individual checklists for motorways, inter-urban and urban main roads at each design stage (feasibility study, preliminary design, detailed design, and pre- and post-traffic opening). It also references the Highway Safety Manual (AASHTO, 2025) Part C providing crash prediction models for different road types including intersections with various control devices, and the Interactive Highway Safety Design Model (IHSDM) for evaluating safety and operational effects of geometric design decisions from design plans.",
-      "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
-      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
-      "publisher": "PIARC (World Road Association)",
-      "revision": "2025-05",
-      "publication_date": "2025",
-      "retrieved_date": "2026-08-23",
-      "normative_status": "informative",
-      "confidence": "high",
-      "jurisdiction": "INT"
-    },
-    {
-      "evidence_id": "EV-IN-005",
-      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that a road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) introduces thematic audits considering specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. The manual identifies vulnerable road user needs — pedestrian, cyclist, scooter/moped and motorbike rider needs — as a necessary topic for road safety inspections. PIARC developed the Walkability Checklist and the Checklist for Quality and Safety Inspections of Pedestrian Infrastructure (CQSI) for pedestrian audits, building on the Pedestrian Quality Needs (PQN) inspection process.",
-      "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
-      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
-      "publisher": "PIARC (World Road Association)",
-      "revision": "2025-05",
-      "publication_date": "2025",
-      "retrieved_date": "2026-08-23",
-      "normative_status": "informative",
-      "confidence": "high",
-      "jurisdiction": "INT"
-    },
-    {
-      "evidence_id": "EV-CA-007",
-      "claim": "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA.",
-      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf",
-      "source_title": "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register",
-      "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
-      "revision": "Final Report ver 2",
-      "publication_date": "2004-03-19",
-      "retrieved_date": "2026-08-23",
-      "normative_status": "mandatory",
-      "confidence": "high",
-      "jurisdiction": "CA"
     }
   ]
 }

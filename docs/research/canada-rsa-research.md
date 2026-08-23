@@ -61,13 +61,13 @@ evidence_records:
     normative_status: mandatory
     confidence: high
   - evidence_id: EV-CA-007
-    claim: "Alberta Transportation defines each audit stage's scope: the Stage 1 (Planning) audit reviews fundamental design/planning elements such as alignment, laning, facility classification, access management concept, project limits, design speed and design criteria; the Stage 2 (Preliminary Design) audit reviews elements that can still be changed such as cross-section dimensions, interchange/intersection layout, traffic operations, access, drainage, clear zones and interaction of road users; the Stage 3 (Detailed Design) audit is undertaken just prior to submission of final design plans to address remaining issues before construction; and the Pre-opening audit verifies correct implementation, focusing on signing location and visibility, pavement markings and delineation, visual impacts and connectivity with existing infrastructure."
-    source_url: "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf"
-    source_title: "Alberta Transportation Road Safety Audit Guidelines (Appendix A)"
+    claim: "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA."
+    source_url: "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf"
+    source_title: "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register"
     publisher: "Alberta Transportation (prepared by G. Ho Engineering Consultants)"
     revision: "Final Report ver 2"
     publication_date: 2004-03-19
-    retrieved_date: 2026-08-21
+    retrieved_date: "2026-08-23"
     normative_status: mandatory
     confidence: high
   - evidence_id: EV-CA-008
