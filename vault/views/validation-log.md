@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: 59f54edfc13c
-record_count: 23
+source_hash: cb27af2a77a0
+record_count: 24
 ---
 # Validation log
 
@@ -183,3 +183,12 @@ record_count: 23
 - Date: 2026-08-23T10:42:19.233Z
 - Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T10-32-40-219Z)
 - Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-024
+
+- Date: 2026-08-23T11:05:00.000Z
+- Scope: Incident: fabricated evidence EV-CA-007 discovered during #22 closure verification; fix-forward applied
+- Result: **FIXED — GF-10 grounding restored to verified sources; fabrication introduced in e049369 eliminated. Fresh Tier-1 eval to be owner-run to supersede archives 10-21/10-32 which scored the fabricated citation.**
+- Follow-ups:
+  - Owner-run fresh eval (OPENCODE_API_KEY at invocation only) confirming 5/5 >= 90% mark
+  - Parallel-session discipline: verify-on-disk before closing tickets worked as designed; consider requiring verifier script run in session wrap-up

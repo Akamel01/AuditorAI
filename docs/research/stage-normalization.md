@@ -77,10 +77,10 @@ Never rendered as "US Stage N" — native labels always shown.
 
 | Native | Canonical | Confidence | Evidence |
 |---|---|---|---|
-| TAC Planning stage (Alberta: Stage 1) | FEASIBILITY_CONCEPT | authoritative (provincial) | Alberta equivalency table quoting TAC [EV-CA-005][EV-CA-006][EV-CA-007] |
-| TAC Preliminary Design (Alberta: Stage 2) | PRELIMINARY_DESIGN | authoritative (provincial) | [EV-CA-006][EV-CA-007] |
-| TAC Detailed Design (Alberta: Stage 3) | DETAILED_DESIGN | authoritative (provincial) | [EV-CA-006][EV-CA-007] |
-| Pre-opening | out of MVP scope | — | [EV-CA-007][EV-CA-008] |
+| TAC Planning stage (Alberta: Stage 1) | FEASIBILITY_CONCEPT | authoritative (provincial) | Alberta equivalency table quoting TAC [EV-CA-005][EV-CA-006][EV-CA-027] |
+| TAC Preliminary Design (Alberta: Stage 2) | PRELIMINARY_DESIGN | authoritative (provincial) | [EV-CA-006][EV-CA-027] |
+| TAC Detailed Design (Alberta: Stage 3) | DETAILED_DESIGN | authoritative (provincial) | [EV-CA-006][EV-CA-027] |
+| Pre-opening | out of MVP scope | — | [EV-CA-027][EV-CA-008] |
 
 Framework note: national CRSAG text is paywalled (recorded); operative provincial
 instruments carry mandatory force within their ministries [EV-CA-003][EV-CA-004].

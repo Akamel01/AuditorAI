@@ -24,7 +24,7 @@
         "file": "canada-rsa-research.md",
         "jurisdiction": "CA",
         "record_count": 26,
-        "sha256": "82e517402f0fed9774669a6a1ae3301a64187f29a52957301fbe8c6169d5fb70"
+        "sha256": "b1254cb92ec6850fb4eb6521ea10621201771acf30c62d4eda98b41abb3477b6"
       },
       {
         "file": "uae-rsa-research.md",
@@ -924,19 +924,6 @@
       "jurisdiction": "CA"
     },
     {
-      "evidence_id": "EV-CA-007",
-      "claim": "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA.",
-      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf",
-      "source_title": "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register",
-      "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
-      "revision": "Final Report ver 2",
-      "publication_date": "2004-03-19",
-      "retrieved_date": "2026-08-23",
-      "normative_status": "mandatory",
-      "confidence": "high",
-      "jurisdiction": "CA"
-    },
-    {
       "evidence_id": "EV-CA-008",
       "claim": "Alberta Transportation sets audit timing triggers: a Stage 1 audit once the desired functional-planning option is selected (with audits of value-engineering proposals); a Stage 2 audit at the 95% stage of the Functional Plan before final submission; a Stage 2 audit at the 95% stage of bridge Design Data Drawings; a Stage 3 audit prior to the milestone 'Modify Design Based on Recommendations from Others' (before 75% completion, equivalent to the 90-95% design stage); pre-opening audits mandatory for new green-field road construction and considered for retrofit projects when substantially complete; and value-engineering proposals at post-tender/pre-construction must also be audited.",
       "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf",
@@ -1181,6 +1168,19 @@
       "retrieved_date": "2026-08-21",
       "normative_status": "informative",
       "confidence": "medium",
+      "jurisdiction": "CA"
+    },
+    {
+      "evidence_id": "EV-CA-027",
+      "claim": "Alberta Transportation's Road Safety Audit Guidelines Appendix A outlines each RSA stage's review scope: Stage 1 (Planning) reviews the fundamental design/planning elements related to alignment, laning, facility classification, access management concept, project limits, design speed and design criteria; Stage 2 (Preliminary Design) reviews the design elements that can still be changed, such as cross-section dimensions, interchange/intersection layout, traffic operations, access, drainage, clear zones and the interaction of road users; Stage 3 (Detailed Design) is undertaken just prior to the submission of the final design plans, providing an opportunity to address any remaining issues from previous audits before construction; Pre-opening ensures the results of the design and the design audits were correctly implemented, focusing on implementation details such as signing location and visibility, paint markings and delineation, visual impacts and connectivity with existing infrastructure. Table A-1 provides an illustrative summary of the type of issues that could be raised during the various road safety audit stages.",
+      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf",
+      "source_title": "Alberta Transportation Road Safety Audit Guidelines (Appendix A: Road Safety Audit Stage; Table A-1)",
+      "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
+      "revision": "Final Report ver 2",
+      "publication_date": "2004-03-19",
+      "retrieved_date": "2026-08-21",
+      "normative_status": "mandatory",
+      "confidence": "high",
       "jurisdiction": "CA"
     },
     {

@@ -60,14 +60,14 @@ evidence_records:
     retrieved_date: 2026-08-21
     normative_status: mandatory
     confidence: high
-  - evidence_id: EV-CA-007
-    claim: "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA."
-    source_url: "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf"
-    source_title: "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register"
+  - evidence_id: EV-CA-027
+    claim: "Alberta Transportation's Road Safety Audit Guidelines Appendix A outlines each RSA stage's review scope: Stage 1 (Planning) reviews the fundamental design/planning elements related to alignment, laning, facility classification, access management concept, project limits, design speed and design criteria; Stage 2 (Preliminary Design) reviews the design elements that can still be changed, such as cross-section dimensions, interchange/intersection layout, traffic operations, access, drainage, clear zones and the interaction of road users; Stage 3 (Detailed Design) is undertaken just prior to the submission of the final design plans, providing an opportunity to address any remaining issues from previous audits before construction; Pre-opening ensures the results of the design and the design audits were correctly implemented, focusing on implementation details such as signing location and visibility, paint markings and delineation, visual impacts and connectivity with existing infrastructure. Table A-1 provides an illustrative summary of the type of issues that could be raised during the various road safety audit stages."
+    source_url: "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf"
+    source_title: "Alberta Transportation Road Safety Audit Guidelines (Appendix A: Road Safety Audit Stage; Table A-1)"
     publisher: "Alberta Transportation (prepared by G. Ho Engineering Consultants)"
     revision: "Final Report ver 2"
     publication_date: 2004-03-19
-    retrieved_date: "2026-08-23"
+    retrieved_date: 2026-08-21
     normative_status: mandatory
     confidence: high
   - evidence_id: EV-CA-008
@@ -303,12 +303,12 @@ numbered ladder:
 
 | TAC Canadian RSA Guide terminology | Alberta equivalent | Trigger (when conducted) |
 |---|---|---|
-| Planning Stage RSA | **Stage 1 RSA** | Once desired option selected in functional planning; also audit value-engineering proposals immediately after VE completes [EV-CA-007], [EV-CA-008] |
+| Planning Stage RSA | **Stage 1 RSA** | Once desired option selected in functional planning; also audit value-engineering proposals immediately after VE completes [EV-CA-008] |
 | Preliminary Design Stage RSA | **Stage 2 RSA** | At the 95% stage of the Functional Plan, before final submission; same trigger for bridge Design Data (DD) drawings [EV-CA-008] |
 | Detailed Design Stage RSA | **Stage 3 RSA** | Prior to milestone "Modify Design Based on Recommendations from Others" (<75% project completion ≈ 90–95% design), giving final input before tender; traffic accommodation plans optionally audited here for complex detours/staging [EV-CA-008] |
 | Pre-opening Stage RSA | **Pre-opening Stage RSA** | When works are substantially complete (markings/signing installed, budget remains to respond); **mandatory for green-field new-road construction**, considered for retrofits [EV-CA-008] |
 
-Definitions of what each stage examines [EV-CA-007]:
+Definitions of what each stage examines [EV-CA-027]:
 - **Stage 1 (Planning)** — fundamental elements: alignment, laning, facility classification, access management
   concept, project limits, design speed, design criteria.
 - **Stage 2 (Preliminary Design)** — still-changeable elements: cross-section dimensions,
@@ -347,7 +347,7 @@ traffic/speed data, planning studies, design reports, stakeholder correspondence
 [EV-CA-017].
 
 Stage-specific review scope (Alberta Appendix A outlines; the items listed are what the team expects to examine
-and therefore the inputs it needs) [EV-CA-007]:
+and therefore the inputs it needs) [EV-CA-027]:
 
 - **Stage 1 (Planning):** design criteria; design volume/traffic characteristics; route choice; project scope,
   function and traffic mix; access management and adjacent developments; continuity with existing network;
@@ -362,7 +362,7 @@ and therefore the inputs it needs) [EV-CA-007]:
   in with existing network; street furniture and landscaping.
 - **Pre-opening:** results of design and design audits correctly implemented; implementation details — signing
   location and visibility, paint markings and delineation, visual impacts, connectivity with existing
-  infrastructure [EV-CA-007].
+  infrastructure [EV-CA-027].
 
 For existing-conditions audits (Ontario), crash data may weight prioritization but should not be the sole risk
 indicator; site examination is done on foot supplemented by drive-throughs, so no drawings input exists
@@ -437,7 +437,7 @@ indicator; site examination is done on foot supplemented by drive-throughs, so n
   risk-assessed recommendations [EV-CA-021]. This imports Austroads-style semantics into Canadian municipal use
   [EV-CA-018].
 - Alberta's stage-issue table (Table A-1) organizes potential issues by stage but assigns no severity tiers in
-  the accessible text [EV-CA-007].
+  the accessible text [EV-CA-027].
 - Existing-roads risk prioritization (Ontario): order candidate roads by risk proxies — traffic volume and
   speed limit (or operating speed), plus usage-change events (e.g., new bike lane); crash history used only as
   a weighting due to regression-to-the-mean [EV-CA-018 context; see EV-CA-019/EV-CA-021 records for the

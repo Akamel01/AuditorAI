@@ -2,7 +2,7 @@
 generated: true
 type: evidence-index
 source: state/evidence-registry.json
-source_hash: 69b24830ffa3
+source_hash: 0a9896a82709
 record_count: 116
 ---
 # Evidence index
@@ -49,7 +49,6 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-CA-004]]
 - [[EV-CA-005]]
 - [[EV-CA-006]]
-- [[EV-CA-007]]
 - [[EV-CA-008]]
 - [[EV-CA-009]]
 - [[EV-CA-010]]
@@ -69,6 +68,7 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-CA-024]]
 - [[EV-CA-025]]
 - [[EV-CA-026]]
+- [[EV-CA-027]]
 
 ## INT (16)
 
