@@ -260,6 +260,116 @@ evidence_records:
     retrieved_date: 2026-08-21
     normative_status: informative
     confidence: medium
+  - evidence_id: EV-CA-028
+    claim: "BC Ministry of Transportation's Road Safety Audit Guidelines (appendix to TC T-02/04) provide that road transportation projects may be subject to road safety audit at the following stages: Planning Stage, Preliminary Design Stage, Detailed Design Stage and Pre-opening Stage."
+    quote: "Road transportation projects may be subject to road safety audit at the following stages: • Planning Stage • Preliminary Design Stage • Detailed Design Stage • Pre-opening Stage"
+    source_url: "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf"
+    source_title: "Road Safety Audit Guidelines — Appendix to Technical Circular T-02/04 (Section 5.3 When to conduct Road Safety Audits)"
+    publisher: "British Columbia Ministry of Transportation"
+    revision: "Apr. 1/04 (Appendix to TC T-02/04)"
+    publication_date: 2004-04-01
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-CA-029
+    claim: "BC Ministry of Transportation's Road Safety Audit Guidelines state that although some jurisdictions conduct RSA during construction and on in-service roads, at this time the Ministry does not intend to conduct RSA at those stages, confining the BC audit ladder to pre-opening project phases."
+    quote: "In some jurisdictions, RSA is conducted duri ng construction; also in-service roads may be subject to the process. At this time, the Ministry does not intend to conduct RSA at these stages."
+    source_url: "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf"
+    source_title: "Road Safety Audit Guidelines — Appendix to Technical Circular T-02/04 (Section 5.3 When to conduct Road Safety Audits)"
+    publisher: "British Columbia Ministry of Transportation"
+    revision: "Apr. 1/04 (Appendix to TC T-02/04)"
+    publication_date: 2004-04-01
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-CA-030
+    claim: "BC Ministry of Transportation's Road Safety Audit Guidelines enumerate the possible responses to an RSA report, following TAC Canadian Road Safety Audit Guide procedures: accept in full and implement changes to project; conditionally accept with modifications, with the response report documenting the reasons for the modifications; or reject with reasons."
+    quote: "Possible responses are: 1. Accept in full and implement changes to project. 2. Conditionally accept with modifications . The response report should document the reasons for the modifications. 3. Reject with reasons."
+    source_url: "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf"
+    source_title: "Road Safety Audit Guidelines — Appendix to Technical Circular T-02/04 (Section 5.6.2 Response Report)"
+    publisher: "British Columbia Ministry of Transportation"
+    revision: "Apr. 1/04 (Appendix to TC T-02/04)"
+    publication_date: 2004-04-01
+    retrieved_date: 2026-08-23
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-CA-031
+    claim: "The MTQ Guide de réalisation d'audits de sécurité routière defines the road safety audit in French as a proactive process examining the road-safety component of a project at various stages of its development, whose principal objective is to improve the safety of movements on the road network, performed by a technical authority competent and independent of the project (quote verbatim in French; English translation by extractor)."
+    quote: "L ’audit de sécurité routière est un processus proactif qui permet d’examiner le volet « sécurité routière » d’un projet, à diverses étapes de son développement. Il a comme principal objectif d’améliorer la sécurité des déplacements sur le réseau routier. L ’audit est effectué par une autorité technique compétente et indépendante du projet."
+    source_url: "http://www.bv.transports.gouv.qc.ca/mono/1112615.pdf"
+    source_title: "Guide de réalisation d'audits de sécurité routière (Section 2.1 « Qu'est-ce qu'un audit de sécurité routière? »)"
+    publisher: "Ministère des Transports du Québec (MTQ)"
+    revision: null
+    publication_date: 2012
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-CA-032
+    claim: "Per the MTQ guide's section on when an audit should be performed, Quebec's Guide de gestion des projets routiers provides for four road safety audits per project, at the stages of avant-projet préliminaire (preliminary design proposal), plans et devis préliminaires (preliminary plans and specifications), travaux (construction works) and évaluation / mise en service (evaluation / opening into service); however, an audit may instead be carried out at the avant-projet définitif or plans et devis définitifs stages according to the needs of the project team (French stages quoted verbatim; translations by extractor)."
+    quote: "Selon la nature ou l’ampleur d’un projet, les audits de sécurité routière peuvent être réalisés à différentes étapes du développement d’un projet routier. Le Guide de gestion des projets routiers précise qu’il y aurait lieu de réaliser quatre audits par projet, soit à l’étape : • de l’avant-projet préliminaire; • des plans et devis préliminaires; • des travaux; • de l’évaluation (mise en service). Toutefois, un audit peut être réalisé aux étapes de l’avant-projet définitif ou des plans et devis définitifs, selon les besoins de l’équipe de projet."
+    source_url: "http://www.bv.transports.gouv.qc.ca/mono/1112615.pdf"
+    source_title: "Guide de réalisation d'audits de sécurité routière (Section 2.3 « Quand l'audit doit-il être réalisé? »)"
+    publisher: "Ministère des Transports du Québec (MTQ)"
+    revision: null
+    publication_date: 2012
+    retrieved_date: 2026-08-23
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-CA-033
+    claim: "The MTQ guide discourages audits by a single person and states Ministry practice that road safety audit teams are composed of a minimum of three people, including at least two auditors ('un minimum de trois personnes, dont au moins deux auditeurs')."
+    quote: "Il est donc déconseillé qu’un audit soit réalisé par une seule personne. Au Ministère, les équipes d’audit sont composées d’un minimum de trois personnes, dont au moins deux auditeurs."
+    source_url: "http://www.bv.transports.gouv.qc.ca/mono/1112615.pdf"
+    source_title: "Guide de réalisation d'audits de sécurité routière (Section 3, composition de l'équipe d'audit)"
+    publisher: "Ministère des Transports du Québec (MTQ)"
+    revision: null
+    publication_date: 2012
+    retrieved_date: 2026-08-23
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-CA-034
+    claim: "The Good Roads Ontario Road Safety Audit Guideline binds auditors to general principles: auditors shall always act in the interest of all road users, including the vulnerable and mobility/vision impaired, and operate only within their competency and field of expertise."
+    quote: "Auditors shall always be committed to the general principles of: 2.1 - Acting in the interest of all road users, including the vulnerable and mobility/vision impaired; 2.2 - Operating only within their competency and field of expertise;"
+    source_url: "https://members.goodroads.ca/images/GoodRoads/Road%20Safety%20Audit%202.02.pdf"
+    source_title: "Ontario Road Safety Audit Guideline v2.02 (General principles for auditors, items 2.1–2.2)"
+    publisher: "Good Roads (County & Municipal Roads Association of Ontario)"
+    revision: "v2.02, Revision C"
+    publication_date: 2023-02-15
+    retrieved_date: 2026-08-23
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-CA-035
+    claim: "The Good Roads Ontario guideline states that an RSA should identify hazards relating to all road user groups, while recognizing thematic audits that focus on one or more specific road user groups, such as motorcyclists or all vulnerable road users."
+    quote: "An RSA should identify hazards relating to all road user groups. However, it is possible to conduct an audit that focuses on one or more road user groups (e.g., motorcyclists or all vulnerable road users). These audits are commonly known as thematic audits."
+    source_url: "https://members.goodroads.ca/images/GoodRoads/Road%20Safety%20Audit%202.02.pdf"
+    source_title: "Ontario Road Safety Audit Guideline v2.02 (Thematic audits)"
+    publisher: "Good Roads (County & Municipal Roads Association of Ontario)"
+    revision: "v2.02, Revision C"
+    publication_date: 2023-02-15
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-CA-036
+    claim: "Alberta Transportation's RSA Implementation Plan recommends that road safety audits be required as part of the P3 or Design-Build RFP, with the proponent responsible for hiring and administering the road safety audit team as part of the fees."
+    quote: "It is recommended that road safety audits be required as part of the P3 or Design- Build RFP, and it is the proponent’s responsibility to hire and administer the road safety audit team as part of the fees."
+    source_url: "https://www.transportation.alberta.ca/PlanningTools/Documents/Morcoar/RSA%20Implementation%20Plan%20Final%20Report.pdf"
+    source_title: "Road Safety Audit Implementation Plan — Final Report (Appendix C: RSA and P3 Delivery Method)"
+    publisher: "Alberta Transportation (prepared by G. Ho Engineering Consultants)"
+    revision: "Final Report"
+    publication_date: 2004-03-18
+    retrieved_date: 2026-08-23
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-CA-037
+    claim: "The UNB guidelines' highway case study (Appendix C) presents the audit report in tabular format for easy exchange between auditors and client, with three columns: the audit team's observations, suggested possible remediation initiatives, and a space for the client response, returned to the auditors once the client had addressed each issue in writing; this worked example pairs observations with suggested countermeasures even though the body text says reports normally should not contain recommended remedial measures [cf. EV-CA-017]."
+    quote: "To facilitate easy exchange of information between auditors and client, the audit report has been prepared in tabular format. There are three columns; the first describing the audit team’s observations, the second suggesting possible remediation initiatives and the third providing a space for the client response. Once the client had addressed each issue on paper, a copy of the document with responses was returned to the auditors."
+    source_url: "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf"
+    source_title: "Road Safety Audit Guidelines (Appendix C Case Studies — highway case study report format)"
+    publisher: "University of New Brunswick Transportation Group"
+    revision: null
+    publication_date: 1999
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: high
 ---
 
 # Canada — Road Safety Audit Research (R4)

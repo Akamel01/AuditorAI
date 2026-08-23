@@ -301,6 +301,94 @@ evidence_records:
     retrieved_date: 2026-08-21
     normative_status: informative
     confidence: low
+  - evidence_id: EV-AE-029
+    claim: "The TR-540 Second Edition scope clause binds all persons involved in the planning, design or construction of changes to the Emirate of Abu Dhabi Road Network (EADRN) — and those commissioned to undertake audits — to follow the manual so that the road safety implications of all projects are fully considered for all road users and others affected by the project; verified verbatim from the full QCC-hosted PDF (previously only search-engine excerpts existed, see [EV-AE-022])."
+    quote: "This manual must be followed by all persons who are involved in the planning, design or construction of changes to the Emirate of Abu Dhabi Road Network (EADRN) and those who are commissioned to undertake audits to ensure that the road safety implications of all projects are fully considered for all road users and others affected by the project."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf
+    source_title: "Emirate of Abu Dhabi Road Safety Audit Manual (TR-540, Second Edition), Section 5 “Scope of this Manual” (PDF p. 7)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-540 Second Edition
+    publication_date: 2023-06
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-030
+    claim: "TR-540 Second Edition defines native Stage 0 verbatim as a feasibility-stage RSA used to assist in defining high-level road safety choices of road alignment, transport or development plans, identifying possible safety problems to pre-empt countermeasures early and helping identify the preferred option where more than one design option exists — substantiating Abu Dhabi Stage 0 = feasibility/conceptual from the current framework document itself."
+    quote: "A feasibility stage RSA is an early design stage RSA used to assist in defining the high-level road safety choices of road alignment, transport or development plans or developments. It is used to identify possible safety problems likely to impact on a project and pre -empt counter measures at an early stage. Where more than one design option exists, the Road Safety Audit may help to identify the preferred option."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf
+    source_title: "Emirate of Abu Dhabi Road Safety Audit Manual (TR-540, Second Edition), Section 7 Definitions, item 28 “Stage 0 – Feasibility, Road Safety Audit” (PDF p. 9)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-540 Second Edition
+    publication_date: 2023-06
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-031
+    claim: "TR-540 Second Edition permits combining Audit Stages 1 and 2 at Stage 2 as a “Stage 1 / 2” audit where no feasibility or preliminary design stage audit was necessary and the project progressed directly to detailed design, with the relevant road authority consulted on the audit stages to be undertaken; it separately states that for smaller schemes stage 1 and stage 2 can be combined into a single road safety audit report (“RSA Stage 1 / 2”) after getting the approval from the authority (PDF p. 13)."
+    quote: "Where a project is of a scale that no feasibility or preliminary design stage audit has been necessary and the project has progressed directly to detailed design, Audit Stages 1 and 2 can be combined at Stage 2 and referred to as a Stage 1 / 2. The relevant road authority should be consulted on the audit stages that shall be undertaken."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf
+    source_title: "Emirate of Abu Dhabi Road Safety Audit Manual (TR-540, Second Edition), Section 9 Audit Stages (PDF p. 21)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-540 Second Edition
+    publication_date: 2023-06
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-032
+    claim: "TR-540 Second Edition makes auditor independence central to the procedures: no member of the Audit Team may have had any connection with the design of the measures being audited, and that independence must be maintained throughout the audit process (direct contact with the Design Team remains permitted, e.g. for clarifying the Audit Brief)."
+    quote: "It is central to the auditing procedures that no member of the Audit Team has had any connection with the design of the measures being audited and should maintain this independence throughout the audit process."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf
+    source_title: "Emirate of Abu Dhabi Road Safety Audit Manual (TR-540, Second Edition), Section 10 Road Safety Audit Procedure, “Independence of the Road Safety Audit Team” (PDF p. 22)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-540 Second Edition
+    publication_date: 2023-06
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-033
+    claim: "In UAE practice the designer's formal reply is termed the Design Team Response (DTR): it notes the issues identified and recommendations made, proposes actions in response and advises the scheme's Client on next steps; the DTR is for the Client rather than the Audit Team, and the Client makes the final decision on the way forward — resolving the acronym behind the manual's response/exception machinery (whose Appendix C artifact is titled “RSA Decision Tracking Form”)."
+    quote: "The Design Team Response (DTR) should note the issues identified and recommendations made, propose actions in response and advise the Client to the scheme on next steps. The DTR is supposed to be for the Client, not the Audit Team, and the Client should make the final decision on the way forward."
+    source_url: https://www.ciht.org.uk/media/13643/4-ciht-dubai-road-safety-audit-bulletin-070720.pdf
+    source_title: "CIHT Dubai Evening Seminar Bulletin — Planning, Executing and Responding to Road Safety Audits, DTR workflow description (7 July 2020), p. 2"
+    publisher: Chartered Institution of Highways & Transportation (CIHT) Dubai group (non-official bulletin)
+    revision: null
+    publication_date: 2020-07-14
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: medium
+  - evidence_id: EV-AE-034
+    claim: "At Stage 3 RSA, TR-540 requires the road safety auditor to be aware of issues impacting all road users including the continuity of pedestrian, cycle, mobility-impaired, micromobility (“micro mobility”) and other vulnerable road user accesses and facilities, and directs reference to an Interim Advice Note on Vulnerable Road Users — VRU provisions embedded directly in the audit workflow."
+    quote: "It is essential at the Stage 3 RSA that the road safety auditor is aware of issues that may impact on all road users including the continuity of pedestrian, cycle, mobility impaired, micro mobility users and other vulnerable road user accesses and facilities. Reference should be made to the Interim Advice Note on Vulnerable Road Users."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf
+    source_title: "Emirate of Abu Dhabi Road Safety Audit Manual (TR-540, Second Edition), Section 9 Audit Stages, Stage 3 site-attendance guidance (PDF p. 16)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-540 Second Edition
+    publication_date: 2023-06
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-035
+    claim: "TR-514 §2.13 hard-wires TR-540 into the geometric-design workflow: designers must ensure all schemes undergo the relevant pre-construction stage audits — Conceptual Design (Stage 0), Preliminary Design (Stage 1), Detailed Design (Stage 2) — considering safety requirements for ALL road users, with each stage audit closed by the relevant Abu Dhabi Transport Infrastructure authority before progressing to the next design stage or before “Issued for Construction” (IFC) drawings are issued; all pedestrian and cycling facility improvements are subject to RSA conducted by an independent third party from the design team. (Original spelling “Conctruction” preserved.)"
+    quote: "Designers to ensure that all schemes to undergo relevant stage audits as per requirements set out in the Road Safety Audit Manual TR-540; designers to ensure consideration of safety requirements for ALL Road users. The following Pre-Construction Audits to be undertaken: Conceptual Design Stage Audits (Stage 0) Preliminary Design Stage Audits (Stage 1) Detailed Design Stage Audit (Stage 2) The above stage audits must be closed by the relevant Abu Dhabi Transport Infrastructure authority to move to the next stage of Design or before “Issued for Conctruction” (IFC) Drawings are issued. All pedestrian and cycling facilities improvements are subject to RSA in accordance with TR -540. RSA to be conducted by an independent 3rd party from the design team."
+    source_url: https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-514.pdf
+    source_title: "Road Geometric Design Manual (TR-514, Second Edition), Section 2.13 “Road Safety Audit” (PDF p. 141)"
+    publisher: Department of Municipalities and Transport (DMT) / Quality and Conformity Council (QCC), Government of Abu Dhabi
+    revision: TR-514 Second Edition
+    publication_date: 2021-11
+    retrieved_date: 2026-08-23
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-AE-036
+    claim: "Per the TR-540 update co-author speaking at the May 2025 CIHT UAE seminar, under the forthcoming standard risk will be assessed on Safe System principles such that if a pedestrian can be hit at 30 km/h or above it is a problem, and pedestrians, junctions and roads at prevailing high UAE speed limits do not comply with the Safe Systems Approach — concretising the quantitative-risk direction flagged in [EV-AE-023] and predicting audit conflict over speed."
+    quote: "Under the new Road Safety Audit standard, risk is assessed based on the Safe Systems and if a pedestrian can be hit at 30 kph or above it is a problem. As I alluded to earlier, pedestrians, junctions and roads at our high-speed limits do not comply with the Safe Systems Approach."
+    source_url: https://www.ciht.org.uk/media/nwpbxpab/road-safery-audit-event-bulletin.pdf
+    source_title: "CIHT UAE Seminar Bulletin — Road Safety Audit: TR-540 Manual Update & Common RSA Problems, Q&A on Safe Systems risk thresholds (13 May 2025), p. 3"
+    publisher: Chartered Institution of Highways & Transportation (CIHT) UAE group (non-official bulletin)
+    revision: null
+    publication_date: 2025-05-26
+    retrieved_date: 2026-08-23
+    normative_status: informative
+    confidence: medium
 ---
 
 # UAE Road Safety Audit Practice — Research Artifact (Ticket R5)

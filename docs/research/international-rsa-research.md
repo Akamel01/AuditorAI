@@ -172,7 +172,101 @@ evidence_records:
     retrieved_date: "2026-08-23"
     normative_status: recommended
     confidence: high
+  - evidence_id: EV-IN-017
+    claim: The CAREC Road Safety Engineering Manual 1 defines six internationally recognized road safety audit stages following the project lifecycle — feasibility, preliminary design, detailed design, road works, pre-opening, and existing-road (road safety inspections) — noting the earlier an audit is carried out, the easier and cheaper effective changes usually are; its first three native stages map directly onto FEASIBILITY_CONCEPT → PRELIMINARY_DESIGN → DETAILED_DESIGN.
+    quote: "There are six internationally recognized stages during the planning, design, and construction of a road project at which a road safety audit can be conducted. They follow the accepted phases in the planning, design, construction, operation, and maintenance of a road:"
+    source_url: https://www.carecprogram.org/uploads/CAREC-Manual-1_RSA_English_FIN.pdf
+    source_title: "CAREC Road Safety Engineering Manual 1: Road Safety Audit, ch. II.B \u201cThe six stages of road safety audit\u201d ¶33–34 (ADB/CAREC, March 2018)"
+    publisher: ADB/CAREC
+    revision: null
+    publication_date: "2018-03"
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-018
+    claim: CAREC stage checklists are semantically loaded for candidate generation — a negative answer (No) to any checklist question means there is a possible safety issue that may need to enter the audit report, while Yes only means examined-and-unlikely-to-be-an-issue; teams are also warned that checklists are detailed but not exhaustive and that "a successful audit is not achieved by just ticking each item on the checklist."
+    quote: "The checklists are carefully worded so a negative answer (No) to any question means there is a safety issue that may need to be included in the audit report."
+    source_url: https://www.carecprogram.org/uploads/CAREC-Manual-1_RSA_English_FIN.pdf
+    source_title: "CAREC Road Safety Engineering Manual 1: Road Safety Audit, ch. VI Checklists ¶168 (checklist usage rules; per-stage checklists in Table 12)"
+    publisher: ADB/CAREC
+    revision: null
+    publication_date: "2018-03"
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-019
+    claim: CAREC report-writing rules discipline recommendations toward proportionality and designer ownership — avoid over-specific prescriptions unless certain the recommendation is the only remedy, weigh cost/term options, stay realistic relative to risk and treatment cost, be constructive/clear/practical, maintain technical credibility, and never redesign the project (that is the design team's role); Table 6 contrasts redesign-heavy recommendation wording with wording that guides designers.
+    quote: "Avoid being too specific with recommendations, unless absolutely certain the recommendation is the only one."
+    source_url: https://www.carecprogram.org/uploads/CAREC-Manual-1_RSA_English_FIN.pdf
+    source_title: "CAREC Road Safety Engineering Manual 1: Road Safety Audit, ch. III Carrying out a Road Safety Audit ¶91–92 incl. Table 6 \u201cSome Examples of Audit Report Recommendations\u201d"
+    publisher: ADB/CAREC
+    revision: null
+    publication_date: "2018-03"
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-020
+    claim: The AfDB RSA manual structures audits as five numbered native stages (Stage 1 Feasibility Study → Stage 2 Preliminary Design → Stage 3 Detailed Design → Stage 4 Pre-Opening → Stage 5 Post-Opening) across pre-construction/construction/post-construction phases, permits merging stages for smaller schemes (e.g. combining Stage 2 and Stage 3 RSAs), reserves the full five-stage sequence for long-term major projects, and sets a floor of at least one pre-construction plus one post-construction audit on every scheme, with all road users considered at every stage.
+    quote: "Depending on the size and scope of the project, some stages may be merged (e.g. combining Stage 2 and Stage 3 RSAs). A five-stage audit is only undertaken for long term major projects. One audit from the pre- and post- construction phases must be undertaken as a minimum requirement on all schemes. At all stages of audit the needs of all road users must be considered."
+    source_url: https://www.afdb.org/fileadmin/uploads/afdb/Documents/Publications/ROAD_SAFETY_MANUALS_FOR_AFRICA_-_New_Roads_and_Schemes___Road_Safety_Audit.pdf
+    source_title: "Road Safety Manuals for Africa — New Roads and Schemes: Road Safety Audit, ch. 4 RSA Stages (stage list + Table 1 critical stages by scheme scale)"
+    publisher: AfDB
+    revision: null
+    publication_date: "2014-07"
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-021
+    claim: The AfDB manual's Appendix C supplies a complete specimen Stage 1 RSA report whose section skeleton runs C.1 Introduction → C.2 Background Information → C.3 Findings and Recommendations → C.4 Concluding Statements (signed audit-team certification that the audit followed the AfDB manual, plans were examined and the site inspected "for the sole purpose of identifying" alterable safety features) → C.5 Documents Submitted (numbered drawing schedule with revisions) → C.6 problem-location drawings; each finding follows a fixed four-part phrasing pattern — Location, Summary, Nature (hazard-to-harm reasoning), Recommendation — a direct template for the product's Finding fields and report assist contract.
+    quote: "C.3.1 Problem 1 Location: East side of St Paul Street north of Mayberry Street Summary: Lack of pedestrian crossing facility Nature: At this location there is an existing layby which does not have facilities to assist pedestrians particularly the visually and mobility impaired."
+    source_url: https://www.afdb.org/fileadmin/uploads/afdb/Documents/Publications/ROAD_SAFETY_MANUALS_FOR_AFRICA_-_New_Roads_and_Schemes___Road_Safety_Audit.pdf
+    source_title: "Road Safety Manuals for Africa — New Roads and Schemes: Road Safety Audit, Appendix C: Sample Road Safety Audit Report (Narusha specimen), §§C.1–C.6, Problem 1 at §C.3.1"
+    publisher: AfDB
+    revision: null
+    publication_date: "2014-07"
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-022
+    claim: iRAP SR4D as applied on KSHIP documents a full design-stage input→output chain: baseline star ratings from road-survey coding → initial designs Star Rated by re-coding the survey data to match design attributes taken from upgrade schedules, standard cross-sections and drawings → ratings used to test design iterations against a 3-star target; the re-coding rules are explicit and machine-checkable (design speeds assumed unless restricted to ≤40 km/h via calming, linear attributes counted only where contiguous ≥100 m, surface 'good' where reconstruction proposed), reusable as intake-validation logic for design assessment.
+    quote: "At the completion of the initial design phase, the designs were Star Rated, so that expected changes in infrastructure-related risk could be quantified and compared both with the baseline Star Ratings and the 3-star target. The process for Star Rating the designs involved amending (or re-coding) the survey data for the existing roads to match the design attributes."
+    source_url: https://indiarap.org/wp-content/uploads/2020/08/2012-iRAP-SR4D-KSHIP.pdf
+    source_title: "iRAP Star Ratings of road designs, Karnataka State Highways Improvement Project (KSHIP) — 550 km of concession roads (doc ref 502.15.17), §2.4 Star Rating initial road designs"
+    publisher: iRAP
+    revision: "502.15.17"
+    publication_date: "2012-03-01"
+    retrieved_date: "2026-08-23"
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-IN-023
+    claim: The KSHIP SR4D assessment quantifies its outcome end-to-end: the final design reduced the share of road rated 1–2-star (high risk) from 86% to 2% for vehicle occupants and from 100% to 12% for pedestrians (estimated ~30,000 deaths and serious injuries prevented over 20 years), with most countermeasure recommendations incorporated into the rehabilitation bidding documents — evidence that design-stage safety assessment yields contractible, auditable outputs rather than advisory commentary.
+    quote: "The final design as used in this analysis resulted in a reduction of the percentage of road rated 1- or 2-stars (high risk) for vehicle occupants from 86% to 2%. For pedestrians, the percentage of high risk roads dropped from 100% to 12%."
+    source_url: https://indiarap.org/wp-content/uploads/2020/08/2012-iRAP-SR4D-KSHIP.pdf
+    source_title: "iRAP Star Ratings of road designs, KSHIP (doc ref 502.15.17), Executive summary and §3 Conclusions (per-user-group rating tables, existing → final design)"
+    publisher: iRAP
+    revision: "502.15.17"
+    publication_date: "2012-03-01"
+    retrieved_date: "2026-08-23"
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-IN-024
+    claim: PIARC's Paris 2007 congress presentation of the then-draft RSA Guidelines (TC 3.1; predecessor lineage of 2011R01/2023R40EN) already framed RSA as five audit moments — feasibility, preliminary design, detailed design, pre-opening, post-opening — a three-part process (commissioning / undertaking / completion), and stage checklists organized into eight fixed sections (Function; Cross Section; Alignment; Intersections; Public and Private Services; Vulnerable road users; Traffics Signing and Marking [sic]; Roadside Features), historically anchoring today's international stage/checklist framing.
+    quote: "1. Feasibility 2. Preliminary design 3. Detailed design 4. Pre-opening and 5. Post-opening"
+    source_url: https://proceedings-paris2007.piarc.org/ressources/files/1/Presentation-SP20-3-FOURNIER.pdf
+    source_title: "PIARC Guidelines for Road Safety Audits — L. Fournier, XXIIIrd World Road Congress Paris 2007, Special Project session SP20 paper 3, slide 9 (\u201cWhen should Audits be carried out?\u201d; checklist sections slide 16)"
+    publisher: PIARC
+    revision: null
+    publication_date: "2007-10"
+    retrieved_date: "2026-08-23"
+    normative_status: informative
+    confidence: high
 access_notes:
+  - Records EV-IN-017…EV-IN-024 were extracted 2026-08-23 from the four in-repo PDFs named in their
+    `source_url`s (CAREC, AfDB, iRAP/KSHIP from tests/fixtures/samples/INT; PIARC Paris-2007 presentation
+    from docs/references/INT). All four passed `qpdf --check` unencrypted (benign linearization warnings
+    only); text extracted with pypdf page-by-page to scratch files outside the repo. Every quote above was
+    verified verbatim by whitespace-normalized substring match against its extraction; original typos
+    preserved (e.g. "pre- and post- construction", "Traffics Signing and Marking").
   - The full-text PDF of PIARC 2023R40EN is publicly linked from its official order-library page [EV-IN-001]. Initial automated fetch returned site navigation; an owner-provided copy is now archived in-repo via Git LFS at `docs/references/INT/2023R40EN-Road-Safety-Audit-Guidelines-for-Road-Projects-PIARC-Technical-Report.pdf` (AES owner-password removed with qpdf; text extracted with pypdf, all pages). Quotes in [EV-IN-015] and [EV-IN-016] are taken directly from that extraction and verified verbatim after whitespace normalisation.
   - ISO standard full texts are paywalled (ISO 39001:2012 listed at CHF 181); only abstracts, metadata and life-cycle data were consulted [EV-IN-006][EV-IN-007].
 ---

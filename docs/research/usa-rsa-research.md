@@ -220,6 +220,121 @@ evidence_records:
     retrieved_date: 2026-08-21
     normative_status: informative
     confidence: medium
+  - evidence_id: EV-US-023
+    claim: "FHWA states the principal focus of an RSA is to identify potential road safety issues caused by the design or by some operational aspect of the design, and that the RSA should not focus on issues such as standards compliance unless non-compliance is a relevant road safety issue."
+    quote: "The principal focus of the RSA is to identify potential road safety issues caused by the design, or by some operational aspect of the design. The RSA should not focus on issues such as standards compliance unless non-compliance is a relevant road safety issue."
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Chapter 3 essential elements: Focus on Road Safety Issues (report p.15)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-024
+    claim: "Within FHWA's pre-construction phase, preliminary design RSAs are anchored at plans 30-40% complete and detailed design RSAs at plans 60-80% complete; planning-stage RSAs are acknowledged via Prompt List 1, but this guideline edition provides no planning-stage method details."
+    quote: "This chapter will discuss two stages of RSAs that may occur within the pre-construction phase: • Preliminary design stage RSAs (plans 30-40% complete). • Detailed design stage RSAs (plans 60-80% complete)."
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Chapter 5.0 Pre-construction Road Safety Audits (report p.41)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-US-025
+    claim: "Per FHWA, the test of RSA team independence is functional rather than organizational: what matters is whether auditors can act independently of the project owner/design team, not whether they are drawn from internal or external sources."
+    quote: "The key element to consider when deciding if the team is truly independent is whether the auditors can act independently of the project owner/design team, and not whether they are drawn from internal or external resources."
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Section 4.2 Step 2: Select an RSA Team (report p.27)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-026
+    claim: "FHWA specifies that RSAs are performed by a team of at least three auditors representing a variety of experience and expertise (design, traffic, maintenance, construction, safety, local officials, enforcement personnel, first-responders, human factors), tailored to the project."
+    quote: "RSAs are performed by a team (at least three auditors)"
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Chapter 3 essential elements: Team Review (report p.15)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-027
+    claim: "FHWA directs that RSA prompt lists, even the most detailed ones, be treated as prompts only: an aid in applying knowledge and experience, not a substitute for it."
+    quote: "RSA prompt lists, even the most detailed ones, should be viewed as a prompt only. They are not a substitute for knowledge and experience;"
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Section 8.1 Purpose of Prompt Lists (report p.51)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-028
+    claim: "FHWA report-writing discipline: judgmental labels such as unsafe, sub-standard, unacceptable, and deficient should be avoided; suggestions must be constructive and realistic given cost, present options rather than demand specific corrective measures, and leave implementation choices to the project owner and design team."
+    quote: "Terms such as “unsafe”, “sub-standard”, “unacceptable”, and “deficient” should be avoided. Suggestions for improvement should be constructive and realistic (bearing in mind the costs involved), and should recognize that the project owner may have several different options to achieve the desired result. The audit team leader should not demand specific corrective measures."
+    source_url: "https://rosap.ntl.bts.gov/view/dot/49213/dot_49213_DS1.pdf"
+    source_title: "FHWA Road Safety Audit Guidelines, Section 4.5 Step 5: Conduct Audit Analysis and Prepare Report of Findings (report p.36)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-06-06"
+    publication_date: 2006-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-029
+    claim: "FHWA's current combined pedestrian/bicyclist RSA guide restates the compliance boundary: standards checks belong to the design process, while the general intent of an RSA is to identify areas where applied designs may interact with road user behaviors to generate a potential safety issue."
+    quote: "An RSA is not simply a standards check. Although important, standards checks are included in the design process to confirm adherence to the design standards applicable to the project. The RSA Team may identify safety issues by comparing items of concern to standards and to key industry guidance publications. The general intent of an RSA is to identify areas where applied designs may interact with road user behaviors to generate a potential safety issue."
+    source_url: "https://safety.fhwa.dot.gov/ped_bike/tools_solve/docs/fhwasa20042.pdf"
+    source_title: "Pedestrian and Bicyclist Road Safety Audit (RSA) Guide and Prompt Lists, RSA Overview and Process (report p.19)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-20-042"
+    publication_date: 2020-09-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-US-030
+    claim: "FHWA characterizes the most serious pedestrian and bicyclist crashes by a separation-failure mechanism: they typically occur where pedestrians and bicyclists are not separated from motor vehicles in space through physical means, or in time through traffic controls or operational features."
+    quote: "What these types of frequently serious crashes have in common is that they typically occur at locations where the pedestrians and bicyclists are not separated in space through physical means, or in time through traffic controls or operational features."
+    source_url: "https://safety.fhwa.dot.gov/ped_bike/tools_solve/docs/fhwasa20042.pdf"
+    source_title: "Pedestrian and Bicyclist Road Safety Audit (RSA) Guide and Prompt Lists, Separation of Road Users (report p.7)"
+    publisher: "Federal Highway Administration, Office of Safety"
+    revision: "FHWA-SA-20-042"
+    publication_date: 2020-09-01
+    retrieved_date: "2026-08-23"
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-US-031
+    claim: "Idaho ITD's state RSA manual imposes team independence in mandatory program language (shall), pairing it with the purpose of identifying existing or potential road safety hazards affecting all road users under all road-operating conditions."
+    quote: "An independent, qualified and multidisciplinary team shall perform the RSA."
+    source_url: "https://apps.itd.idaho.gov/apps/manuals/SafetyAudit/SafetyAudit.pdf"
+    source_title: "Idaho Transportation Department Road Safety Audit Manual, Section 1.2 Scope (report p.1)"
+    publisher: "Idaho Transportation Department"
+    revision: null
+    publication_date: 2012-01-01
+    retrieved_date: "2026-08-23"
+    normative_status: mandatory
+    confidence: high
+  - evidence_id: EV-US-032
+    claim: "SCDOT interchange design guidance requires explicit pedestrian and bicyclist treatment at interchanges: signing and lane markings to increase awareness, with signing, crosswalks, barriers, over- and underpasses, bridge sidewalks, and other traffic control devices as may be required to manage traffic movements and control pedestrian and bicycle movements."
+    quote: "Use signing and lane markings to increase awareness of pedestrians and bicyclists. Signing, crosswalks, barriers, over and underpasses, bridge sidewalks and other traffic control devices may be required to manage traffic movements and to control pedestrian and bicycle movements."
+    source_url: "https://www.scdot.org/content/dam/scdot-legacy/business/pdf/roadway/revisedchapters/Chapter%2010%20-%20Interchanges.pdf"
+    source_title: "SCDOT Roadway Design Manual Chapter 10: Interchanges, Section 10.3.14 Operational/Safety Considerations, item 7 Pedestrians and Bicyclists (sheet 10.3-10)"
+    publisher: "South Carolina Department of Transportation"
+    revision: "Chapter 10 sheet rev. February 2021"
+    publication_date: 2021-02-01
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+access_notes:
+  - "PDF mining pass 2026-08-23: none of the nine docs/references/US PDFs is encrypted (qpdf --show-encryption reports 'File is not encrypted'; some show qpdf --check warnings but open fine). Text extracted with pypdf into files marked ===== PAGE N ===== where N is the PDF page sequence, not the printed page number."
+  - "Printed-page offsets vs PDF page markers: FHWA-SA-06-06 printed = PDF - 10; FHWA-SA-20-042 printed = PDF - 8; FHWA-SA-12-018 printed = PDF - 6; ITD manual printed = PDF - 3; SCDOT Ch.10 uses engineering sheet numbers 10.3-N with footer revision 'February 2021'."
+  - "pypdf quirks in these files: words hyphen-split across line breaks (e.g., 'experi-/ence', 'individ-/uals', 'applica-/tion') defeat substring checks even after whitespace normalization — verify quotes against normalized text and trim quote spans to avoid split words; pedestrian-rsa-guidelines-prompt-lists-2007 contains fi/fl ligature glyphs and stray /gNNN glyph artifacts mid-sentence, so prefer quoting from other US PDFs when possible."
+
 ---
 
 # USA Road Safety Audit Research (FHWA / AASHTO / NCHRP)

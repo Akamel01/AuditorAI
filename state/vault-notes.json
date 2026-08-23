@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 21,
+  "note_count": 22,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -241,7 +241,7 @@
         "issues": [],
         "adr": []
       },
-      "body_chars": 2531
+      "body_chars": 4107
     },
     {
       "path": "vault/journal/2026-08-23-phase0-gf9-primary-source.md",
@@ -287,6 +287,21 @@
         "adr": []
       },
       "body_chars": 1880
+    },
+    {
+      "path": "vault/journal/2026-08-23-t31-evidence-expansion.md",
+      "zone": "vault/journal",
+      "title": "T3.1 complete: registry expanded to 152 records via quote extraction from reference library",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2565
     },
     {
       "path": "vault/journal/2026-08-23-ticket-21-verify-close.md",
