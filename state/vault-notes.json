@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 18,
+  "note_count": 19,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -107,6 +107,21 @@
         "adr": []
       },
       "body_chars": 3613
+    },
+    {
+      "path": "vault/journal/2026-08-23-candidate-review.md",
+      "zone": "vault/journal",
+      "title": "Candidate review UX — promotion model (ADR-0006 / DEC-0007)",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1895
     },
     {
       "path": "vault/journal/2026-08-23-dec0005-implementation.md",

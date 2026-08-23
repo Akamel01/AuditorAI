@@ -12,27 +12,11 @@ import {
   type ChatMessage,
   type ReasoningEffort,
 } from "@/lib/inference";
-import type { AuditResult } from "@/domain/types";
+import type { AuditResult, CandidateFindingRecord } from "@/domain/types";
 
-export type CandidateFinding = Pick<
-  Finding,
-  | "kind"
-  | "category"
-  | "location"
-  | "road_users"
-  | "scenario"
-  | "statement"
-  | "evidence"
-  | "assumptions"
-  | "rationale"
-  | "recommendation"
-> & {
-  producer: string;
-  /** M3: drawing ids this candidate was derived from (vision path). */
-  source_attachment_ids?: string[];
-};
-
-type Finding = AuditResult["findings"][number];
+/** Single source of truth lives in domain/types (ADR-0006); lib/ai re-exports
+ *  under the adapter-facing name. */
+export type CandidateFinding = CandidateFindingRecord;
 
 /** M3 vision budget: max drawings passed as image blocks per judge/candidate call. */
 export const MAX_IMAGES_PER_CALL = 4;

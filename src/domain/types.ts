@@ -128,6 +128,25 @@ export interface MissingInformationQuestion {
   evidence_ids: string[];
 }
 
+/** ADR-0006: an AI-proposed finding awaiting auditor review. Structurally a
+ *  strict subset of Finding plus provenance; it is never itself a report
+ *  member — promotion mints the Finding. */
+export interface CandidateFindingRecord {
+  kind: Finding["kind"];
+  category: string;
+  location: string | null;
+  road_users: string[];
+  scenario: string | null;
+  statement: Finding["statement"];
+  evidence: Finding["evidence"];
+  assumptions: Finding["assumptions"];
+  rationale: string;
+  recommendation: string | null;
+  producer: string;
+  /** Drawing ids this candidate was derived from (vision path). */
+  source_attachment_ids?: string[];
+}
+
 export interface AuditContext {
   project_id: string;
   jurisdiction: JurisdictionId;
@@ -168,6 +187,9 @@ export interface AuditResult {
   }[];
   limitations: string[];
   disclaimer: string;
+  /** ADR-0006: pending AI candidates on a live-path draft. Absent on
+   *  deterministic results; consumed by promotion, never rendered as findings. */
+  candidate_findings?: CandidateFindingRecord[];
 }
 
 /** ADR-0004 / DEC-0005: an immutable, numbered snapshot of an Audit's results

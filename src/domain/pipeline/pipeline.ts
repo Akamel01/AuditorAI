@@ -161,7 +161,15 @@ export class DefaultAuditPipeline implements AuditPipeline {
     if (!state.report_bundle) {
       throw new Error("pipeline batch run finished without a report bundle");
     }
-    return { result: state.report_bundle.json, artifacts, state };
+    // ADR-0006: pending candidates ride on the live-path result for auditor
+    // review; deterministic results and the assembled bundle stay untouched
+    // (byte-stability), so the field is present only when candidates exist.
+    const json = state.report_bundle.json;
+    const result =
+      state.candidate_findings && state.candidate_findings.length > 0
+        ? { ...json, candidate_findings: state.candidate_findings }
+        : json;
+    return { result, artifacts, state };
   }
 
   runAllArtifacts(project: Project, ranAtIso: string): PipelineRun {

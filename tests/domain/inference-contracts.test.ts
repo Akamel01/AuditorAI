@@ -129,7 +129,7 @@ describe("inference contracts (A2)", () => {
     const project = loadProject(FILES[0]);
     const { state } = await pipeline.runAllLiveArtifacts(project, T0, { aiAdapter: adapter });
 
-    const candidate = state.candidate_findings![0] as Record<string, unknown>;
+    const candidate = state.candidate_findings![0] as unknown as Record<string, unknown>;
     for (const key of Object.keys(candidate)) {
       expect(CANDIDATE_FIELD_BOUND, `${key} is not a declared candidate field`).toContain(key);
     }

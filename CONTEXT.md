@@ -60,6 +60,16 @@ Native Stage and mapping confidence.
 compliance question about the Scheme, with location, affected road users, evidence,
 risk characterization, recommendation, and reviewer status.
 
+**Candidate** — an AI-proposed finding awaiting auditor review. A species distinct
+from Finding: it is never itself a report member and never reaches one by passive
+means. Candidates are per-run work items on a draft; a rerun replaces them like any
+other unissued result. (Decision 2026-08-23; ADR-0006.)
+
+**Promotion** — the explicit act by which the Auditor turns a Candidate into a
+Finding: identity is minted at promotion, provenance is recorded, and the wording
+discipline applies exactly as it does to any other finding edit. Rejection drops
+the Candidate without minting anything.
+
 **Hazard** — a condition of the Scheme or its environment with potential to contribute to
 harmful outcome for road users.
 

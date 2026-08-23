@@ -12,7 +12,7 @@ import {
   buildFindingUpdate,
   type ReviewerStatusAction,
 } from "@/domain/finding-review";
-import type { AuditIssue, AuditResult, Finding } from "@/domain/types";
+import type { AuditIssue, AuditResult, CandidateFindingRecord, Finding } from "@/domain/types";
 
 export default function AuditPage() {
   const { projectId: id, auditId } = useParams<{ projectId: string; auditId: string }>();
@@ -80,6 +80,30 @@ export default function AuditPage() {
           <FindingCard key={f.finding_id} f={f} projectId={id} auditId={auditId} onChanged={load} />
         ))}
       </section>
+
+      {/* AI candidates pending review (ADR-0006) */}
+      {(audit.candidate_findings?.length ?? 0) > 0 && (
+        <section className="mt-8 space-y-4">
+          <h2 className="text-lg font-semibold">
+            AI candidates ({audit.candidate_findings!.length})
+          </h2>
+          <p className="text-xs text-neutral-500">
+            AI-proposed, boundary-validated findings awaiting your review. Accepting promotes
+            a candidate into the findings list with recorded provenance; rejecting drops it.
+            Unreviewed candidates are named in any issued report's limitations.
+          </p>
+          {audit.candidate_findings!.map((c, i) => (
+            <CandidateCard
+              key={i}
+              c={c}
+              index={i}
+              projectId={id}
+              auditId={auditId}
+              onChanged={load}
+            />
+          ))}
+        </section>
+      )}
 
       {/* Missing information */}
       <section className="mt-8">
@@ -209,6 +233,107 @@ export default function AuditPage() {
         </pre>
       </section>
     </main>
+  );
+}
+
+function CandidateCard({
+  c,
+  index,
+  projectId,
+  auditId,
+  onChanged,
+}: {
+  c: CandidateFindingRecord;
+  index: number;
+  projectId: string;
+  auditId: string;
+  onChanged: () => void;
+}) {
+  const [rec, setRec] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function act(action: "accept" | "accept_with_edits" | "reject") {
+    setBusy(true);
+    try {
+      await api(`/api/projects/${projectId}/audits/${auditId}`, {
+        method: "PATCH",
+        json: {
+          candidate_promotions: [
+            {
+              index,
+              action,
+              ...(action === "accept_with_edits" && rec.trim() ? { edited_recommendation: rec } : {}),
+            },
+          ],
+        },
+      });
+      onChanged();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="rounded-lg border border-dashed p-4 text-sm" data-testid="candidate-card">
+      <div className="flex items-center justify-between gap-2">
+        <span
+          className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+            c.kind === "safety_concern"
+              ? "bg-red-100 text-red-800"
+              : "bg-blue-100 text-blue-800"
+          }`}
+        >
+          {humanizeEnum(c.kind)} · candidate
+        </span>
+        <code className="text-[11px] text-neutral-500">{c.producer}</code>
+      </div>
+      <p className="mt-2 font-medium">{c.statement.text}</p>
+      {c.evidence.length > 0 && (
+        <p className="mt-1 text-xs text-neutral-500">
+          Evidence: {c.evidence.map((e) => e.evidence_id).join(", ")}
+        </p>
+      )}
+      {c.source_attachment_ids && c.source_attachment_ids.length > 0 && (
+        <p className="mt-1 text-xs text-neutral-500">
+          Derived from drawings: {c.source_attachment_ids.join(", ")}
+        </p>
+      )}
+      {c.recommendation && (
+        <p className="mt-1 text-xs italic text-neutral-600">Proposed: {c.recommendation}</p>
+      )}
+      <textarea
+        value={rec}
+        onChange={(e) => setRec(e.target.value)}
+        rows={2}
+        placeholder="Edited recommendation (optional; 'consider'/'must' are rejected)"
+        className="mt-3 w-full rounded border px-2 py-1.5 text-xs"
+      />
+      <div className="mt-2 flex flex-wrap gap-2">
+        <button
+          disabled={busy}
+          onClick={() => act("accept")}
+          className="rounded bg-black px-2 py-1 text-xs text-white disabled:opacity-40"
+        >
+          accept
+        </button>
+        <button
+          disabled={busy}
+          onClick={() => act("accept_with_edits")}
+          className="rounded border bg-neutral-50 px-2 py-1 text-xs hover:bg-neutral-100 disabled:opacity-40"
+        >
+          accept with edits
+        </button>
+        <button
+          disabled={busy}
+          onClick={() => act("reject")}
+          className="rounded border px-2 py-1 text-xs hover:bg-neutral-100 disabled:opacity-40"
+        >
+          reject
+        </button>
+      </div>
+    </div>
   );
 }
 

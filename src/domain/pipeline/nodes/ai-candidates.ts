@@ -117,7 +117,7 @@ function projectCandidate(c: CandidateFinding, consideredIds: string[]): Candida
   for (const f of CANDIDATE_FIELDS) {
     if (f in c) bounded[f] = c[f as keyof typeof c];
   }
-  return bounded as CandidateFinding;
+  return bounded as unknown as CandidateFinding;
 }
 
 function refused(ctx: NodeRunCtx, reason: string): NodeResult {

@@ -54,6 +54,15 @@
       "status": "accepted",
       "date": "2026-08-23T00:00:00Z",
       "decided_by": "project owner (HITL grilling session)"
+    },
+    {
+      "decision_id": "DEC-0007",
+      "adr_path": "docs/adr/0006-candidate-promotion.md",
+      "wayfinder_ticket": null,
+      "title": "Candidate promotion model: AI proposals are a distinct species; review promotes (mints F-AI-* Finding with provenance) or drops; per-run ephemerality; issuance over unreviewed candidates succeeds loudly",
+      "status": "accepted",
+      "date": "2026-08-23T00:00:00Z",
+      "decided_by": "project owner (HITL, reviewer grill session)"
     }
   ]
 }

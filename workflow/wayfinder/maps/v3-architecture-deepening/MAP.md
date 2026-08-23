@@ -44,9 +44,11 @@ every phase; goldens byte-stable throughout.
 2. **Candidates → adjudication semantics**: contracts promise AG-ADJUDICATION consumes
    `candidate_findings`; implementation drops them pre-report (`pipeline-live.test.ts:80`
    enshrines this). This effort amends contract text to match implemented reality +
-   makes unknown-finding_id decisions record loudly. **DECIDED 2026-08-23 (owner):
-   candidates get a future auditor-review UX** (accept/edit/reject before adjudication)
-   — roadmap commitment, product ticket queued; contracts will change again when built.
+   makes unknown-finding_id decisions record loudly. **DECIDED + IMPLEMENTED
+   2026-08-23 (owner grill): candidate promotion model (ADR-0006 / DEC-0007)** —
+   distinct species; review promotes into F-AI-* Findings post-pipeline or drops;
+   per-run ephemerality; issuance over unreviewed candidates succeeds loudly.
+   Pipeline nodes and node contracts unchanged.
 3. **Eval live mode** added as opt-in flag only; E5 trigger-path policy unchanged.
    **DECIDED 2026-08-23 (owner): `--live` is owner-run only** — on demand, never
    automated or CI-scheduled (policy noted in run-eval.ts header).

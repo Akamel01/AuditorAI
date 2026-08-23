@@ -1,8 +1,11 @@
 // GET/PATCH /api/projects/[projectId]/audits/[auditId]
-// PATCH updates reviewer statuses / notes / recommendations on findings.
+// PATCH updates reviewer statuses / notes / recommendations on findings and
+// promotes/rejects AI candidates (ADR-0006) — both post-pipeline on the
+// stored draft, mirroring the production review flow.
 import { NextResponse } from "next/server";
 import { badRequest, notFound, requireWorkspace, serverError } from "@/lib/api";
 import { validateRecommendationWording } from "@/domain/engine";
+import { applyCandidatePromotions, type CandidatePromotion } from "@/domain/candidate-review";
 import type { Finding } from "@/domain/types";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
@@ -35,6 +38,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
         likelihood?: string | null;
       }[];
       question_marked?: { question_id: string; addressed: boolean }[];
+      candidate_promotions?: CandidatePromotion[];
     };
 
     for (const u of body.finding_updates ?? []) {
@@ -63,6 +67,15 @@ export async function PATCH(req: Request, ctx: Ctx) {
       const item = audit.audit_questions.find((x) => x.question_id === q.question_id);
       if (!item) return badRequest(`unknown question ${q.question_id}`);
       item.addressed = q.addressed;
+    }
+
+    if (body.candidate_promotions?.length) {
+      const applied = applyCandidatePromotions(audit, body.candidate_promotions);
+      if (!applied.ok) return badRequest(applied.error);
+      audit.findings = applied.value.findings;
+      if (applied.value.candidate_findings)
+        audit.candidate_findings = applied.value.candidate_findings;
+      else delete audit.candidate_findings;
     }
 
     await auth.repo.saveAudit(auth.ws, audit);

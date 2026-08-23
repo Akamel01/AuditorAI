@@ -16,6 +16,8 @@ src/
     project-edits.ts             pure project create/patch policy (stage gate, no-silent-
                                  detach merge); routes parse → call → respond
     finding-review.ts            reviewer-status actions + PATCH payload shape (ADR-0003)
+    candidate-review.ts          candidate promotion: F-AI-* minting, wording-gate parity,
+                                 index-stable batch application (ADR-0006)
     engine.ts                    runAudit(): thin compatibility facade over pipeline.runAll
     pipeline/                    registry-driven audit graph
       registry.ts                  DESCRIPTORS (node_class, reads/writes, edges) + NODE_FNS;
