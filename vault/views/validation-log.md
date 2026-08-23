@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: 5af924e0f1f5
-record_count: 13
+source_hash: c581a92e189b
+record_count: 17
 ---
 # Validation log
 
@@ -110,3 +110,36 @@ record_count: 13
 - Result: **FAILED — one or more projects below the corpus pass mark**
 - Follow-ups:
   - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-014
+
+- Date: 2026-08-23T03:02:40.422Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T02-49-32-796Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-015
+
+- Date: 2026-08-23T03:21:55.397Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T03-10-03-905Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-016
+
+- Date: 2026-08-23T03:37:49.153Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T03-23-50-642Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-017
+
+- Date: 2026-08-23T03:38:46.564Z
+- Scope: Re-baselining of GF-6..GF-10 expected_findings_baseline under eval-gates §5.2 baseline rot
+- Result: **PARTIALLY PASSED — 4/5 projects meet the corpus pass mark after re-baselining. GF-9 honestly capped: both findings score evidence_grounding=1 because their pivotal scheme-specific claims (CD-road weave adequacy at recorded volumes; uncontrolled shared-use-path crossings at free-flow ramp terminals) are grounded in recorded fixture inputs but have NO quotable supporting sentence in the only registered INT source (PIARC 2023R40EN abstract; full PDF login-gated), and the omega rubric requires a supporting verbatim quote for grounding=2. Nothing deleted or loosened to force a pass.**
+- Follow-ups:
+  - GF-9: obtain quotable INT source material for interchange weaving / ramp-terminal VRU crossings (e.g., full PIARC 2023R40EN text behind login, or a registered open-access interchange-safety source) before GF-9 can pass the corpus mark
+  - Tier-0 snapshots unaffected and green throughout; zero-drop satisfied on all five projects across runs 02-49-32, 03-10-03, 03-23-50

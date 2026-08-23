@@ -4,16 +4,16 @@
   "jurisdiction": "US",
   "native_stage_id": "us-fhwa:final-design",
   "metadata": {
-    "name": "Tucson-Style HAWK Crossing Program (case study analog)",
-    "description": "Installation of six high-intensity activated crosswalk (HAWK) signal crossings along an arterial corridor, audited at detailed design stage.",
-    "scheme_summary": "Six mid-block pedestrian crossings with HAWK beacons; refuge medians; school-adjacent sites; corridor speed limit 40 mph.",
-    "authority": "City of Tucson (case study analog)",
+    "name": "Tucson HAWK Crossing Program (FHWA case study)",
+    "description": "Installation of six high-intensity activated crosswalk (HAWK) signal crossings at existing pedestrian crosswalks, audited when the construction contract had been awarded and final design drawings for the signal hardware were complete.",
+    "scheme_summary": "Six HAWK signalised crossings on major-road arterials with 2004 AADTs from 21,800 (Fort Lowell Road/Park Avenue) to 62,300 (Grant Road/Palo Verde Boulevard); sites selected on pedestrian and bicycle collision frequency 1999 through 2002; countdown timers at the audited sites.",
+    "authority": "City of Tucson",
     "location": "Tucson, Arizona, USA"
   },
   "inputs": {
     "project_information_package": {
       "state": "provided",
-      "value": "Detailed design report for six HAWK crossings; site spacing 300-800 m; two school-fronting sites."
+      "value": "Detailed design status: construction contract awarded, underground portion underway or completed at many sites, final design drawings for signal hardware complete; six sites selected on pedestrian and bicycle collision frequency 1999-2002: Flowing Wells Road/Pastime Road, First Avenue/Graybill Drive, Broadway Boulevard/Cherry Avenue, Fort Lowell Road/Park Avenue, Speedway Boulevard/Rook Avenue, Grant Road/Palo Verde Boulevard."
     },
     "design_drawings_current_phase": {
       "state": "provided",
@@ -24,7 +24,7 @@
     },
     "operational_geometric_hf_context": {
       "state": "provided",
-      "value": "85th-percentile speeds 43 mph; documented driver-comprehension research basis for HAWK sequence."
+      "value": "About 40 HAWK signals operating in Tucson at the time of the RSA; experimental device approved by FHWA, not yet adopted in the MUTCD; sequence progresses from dark through flashing amber, solid amber, solid red and flashing red to dark; drivers stop on solid red and may proceed with caution on flashing red."
     }
   },
   "provenance": {
@@ -37,30 +37,25 @@
     {
       "finding_id": "JB-GF8-001",
       "kind": "safety_concern",
-      "category": "signal_comprehension",
-      "location": "All six HAWK crossing sites",
+      "category": "beacon_nighttime_conspicuity",
+      "location": "Speedway Boulevard / Rook Avenue crossing",
       "road_users": [
         "pedestrians",
         "vehicle occupants"
       ],
-      "scenario": "First-time drivers encountering the dark-phase HAWK display may treat it as malfunctioning and proceed through an active pedestrian phase at adjacent sites.",
+      "scenario": "Competing background visual elements at night may confuse drivers approaching the HAWK display at Speedway Boulevard/Rook Avenue, delaying or missing the stop decision while pedestrians are crossing the arterial. Vulnerable road users acknowledged: pedestrians are the road users exposed if drivers misread or detect the display late; the finding pairs driver conspicuity at the beacon with their protection.",
       "statement": {
-        "text": "Provide public-education signage or advance plaque wording clarifying HAWK operation where crossings are closely spaced.",
+        "text": "Make the HAWK display conspicuous against competing night-time background elements at Speedway Boulevard / Rook Avenue so approaching drivers can discriminate the signal reliably before the crossing.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-US-001",
-          "quote": "The innovative HAWK signal, shown in FIGURE A.12, incorporates elements from fire station signals and school bus flashing displays, as well as from European pedestrian signal displays, to provide a familiar signal sequence for drivers and pedestrians.",
-          "use": "context"
+          "quote": "night-time visibility at Speedway Blvd / Rook Ave: Drivers may be confused by competing background visual elements at night.",
+          "use": "supports_concern"
         }
       ],
-      "assumptions": [
-        {
-          "text": "Driver familiarity with HAWK is low outside Tucson.",
-          "basis": "case-study program rationale"
-        }
-      ],
+      "assumptions": [],
       "risk_components": {
         "severity": null,
         "likelihood": null,
@@ -69,10 +64,10 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Documented comprehension concern in HAWH literature."
+        "basis": "Site-specific issue recorded in FHWA case study TABLE A.10 (Issue 6)."
       },
-      "rationale": "ORCH-as-judge baseline grounded in the Tucson case study selection.",
-      "recommendation": "Install EDUCATIONAL-type plaques above beacons at the two outermost crossings.",
+      "rationale": "ORCH-as-judge baseline grounded in the Tucson case study site-specific issues; driver-confusion-to-pedestrian-risk link is labelled inference.",
+      "recommendation": "Install a reflective border around the HAWK signal at Speedway Boulevard / Rook Avenue.",
       "source_trace": [
         {
           "origin": "auditor_manual",
@@ -85,21 +80,22 @@
     {
       "finding_id": "JB-GF8-002",
       "kind": "safety_concern",
-      "category": "vru_school_exposure",
-      "location": "School-fronting crossing sites",
+      "category": "vru_pedestrian_clearance_interval",
+      "location": "All six HAWK crossing sites",
       "road_users": [
-        "pedestrians"
+        "pedestrians",
+        "elderly pedestrians"
       ],
-      "scenario": "School arrival/discharge surges concentrate child pedestrians during the crossing's clearance interval; running time may be insufficient for slower children.",
+      "scenario": "The pedestrian clearance interval may be short, particularly for elderly pedestrians, at crossings installed on the corridor's highest pedestrian and bicycle collision frequency sites, leaving slower walkers still clearing when conflicting releases begin. Vulnerable road users are the explicit focus of this finding: elderly pedestrians are named in the recorded issue for these sites.",
       "statement": {
-        "text": "Verify clearance intervals against child walking speeds at the two school-fronting crossings and consider extended timing during term-time peaks.",
+        "text": "Verify assumed walking speeds behind pedestrian clearance timing at the six HAWK crossings so elderly pedestrians are not still clearing the crosswalk at the end of the clearance phase.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-US-016",
           "quote": "duration of pedestrian clearance interval: The pedestrian clearance interval may be short, particularly for elderly pedestrians.",
-          "use": "defines_requirement"
+          "use": "supports_concern"
         }
       ],
       "assumptions": [],
@@ -111,10 +107,10 @@
       },
       "confidence": {
         "label": "high",
-        "basis": "VRU exposure directly recorded in scheme description."
+        "basis": "System-wide issue recorded in FHWA case study TABLE A.10 (Issue 2) for these exact sites."
       },
-      "rationale": "VRU coverage dimension baseline authored by ORCH.",
-      "recommendation": "Programme pedestrian clearance to 3.5 ft/s at both school sites with term-time coordination.",
+      "rationale": "VRU coverage dimension baseline authored by ORCH from the recorded clearance-interval issue.",
+      "recommendation": "Reprogramme pedestrian clearance intervals at all six HAWK crossings using a reduced assumed walking speed.",
       "source_trace": [
         {
           "origin": "auditor_manual",

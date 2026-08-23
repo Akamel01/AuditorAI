@@ -110,7 +110,7 @@
       "category": "swept_path_verification",
       "location": "Homecroft Drive junction with A4019 service roads",
       "road_users": [],
-      "scenario": "Recorded large-vehicle swept paths (refuse vehicle, 7.5t box van) at Homecroft Drive must remain achievable after signal stop-line repositioning.",
+      "scenario": "Recorded large-vehicle swept paths (refuse vehicle, 7.5t box van) at Homecroft Drive must remain achievable after signal stop-line repositioning. Vulnerable road users acknowledged: pedestrians and cyclists cross at these junctions (central refuges are recorded provision and pedestrian desire lines are recorded across the A4019), but this compliance question is scoped to large-vehicle swept-path validity; no VRU-specific exposure is asserted here.",
       "statement": {
         "text": "Confirm the adopted swept-path envelopes for refuse vehicle and 7.5t box van remain valid where signal stop lines sit close to the Homecroft Drive junction.",
         "normative_basis_note": "Exception-check analog of GG 119 problem-location recording"

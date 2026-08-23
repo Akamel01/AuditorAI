@@ -4,24 +4,24 @@
   "jurisdiction": "US",
   "native_stage_id": "us-fhwa:preliminary-design",
   "metadata": {
-    "name": "Arterial Corridor Improvement (Illinois DOT case study analog)",
-    "description": "Improvement to a four-lane suburban arterial road with signalised intersections, audited at preliminary design and existing-roads stages per the FHWA RSA Case Studies program.",
-    "scheme_summary": "Signal timing and phasing revisions; auxiliary turn lanes at two intersections; revised pedestrian crossings; corridor rear-end collision pattern.",
-    "authority": "Illinois Department of Transportation (case study analog)",
-    "location": "Illinois, USA"
+    "name": "Clear Lake Avenue / Dirksen Parkway Improvements (Illinois DOT case study)",
+    "description": "Improvements to roadways and intersections in a commercial area adjacent to the I-72/I-55 interchange at Springfield, audited at preliminary design stage together with a review of the existing roads, per the FHWA RSA Case Studies program.",
+    "scheme_summary": "Access consolidation with two new service roads intersecting Clear Lake Avenue at a new signalized intersection east of Dirksen Parkway; dual left turn lanes on all legs of Clear Lake Avenue/Dirksen Parkway and dual right turn lanes on the southeast corner; Hill Street realigned to a new signalized intersection about 650 feet from the existing signals.",
+    "authority": "Illinois Department of Transportation",
+    "location": "Springfield, Illinois, USA"
   },
   "inputs": {
     "project_information_package": {
       "state": "provided",
-      "value": "Preliminary design report: four-lane arterial, ADT 22,000; auxiliary through-right turn lanes at Main St and Oak Ave; coordinated signal system."
+      "value": "Preliminary design report: upgrade of Clear Lake Avenue between Dirksen Parkway and the I-72/I-55 interchange; access consolidation and construction of two new service roads intersecting Clear Lake Avenue at a new signalized intersection; realignment of Hill Street to a new signalized intersection; dual left turn lanes on all legs of Clear Lake Avenue/Dirksen Parkway and dual right turn lanes on the southeast corner."
     },
     "design_drawings_current_phase": {
       "state": "provided",
-      "value": "60% plan set: intersection geometry sheets M1-M6, signal plans S1-S4."
+      "value": "Plans of the planned improvements showing the realigned Hill Street, the new north and south service roads, additional left- and right-turn lanes, and the new signalized intersection."
     },
     "crash_history": {
       "state": "provided",
-      "value": "36-month crash extract: rear-end cluster at Main St approach (9 collisions), single nighttime ped-bike incident near Oak Ave."
+      "value": "The intersection of Clear Lake Avenue and Dirksen Parkway was designated a high accident location for six consecutive years (1998 through 2003); the intersection of Hill Street and Clear Lake Avenue was designated a high accident location in 2003."
     },
     "operational_geometric_hf_context": {
       "state": "recommended_missing"
@@ -31,35 +31,30 @@
     "source_url": "https://rosap.ntl.bts.gov/view/dot/42592/dot_42592_DS1.pdf",
     "license": "Public Domain (explicit ROSA-P rights metadata; 17 USC §105)",
     "retrieved": "2026-08-22",
-    "extractor": "ORCH transformed FHWA-SA-06-017 Table 1 entry 'Illinois DOT: improvement to four-lane arterial road, preliminary design stage and existing roads' into a Project input set; findings language patterned on the case study's summary-of-key-findings structure."
+    "extractor": "ORCH transformed FHWA-SA-06-017 Table 1 entry 'Illinois DOT: improvement to four-lane arterial road, preliminary design stage and existing roads' and the RSA Number 1 case study record (project background, TABLE A.1 selected safety issues and suggestions) into a Project input set; findings language patterned on the case study's summary-of-key-findings structure."
   },
   "expected_findings_baseline": [
     {
       "finding_id": "JB-GF7-001",
       "kind": "safety_concern",
-      "category": "rear_end_exposure",
-      "location": "Main Street intersection, northbound approach",
+      "category": "closely_spaced_intersection_conflicts",
+      "location": "Clear Lake Avenue at the new south service road intersection, east of Dirksen Parkway",
       "road_users": [
         "vehicle occupants"
       ],
-      "scenario": "Auxiliary turn-lane introduction changes deceleration expectations; existing rear-end cluster may migrate to the new taper location under high following-demand platooning.",
+      "scenario": "Queued, turning, and parking vehicles around the closely-spaced intersections of Clear Lake Avenue and the new south service road may interfere with each other on an approach corridor carrying recorded high-accident designations. Vulnerable road users acknowledged: pedestrians and cyclists may be present along this commercial corridor, but the identified conflict mechanism operates between queued, turning and parking vehicles, so road users are scoped to vehicle occupants.",
       "statement": {
-        "text": "Check taper length and advance signing for the new turn lane against the recorded rear-end pattern at this approach.",
+        "text": "Check turning-restriction and parking-stall placement at the closely-spaced Clear Lake Avenue / south service road intersection so queued, turning, and parking vehicles cannot interfere with each other.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-US-016",
-          "quote": "The intersection of Clear Lake Avenue and Dirksen Parkway was designated a high accident location for six consecutive years (1998 through 2003), and the intersection of Hill Street and Clear Lake Avenue was designated a high accident location in 2003.",
+          "quote": "Queued, turning, and parking vehicles around the closely-spaced intersections at Clear Lake Ave. and the south service road may interfere with each other.",
           "use": "supports_concern"
         }
       ],
-      "assumptions": [
-        {
-          "text": "Crash extract reflects current signal coordination.",
-          "basis": "project crash history"
-        }
-      ],
+      "assumptions": [],
       "risk_components": {
         "severity": null,
         "likelihood": null,
@@ -68,10 +63,10 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Pattern documented in case-study analog; geometry assumed typical."
+        "basis": "Issue and location recorded for this scheme in FHWA case study TABLE A.1 (Issue 3)."
       },
       "rationale": "ORCH-as-judge baseline derived from FHWA public-domain case studies; distinguishable from quoted evidence.",
-      "recommendation": "Extend the northbound advance warning placement and verify taper storage length for design-year peak queues.",
+      "recommendation": "Restrict turning movements and relocate the specified parking stalls clear of the functional area of the new south service road intersection.",
       "source_trace": [
         {
           "origin": "auditor_manual",
@@ -84,22 +79,21 @@
     {
       "finding_id": "JB-GF7-002",
       "kind": "safety_concern",
-      "category": "vru_nighttime_visibility",
-      "location": "Oak Avenue crossing vicinity",
+      "category": "closely_spaced_signal_coordination",
+      "location": "New realigned Hill Street intersection with Clear Lake Avenue",
       "road_users": [
-        "pedestrians",
-        "cyclists"
+        "vehicle occupants"
       ],
-      "scenario": "Nighttime ped-bike incident history at the crossing suggests lighting and conspicuity may be insufficient once volumes grow.",
+      "scenario": "The new signalized Hill Street intersection will sit about 650 feet from the signalized intersection of Dirksen Parkway and Clear Lake Avenue on a corridor with recorded high-accident designations; queues that do not clear between the close signals may spill back and block the upstream intersection. Vulnerable road users acknowledged: pedestrians and cyclists cross at both signalized intersections, but the identified mechanism (queue spillback between closely spaced signals) exposes vehicle occupants, so road users are scoped accordingly.",
       "statement": {
-        "text": "Assess crossing lighting levels and marking retroreflectivity at the Oak Avenue pedestrian crossing.",
+        "text": "Check queue storage between the new Hill Street signals and the Dirksen Parkway / Clear Lake Avenue signals and coordinate them so queues do not block the upstream intersection.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-US-001",
-          "quote": "Provide consistent levels of lighting and upgrade lighting at crosswalks.",
-          "use": "context"
+          "quote": "The new signalized Hill Street intersection will be about 650 feet from the signalized intersection of Dirksen Parkway and Clear Lake Avenue.",
+          "use": "supports_concern"
         }
       ],
       "assumptions": [],
@@ -111,10 +105,10 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Single recorded incident; exposure rising."
+        "basis": "Signal spacing recorded for this scheme in FHWA case study TABLE A.1 (Issue 1)."
       },
-      "rationale": "VRU-focused baseline finding authored by ORCH from case-study patterns.",
-      "recommendation": "Provide luminaire coverage over the crossing and upgrade to high-visibility markings.",
+      "rationale": "VRU acknowledgment carried explicitly; queue-spillback inference labelled as derived from the recorded spacing.",
+      "recommendation": "Coordinate the adjacent signals and provide Do Not Block Intersection signs, with signing and signal displays enhanced for conspicuousness at the new intersection.",
       "source_trace": [
         {
           "origin": "auditor_manual",

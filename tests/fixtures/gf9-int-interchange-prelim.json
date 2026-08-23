@@ -45,16 +45,16 @@
       "road_users": [
         "vehicle occupants"
       ],
-      "scenario": "Shortened CD-road weave concentrates lane-change conflicts where remaining loop traffic merges with new terminal traffic.",
+      "scenario": "Recorded preliminary GA drawings retain a collector-distributor weaving section at reduced length between the entry and exit, with a recorded design-year peak-hour weave volume of 1,100 pcu/h; concentrated lane-change demand where residual loop traffic merges with new terminal traffic may raise sideswipe and rear-end exposure. Vulnerable road users acknowledged: the shared-use paths are grade-separated from this motorised weaving section, so VRUs are not exposed to it and road users are scoped to vehicle occupants.",
       "statement": {
-        "text": "Check the retained weave length against design-year weaving volume and consider lengthening or signalising the CD exit.",
+        "text": "Correct the retained CD-road weave's adequacy against the recorded 1,100 pcu/h design-year peak-hour weave volume now, at preliminary design, before this design fault is translated into reality as fixed detailed-design geometry.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-IN-001",
-          "quote": "Finally, resources are provided to assist the auditors and designers to identify potential deficiencies and develop suitable strategies to mitigate the consequences.",
-          "use": "defines_requirement"
+          "quote": "having knowledge about the circumstances which provoke crashes means it is possible to detect these faults early in the development of projects and certainly appropriate changes made well before the design faults are translated into reality.",
+          "use": "supports_concern"
         }
       ],
       "assumptions": [
@@ -71,9 +71,9 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Standard cloverleaf-conversion concern."
+        "basis": "Standard cloverleaf-conversion concern over recorded geometry and volume inputs."
       },
-      "rationale": "ORCH-as-judge baseline over public-domain interchange geometry.",
+      "rationale": "Weave-conflict mechanism is labelled inference from the recorded shortened CD-road weave and 1,100 pcu/h design-year volume; PIARC quote grounds raising it at this stage.",
       "recommendation": "Lengthen the CD weaving section by 80 m or install ramp metering at the entry.",
       "source_trace": [
         {
@@ -93,16 +93,16 @@
         "pedestrians",
         "cyclists"
       ],
-      "scenario": "Free-flowing ramp entries at the retained loops leave uncontrolled crossings for path users moving through the interchange.",
+      "scenario": "Recorded scheme objectives commit to improved pedestrian and cycle continuity across the corridor and the recorded layout retains shared-use paths through the interchange, yet free-flowing ramp entries at the retained loops leave uncontrolled crossings for path users. Vulnerable road users are the explicit focus: pedestrians and cyclists using the shared-use paths face these uncontrolled ramp-terminal crossings.",
       "statement": {
-        "text": "Provide controlled or grade-separated crossings where the shared-use path meets each remaining free-flow ramp terminal.",
+        "text": "Design controlled or grade-separated path crossings deliberately into the interchange layout so the conversion exploits, rather than forfeits, the possibility to improve road safety by better design for the pedestrians and cyclists the recorded objectives commit to serve.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-IN-001",
-          "quote": "The correct use of these processes through the life of the road will ensure that road user safety is maximized, and death and serious injury are minimized.",
-          "use": "context"
+          "quote": "New road projects are constantly being planned and implemented that do not fully exploit the possibility to improve road safety by better design.",
+          "use": "supports_concern"
         }
       ],
       "assumptions": [],
@@ -114,10 +114,10 @@
       },
       "confidence": {
         "label": "high",
-        "basis": "VRU continuity is a stated scheme objective."
+        "basis": "VRU continuity is a stated scheme objective in the recorded project description."
       },
-      "rationale": "VRU dimension of the interchange baseline.",
-      "recommendation": "Signalise the northern loop-ramp path crossing and provide raised tables elsewhere.",
+      "rationale": "Uncontrolled-crossing mechanism inferred from the recorded free-flow ramp terminals and shared-use path layout.",
+      "recommendation": "Signalise the northern loop-ramp path crossing and provide signalised or grade-separated crossings at both retained loop-ramp terminals.",
       "source_trace": [
         {
           "origin": "auditor_manual",

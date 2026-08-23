@@ -28,7 +28,8 @@
       "value": "No changes to adjacent-development access; ramp terminals unchanged."
     },
     "network_continuity_constraints": {
-      "state": "conflicting"
+      "state": "conflicting",
+      "value": "Ministry corridor plan records express-collector transfer continuity retained through all three interchanges; municipal network-continuity register records the middle-interchange transfer discontinued pending ramp-terminal reconfiguration."
     }
   },
   "provenance": {
@@ -46,16 +47,16 @@
       "road_users": [
         "vehicle occupants"
       ],
-      "scenario": "Reduced decision sight distance to new transfer-lane markings may cause late, erratic lane changes where signage is rationalised simultaneously.",
+      "scenario": "Recorded corridor inputs show AADT 420,000 with transfer-lane permissions revised at three interchanges while corridor signage is rationalised at the same time; simultaneous unfamiliar lane assignments across the corridor risk late, erratic transfers whose collisions would appear elsewhere along the route during the transition. Vulnerable road users acknowledged: the express-collector mainline is a controlled-access facility carrying no pedestrians or cyclists, so VRUs are not applicable to this finding and road users are scoped to vehicle occupants.",
       "statement": {
-        "text": "Stage the signage rationalisation so transfer-permission changes are introduced with advance guidance rather than all-at-once re-marking.",
+        "text": "Stage the express-collector transfer-permission and signage changes sequentially so drivers are never confronted with simultaneous unfamiliar lane assignments across the corridor during the transition.",
         "normative_basis_note": null
       },
       "evidence": [
         {
           "evidence_id": "EV-CA-003",
-          "quote": "A road safety audit is a formal and independent safety performance review of a road transportation project by an experienced team of safety specialists, addressing the safety for all road users.",
-          "use": "defines_requirement"
+          "quote": "minimise potentially negative safety impacts both within and outside the project limits, i.e. to avoid introducing collisions elsewhere along the route or on the network.",
+          "use": "supports_concern"
         }
       ],
       "assumptions": [
@@ -72,9 +73,9 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Corridor complexity evident in basketweave geometry."
+        "basis": "Transition-conflict mechanism is labelled inference over recorded corridor volumes and change scope."
       },
-      "rationale": "ORCH-as-judge baseline for Canadian-flavour corridor context.",
+      "rationale": "ORCH-as-judge baseline: decision-load mechanism inferred from recorded simultaneous restriping and signage rationalisation; staging logic grounded in the audit objectives quote.",
       "recommendation": "Introduce changes one interchange per quarter with before/after speed-differential monitoring.",
       "source_trace": [
         {
@@ -91,9 +92,9 @@
       "category": "network_continuity",
       "location": "Corridor-wide",
       "road_users": [],
-      "scenario": "Recorded network-continuity constraints are conflicting between source documents; scope boundary cannot be confirmed.",
+      "scenario": "Recorded network-continuity inputs conflict: the ministry corridor plan retains express-collector transfer continuity through all three interchanges while the municipal network-continuity register discontinues the middle-interchange transfer pending ramp-terminal reconfiguration, so the planning scope boundary cannot be confirmed; an unresolved boundary risks the audit excluding movements whose traffic redistributes to interchanges outside the project limits. Vulnerable road users acknowledged: the controlled-access mainline carries no pedestrians or cyclists, but continuity outcomes propagate to downstream arterials where VRUs travel; no VRU-specific exposure is asserted within this corridor question.",
       "statement": {
-        "text": "Resolve the conflicting network-continuity constraint records before the planning recommendation is finalised.",
+        "text": "Reconcile and consistently document the conflicting ministry and municipal network-continuity records before the planning recommendation is finalised, so the practice of undertaking and reporting the Planning Stage RSA rests on clearly specified scope records addressing safety for all road users.",
         "normative_basis_note": null
       },
       "evidence": [
@@ -101,6 +102,11 @@
           "evidence_id": "EV-CA-006",
           "quote": "TABLE 1 Road Safety Audit Stage Equivalency Table\nTAC Canadian RSA Guide Terminology Alberta Transportation Equivalent\nPlanning Stage RSA Stage 1 RSA\nPreliminary Design Stage RSA Stage 2 RSA\nDetailed Design Stage RSA Stage 3 RSA\nPre-opening Stage RSA Pre-opening Stage RSA",
           "use": "context"
+        },
+        {
+          "evidence_id": "EV-CA-003",
+          "quote": "It is important that a clear procedure for managing and organising road safety audit is established, and that the practice of undertaking and reporting road safety audit is clearly specified, and that the actions are fully and consistently documented.",
+          "use": "supports_concern"
         }
       ],
       "assumptions": [],
@@ -114,8 +120,8 @@
         "label": "high",
         "basis": "Conflicting state recorded directly in inputs."
       },
-      "rationale": "Process-style compliance question surfaced by recorded input conflict.",
-      "recommendation": "Reconcile the two constraint records with the ministry planning office and record the outcome.",
+      "rationale": "Process-style compliance question surfaced by recorded input conflict; completeness consequence framed from the all-road-users definition rather than an asserted collision mechanism.",
+      "recommendation": "Reconcile the ministry corridor plan and municipal network-continuity register records with the ministry planning office and record whether the resolved scope keeps corridor-wide continuity effects inside the audit boundary.",
       "source_trace": [
         {
           "origin": "auditor_manual",

@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T03-23-50-642Z",
+  "fixture_id": "GF-8",
+  "fixture_name": "Six HAWK pedestrian crossings — US final design (FHWA case study, PD)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF8-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Night-time conspicuity of a HAWK display against competing background elements is a recognized, scheme-relevant safety issue that can delay driver stop decisions over pedestrians on an arterial.",
+        "evidence_grounding": "The pivotal driver-confusion claim is supported by a verbatim quote from EV-US001 tied to the Speedway Blvd/Rook Ave site, satisfying the quote requirement for full credit.",
+        "jurisdiction_correctness": "Correctly filed as a safety_concern with no normative_basis_note, keeping the safety observation categorically distinct from any compliance question under FHWA RSA semantics.",
+        "recommendation_quality": "A reflective border around the HAWK signal is a specific, actionable, and viable conspicuity treatment directly matched to the competing-background-elements problem.",
+        "vru_coverage": "Pedestrians are explicitly identified as the exposed road users if drivers misread or detect the beacon late, linking driver conspicuity to VRU protection as relevant here."
+      }
+    },
+    {
+      "finding_id": "JB-GF8-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Short pedestrian clearance intervals stranding slower/elderly walkers during conflicting releases at high-collision HAWK sites is a substantive, well-targeted final-design-stage signal-timing safety issue.",
+        "evidence_grounding": "Pivotal claim is anchored by a verbatim quoted passage from EV-US-016 ('The pedestrian clearance interval may be short, particularly for elderly pedestrians') tied to the recorded FHWA case study issue for these exact sites.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under FHWA RSA semantics, distinct from any MUTCD compliance question, with no conflation of code adherence and safety risk.",
+        "recommendation_quality": "Reprogramming clearance intervals at all six named HAWK crossings with a reduced assumed walking speed is specific, actionable, and feasible at final design stage.",
+        "vru_coverage": "VRU impact is central and explicit: pedestrians and elderly pedestrians are named road users and the scenario confirms elderly pedestrians as the recorded focus of the issue."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T03:33:05.086Z"
+}

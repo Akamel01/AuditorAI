@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T02-49-32-796Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0.5,
+  "passes_corpus_mark": false,
+  "mean_score": 8,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 1
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Corridor-wide simultaneous transfer-permission and signage changes at three interchanges on a 420,000 AADT facility is a credible human-factors decision-load hazard squarely relevant to planning-stage sequencing; not vacuous.",
+        "evidence_grounding": "Pivotal network-impact claim is anchored by the verbatim EV-CA-003 quote ('avoid introducing collisions elsewhere along the route') and factual scenario elements rest on recorded corridor inputs; mechanism honestly flagged as inference, no invented specifics.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern with no compliance assertion; the audit-objective quote is used to ground a safety concern rather than conflated with a regulatory requirement, keeping categories distinct.",
+        "recommendation_quality": "Specific and viable: quarterly per-interchange rollout with defined before/after speed-differential monitoring gives an actionable sequence and measurable check; not null.",
+        "vru_coverage": "VRU applicability explicitly assessed and acknowledged as not applicable since the controlled-access express-collector mainline excludes pedestrians and cyclists, with users scoped to vehicle occupants."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 1,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Scope-boundary ambiguity at planning stage is a genuine procedural gap, but the finding names no specific conflicting constraints or their safety consequences, leaving relevance abstract.",
+        "evidence_grounding": "EV-CA-003 verbatim supports the all-road-users consequence and EV-CA-006 anchors stage terminology, but the pivotal claim of conflicting continuity records cites no evidence_id or quote, capping grounding at 1.",
+        "jurisdiction_correctness": "Correctly framed as a compliance_question distinct from any asserted safety concern, with Planning Stage RSA / Alberta Stage 1 semantics properly used per EV-CA-006.",
+        "recommendation_quality": "Actionable and viable: names the reconciling actor (ministry planning office), the action, and a recording step tying resolution back to the audit boundary.",
+        "vru_coverage": "VRUs are not applicable within the controlled-access corridor but are explicitly acknowledged, including downstream arterial propagation, matching the acknowledge-not-applicable tier."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T03:02:40.420Z"
+}
