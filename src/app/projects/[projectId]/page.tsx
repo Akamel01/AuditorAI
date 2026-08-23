@@ -125,6 +125,19 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
     onChanged();
   }
 
+  // A `provided` claim needs substance before it can be written (server
+  // rejects unsubstantiated ones). Selecting Provided only reveals the local
+  // editing affordances; the first substantive action performs the write.
+  const [pendingProvided, setPendingProvided] = useState<string[]>([]);
+  const hasSubstance = (inputId: string) => {
+    const v = project.input_values[inputId];
+    return !!v?.value?.trim() || !!(v?.attachments && v.attachments.length > 0);
+  };
+  const revealProvided = (inputId: string) =>
+    setPendingProvided((p) => (p.includes(inputId) ? p : [...p, inputId]));
+  const settleProvided = (inputId: string) =>
+    setPendingProvided((p) => p.filter((x) => x !== inputId));
+
   async function uploadFor(inputId: string, file: File) {
     const form = new FormData();
     form.append("file", file);
@@ -132,7 +145,13 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
       method: "POST",
       body: form,
     });
-    await setInput(inputId, "provided", data.extracted_text ?? "");
+    const text = data.extracted_text ?? "";
+    if (!text.trim() && !hasSubstance(inputId)) {
+      throw new Error(
+        "no text could be extracted — paste a summary or attach the document as an image instead",
+      );
+    }
+    await setInput(inputId, "provided", text);
   }
 
   async function attachImage(inputId: string, file: File) {
@@ -160,6 +179,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
         },
       },
     });
+    settleProvided(inputId);
     onChanged();
   }
 
@@ -206,7 +226,13 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
                   value={selectValueFor(state)}
                   onChange={(e) => {
                     const v = e.target.value as InputValueState;
-                    if (v) setInput(i.input_id, v);
+                    if (!v) return;
+                    if (v === "provided" && !hasSubstance(i.input_id)) {
+                      revealProvided(i.input_id);
+                      return;
+                    }
+                    settleProvided(i.input_id);
+                    setInput(i.input_id, v);
                   }}
                 >
                   <option value="">— missing ({i.requirement_level}) —</option>
@@ -215,11 +241,15 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
                   ))}
                 </select>
               </div>
-              {(state === "provided" || current?.value) && (
+              {(state === "provided" || current?.value || pendingProvided.includes(i.input_id)) && (
                 <>
                   <textarea
                     defaultValue={current?.value ?? ""}
-                    onBlur={(e) => setInput(i.input_id, "provided", e.target.value)}
+                    onBlur={(e) => {
+                      if (!e.target.value.trim() && !hasSubstance(i.input_id)) return;
+                      settleProvided(i.input_id);
+                      setInput(i.input_id, "provided", e.target.value);
+                    }}
                     onPaste={(e) => {
                       const img = Array.from(e.clipboardData.items).find((it) =>
                         it.type.startsWith("image/"),

@@ -3,7 +3,7 @@
 // The stage gate and the never-silently-detach-drawings merge rule live here —
 // domain owns input-state policy (CONTEXT.md: Project, Designer).
 import { getPack } from "@/domain/packs";
-import type { InputValueState, JurisdictionId, Project } from "@/domain/types";
+import type { InputValue, InputValueState, JurisdictionId, Project } from "@/domain/types";
 
 export type EditOutcome<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -108,7 +108,7 @@ export function patchProject(
       if (!v || typeof v.state !== "string")
         return { ok: false, error: `bad value for ${inputId}` };
       const existing = next.input_values[inputId] ?? { state: v.state, value: "" };
-      next.input_values[inputId] = {
+      const merged: InputValue = {
         state: v.state,
         value: v.value ?? existing.value ?? "",
         // Omitting attachments in a patch preserves the existing links
@@ -119,6 +119,19 @@ export function patchProject(
             ? { attachments: existing.attachments }
             : {}),
       };
+      // A `provided` claim without substance is invalid at intake
+      // (CONTEXT.md: Input State) — rejected here, at the write boundary.
+      if (
+        merged.state === "provided" &&
+        !merged.value?.trim() &&
+        !(merged.attachments && merged.attachments.length > 0)
+      ) {
+        return {
+          ok: false,
+          error: `input ${inputId} cannot be 'provided' without a value or attachment`,
+        };
+      }
+      next.input_values[inputId] = merged;
     }
   }
 

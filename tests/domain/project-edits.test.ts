@@ -146,7 +146,7 @@ describe("patchProject merge table", () => {
       name: "explicit empty array is stored as an explicit detach-all",
       patch: {
         input_values: {
-          drawing_document_register: { state: "provided", value: "", attachments: [] },
+          drawing_document_register: { state: "provided", value: "v2", attachments: [] },
         },
       },
       assert: (p) => {
@@ -156,10 +156,10 @@ describe("patchProject merge table", () => {
     {
       name: "new inputs are created with an empty default value",
       patch: {
-        input_values: { vru_desire_lines: { state: "provided" } },
+        input_values: { vru_desire_lines: { state: "not_available" } },
       },
       assert: (p) => {
-        expect(p.input_values.vru_desire_lines).toEqual({ state: "provided", value: "" });
+        expect(p.input_values.vru_desire_lines).toEqual({ state: "not_available", value: "" });
       },
     },
     {
@@ -210,6 +210,43 @@ describe("patchProject merge table", () => {
         },
       },
       expectError: "unknown native stage uk:NOPE",
+    },
+    {
+      name: "provided without value or attachment is rejected, naming the input",
+      patch: { input_values: { vru_desire_lines: { state: "provided" } } },
+      expectError:
+        "input vru_desire_lines cannot be 'provided' without a value or attachment",
+    },
+    {
+      name: "whitespace-only value does not substantiate provided",
+      patch: { input_values: { vru_desire_lines: { state: "provided", value: "   " } } },
+      expectError:
+        "input vru_desire_lines cannot be 'provided' without a value or attachment",
+    },
+    {
+      name: "explicit detach-all plus blank value is rejected as unsubstantiated",
+      patch: {
+        input_values: {
+          drawing_document_register: { state: "provided", value: "", attachments: [] },
+        },
+      },
+      expectError:
+        "input drawing_document_register cannot be 'provided' without a value or attachment",
+    },
+    {
+      name: "provided survives on preserved attachments alone (no text value)",
+      patch: {
+        input_values: {
+          drawing_document_register: { state: "provided", value: "" },
+        },
+      },
+      assert: (p) => {
+        expect(p.input_values.drawing_document_register).toEqual({
+          state: "provided",
+          value: "",
+          attachments: ["ATT-keep"],
+        });
+      },
     },
   ];
 
