@@ -24,6 +24,10 @@ jobs:
             echo "Configure repo secrets (see docs/deployment.md) to enable automatic deploys."
             exit 0
           fi
+          echo "::notice::Release checklist (docs/validation/eval-gates.md §4):"
+          echo "::notice::If AI adapter / prompt / engine-semantics / jurisdiction-pack paths changed since the last release,"
+          echo "::notice::a Tier-1 scorecard newer than those changes is REQUIRED before this deploy ships."
+          echo "::notice::Latest archive: state/eval-scorecards/ — quote its run-id in the release sign-off."
           npx --yes vercel@latest pull --yes --environment=production \
             --token="$VERCEL_TOKEN"
           npx --yes vercel@latest build --prod --token="$VERCEL_TOKEN"

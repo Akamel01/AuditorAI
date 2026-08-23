@@ -3,7 +3,7 @@ id: M3
 title: Vision reasoning path
 type: task
 hitl: false
-status: open
+status: resolved
 issue: #17
 assignee:
 blocked_by: [M2, A1]
