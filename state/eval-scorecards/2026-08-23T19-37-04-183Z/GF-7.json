@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T19-37-04-183Z",
+  "fixture_id": "GF-7",
+  "fixture_name": "Four-lane arterial improvement — US preliminary design (FHWA case study, PD)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF7-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Queuing/turning/parking interference at closely-spaced intersections within functional area is a core preliminary-design safety issue on a corridor with recorded high-accident designation, so the concern has real substance.",
+        "evidence_grounding": "The pivotal claim is supported by a verbatim quote from EV-US-016 matching the statement text, and the location detail is tied to the recorded case-study entry cited in the confidence basis.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern with no normative_basis_note, keeping the safety observation categorically distinct from any compliance question under FHWA RSA semantics.",
+        "recommendation_quality": "Recommends two concrete, viable preliminary-design actions—turning-movement restrictions and relocating parking stalls outside the intersection functional area—rather than a null or generic check.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly acknowledged as potentially present on the commercial corridor, but their impacts are not analyzed, fitting the 'acknowledged but not applicable to the stated mechanism' tier."
+      }
+    },
+    {
+      "finding_id": "JB-GF7-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Queue storage failure and spillback between signals 650 ft apart is a well-established safety/operational hazard, and checking coordination at preliminary design is exactly when it can be fixed.",
+        "evidence_grounding": "The pivotal 650-ft spacing claim is backed by a verbatim quoted sentence (EV-US-001); the spillback mechanism is transparently labelled as an inference from that recorded fact rather than invented.",
+        "jurisdiction_correctness": "Correctly filed as a safety_concern with a check-and-coordinate ask, keeping the RSA advisory role distinct from any compliance determination and fitting the preliminary-design stage.",
+        "recommendation_quality": "Names concrete, viable measures (signal coordination, Do Not Block Intersection signs, enhanced signing/display conspicuity) actionable at preliminary design rather than a null or generic directive.",
+        "vru_coverage": "Pedestrians and cyclists crossing both signalized intersections are explicitly acknowledged, with a stated reason why the queue-spillback mechanism scopes exposure to vehicle occupants."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T19:40:10.528Z"
+}

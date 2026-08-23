@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: cb27af2a77a0
-record_count: 24
+source_hash: f0891f167b4e
+record_count: 25
 ---
 # Validation log
 
@@ -192,3 +192,11 @@ record_count: 24
 - Follow-ups:
   - Owner-run fresh eval (OPENCODE_API_KEY at invocation only) confirming 5/5 >= 90% mark
   - Parallel-session discipline: verify-on-disk before closing tickets worked as designed; consider requiring verifier script run in session wrap-up
+
+## VAL-2026-08-22-025
+
+- Date: 2026-08-23T19:44:13.345Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T19-37-04-183Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
