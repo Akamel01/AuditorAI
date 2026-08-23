@@ -3,7 +3,7 @@ id: E5
 title: Gate enforcement policy
 type: grilling
 hitl: true
-status: open
+status: resolved
 issue: #19
 assignee:
 blocked_by: [E4]

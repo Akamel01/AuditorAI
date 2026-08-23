@@ -55,20 +55,20 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - [Artifact persistence N3](tickets/N3-node-artifact-persistence-layout.md): Repository artifact trails under ws:{ws}:art:{pid}:{aid}:{node}:{seq}; retention latest-full/prior-summary; 512KB write-time cap; replay trusts verified else regenerates.
 - [Vault compilers V2](tickets/V2-vault-compile-scripts-both-directions.md): export registries→117 view notes byte-deterministic; import chartered zones→state/vault-notes.json with charter contract enforcement; CI drift job.
 - [Memory protocol V3](tickets/V3-agent-memory-protocol.md): workflow/vault-protocol.md — MUST-READ/MUST-WRITE per session type + graduation rules; wired into TRACKER.md; small by design.
+- [Live graph tab D3](tickets/D3-live-graph-tab-implementation.md): /dev console per Candidate-A verdict — step-run sessions, what-if slice editing, per-request AI toggle, N3 finish/replay; guarded by D1.
+- [Vision path M3](tickets/M3-vision-reasoning-path.md): attachments flow to candidate generation within MAX_IMAGES_PER_CALL=4; overflow degrades to names; source_attachment_ids provenance stamped; live T-junction smoke PASSED.
+- [Gate enforcement E5](tickets/E5-gate-enforcement-policy.md): policy RATIFIED (Checkpoint ω); rubric clarified — evidence_grounding=2 requires verbatim quotes; deploy reminder wired; drift procedure walked on real first-archive FAILs. DESTINATION REACHED.
 
 ## Not yet specified
 
-- Judge-drift measurement: how to detect the judge model itself degrading over time
-  (hangs on E1/E4 outcomes).
-- Blob-storage escape hatch if Upstash value limits make data-URL images untenable
-  (graduates from M1 findings).
-- `opencode serve` hosting plane specifics (VM/tunnel vs gateway) if L1 finds no direct
-  HTTP API (graduates from L1 findings into L2).
-- Vault sync-conflict UX for concurrent human+agent edits (after V2 shows real patterns).
-- Report-generation LLM assist (narrative sections of reports) — suspected follow-on once
-  L4 lands; not yet sharp.
-- Recommendation-drafting LLM assist: rejected by A2 until the eval corpus shows a quality
-  baseline; revisits after E4 scorecards exist.
+Map destination reached 2026-08-22. Remaining fog is next-effort material:
+
+- Quote-bearing baseline upgrades for GF-6..10 (required by the ratified evidence-grounding
+  rubric before any release-gating eval can pass) — immediate follow-on.
+- Blob-storage escape hatch if Upstash value limits make data-URL images untenable.
+- Vault sync-conflict UX once real human+agent edit patterns accumulate.
+- Report-generation and recommendation-drafting LLM assists, pending a quality baseline
+  from the eval corpus.
 
 ## Out of scope
 
@@ -78,3 +78,9 @@ doctrine survives everywhere: AI proposes bounded candidates, adjudication dispo
 - Paid-only infrastructure commitments (free tiers first; paid only by explicit owner act).
 - Docker / containerization (still deferred from mvp map).
 - Stage 3 / Stage 4 jurisdiction support (architecture extends toward them; unchanged).
+
+## Destination status
+
+**REACHED 2026-08-22.** All 19 child tickets closed across five waves; every landing
+CI-gated and independently verified on disk; three owner checkpoints (α/β/ω) captured
+verbatim on issues. Open follow-ons live in Not-yet-specified above or as new efforts.
