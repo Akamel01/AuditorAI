@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T08-44-07-607Z",
+  "fixture_id": "GF-6",
+  "fixture_name": "M5 Junction 10 Improvements — UK Stage 1 (real scheme, OGL)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF6-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Refuge dimensional adequacy for pedestrians and cyclists on wide A4019 arms serving a bus stop is a genuine Stage 1 VRU safety issue with a credible injury mechanism (clipping during two-way conflicts).",
+        "evidence_grounding": "Verbatim quote EV-UK-015 directly supports the pivotal refuge-width/cyclist-clipping risk at the named junctions, supplemented by a recorded Table 4-1 basis for the location assumption; only the bus-stop demand framing extends beyond the quote.",
+        "jurisdiction_correctness": "Correctly raised as a categorical safety concern rather than a compliance claim, with no normative basis asserted, appropriate to DMRB GG 119 Stage 1 scope.",
+        "recommendation_quality": "Specific and actionable: identifies exact locations (each A4019 crossing adjacent the bus stop), required attributes (depth and width), and design users (expectant parent with pushchair plus cycle), all deliverable at detailed design.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly identified as affected road users, the evidence quote addresses cyclist refuge containment, and the recommendation extends coverage to pushchair users."
+      }
+    },
+    {
+      "finding_id": "JB-GF6-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Stop-line repositioning near the Homecroft Drive junction can invalidate previously demonstrated large-vehicle swept paths that already show limited over-run; a genuine Stage 1 verification concern.",
+        "evidence_grounding": "Verbatim quote in EV-UK-002 confirms the original swept-path analysis, the 7.5t box van/refuse vehicle types, and existing over-run into opposing lanes, directly grounding the pivotal re-validation claim.",
+        "jurisdiction_correctness": "Correctly framed as a confirmation-style compliance question rather than an asserted safety problem, keeping categories distinct under GG 119 Stage 1 semantics.",
+        "recommendation_quality": "Specific and actionable: re-run swept-path analysis for the named vehicle classes over the as-adjusted stop-line positions before Stage 2; viable and time-bound.",
+        "vru_coverage": "Pedestrians, cyclists, central refuges, and desire lines are explicitly acknowledged, but VRU-specific exposure is deliberately out of scope for this vehicle-focused question, matching the acknowledge-but-not-applicable case."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T08:45:59.988Z"
+}

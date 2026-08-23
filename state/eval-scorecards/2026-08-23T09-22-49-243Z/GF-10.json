@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T09-22-49-243Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Simultaneous transfer-permission and signage changes at three interchanges on an AADT 420,000 facility create a credible driver decision-load mechanism with real collision potential during transition, substantive for a Planning Stage RSA.",
+        "evidence_grounding": "Pivotal claim is anchored in recorded corridor inputs (AADT, scope of permission/signature revisions) plus a verbatim EV-CA-003 quote directly supporting the avoid-collisions-elsewhere rationale for staging.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under CRSAG audit objectives without drifting into compliance claims; the quoted objective is applied within its intended network-wide safety semantics.",
+        "recommendation_quality": "Specific and actionable: one-interchange-per-quarter sequencing with before/after speed-differential monitoring is concrete, measurable, and operationally viable at planning stage.",
+        "vru_coverage": "VRUs are not applicable on a controlled-access express-collector mainline, and the finding explicitly acknowledges this while scoping road users to vehicle occupants."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Conflicting authoritative continuity records leave the planning-stage audit scope boundary indeterminate, risking exclusion of movements redistributing to interchanges outside project limits — a genuine completeness/compliance issue for this scheme context.",
+        "evidence_grounding": "Pivotal continuity conflict is anchored by the verbatim EV-CA-007 quote ('must be maintained across all three interchange transfer points' yet 'cannot be guaranteed at this location without geometric revision'), which substantiates both sides of the conflict; the municipal-register discontinuation itself rests on recorded-input framing rather than its own citation.",
+        "jurisdiction_correctness": "Properly framed as a process/compliance question kept categorically distinct from any asserted collision mechanism, consistent with planning-stage scope-definition semantics under the CRSAG/provincial framework.",
+        "recommendation_quality": "Specific and viable: names both conflicting records, assigns reconciliation to the ministry planning office, and requires a recorded determination of whether resolved scope keeps corridor-wide continuity effects inside the audit boundary.",
+        "vru_coverage": "VRUs correctly assessed as not applicable on the controlled-access mainline but explicitly acknowledged, with downstream arterial propagation noted without asserting unsupported VRU exposure."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T09:30:57.933Z"
+}
