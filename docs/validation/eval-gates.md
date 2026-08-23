@@ -30,6 +30,7 @@ Everything else ships on Tier 0 alone.
 | Corpus pass mark | ≥ 90 % of sampled findings per project meet minimums |
 | Regression tolerance | **zero-drop**: any decline in a project's mean dimension-total vs the prior archived run triggers §5 |
 | Judge identity/effort | recorded per scorecard (`x-preview-f-free`, effort max) — a scorecard without provenance is invalid |
+| Rubric clarification (owner, ω 2026-08-22) | **`evidence_grounding=2` requires a verbatim quoted snippet from a cited source supporting the pivotal claim.** Registry-id citation alone scores at most 1. Baselines must carry quotes to pass. |
 
 Latest archived run: `state/eval-scorecards/<latest>/` (first live archive
 2026-08-22T22-13-39Z: all five projects below the 90 % mark — see §6).
@@ -69,10 +70,11 @@ When a scorecard is below threshold or regresses:
 The first live archive (run `2026-08-22T22-13-39Z`) scored all five corpus projects below
 the 90 % mark — dominant causes: `evidence_grounding=1` where findings cite registry ids
 with null quotes, and `vru_coverage=0` on vehicle-only compliance questions. Walking §5:
-classification is *baseline rot vs rubric strictness ambiguity* → action: author decision
-for the owner (quote-bearing baselines vs rubric clarification), fixtures untouched until
-decided. This is the procedure working as designed: honest signal, explicit human decision,
-nothing tuned to pass.
+classification settled by owner at ratification: **rubric strictness confirmed — quotes
+are required for full grounding credit**, so the authored baselines are below-bar as
+written → action: upgrade fixture baselines with quote-bearing evidence before the next
+release-gating eval. This is the procedure working as designed: honest signal, explicit
+human decision, nothing tuned to pass.
 
 ## 7. Deliberate deferrals
 
