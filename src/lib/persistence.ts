@@ -3,7 +3,7 @@
 // Swapping stores = env change, never code change. Repository owns the physical
 // key scheme exclusively; no other module assembles or parses storage keys.
 import { createHash } from "node:crypto";
-import type { Attachment, AuditResult, Project } from "@/domain/types";
+import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
 import type { AuditArtifact } from "@/domain/pipeline/types";
 
 /** The store itself is unreachable/unhealthy: transport failure, non-2xx REST
@@ -179,6 +179,13 @@ const artifactSeqOf = (key: string): number => {
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
 };
 
+export class IssueRevisionConflictError extends Error {
+  constructor(detail: string) {
+    super(`issue revision conflict: ${detail}`);
+    this.name = "IssueRevisionConflictError";
+  }
+}
+
 /** Workspace-scoped repository over the store seam. Sole owner of the physical
  *  key scheme (ADR-0001): everything else addresses records through these
  *  static helpers or through repository methods. */
@@ -220,6 +227,12 @@ export class Repository {
   static artifactSummaryKey(ws: string, projectId: string, auditId: string): string {
     return `${Repository.artifactTrailPrefix(ws, projectId, auditId)}_summary`;
   }
+  static issueKey(ws: string, projectId: string, auditId: string, rev: number): string {
+    return `ws:${ws}:issue:${projectId}:${auditId}:${rev}`;
+  }
+  static issuesPrefix(ws: string, projectId: string, auditId: string): string {
+    return `ws:${ws}:issue:${projectId}:${auditId}:`;
+  }
 
   // ---- Projects ------------------------------------------------------------
 
@@ -251,6 +264,51 @@ export class Repository {
     return loaded
       .filter((a): a is AuditResult => a !== null)
       .sort((a, b) => b.ran_at.localeCompare(a.ran_at));
+  }
+
+  // ---- Audit issues (ADR-0004) ------------------------------------------------
+
+  /** Freeze draft results as the next immutable, sequentially numbered issue
+   *  revision. Write-once per ADR-0004: an existing revision is never
+   *  rewritten, so the computed key must be absent or issuance aborts. */
+  async saveIssue(
+    ws: string,
+    projectId: string,
+    auditId: string,
+    result: AuditResult,
+    issuedAtIso: string,
+  ): Promise<AuditIssue> {
+    const prior = await this.listIssues(ws, projectId, auditId);
+    const revision = (prior[prior.length - 1]?.revision ?? 0) + 1;
+    const key = Repository.issueKey(ws, projectId, auditId, revision);
+    if ((await this.store.get(key)) !== null) {
+      throw new IssueRevisionConflictError(`revision ${revision} already exists`);
+    }
+    const issue: AuditIssue = {
+      revision,
+      issued_at: issuedAtIso,
+      issued_by: "auditor",
+      result,
+    };
+    await this.store.put(key, issue);
+    return issue;
+  }
+
+  async getIssue(
+    ws: string,
+    projectId: string,
+    auditId: string,
+    rev: number,
+  ): Promise<AuditIssue | null> {
+    return this.store.get<AuditIssue>(Repository.issueKey(ws, projectId, auditId, rev));
+  }
+
+  async listIssues(ws: string, projectId: string, auditId: string): Promise<AuditIssue[]> {
+    const prefix = Repository.issuesPrefix(ws, projectId, auditId);
+    const keys = await this.store.keys(prefix);
+    keys.sort((a, b) => artifactSeqOf(a) - artifactSeqOf(b));
+    const loaded = await this.store.getMany<AuditIssue>(keys);
+    return loaded.filter((i): i is AuditIssue => i !== null);
   }
 
   // ---- Attachments -----------------------------------------------------------

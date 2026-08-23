@@ -169,3 +169,13 @@ export interface AuditResult {
   limitations: string[];
   disclaimer: string;
 }
+
+/** ADR-0004 / DEC-0005: an immutable, numbered snapshot of an Audit's results
+ *  at the moment of issuance. Issues are write-once and retained permanently;
+ *  later runs mutate only the draft. */
+export interface AuditIssue {
+  revision: number;
+  issued_at: string;
+  issued_by: "auditor";
+  result: AuditResult;
+}

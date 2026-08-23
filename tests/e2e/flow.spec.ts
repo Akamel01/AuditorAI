@@ -82,6 +82,21 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await expect(page.getByRole("button", { name: /print \/ save pdf/i })).toBeVisible();
   await expect(page.locator('a[download$=".md"]')).toBeAttached();
   await expect(page.locator('a[download$=".json"]')).toBeAttached();
+
+  // ---- ADR-0004: issuing freezes immutable numbered revisions ------------------
+  page.once("dialog", (d) => d.accept());
+  await page.getByTestId("issue-report").click();
+  const lineage = page.getByTestId("issue-lineage");
+  await expect(lineage).toBeVisible({ timeout: 20_000 });
+  await expect(lineage.locator("li")).toHaveCount(1);
+  await expect(lineage.getByText(/^I1$/)).toBeVisible();
+  await expect(lineage.locator('a[download$="-I1.md"]')).toBeAttached();
+
+  // Re-issue creates the next revision; the first is never replaced.
+  page.once("dialog", (d) => d.accept());
+  await page.getByTestId("issue-report").click();
+  await expect(lineage.locator("li")).toHaveCount(2, { timeout: 20_000 });
+  await expect(lineage.getByText(/^I2$/)).toBeVisible();
 });
 
 test("M2: paste image → thumbnail → persists across reload (KV-backed)", async ({ page }) => {

@@ -12,11 +12,12 @@ import {
   buildFindingUpdate,
   type ReviewerStatusAction,
 } from "@/domain/finding-review";
-import type { AuditResult, Finding } from "@/domain/types";
+import type { AuditIssue, AuditResult, Finding } from "@/domain/types";
 
 export default function AuditPage() {
   const { projectId: id, auditId } = useParams<{ projectId: string; auditId: string }>();
   const [audit, setAudit] = useState<AuditResult | null>(null);
+  const [issues, setIssues] = useState<AuditIssue[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -24,7 +25,11 @@ export default function AuditPage() {
       const d = await api<{ audit: AuditResult }>(
         `/api/projects/${id}/audits/${auditId}`,
       );
+      const i = await api<{ issues: AuditIssue[] }>(
+        `/api/projects/${id}/audits/${auditId}/issues`,
+      );
       setAudit(d.audit);
+      setIssues(i.issues);
     } catch (e) {
       setError(String((e as Error).message));
     }
@@ -32,6 +37,14 @@ export default function AuditPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function issueReport() {
+    const nextRev = (issues[issues.length - 1]?.revision ?? 0) + 1;
+    if (!window.confirm(`Issue this report as revision I${nextRev}? Issued reports are immutable.`))
+      return;
+    await api(`/api/projects/${id}/audits/${auditId}/issues`, { method: "POST" });
+    load();
+  }
 
   if (error) return <main className="mx-auto max-w-3xl px-6 py-12 text-red-600">{error}</main>;
   if (!audit) return <main className="mx-auto max-w-3xl px-6 py-12 text-neutral-500">Loading…</main>;
@@ -144,7 +157,53 @@ export default function AuditPage() {
           >
             print / save PDF
           </button>
+          <button
+            onClick={issueReport}
+            data-testid="issue-report"
+            title="Freeze the current results as an immutable, numbered revision (ADR-0004)"
+            className="rounded bg-black px-2 py-1 text-xs text-white hover:bg-neutral-800 print:hidden"
+          >
+            issue report{issues.length > 0 ? ` (next I${issues[issues.length - 1].revision + 1})` : ""}
+          </button>
         </div>
+
+        {issues.length > 0 && (
+          <div className="mt-3 rounded-lg border border-neutral-300 p-3" data-testid="issue-lineage">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+              Issued revisions (immutable)
+            </h3>
+            <ul className="mt-2 space-y-1 text-sm">
+              {issues.map((iss) => {
+                const md = renderReportMarkdown(iss.result);
+                return (
+                  <li key={iss.revision} className="flex flex-wrap items-center gap-3">
+                    <span className="rounded-full bg-black px-2 py-0.5 text-[11px] font-medium text-white">
+                      I{iss.revision}
+                    </span>
+                    <span className="text-xs text-neutral-600">
+                      issued {new Date(iss.issued_at).toLocaleString()}
+                    </span>
+                    <a
+                      href={`data:text/markdown;charset=utf-8,${encodeURIComponent(md)}`}
+                      download={`${iss.result.audit_id}-I${iss.revision}.md`}
+                      className="text-xs text-blue-600 underline"
+                    >
+                      .md
+                    </a>
+                    <a
+                      href={`data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(iss, null, 2))}`}
+                      download={`${iss.result.audit_id}-I${iss.revision}.json`}
+                      className="text-xs text-blue-600 underline"
+                    >
+                      .json
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
         <pre className="mt-2 max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-lg border bg-white p-4 text-xs leading-relaxed">
 {markdown}
         </pre>

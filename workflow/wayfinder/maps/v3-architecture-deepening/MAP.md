@@ -162,10 +162,14 @@ during the sweep though the work shipped in 12e8789.)*
 
 ## Not yet specified (fog beyond this destination)
 
-- ~~Provided-but-blank input divergence~~ **DECIDED 2026-08-23 (owner): invalidate at
-  the boundary** — writing `state=provided` requires a non-empty value or ≥1 attachment
-  (enforced in `domain/project-edits`); client stays verbatim; AG-MANIFEST downgrade
-  remains as legacy-data guard. Glossary "Input State" added. Implementation pending.
+- ~~Provided-but-blank input divergence~~ **DECIDED + IMPLEMENTED 2026-08-23**:
+  invalidate at the boundary — `patchProject` rejects unsubstantiated `provided`
+  (table-tested); client reveals local affordances and writes only on substance;
+  AG-MANIFEST downgrade remains as legacy-data guard. Glossary "Input State" added.
+- ~~Audit-history retention (ADR-0004)~~ **IMPLEMENTED 2026-08-23**: Repository
+  issue keys (`ws:{ws}:issue:{p}:{a}:{rev}`), write-once sequential revisions,
+  `/audits/[auditId]/issues` GET/POST route, UI issue control + lineage with
+  downloads; e2e covers I1→I2.
 - Real candidate-findings review UX: **roadmap commitment** (Flag #2 decision) —
   candidates become auditor-reviewable work items before adjudication. Queued product
   ticket; unblocks when live mode sees real usage.

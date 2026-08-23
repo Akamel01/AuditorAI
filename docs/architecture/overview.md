@@ -35,10 +35,14 @@ lib/
                                adapter registry behind getAiAdapter()
   evidence.ts                  evidence-registry access (getEvidence/tryGetEvidence); shared
                                by packs, pipeline nodes and scripts
-  persistence.ts               DataStore{put,get,getMany,keys,delByPrefix} seam +
-                               Memory/KvRest adapters + Repository — sole owner of the key
-                               scheme (static key/prefix helpers); StoreUnavailableError;
-                               resettable singleton for tests
+   persistence.ts               DataStore{put,get,getMany,keys,delByPrefix} seam +
+                                Memory/KvRest adapters + Repository — sole owner of the key
+                                scheme (static key/prefix helpers; draft audits, attachments,
+                                artifact trails, immutable issue revisions per ADR-0004);
+                                StoreUnavailableError; resettable singleton for tests
+   project-edits.ts             project/input-state write policy: creation validation,
+                                stage gate, never-silently-detach merge, provided-requires-
+                                substance invariant (CONTEXT.md: Input State)
   report.ts                    AuditResult → Markdown (deterministic)
   intake.ts                    image-intake policy: caps, magic-byte sniff, dedupe, count cap
   extract.ts                   document intake: limits, magic-byte checks, PDF text extraction
