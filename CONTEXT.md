@@ -14,8 +14,16 @@ modification). A Project audits exactly one Scheme. (UK GG 119 uses "highway sch
 US practice speaks of "the project or existing road" [EV-US-001] — same concept, native
 vocabularies preserved per jurisdiction.)
 
-**Audit** — a single execution of the Road Safety Audit process for a Project at a chosen
-Stage, producing Findings and a report.
+**Audit** — the audit effort for one Scheme at one Native Stage within a Project: a
+mutable working record (Draft) whose current results are replaced on each Run until
+issued. Issuing freezes an immutable, numbered Audit Issue; later Runs never alter
+issued issues. (Decision DEC-0005; supersedes the earlier "single execution" wording.)
+
+**Run** — a single execution of the Road Safety Audit process for an Audit. Reruns
+replace the Draft's results depth-1; they never modify an issued Audit Issue.
+
+**Audit Issue** — an immutable, numbered snapshot of an Audit's results at the moment
+of issuance, retained permanently as the formal record of what was reported.
 
 **Road Safety Audit** — a formal, independent examination of a road scheme's safety
 performance by qualified people who did not design it, evaluating collision risk for all
@@ -72,6 +80,12 @@ obscuring conflicting movements"). Labelled as derived; distinguishable from quo
 **Recommendation** — a proportionate, viable suggested mitigation attached to a Finding.
 UK practice forbids vague wording ("consider") in recommendations [EV-UK-015]; the product
 enforces equivalent discipline canonically.
+
+**Input State** — the status of a Project input relative to its requirement level:
+level-derived missing states (`required_missing` etc.) when nothing is recorded,
+`provided` only when substantiated by an actual value or attachment, and explicit
+`unknown` / `not_available` declarations. A `provided` claim without substance is
+invalid at intake and treated as missing wherever encountered. (Decision 2026-08-23.)
 
 ## Risk language
 

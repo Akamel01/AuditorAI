@@ -150,8 +150,30 @@ evidence_records:
     retrieved_date: "2026-08-21"
     normative_status: informative
     confidence: medium
+  - evidence_id: EV-IN-015
+    claim: PIARC 2023R40EN Appendix 1 §10.2 "Preliminary Design" audit prompt list requires every junction to be checked at preliminary design for type suitability against traffic volume, movements (vehicular and pedestrian), approach speeds and site constraints ("Is it the safest alternative – for all road users?"), for adequate channelling/protection of different traffic streams, and for proper "lane balance" and "through lane continuity" — i.e., conflict-point adequacy must be verified at preliminary design before geometry is fixed.
+    quote: "Is the type of junction (priority, control, etc.) suitable for the function of the two roads, the traffic volume, the traffic movements (vehicular and pedestrian), the approach speeds and the site constraints? Is it the safest alternative \u2013 for all road users? Is there proper \u201clane balance\u201d, and \u201cthrough lane continuity\u201d?"
+    source_url: https://www.piarc.org/en/order-library/43787-en-Road%20Safety%20Audits%20Guidelines%20for%20Road%20Projects%20-%20A%20PIARC%20Technical%20Report
+    source_title: "Road Safety Audits Guidelines for Road Projects — A PIARC Technical Report, Appendix 1 §10.2 Preliminary Design, prompts 2.6 Junctions (report p.56)"
+    publisher: PIARC (World Road Association)
+    revision: "2023R40EN"
+    publication_date: 2023
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
+  - evidence_id: EV-IN-016
+    claim: PIARC 2023R40EN Appendix 1 §10.2 "Preliminary Design" audit prompt list requires explicit pedestrian and cyclist provision at every junction ("Is there adequate provision for pedestrians and cyclists?") and dedicated consideration of cyclists and motorcyclists especially at junctions — making uncontrolled shared-use-path crossings at free-flow ramp terminals a preliminary-design audit item, not a post-construction discovery.
+    quote: "Is there adequate provision for pedestrians and cyclists? Have the needs of cyclists and motorcyclists been considered, especially at junctions (check whether these vehicles were covered by the traffic surveys)?"
+    source_url: https://www.piarc.org/en/order-library/43787-en-Road%20Safety%20Audits%20Guidelines%20for%20Road%20Projects%20-%20A%20PIARC%20Technical%20Report
+    source_title: "Road Safety Audits Guidelines for Road Projects — A PIARC Technical Report, Appendix 1 §10.2 Preliminary Design, prompts 2.6 Junctions / 2.7 Pedestrians and other special road users (report pp.56–57)"
+    publisher: PIARC (World Road Association)
+    revision: "2023R40EN"
+    publication_date: 2023
+    retrieved_date: "2026-08-23"
+    normative_status: recommended
+    confidence: high
 access_notes:
-  - The full-text PDF of PIARC 2023R40EN is publicly linked from its official order-library page [EV-IN-001], but automated text extraction of the PDF failed during this research (the fetch returned site navigation instead of document text); content details above rely on PIARC's official metadata page and the PIARC Road Safety Manual's description of the guide, not on invented quotes.
+  - The full-text PDF of PIARC 2023R40EN is publicly linked from its official order-library page [EV-IN-001]. Initial automated fetch returned site navigation; an owner-provided copy is now archived in-repo via Git LFS at `docs/references/INT/2023R40EN-Road-Safety-Audit-Guidelines-for-Road-Projects-PIARC-Technical-Report.pdf` (AES owner-password removed with qpdf; text extracted with pypdf, all pages). Quotes in [EV-IN-015] and [EV-IN-016] are taken directly from that extraction and verified verbatim after whitespace normalisation.
   - ISO standard full texts are paywalled (ISO 39001:2012 listed at CHF 181); only abstracts, metadata and life-cycle data were consulted [EV-IN-006][EV-IN-007].
 ---
 

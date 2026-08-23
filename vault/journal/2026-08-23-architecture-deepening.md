@@ -38,4 +38,8 @@ Surprises worth keeping:
    `yaml` as devDependency during the front-matter consolidation.
 5. Two gotcha files violated the charter's own front-matter contract; minimal
    front-matter was added (bodies untouched) so validation could pass — owner
-   should eyeball vault/gotchas/*.md.
+   eyeballed vault/gotchas/*.md and **blessed** the added front-matter 2026-08-23.
+
+Post-commit addendum (reviewer session, same day): owner committed the sweep as a
+single commit 12e8789; Phases 1–2 map checkboxes flipped after independent code
+verification; Flag #1 decided **hybrid draft-vs-issued** (ADR-0004 to follow).

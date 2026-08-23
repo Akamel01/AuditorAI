@@ -1,0 +1,13 @@
+# Binary reference assets stored via Git LFS
+# Reference library (official guidelines/manuals/checklists)
+docs/references/**/*.pdf filter=lfs diff=lfs merge=lfs -text
+docs/references/**/*.png filter=lfs diff=lfs merge=lfs -text
+docs/references/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+docs/references/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+docs/references/**/*.webp filter=lfs diff=lfs merge=lfs -text
+# Sample audit corpus (full input/output packages)
+tests/fixtures/samples/**/*.pdf filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/samples/**/*.png filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/samples/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/samples/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/samples/**/*.webp filter=lfs diff=lfs merge=lfs -text

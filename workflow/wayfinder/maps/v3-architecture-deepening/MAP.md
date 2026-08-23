@@ -37,14 +37,19 @@ every phase; goldens byte-stable throughout.
 ## Flags needing an owner decision (recorded, not unilaterally changed)
 
 1. **Audit history depth-1**: deterministic audit ids (`AUD-{project}-{stage}`,
-   `nodes/shared.ts:84`) mean reruns silently overwrite prior audits per stage. Needs an
-   explicit decision record before anyone relies on history.
+   `pipeline/result.ts:67` — pointer updated from stale `shared.ts:84`) mean reruns
+   overwrite prior audits per stage. **DECIDED 2026-08-23 (owner): hybrid model —**
+   draft audits stay depth-1/mutable; *issuing* an audit freezes an immutable,
+   retained snapshot. ADR-0004 to record; implementation scope TBD (see grill log).
 2. **Candidates → adjudication semantics**: contracts promise AG-ADJUDICATION consumes
    `candidate_findings`; implementation drops them pre-report (`pipeline-live.test.ts:80`
    enshrines this). This effort amends contract text to match implemented reality +
-   makes unknown-finding_id decisions record loudly. Building the real candidate-review
-   flow is product work left fogged.
+   makes unknown-finding_id decisions record loudly. **DECIDED 2026-08-23 (owner):
+   candidates get a future auditor-review UX** (accept/edit/reject before adjudication)
+   — roadmap commitment, product ticket queued; contracts will change again when built.
 3. **Eval live mode** added as opt-in flag only; E5 trigger-path policy unchanged.
+   **DECIDED 2026-08-23 (owner): `--live` is owner-run only** — on demand, never
+   automated or CI-scheduled (policy noted in run-eval.ts header).
 4. **Vault journal lint vs V3 anti-enforcement stance**: charter already promises
    machine validation of prose front-matter; lint covers *format*, never session
    compliance. Kept inside existing compile scripts, not new CI choreography.
@@ -54,40 +59,40 @@ every phase; goldens byte-stable throughout.
 ### Phase 0 — Baseline ✅
 - [x] `npm run ci` green on untouched tree (verified 2026-08-23).
 
-### Phase 1 — Correctness bugs & drift (quick wins)
-- [ ] `humanizeEnum()` module; fix single-underscore replace in `lib/report.ts:26` and
-      `projects/[projectId]/page.tsx:199` (audit page already fixed).
-- [ ] `.env.example` documents `AI_ADAPTER`/`AI_PROVIDER_API_KEY`; code reads
-      `AI_ENABLED`/`OPENCODE_API_KEY` (`ai.ts:400`) — align docs.
-- [ ] `pipeline/nodes/persist.ts:23-26` retry swallows first error silently — log it.
-- [ ] `/api/dev/replay`: raw workspace key moves query→header; params renamed to
-      path-param convention (`project|audit|ws` → projectId/auditId style).
-- [ ] Jurisdiction whitelist literal duplicated in `inputs/[jur]/route.ts:13` and
-      `stages/route.ts:13` → single domain predicate.
-- [ ] Image budget constants consolidated (`image.ts:3,5`, `upload/route.ts:11`,
-      comment-only per-project cap `types.ts:62`) → one constants home.
-- [ ] Dev tab: controlled inputs replace `getElementById`; guarded `JSON.parse`
-      (`dev/page.tsx:42-44`, `projects/page.tsx:88-89`).
-- [ ] Step route live ctx omits attachments (`step/route.ts:41-50`) — thread them,
-      restoring vision parity with audits POST.
+### Phase 1 — Correctness bugs & drift (quick wins) ✅
+- [x] `humanizeEnum()` module; fix single-underscore replace in `lib/report.ts:26` and
+      `projects/[projectId]/page.tsx:199` (audit page already fixed). *(verified 2026-08-23: `src/lib/format.ts`, used at report.ts)*
+- [x] `.env.example` documents `AI_ADAPTER`/`AI_PROVIDER_API_KEY`; code reads
+      `AI_ENABLED`/`OPENCODE_API_KEY` (`ai.ts:400`) — aligned to code.
+- [x] `pipeline/nodes/persist.ts` retry logs the swallowed first error (console.warn).
+- [x] `/api/dev/replay`: raw workspace key moved query→header (`x-workspace-key`);
+      params renamed projectId/auditId.
+- [x] Jurisdiction whitelist deduplicated into a single domain predicate.
+- [x] Image budget constants consolidated (`ATTACHMENT_MAX_BYTES`,
+      `MAX_ATTACHMENTS_PER_PROJECT` homed in `domain/types.ts`).
+- [x] Dev tab: controlled inputs replace `getElementById`; guarded `JSON.parse`.
+- [x] Step route live ctx threads attachments (vision parity with audits POST).
 
-### Phase 2 — Domain core deepening
-- [ ] Slice write-scope enforced mechanically in `runNode` (patch keys ⊆ descriptor.writes)
-      + violation test (`types.ts:175-186`, `registry.ts:41-170`).
-- [ ] Registry-driven async dispatch: callers consult `node_class` instead of hardcoding
-      AG-AI-CANDIDATES/AG-PERSIST branches (`pipeline.ts:99-106`, `step/route.ts:39-52`);
-      versionStart threading encapsulated.
-- [ ] Adjudication: unknown finding_id decisions recorded loudly, not `continue`d
-      (`adjudication.ts:24-25`); AG-ADJUDICATION contract + descriptor amended to
+*(Reviewer verification 2026-08-23: all items confirmed landed in code + CI green;
+boxes were left unchecked during the sweep though the work shipped in 12e8789.)*
+
+### Phase 2 — Domain core deepening ✅
+- [x] Slice write-scope enforced mechanically in `runNode` (patch keys ⊆ descriptor.writes)
+      + violation test (`assertWriteScope`, pipeline.ts).
+- [x] Registry-driven async dispatch: `runNodeAsync` consults node_class; zero hardcoded
+      AG-AI-CANDIDATES/AG-PERSIST branches; versionStart threading encapsulated.
+- [x] Adjudication: unknown finding_id decisions recorded into limitations
+      (adjudication.ts → result.ts:60-64); AG-ADJUDICATION contract amended to
       implemented reality re candidates.
-- [ ] packs.ts: injectable reader/dir; reuse `lib/evidence.tryGetEvidence`, delete private
-      duplicate loader (`packs.ts:178-188`); negative-path tests (bad JSON, ajv failure,
-      unknown evidence id).
-- [ ] UK GG-119 limitation hardcode (`shared.ts:77-80`) → pack-data-driven generic rule.
-- [ ] `assembleAuditResult` re-localized; stop mislabeling errors "AG-REPORT" when called
-      from the AI node (`shared.ts:59-63`, `ai-candidates.ts:71`).
-- [ ] Dead surface deleted: `engine.buildAuditContext` (zero consumers),
-      `registry.NODE_ORDER` alias.
+- [x] packs.ts injectable reader/dir; private duplicate loader deleted;
+      negative-path tests added.
+- [x] UK GG-119 limitation hardcode removed from shared.ts (pack-data-driven now).
+- [x] `assembleAuditResult` re-localized in `pipeline/result.ts`; caller-named
+      missing-slice diagnostics.
+- [x] Dead surface deleted: `engine.buildAuditContext`, `registry.NODE_ORDER` alias.
+
+*(Reviewer verification 2026-08-23: seams confirmed with tests; boxes left unchecked
+during the sweep though the work shipped in 12e8789.)*
 
 ### Phase 3 — Persistence & delivery deepening ✅
 - [x] Repository sole owner of key scheme (static helpers); persist.ts / finish wire leak /
@@ -157,10 +162,13 @@ every phase; goldens byte-stable throughout.
 
 ## Not yet specified (fog beyond this destination)
 
-- Provided-but-blank input divergence: client checklist renders stored state verbatim,
-  AG-MANIFEST downgrades blank "provided" to missing — one rule should win (owner call),
-  then the other surface follows `domain/input-states.ts`.
-- Real candidate-findings review UX (product feature; needs owner grilling).
+- ~~Provided-but-blank input divergence~~ **DECIDED 2026-08-23 (owner): invalidate at
+  the boundary** — writing `state=provided` requires a non-empty value or ≥1 attachment
+  (enforced in `domain/project-edits`); client stays verbatim; AG-MANIFEST downgrade
+  remains as legacy-data guard. Glossary "Input State" added. Implementation pending.
+- Real candidate-findings review UX: **roadmap commitment** (Flag #2 decision) —
+  candidates become auditor-reviewable work items before adjudication. Queued product
+  ticket; unblocks when live mode sees real usage.
 - Audit-history retention policy (blocked on Flag #1 decision).
 - RSC/server-render initial page data from Repository (idiomatic shift; value < risk now).
 - Postgres adapter as third store (unlocked by Phase 3 key-scheme ownership).
@@ -174,7 +182,9 @@ every phase; goldens byte-stable throughout.
 ## Destination status
 
 **REACHED 2026-08-23.** All seven phases executed in agent loops; every phase left
-`npm run ci` green (final: 28 suites / 279 tests passed + Playwright 3/3). Working tree
-intentionally left UNCOMMITTED for owner review — suggested commit granularity is one
-commit per phase block above. Open items live in Flags (owner decisions 1–4) and
-Not-yet-specified (provided-blank divergence; candidate-review UX).
+`npm run ci` green (final: 28 suites / 279 tests passed + Playwright 3/3). Committed by
+owner as a single sweep commit 12e8789 (suggested per-phase granularity not followed —
+noted, no action). Reviewer re-verified 2026-08-23: CI + Playwright 3/3 + both toolchain
+idempotence gates green; Phase 1–2 checkboxes flipped to match shipped code. Owner blessed
+the two agent-added gotcha front-matter blocks. Open items live in Flags (decisions 2–4)
+and Not-yet-specified (provided-blank divergence; candidate-review UX).

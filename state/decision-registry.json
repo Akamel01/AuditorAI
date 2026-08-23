@@ -36,6 +36,15 @@
       "status": "accepted",
       "date": "2026-08-22T06:05:00Z",
       "decided_by": "ORCH (delegated authority, evidence-grounded)"
+    },
+    {
+      "decision_id": "DEC-0005",
+      "adr_path": "docs/adr/0004-audit-lifecycle.md",
+      "wayfinder_ticket": null,
+      "title": "Audit lifecycle: mutable depth-1 draft; issuing freezes immutable numbered revisions (I1..) retained permanently; glossary Audit/Run/Audit-Issue redefined",
+      "status": "accepted",
+      "date": "2026-08-23T00:00:00Z",
+      "decided_by": "project owner (HITL, reviewer grill session)"
     }
   ]
 }
