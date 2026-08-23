@@ -45,6 +45,15 @@
       "status": "accepted",
       "date": "2026-08-23T00:00:00Z",
       "decided_by": "project owner (HITL, reviewer grill session)"
+    },
+    {
+      "decision_id": "DEC-0006",
+      "adr_path": "docs/adr/0005-operational-design-domain.md",
+      "wayfinder_ticket": null,
+      "title": "Operational Design Domain: framework×stage capability matrix; conjunctive membership (accepted mapping + gate-passing fixture, proven-pass with incident-flag evidence rule); three-zone edge semantics (refuse / stamp / Input-State degradation); per-cell input floors; inherited user+scheme scopes; versioned machine-readable declaration as Tier-1 trigger path; three-zone claim language",
+      "status": "accepted",
+      "date": "2026-08-23T00:00:00Z",
+      "decided_by": "project owner (HITL grilling session)"
     }
   ]
 }

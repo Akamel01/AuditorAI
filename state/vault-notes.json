@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 17,
+  "note_count": 18,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -212,6 +212,21 @@
         "adr": []
       },
       "body_chars": 3112
+    },
+    {
+      "path": "vault/journal/2026-08-23-odd-formal-definition.md",
+      "zone": "vault/journal",
+      "title": "ODD formal definition — ADR-0005/DEC-0006 via owner grilling session",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2531
     },
     {
       "path": "vault/journal/2026-08-23-phase0-gf9-primary-source.md",

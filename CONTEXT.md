@@ -121,6 +121,25 @@ cyclists, pedestrians, horse riders, passengers.
 **Vulnerable Road User (VRU)** — road users disproportionately exposed to harm:
 pedestrians, cyclists, motorcyclists, and similar.
 
+## System boundary
+
+**Operational Design Domain (ODD)** — the explicitly declared envelope within which the
+system's audit capability is designed, proven, and claimed: a capability matrix of Framework
+× Canonical Stage cells, each qualified by an Input Floor, Road-User coverage inherited from
+this glossary, and the framework's own native scheme applicability. Adapted from
+driving-automation standards practice (SAE J3016 lineage); its conditions are documentary and
+normative, never sensed physical states. Capability claims hold only inside the domain.
+(Decision 2026-08-23; ADR-0005.)
+
+**ODD Cell** — one Framework × Native Stage position in the matrix: IN (accepted mapping +
+gate-passing fixture), mapped-unproven (mapping without proof — runs allowed but stamped),
+or structurally absent (the framework defines no such audit — no run may claim it).
+_Avoid_: supported-jurisdiction list
+
+**Input Floor** — the minimum classes of project material an ODD cell presumes; below it the
+capability claim does not apply at all. Distinct from Input State degradation, which governs
+valid-but-thinner runs above the floor.
+
 ## System contracts
 
 **Audit Context** — the assembled bundle an audit runs against: project inputs, selected

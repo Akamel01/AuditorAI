@@ -19,6 +19,8 @@ A change to any of these MUST have a Tier-1 scorecard newer than the change, att
 2. Prompt changes (`buildPromptMessages` and any judge prompts)
 3. Engine semantic changes (`src/domain/**` affecting findings/questions/manifests)
 4. Jurisdiction pack edits (`policies/*/pack.json`)
+5. ODD declaration edits — the versioned matrix/input-floor artifact defined by ADR-0005
+   (`docs/adr/0005-operational-design-domain.md`), wherever homed, once introduced
 
 Everything else ships on Tier 0 alone.
 
