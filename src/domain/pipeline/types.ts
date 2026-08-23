@@ -168,6 +168,8 @@ export interface NodeRunCtx {
   decisions?: AdjudicationDecision[];
   /** A1 async driver only: permits live inference inside the pipeline. */
   allowLiveInference?: boolean;
+  /** M3: resolved drawing attachments for the vision path (already loaded). */
+  attachments?: { attachment_id: string; file_name: string; data_url: string }[];
 }
 
 export interface NodeResult {

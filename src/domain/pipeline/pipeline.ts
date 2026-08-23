@@ -35,13 +35,19 @@ export interface AuditPipeline {
   runAllLiveArtifacts(
     project: Project,
     ranAtIso: string,
-    opts?: { aiAdapter?: AiAdapter },
+    opts?: {
+      aiAdapter?: AiAdapter;
+      attachments?: { attachment_id: string; file_name: string; data_url: string }[];
+    },
   ): Promise<PipelineRun>;
   /** Live driver returning just the AuditResult (report bundle JSON). */
   runAllLive(
     project: Project,
     ranAtIso: string,
-    opts?: { aiAdapter?: AiAdapter },
+    opts?: {
+      aiAdapter?: AiAdapter;
+      attachments?: { attachment_id: string; file_name: string; data_url: string }[];
+    },
   ): Promise<AuditResult>;
   /** Execute a single node against a shared state; caller merges the patch. */
   runNode(nodeId: AgNodeId, state: SharedState, ctx: NodeRunCtx): NodeResult;
@@ -79,9 +85,13 @@ export class DefaultAuditPipeline implements AuditPipeline {
   async runAllLiveArtifacts(
     project: Project,
     ranAtIso: string,
-    opts?: { aiAdapter?: AiAdapter },
+    opts?: {
+      aiAdapter?: AiAdapter;
+      attachments?: { attachment_id: string; file_name: string; data_url: string }[];
+    },
   ): Promise<PipelineRun> {
     const adapter = opts?.aiAdapter;
+    const attachments = opts?.attachments;
     let state = this.initialState();
     const artifacts: AuditArtifact[] = [];
     for (const id of BATCH_NODES) {
@@ -92,6 +102,7 @@ export class DefaultAuditPipeline implements AuditPipeline {
           project,
           versionStart: artifacts.length + 1,
           aiAdapter: adapter,
+          attachments,
         }, adapter);
       } else {
         res = this.runNode(id, state, {

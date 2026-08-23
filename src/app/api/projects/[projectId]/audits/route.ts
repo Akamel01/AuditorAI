@@ -1,8 +1,12 @@
-// GET /api/projects/[projectId]/audits — list; POST — run the deterministic
-// audit pipeline and persist the result.
+// GET /api/projects/[projectId]/audits — list; POST — run the audit pipeline
+// and persist the result. Deterministic by default; when the AI adapter is
+// enabled (env), the live driver runs candidate generation with project
+// drawings passed as image blocks (M3), respecting the vision budget.
 import { NextResponse } from "next/server";
 import { notFound, requireWorkspace, serverError } from "@/lib/api";
 import { runAudit } from "@/domain/engine";
+import { getPipeline } from "@/domain/pipeline/pipeline";
+import { getAiAdapter } from "@/lib/ai";
 
 type Ctx = { params: Promise<{ projectId: string }> };
 
@@ -14,7 +18,19 @@ export async function POST(req: Request, ctx: Ctx) {
     const project = await auth.repo.getProject(auth.ws, projectId);
     if (!project) return notFound("project not found");
 
-    const result = runAudit(project, new Date().toISOString());
+    const ranAtIso = new Date().toISOString();
+    const adapter = getAiAdapter();
+    const result = adapter.enabled
+      ? await getPipeline().runAllLive(project, ranAtIso, {
+          aiAdapter: adapter,
+          attachments: (await auth.repo.listAttachments(auth.ws, projectId)).map((a) => ({
+            attachment_id: a.attachment_id,
+            file_name: a.file_name,
+            data_url: a.data_url,
+          })),
+        })
+      : runAudit(project, ranAtIso);
+
     await auth.repo.saveAudit(auth.ws, result);
     return NextResponse.json({ audit: result }, { status: 201 });
   } catch (e) {

@@ -16,14 +16,29 @@ export type CandidateFinding = Pick<
   | "assumptions"
   | "rationale"
   | "recommendation"
-> & { producer: string };
+> & {
+  producer: string;
+  /** M3: drawing ids this candidate was derived from (vision path). */
+  source_attachment_ids?: string[];
+};
 
 type Finding = AuditResult["findings"][number];
 
+/** M3 vision budget: max drawings passed as image blocks per judge/candidate call. */
+export const MAX_IMAGES_PER_CALL = 4;
+
 export interface AiAdapter {
   readonly enabled: boolean;
-  /** Generate bounded candidate findings for human adjudication. */
-  generateCandidates(audit: AuditResult): Promise<CandidateFinding[]>;
+  /**
+   * Generate bounded candidate findings for human adjudication. `images` are
+   * data-URLs rendered as image blocks (vision path, M3); `contextNotes` carry
+   * degraded text summaries (e.g. overflow attachment names).
+   */
+  generateCandidates(
+    audit: AuditResult,
+    images?: string[],
+    contextNotes?: string[],
+  ): Promise<CandidateFinding[]>;
 }
 
 export class OffAiAdapter implements AiAdapter {
@@ -226,10 +241,27 @@ export class ZenAiAdapter implements AiAdapter {
     return this.consecutiveFailures >= (this.cfg.breakerThreshold ?? 3);
   }
 
-  async generateCandidates(audit: AuditResult): Promise<CandidateFinding[]> {
+  async generateCandidates(
+    audit: AuditResult,
+    images?: string[],
+    contextNotes?: string[],
+  ): Promise<CandidateFinding[]> {
     if (this.open) return [];
 
-    let messages = buildPromptMessages(audit);
+    let messages = buildPromptMessages(audit, images);
+    if (contextNotes?.length) {
+      const note = `Attachments not shown as images (budget): ${contextNotes.join("; ")}`;
+      messages = [
+        ...messages.slice(0, -1),
+        {
+          role: "user",
+          content:
+            typeof messages[messages.length - 1].content === "string"
+              ? `${String(messages[messages.length - 1].content)}\n\n${note}`
+              : messages[messages.length - 1].content,
+        },
+      ];
+    }
     const maxCalls = this.cfg.maxCallsPerRun ?? 3;
     let repairsUsed = 0;
 

@@ -4,7 +4,7 @@
 // candidates plus a degraded status artifact; the deterministic path is
 // unaffected. Live inference flows through pipeline.runAllLive →
 // generateCandidatesLive.
-import { getAiAdapter, type AiAdapter } from "@/lib/ai";
+import { getAiAdapter, MAX_IMAGES_PER_CALL, type AiAdapter } from "@/lib/ai";
 import { assembleAuditResult, makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   CandidatesSlice,
@@ -55,6 +55,7 @@ const CANDIDATE_FIELDS = [
   "assumptions",
   "rationale",
   "recommendation",
+  "source_attachment_ids",
 ] as const;
 
 /**
@@ -68,18 +69,32 @@ export async function generateCandidatesLive(
   adapter: AiAdapter,
 ): Promise<NodeResult> {
   const provisional = assembleAuditResult(state, ctx.ranAtIso);
+
+  // M3 vision budget: first N drawings become image blocks; the rest degrade
+  // to name-only text summaries so nothing is silently dropped.
+  const attachments = ctx.attachments ?? [];
+  const shown = attachments.slice(0, MAX_IMAGES_PER_CALL);
+  const overflow = attachments.slice(MAX_IMAGES_PER_CALL);
+  const images = shown.map((a) => a.data_url);
+  const contextNotes = overflow.map((a) => a.file_name);
+
   try {
     // Boundary enforcement: project onto the declared subset (adapters cannot
     // widen it) and re-assert producer identity (adapters cannot self-label).
-    const candidates: CandidatesSlice = (await adapter.generateCandidates(provisional)).map(
-      (c) => {
-        const bounded: Record<string, unknown> = { producer: "safety-reasoning-agent" };
-        for (const f of CANDIDATE_FIELDS) {
-          if (f in c) bounded[f] = c[f as keyof typeof c];
-        }
-        return bounded as CandidatesSlice[number];
-      },
+    const raw = await adapter.generateCandidates(
+      provisional,
+      images.length ? images : undefined,
+      contextNotes.length ? contextNotes : undefined,
     );
+    const consideredIds = shown.map((a) => a.attachment_id);
+    const candidates: CandidatesSlice = raw.map((c) => {
+      const bounded: Record<string, unknown> = { producer: "safety-reasoning-agent" };
+      if (consideredIds.length > 0) bounded.source_attachment_ids = consideredIds;
+      for (const f of CANDIDATE_FIELDS) {
+        if (f in c) bounded[f] = c[f as keyof typeof c];
+      }
+      return bounded as CandidatesSlice[number];
+    });
     return {
       artifacts: [
         makeArtifact(
