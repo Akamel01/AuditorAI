@@ -99,14 +99,9 @@
       },
       "evidence": [
         {
-          "evidence_id": "EV-CA-006",
-          "quote": "TABLE 1 Road Safety Audit Stage Equivalency Table\nTAC Canadian RSA Guide Terminology Alberta Transportation Equivalent\nPlanning Stage RSA Stage 1 RSA\nPreliminary Design Stage RSA Stage 2 RSA\nDetailed Design Stage RSA Stage 3 RSA\nPre-opening Stage RSA Pre-opening Stage RSA",
-          "use": "context"
-        },
-        {
-          "evidence_id": "EV-CA-003",
-          "quote": "It is important that a clear procedure for managing and organising road safety audit is established, and that the practice of undertaking and reporting road safety audit is clearly specified, and that the actions are fully and consistently documented.",
-          "use": "supports_concern"
+          "evidence_id": "EV-CA-007",
+          "quote": "Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3; Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision.",
+          "use": "defines_requirement"
         }
       ],
       "assumptions": [],

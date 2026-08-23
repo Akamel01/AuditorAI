@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: c581a92e189b
-record_count: 17
+source_hash: ba0af8328d50
+record_count: 18
 ---
 # Validation log
 
@@ -143,3 +143,11 @@ record_count: 17
 - Follow-ups:
   - GF-9: obtain quotable INT source material for interchange weaving / ramp-terminal VRU crossings (e.g., full PIARC 2023R40EN text behind login, or a registered open-access interchange-safety source) before GF-9 can pass the corpus mark
   - Tier-0 snapshots unaffected and green throughout; zero-drop satisfied on all five projects across runs 02-49-32, 03-10-03, 03-23-50
+
+## VAL-2026-08-22-018
+
+- Date: 2026-08-23T08:55:26.913Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T08-44-07-607Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change

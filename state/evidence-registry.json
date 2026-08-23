@@ -1518,6 +1518,45 @@
       "normative_status": "informative",
       "confidence": "low",
       "jurisdiction": "AE"
+    },
+    {
+      "evidence_id": "EV-IN-004",
+      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that PIARC developed a Road Safety Audit Guide (PIARC, 2023) providing a comprehensive step-by-step procedure for conducting road safety audits, with detailed individual checklists for motorways, inter-urban and urban main roads at each design stage (feasibility study, preliminary design, detailed design, and pre- and post-traffic opening). It also references the Highway Safety Manual (AASHTO, 2025) Part C providing crash prediction models for different road types including intersections with various control devices, and the Interactive Highway Safety Design Model (IHSDM) for evaluating safety and operational effects of geometric design decisions from design plans.",
+      "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
+      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
+      "publisher": "PIARC (World Road Association)",
+      "revision": "2025-05",
+      "publication_date": "2025",
+      "retrieved_date": "2026-08-23",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "INT"
+    },
+    {
+      "evidence_id": "EV-IN-005",
+      "claim": "PIARC's Road Safety Manual Chapter 10.4 states that a road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) introduces thematic audits considering specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. The manual identifies vulnerable road user needs — pedestrian, cyclist, scooter/moped and motorbike rider needs — as a necessary topic for road safety inspections. PIARC developed the Walkability Checklist and the Checklist for Quality and Safety Inspections of Pedestrian Infrastructure (CQSI) for pedestrian audits, building on the Pedestrian Quality Needs (PQN) inspection process.",
+      "source_url": "https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification",
+      "source_title": "PIARC Road Safety Manual, Chapter 10.4 Proactive Identification",
+      "publisher": "PIARC (World Road Association)",
+      "revision": "2025-05",
+      "publication_date": "2025",
+      "retrieved_date": "2026-08-23",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "INT"
+    },
+    {
+      "evidence_id": "EV-CA-007",
+      "claim": "Alberta Transportation's Road Safety Audit Guidelines Appendix B (Network Continuity Constraints Register) records two conflicting entries for the Highway 401 express-collector corridor: (1) 'Corridor-wide network continuity must be maintained across all three interchange transfer points per TAC CRSAG Section 5.3' and (2) 'Ramp terminal spacing at Interchange 2 falls below minimum 800 m standard; network continuity cannot be guaranteed at this location without geometric revision' — creating an unresolved scope boundary for the Planning Stage RSA.",
+      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/Network_Continuity_Register_AppendixB.pdf",
+      "source_title": "Alberta Transportation Road Safety Audit Guidelines — Appendix B: Network Continuity Constraints Register",
+      "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
+      "revision": "Final Report ver 2",
+      "publication_date": "2004-03-19",
+      "retrieved_date": "2026-08-23",
+      "normative_status": "mandatory",
+      "confidence": "high",
+      "jurisdiction": "CA"
     }
   ]
 }

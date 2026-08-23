@@ -2,18 +2,18 @@
 generated: true
 type: evidence-record
 source: state/evidence-registry.json
-source_hash: 57d849110d5c
-normative_status: recommended
+source_hash: 63ca3160bda2
+normative_status: informative
 confidence: high
 jurisdiction: INT
 ---
 # EV-IN-005
 
-PIARC's earlier international guideline "Road safety audit guidelines for safety checks of new road projects" (PIARC Ref 2011R01EN, ISBN 2-84060-199-0, bilingual French/English, 385 pages) was published in 2011 by Technical Committee 3.1 Road Safety with input from experts from over 15 countries.
+PIARC's Road Safety Manual Chapter 10.4 states that a road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) introduces thematic audits considering specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. The manual identifies vulnerable road user needs — pedestrian, cyclist, scooter/moped and motorbike rider needs — as a necessary topic for road safety inspections. PIARC developed the Walkability Checklist and the Checklist for Quality and Safety Inspections of Pedestrian Infrastructure (CQSI) for pedestrian audits, building on the Pedestrian Quality Needs (PQN) inspection process.
 
 - Publisher: PIARC (World Road Association)
-- Source: https://www.piarc.org/en/order-library/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects
-- Retrieved: 2026-08-21
-- Normative status: **recommended** (confidence: high)
+- Source: https://roadsafety.piarc.org/en/planning-design-operation-risks-issue-identification/proactive-identification
+- Retrieved: 2026-08-23
+- Normative status: **informative** (confidence: high)
 
 Part of [[evidence-index]] · registry: `state/evidence-registry.json`

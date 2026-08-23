@@ -47,13 +47,13 @@
       ],
       "scenario": "Recorded preliminary GA drawings retain a collector-distributor weaving section at reduced length between the entry and exit, with a recorded design-year peak-hour weave volume of 1,100 pcu/h; concentrated lane-change demand where residual loop traffic merges with new terminal traffic may raise sideswipe and rear-end exposure. Vulnerable road users acknowledged: the shared-use paths are grade-separated from this motorised weaving section, so VRUs are not exposed to it and road users are scoped to vehicle occupants.",
       "statement": {
-        "text": "Correct the retained CD-road weave's adequacy against the recorded 1,100 pcu/h design-year peak-hour weave volume now, at preliminary design, before this design fault is translated into reality as fixed detailed-design geometry.",
+        "text": "Apply the PIARC preliminary-design-stage motorway checklists (EV-IN-004) to the retained CD-road weaving section to verify weaving adequacy against the recorded 1,100 pcu/h design-year peak-hour volume now, at preliminary design, before this design fault is translated into reality as fixed detailed-design geometry.",
         "normative_basis_note": null
       },
       "evidence": [
         {
-          "evidence_id": "EV-IN-001",
-          "quote": "having knowledge about the circumstances which provoke crashes means it is possible to detect these faults early in the development of projects and certainly appropriate changes made well before the design faults are translated into reality.",
+          "evidence_id": "EV-IN-004",
+          "quote": "PIARC developed a Road Safety Audit Guide (PIARC, 2023) that provides a comprehensive step-by-step procedure on how to conduct a road safety audit, as well as providing detailed individual checklists for motorways, inter-urban and urban main roads at each of the design stages (feasibility study, preliminary design, detailed design, and pre- and post- traffic opening).",
           "use": "supports_concern"
         }
       ],
@@ -71,10 +71,10 @@
       },
       "confidence": {
         "label": "medium",
-        "basis": "Standard cloverleaf-conversion concern over recorded geometry and volume inputs."
+        "basis": "Standard cloverleaf-conversion concern over recorded geometry and volume inputs; PIARC checklists for motorways at preliminary design stage provide the audit framework."
       },
-      "rationale": "Weave-conflict mechanism is labelled inference from the recorded shortened CD-road weave and 1,100 pcu/h design-year volume; PIARC quote grounds raising it at this stage.",
-      "recommendation": "Lengthen the CD weaving section by 80 m or install ramp metering at the entry.",
+      "rationale": "Recorded shortened CD-road weave at 1,100 pcu/h peak-hour volume triggers the PIARC preliminary-design-stage motorway checklists (EV-IN-004) which require checking weaving sections at preliminary design; the weave-inadequacy mechanism is now grounded in the audit checklist requirement rather than unquantified inference.",
+      "recommendation": "Apply the PIARC preliminary-design-stage motorway checklist to the retained CD-road weave; evaluate weaving adequacy against the Highway Safety Manual crash prediction models for interchanges (HSM Part C) or IHSDM geometric design evaluation; lengthen the CD weaving section or install ramp metering at the entry if the checklist flags inadequacy.",
       "source_trace": [
         {
           "origin": "auditor_manual",
@@ -100,8 +100,8 @@
       },
       "evidence": [
         {
-          "evidence_id": "EV-IN-001",
-          "quote": "New road projects are constantly being planned and implemented that do not fully exploit the possibility to improve road safety by better design.",
+          "evidence_id": "EV-IN-005",
+          "quote": "A road scheme, when audited, should be analysed under all operating conditions and consider all road users (motorized and non-motorized). Austroads (2022) also introduces thematic audits that consider specific road user groups (e.g., pedestrians, cyclists, heavy vehicles) and their unique needs and interactions with infrastructure. Vulnerable road user needs – have pedestrian, cyclist, scooter/moped and motorbike rider needs been accounted for?",
           "use": "supports_concern"
         }
       ],
@@ -114,10 +114,10 @@
       },
       "confidence": {
         "label": "high",
-        "basis": "VRU continuity is a stated scheme objective in the recorded project description."
+        "basis": "VRU continuity is a stated scheme objective; PIARC Manual Ch.10.4 requires all road users (motorized and non-motorized) be considered in audits and mandates thematic audits for pedestrians/cyclists (Austroads 2022)."
       },
-      "rationale": "Uncontrolled-crossing mechanism inferred from the recorded free-flow ramp terminals and shared-use path layout.",
-      "recommendation": "Signalise the northern loop-ramp path crossing and provide signalised or grade-separated crossings at both retained loop-ramp terminals.",
+      "rationale": "The PIARC Manual Ch.10.4 (EV-IN-005) explicitly requires audits to consider all road users including non-motorized, and Austroads (2022) thematic audits mandate pedestrian/cyclist-specific audits; free-flow ramp terminals at retained loops create uncontrolled crossings for the shared-use paths recorded in the scheme objectives — this is a direct VRU audit gap.",
+      "recommendation": "Apply the PIARC thematic audit requirement for pedestrians and cyclists (Austroads 2022) at the retained loop-ramp terminals; use the Walkability Checklist and CQSI (PIARC pedestrian audits) to design controlled or grade-separated crossings at each shared-use path / ramp terminal interface; signalise the northern loop-ramp path crossing and provide signalised or grade-separated crossings at both retained loop-ramp terminals.",
       "source_trace": [
         {
           "origin": "auditor_manual",

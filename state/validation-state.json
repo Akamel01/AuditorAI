@@ -187,6 +187,37 @@
         "GF-9: obtain quotable INT source material for interchange weaving / ramp-terminal VRU crossings (e.g., full PIARC 2023R40EN text behind login, or a registered open-access interchange-safety source) before GF-9 can pass the corpus mark",
         "Tier-0 snapshots unaffected and green throughout; zero-drop satisfied on all five projects across runs 02-49-32, 03-10-03, 03-23-50"
       ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-018",
+      "date": "2026-08-23T08:55:26.913Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T08-44-07-607Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-019",
+      "date": "2026-08-23T09:30:57.935Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T09-22-49-243Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-020",
+      "date": "2026-08-23T09:40:36.695Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T09-32-11-615Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
     }
   ]
 }
