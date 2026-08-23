@@ -4,6 +4,8 @@
 // Guarded at the API layer by requireAdmin; this page holds no secrets —
 // the admin key lives only in localStorage and travels per request.
 import { useEffect, useMemo, useState } from "react";
+import { adminApi, getAdminKey, setAdminKey } from "@/lib/client";
+import { buildLayers } from "@/domain/pipeline/layout";
 import type { NodeDescriptor } from "@/domain/pipeline/types";
 
 interface RunInfo {
@@ -19,7 +21,8 @@ const CLASS_COLORS: Record<string, string> = {
 };
 
 export default function DevPage() {
-  const [adminKey, setAdminKey] = useState("");
+  const [adminKey, setAdminKeyState] = useState("");
+  const [projectJson, setProjectJson] = useState(SAMPLE_PROJECT);
   const [descriptors, setDescriptors] = useState<NodeDescriptor[]>([]);
   const [run, setRun] = useState<RunInfo | null>(null);
   const [state, setState] = useState<Record<string, unknown>>({});
@@ -29,46 +32,49 @@ export default function DevPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    setAdminKey(localStorage.getItem("auditorai.admin_key") ?? "");
+    setAdminKeyState(getAdminKey());
   }, []);
 
-  const headers = useMemo(
-    () => ({ "x-admin-key": adminKey, "content-type": "application/json" }),
-    [adminKey],
-  );
+  function updateAdminKey(v: string) {
+    setAdminKeyState(v);
+    setAdminKey(v);
+  }
 
   async function createRun() {
     setMessage(null);
-    const project = JSON.parse(
-      (document.getElementById("dev-project-json") as HTMLTextAreaElement).value,
-    );
-    const res = await fetch("/api/dev/runs", {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ project }),
-    });
-    const d = await res.json();
-    if (!res.ok) return setMessage(d.error ?? "create failed");
-    setRun(d);
+    let project;
+    try {
+      project = JSON.parse(projectJson);
+    } catch (e) {
+      return setMessage(`invalid JSON: ${(e as Error).message}`);
+    }
+    let d: { runId: string; ranAtIso: string; batchOrder: string[]; descriptors: NodeDescriptor[] };
+    try {
+      d = await adminApi("/api/dev/runs", { method: "POST", json: { project } });
+    } catch (e) {
+      return setMessage(errText(e, "create failed"));
+    }
+    setRun({ runId: d.runId, ranAtIso: d.ranAtIso, batchOrder: d.batchOrder });
     setDescriptors(d.descriptors);
     setState({});
     setExecutedIds([]);
     setSelected(null);
-    localStorage.setItem("auditorai.admin_key", adminKey);
   }
 
   async function step(nodeId: string) {
     if (!run) return;
     setMessage(null);
-    const res = await fetch(`/api/dev/runs/${run.runId}/step`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ nodeId, ai: aiOn && nodeId === "AG-AI-CANDIDATES" }),
-    });
-    const d = await res.json();
-    if (!res.ok) return setMessage(`${nodeId}: ${d.error ?? "step failed"}`);
+    let d: { state: Record<string, unknown>; trail: { nodeId: string }[] };
+    try {
+      d = await adminApi(`/api/dev/runs/${run.runId}/step`, {
+        method: "POST",
+        json: { nodeId, ai: aiOn && nodeId === "AG-AI-CANDIDATES" },
+      });
+    } catch (e) {
+      return setMessage(`${nodeId}: ${errText(e, "step failed")}`);
+    }
     setState(d.state);
-    setExecutedIds(d.trail.map((t: { nodeId: string }) => t.nodeId));
+    setExecutedIds(d.trail.map((t) => t.nodeId));
     const desc = descriptors.find((x) => x.id === nodeId);
     if (desc) setSelected(desc);
   }
@@ -82,39 +88,30 @@ export default function DevPage() {
     } catch (e) {
       return setMessage(`invalid JSON: ${(e as Error).message}`);
     }
-    const res = await fetch(`/api/dev/runs/${run.runId}/edit`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ slice, value }),
-    });
-    const d = await res.json();
-    if (!res.ok) return setMessage(d.error ?? "edit failed");
-    setState(d.state);
+    try {
+      const d = await adminApi<{ state: Record<string, unknown> }>(`/api/dev/runs/${run.runId}/edit`, {
+        method: "POST",
+        json: { slice, value },
+      });
+      setState(d.state);
+    } catch (e) {
+      setMessage(errText(e, "edit failed"));
+    }
   }
 
   async function finish() {
     if (!run) return;
-    const res = await fetch(`/api/dev/runs/${run.runId}/finish`, { method: "POST", headers });
-    const d = await res.json();
-    setMessage(res.ok ? `archived ${d.audit_id} (${d.stored} artifacts)` : d.error);
+    try {
+      const d = await adminApi<{ audit_id: string; stored: number }>(`/api/dev/runs/${run.runId}/finish`, {
+        method: "POST",
+      });
+      setMessage(`archived ${d.audit_id} (${d.stored} artifacts)`);
+    } catch (e) {
+      setMessage((e as Error).message);
+    }
   }
 
-  const layers = useMemo(buildLayersClient, [descriptors]);
-  function buildLayersClient(): NodeDescriptor[][] {
-    const depth = new Map<string, number>();
-    const resolve = (id: string, via: NodeDescriptor[]): number => {
-      if (depth.has(id)) return depth.get(id)!;
-      const d = descriptors.find((x) => x.id === id)!;
-      const val =
-        !d || d.depends_on.length === 0 ? 0 : Math.max(0, ...d.depends_on.map((dep) => resolve(dep, via) + 1));
-      depth.set(id, val);
-      return val;
-    };
-    descriptors.forEach((d) => resolve(d.id, []));
-    const layers: NodeDescriptor[][] = [];
-    for (const d of descriptors) (layers[depth.get(d.id) ?? 0] ||= []).push(d);
-    return layers.filter(Boolean);
-  }
+  const layers = useMemo(() => buildLayers(descriptors), [descriptors]);
 
   return (
     <main className="flex h-screen flex-col md:flex-row">
@@ -122,17 +119,17 @@ export default function DevPage() {
         <h1 className="text-sm font-semibold text-neutral-600">Developer console — audit pipeline</h1>
         <div className="mt-2 flex flex-wrap items-start gap-2 text-xs">
           <textarea
-            id="dev-project-json"
             rows={4}
             className="w-full max-w-xl rounded border px-2 py-1 font-mono text-[11px]"
-            defaultValue={SAMPLE_PROJECT}
+            value={projectJson}
+            onChange={(e) => setProjectJson(e.target.value)}
           />
           <div className="flex flex-col gap-2">
             <input
               type="password"
               placeholder="ADMIN_KEY"
               value={adminKey}
-              onChange={(e) => setAdminKey(e.target.value)}
+              onChange={(e) => updateAdminKey(e.target.value)}
               className="rounded border px-2 py-1"
             />
             <button onClick={createRun} className="rounded bg-black px-3 py-1 text-white">
@@ -210,6 +207,11 @@ export default function DevPage() {
 
 function firstWrite(d: NodeDescriptor): string {
   return d.writes[0] ?? "";
+}
+
+function errText(e: unknown, fallback: string): string {
+  const msg = (e as Error).message;
+  return /^Request failed \(\d+\)$/.test(msg) ? fallback : msg;
 }
 
 function SliceEditor({

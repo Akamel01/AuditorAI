@@ -2,8 +2,19 @@
 // Sessions are in-memory per server instance — acceptable for a developer
 // console; state is returned to the client between calls so nothing durable
 // depends on this Map.
-import type { AgNodeId, AuditArtifact, NodeDescriptor, SharedState } from "@/domain/pipeline/types";
+import type { AuditArtifact, SharedState } from "@/domain/pipeline/types";
 import type { Project } from "@/domain/types";
+import { workspaceHash } from "@/lib/persistence";
+
+const DEV_WORKSPACE_KEY = "dev-console";
+
+/** One derivation point for the dev-console storage workspace: finish archives
+ *  stepped runs there; replay reads them back. A presented workspace key
+ *  (credential) overrides the default namespace; hashing stays behind the
+ *  persistence seam — no route assembles namespaces itself. */
+export function devWorkspaceHash(presentedKey?: string | null): string {
+  return workspaceHash(presentedKey ?? DEV_WORKSPACE_KEY);
+}
 
 export interface DevRunSession {
   runId: string;
@@ -30,28 +41,4 @@ export function getSession(runId: string): DevRunSession | undefined {
 }
 export function dropSession(runId: string): void {
   sessions.delete(runId);
-}
-
-/** Longest-path layering for Candidate-A-style vertical rendering. */
-export function buildLayers(descriptors: NodeDescriptor[]): NodeDescriptor[][] {
-  const depth = new Map<string, number>();
-  const byId = new Map(descriptors.map((d) => [d.id, d]));
-  const resolve = (id: AgNodeId): number => {
-    if (depth.has(id)) return depth.get(id)!;
-    const d = byId.get(id);
-    const val =
-      !d || d.depends_on.length === 0
-        ? 0
-        : Math.max(...d.depends_on.map((dep) => resolve(dep) + 1));
-    depth.set(id, val);
-    return val;
-  };
-  descriptors.forEach((d) => resolve(d.id));
-
-  const layers: NodeDescriptor[][] = [];
-  for (const d of descriptors) {
-    const idx = depth.get(d.id) ?? 0;
-    (layers[idx] ||= []).push(d);
-  }
-  return layers.filter(Boolean);
 }

@@ -3,6 +3,13 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { Repository, getDataStore, workspaceHash } from "./persistence";
 import { checkRateLimit } from "./ratelimit";
+import { StageNotEligibleError } from "@/domain/pipeline/constants";
+import { UploadError } from "./extract";
+import {
+  ArtifactTooLargeError,
+  StoreUnavailableError,
+  UnknownAttachmentError,
+} from "./persistence";
 
 export const WORKSPACE_HEADER = "x-workspace-key";
 export const ADMIN_HEADER = "x-admin-key";
@@ -81,13 +88,40 @@ export function notFound(message = "not found") {
   return NextResponse.json({ error: message }, { status: 404 });
 }
 
+/** Client-caused contract failure inside a request (malformed JSON body, an
+ *  invalid step invocation): meaningful message, 422. */
+export class RequestContractError extends Error {}
+
+interface ErrorMappingEntry {
+  matches(e: unknown): boolean;
+  status: number;
+  /** echo = the message is a safe, contract-level explanation; redact =
+   *  internals must not reach the wire and a fixed message is returned. */
+  exposeMessage: boolean;
+}
+
+// ONE table deciding how any typed error becomes an HTTP response.
+const ERROR_TABLE: ErrorMappingEntry[] = [
+  { matches: (e) => e instanceof StageNotEligibleError, status: 422, exposeMessage: true },
+  { matches: (e) => e instanceof UploadError, status: 400, exposeMessage: true },
+  { matches: (e) => e instanceof ArtifactTooLargeError, status: 413, exposeMessage: true },
+  { matches: (e) => e instanceof UnknownAttachmentError, status: 400, exposeMessage: true },
+  { matches: (e) => e instanceof RequestContractError, status: 422, exposeMessage: true },
+  { matches: (e) => e instanceof StoreUnavailableError, status: 503, exposeMessage: false },
+];
+
+const REDACTED_MESSAGE = "internal server error";
+
+/** Shared error mapper: consults ERROR_TABLE; anything unmapped is logged and
+ *  redacted at 500 — internal text never reaches the wire. */
 export function serverError(e: unknown) {
-  if (e instanceof Error && e.name === "StageNotEligibleError") {
-    return NextResponse.json({ error: e.message }, { status: 422 });
+  const entry = ERROR_TABLE.find((m) => m.matches(e));
+  if (!entry) {
+    console.error("[api]", e);
+    return NextResponse.json({ error: REDACTED_MESSAGE }, { status: 500 });
   }
-  console.error("[api]", e);
-  const message = e instanceof Error ? e.message : String(e);
-  return NextResponse.json({ error: message }, { status: 500 });
+  const message = entry.exposeMessage && e instanceof Error ? e.message : REDACTED_MESSAGE;
+  return NextResponse.json({ error: message }, { status: entry.status });
 }
 
 export function newId(prefix: string): string {

@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-PERSIST
-role: Store the finalized audit behind the DataStore seam
+role: Versioned storage behind DataStore seam
 purpose: >-
   Write the completed AuditResult via Repository.saveAudit and emit the storage receipt consumed by
   listings and replays.
@@ -16,6 +16,9 @@ context:
   project_context: Keyed ws:{ws}:audit:{projectId}:{auditId}.
   upstream_artifacts:
     - report.bundle
+  upstream_nodes:
+    - AG-REPORT
+  downstream_nodes: []
   relevant_decisions:
     - ADR-0001 platform baseline (seams) memory/KV adapters swappable by env
   evidence_required: none
@@ -46,7 +49,7 @@ state:
     - persistence_ref
 verification:
   required_checks:
-    - tests/integration/flow.test.ts persistence legs.
+    - Integration flow tests cover the persistence legs.
 failure:
   retry_policy: One retry on transient store failure; then error out — never partial state.
   escalation_policy: Store outage surfaces via serverError; the client retains an in-memory copy for manual export.

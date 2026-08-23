@@ -1,8 +1,11 @@
 // Policy pack loading + validation (deep module: ajv validation, evidence
 // cross-checks and caching all live behind getPack/listJurisdictions).
+// loadPack is injectable (io) so tests can exercise failure paths without a
+// real filesystem.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import Ajv from "ajv/dist/2020.js";
+import { tryGetEvidence } from "@/lib/evidence";
 import packSchema from "../../contracts/schemas/policy-pack.schema.json";
 import type { JurisdictionId } from "./types";
 
@@ -23,6 +26,7 @@ export interface PolicyPack {
       | "qualified_baseline"
       | "unknown_unavailable";
     qualification_note: string | null;
+    stage_limitation_note?: string | null;
     evidence_ids: string[];
   };
   stages: {
@@ -101,6 +105,16 @@ const PACK_DIRS: Record<JurisdictionId, string> = {
   AE: "uae",
 };
 
+export interface PackIo {
+  cwd(): string;
+  readUtf8(filePath: string): string;
+}
+
+const defaultPackIo: PackIo = {
+  cwd: () => process.cwd(),
+  readUtf8: (filePath) => readFileSync(filePath, "utf8"),
+};
+
 const ajv = new Ajv({ strict: false, allErrors: true });
 const validatePack = ajv.compile<PolicyPack>(packSchema);
 
@@ -126,16 +140,20 @@ export function listJurisdictions(): {
 export function getPack(jurisdiction: JurisdictionId): PolicyPack {
   const cached = cache.get(jurisdiction);
   if (cached) return cached;
+  const pack = loadPack(jurisdiction);
+  cache.set(jurisdiction, pack);
+  return pack;
+}
 
-  const file = path.join(
-    process.cwd(),
-    "policies",
-    PACK_DIRS[jurisdiction],
-    "pack.json",
-  );
+/** Load + validate one pack without touching the cache; I/O is injectable. */
+export function loadPack(
+  jurisdiction: JurisdictionId,
+  io: PackIo = defaultPackIo,
+): PolicyPack {
+  const file = path.join(io.cwd(), "policies", PACK_DIRS[jurisdiction], "pack.json");
   let raw: unknown;
   try {
-    raw = JSON.parse(readFileSync(file, "utf8"));
+    raw = JSON.parse(io.readUtf8(file));
   } catch (e) {
     throw new Error(`policy pack unreadable for ${jurisdiction}: ${String(e)}`);
   }
@@ -150,14 +168,13 @@ export function getPack(jurisdiction: JurisdictionId): PolicyPack {
   // Deterministic integrity check: every evidence id cited by the pack must
   // exist in the compiled evidence registry.
   for (const rec of collectEvidenceIds(pack)) {
-    if (!hasEvidence(rec)) {
+    if (!tryGetEvidence(rec)) {
       throw new Error(
         `policy pack ${jurisdiction} cites unknown evidence id ${rec}`,
       );
     }
   }
 
-  cache.set(jurisdiction, pack);
   return pack;
 }
 
@@ -173,16 +190,4 @@ function collectEvidenceIds(pack: PolicyPack): Set<string> {
   pack.sources.forEach((s) => push(s.evidence_ids));
   ids.delete("");
   return ids;
-}
-
-// Evidence registry is loaded once; kept here to avoid a dependency cycle.
-let evidenceIds: Set<string> | null = null;
-function hasEvidence(id: string): boolean {
-  if (!evidenceIds) {
-    const reg = JSON.parse(
-      readFileSync(path.join(process.cwd(), "state/evidence-registry.json"), "utf8"),
-    ) as { evidence_records: { evidence_id: string }[] };
-    evidenceIds = new Set(reg.evidence_records.map((r) => r.evidence_id));
-  }
-  return evidenceIds.has(id);
 }

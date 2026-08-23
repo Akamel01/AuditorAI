@@ -6,8 +6,7 @@ import {
   requireWorkspace,
   serverError,
 } from "@/lib/api";
-import { getPack } from "@/domain/packs";
-import type { InputValueState, Project } from "@/domain/types";
+import { patchProject, type PatchProjectInput } from "@/domain/project-edits";
 
 type Ctx = { params: Promise<{ projectId: string }> };
 
@@ -28,43 +27,12 @@ export async function PATCH(req: Request, ctx: Ctx) {
     const project = await auth.repo.getProject(auth.ws, projectId);
     if (!project) return notFound("project not found");
 
-    const body = (await req.json()) as {
-      metadata?: Partial<Project["metadata"]>;
-      input_values?: Record<string, { state: InputValueState; value?: string; attachments?: string[] }>;
-      native_stage_id?: string;
-    };
+    const body = (await req.json()) as PatchProjectInput;
+    const outcome = patchProject(project, body, new Date().toISOString());
+    if (!outcome.ok) return badRequest(outcome.error);
 
-    if (body.metadata) {
-      project.metadata = { ...project.metadata, ...body.metadata };
-    }
-    if (body.native_stage_id) {
-      const pack = getPack(project.stage_selection.jurisdiction);
-      const stage = pack.stages.find((s) => s.native_stage_id === body.native_stage_id);
-      if (!stage) return badRequest("unknown native stage");
-      if (!stage.mvp_scope) return badRequest("stage outside MVP scope");
-      project.stage_selection.native_stage_id = stage.native_stage_id;
-    }
-    if (body.input_values) {
-      for (const [inputId, v] of Object.entries(body.input_values)) {
-        if (!v || typeof v.state !== "string") return badRequest(`bad value for ${inputId}`);
-        const existing =
-          project.input_values[inputId] ?? { state: v.state, value: "" };
-        project.input_values[inputId] = {
-          state: v.state,
-          value: v.value ?? existing.value ?? "",
-          // Omitting attachments in a patch preserves the existing links
-          // (text edits must never silently detach drawings).
-          ...(v.attachments !== undefined
-            ? { attachments: v.attachments }
-            : existing.attachments
-              ? { attachments: existing.attachments }
-              : {}),
-        };
-      }
-    }
-    project.updated_at = new Date().toISOString();
-    await auth.repo.saveProject(auth.ws, project);
-    return NextResponse.json({ project });
+    await auth.repo.saveProject(auth.ws, outcome.value);
+    return NextResponse.json({ project: outcome.value });
   } catch (e) {
     return serverError(e);
   }

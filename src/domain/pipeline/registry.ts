@@ -18,11 +18,8 @@ import { runAdjudication } from "@/domain/pipeline/nodes/adjudication";
 import { runEvidenceLinks } from "@/domain/pipeline/nodes/evidence-links";
 import { runReport } from "@/domain/pipeline/nodes/report";
 
-/** Canonical topological execution order (roots first). */
-export const NODE_ORDER: AgNodeId[] = [...AG_NODE_IDS];
-
 /** Nodes executed by runAll — everything except the storage receipt. */
-export const BATCH_NODES: AgNodeId[] = NODE_ORDER.filter((id) => id !== "AG-PERSIST");
+export const BATCH_NODES: AgNodeId[] = AG_NODE_IDS.filter((id) => id !== "AG-PERSIST");
 
 /** Sync node functions; AG-PERSIST is async and lives behind pipeline.persistRun. */
 export const NODE_FNS: Record<Exclude<AgNodeId, "AG-PERSIST">, NodeFn> = {
@@ -121,13 +118,13 @@ export const DESCRIPTORS: NodeDescriptor[] = [
     id: "AG-ADJUDICATION",
     name: "Human Adjudication",
     node_class: "human",
-    reads: ["rule_results", "candidate_findings"],
+    reads: ["rule_results"],
     writes: ["adjudication"],
     emits: "adjudication.decisions",
     depends_on: ["AG-FINDINGS", "AG-AI-CANDIDATES", "AG-QUESTIONS"],
     executed_in_batch: true,
     summary:
-      "Human review workflow + wording discipline; batch mode carries drafts forward unverified.",
+      "Human review workflow + wording discipline; batch mode carries drafts forward unverified; decisions on unknown finding ids are recorded under limitations.",
   },
   {
     id: "AG-EVIDENCE-LINKS",

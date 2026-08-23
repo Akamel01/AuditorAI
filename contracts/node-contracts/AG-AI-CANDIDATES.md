@@ -2,10 +2,10 @@
 
 ```yaml
 node_id: AG-AI-CANDIDATES
-role: Optionally generate AI-proposed candidate findings for human adjudication
+role: Bounded AI candidate findings — OFF in MVP, seam reserved
 purpose: >-
   When the AiAdapter seam is enabled, produce CandidateFinding[] grounded in the audit context;
-  candidates join adjudication labelled, never pre-approved.
+  candidates are labelled, evidence-gated advisory artifacts for human review, never pre-approved.
 determinism_class: ai-bounded
 producer: safety-reasoning-agent
 context:
@@ -18,6 +18,9 @@ context:
     - context.snapshot
     - manifest.table
     - questions.set
+  upstream_nodes: []
+  downstream_nodes:
+    - AG-ADJUDICATION
   relevant_decisions:
     - ADR-0001 platform baseline (seams) — adapter OFF by default
   evidence_required: Evidence summaries reference registry ids; invented clause numbers are forbidden.
@@ -31,7 +34,11 @@ contract:
     - >-
       Emitted type is exactly CandidateFinding (the bounded pick of Finding fields in
       src/lib/ai.ts).
-    - Every candidate carries producer=safety-reasoning-agent and enters adjudication as draft.
+    - Every candidate carries producer=safety-reasoning-agent (adapters cannot self-label).
+    - >-
+      Candidates are display-only today: their evidence ids are validated by AG-EVIDENCE-LINKS, they
+      never merge into the final finding set, and the candidate slice is dropped before the
+      assembled AuditResult.
   allowed_mutations:
     - candidate_findings
   forbidden_actions:
@@ -56,13 +63,13 @@ state:
     - candidate_findings
 verification:
   required_checks:
-    - 'Fake-fetch unit tests for happy/malformed/timeout paths arrive with issue #12 (A1).'
+    - Fake-fetch unit tests cover happy/malformed/timeout paths (A1).
 failure:
   retry_policy: At most one repair attempt on invalid JSON, then degrade to empty.
   escalation_policy: Repeated provider failure trips a circuit-breaker and reports a degraded status artifact.
 ```
 
-## Inference contract (locked by A2, issue #13)
+## Inference contract (locked by A2)
 
 - **Bounded emission:** this node emits exactly `CandidateFinding[]` (payload_kind
   `candidates.ai`, `validation_status=draft` when live, `rejected` when refusing). No other
@@ -77,7 +84,8 @@ failure:
     rejected artifact carrying the reason.
 - **Live driver:** inference conducts through `AuditPipeline.runAllLive`; the sync batch
   fold never performs provider calls.
-- **Budgets (R7):** per-call timeout ≤60 s; ≤3 calls per audit run; circuit-breaker after
+- **Budgets (R7):** per-call timeout ≤60 s; ≤3 calls per audit run; 0–5 candidate
+  findings per audit run (prompt cap); circuit-breaker after
   repeated failures; fallback chain Zen→OpenRouter→Groq behind env config.
-- **Vision (M3/#17) pre-declaration:** prompt user-content accepts image blocks; candidates
+- **Vision (M3) pre-declaration:** prompt user-content accepts image blocks; candidates
   citing attachments must reference `attachment_ids` considered. Wiring arrives with M3.

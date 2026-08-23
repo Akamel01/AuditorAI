@@ -7,7 +7,8 @@ import {
   makeEligibilityFinding,
   makeProcessFinding,
 } from "@/domain/pipeline/nodes/rules-findings";
-import { makeArtifact, requireSlice } from "@/domain/pipeline/nodes/shared";
+import { requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   NodeFn,
   RuleResultsSlice,

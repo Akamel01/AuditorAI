@@ -13,7 +13,7 @@ Respond with ONLY a JSON array. Each item: {"kind":"safety_concern"|"compliance_
     "role": "system",
   },
   {
-    "content": "Audit context: UK / DMRB GG 119 Road safety audit / native stage uk:S2.
+    "content": "Audit context: UK / DMRB GG 119 Road safety audit / native stage Stage 2 (Completion of detailed design).
 
 Recorded input states:
 - scheme_description_objectives (required): provided

@@ -1,15 +1,38 @@
 // D3 gates: dev-console routes over MemoryStore — admin guard, step-run,
 // edit-and-resume, finish archiving the N3 trail, replay split.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { POST as createRun } from "@/app/api/dev/runs/route";
 import { GET as getRun, DELETE as dropRun } from "@/app/api/dev/runs/[runId]/route";
 import { POST as step } from "@/app/api/dev/runs/[runId]/step/route";
 import { POST as edit } from "@/app/api/dev/runs/[runId]/edit/route";
 import { POST as finish } from "@/app/api/dev/runs/[runId]/finish/route";
 import { GET as replay } from "@/app/api/dev/replay/route";
-import { buildLayers } from "@/lib/devtab";
+import { buildLayers } from "@/domain/pipeline/layout";
+import { getDataStore, Repository, workspaceHash } from "@/lib/persistence";
 import { DESCRIPTORS } from "@/domain/pipeline/registry";
-import type { Project } from "@/domain/types";
+import type { Attachment, Project } from "@/domain/types";
+
+const mockAiCalls: { images?: string[]; notes?: string[] }[] = [];
+vi.mock("@/lib/ai", async (importOriginal) => {
+  const mod = await importOriginal<typeof import("@/lib/ai")>();
+  return {
+    ...mod,
+    getAiAdapter: () =>
+      process.env.AI_ENABLED === "true"
+        ? {
+            enabled: true,
+            async generateCandidates(
+              _audit: unknown,
+              images?: string[],
+              notes?: string[],
+            ) {
+              mockAiCalls.push({ images, notes });
+              return [];
+            },
+          }
+        : new mod.OffAiAdapter(),
+  };
+});
 
 const T0 = "2026-08-22T00:00:00.000Z";
 const KEY = "dev-admin-key-0123456789";
@@ -136,7 +159,10 @@ describe("step-run session", () => {
     expect(f.stored).toBeGreaterThan(0);
 
     const rep = await replay(
-      req(`/api/dev/replay?project=P-devdemo01&audit=${encodeURIComponent(f.audit_id)}`, "GET"),
+      new Request(
+        `http://local/api/dev/replay?projectId=P-devdemo01&auditId=${encodeURIComponent(f.audit_id)}`,
+        { method: "GET", headers: { ...H, "x-workspace-key": "dev-console" } },
+      ),
     );
     expect(rep.status).toBe(200);
     const r = (await rep.json()) as { count: number; trusted: unknown[]; regenerate: unknown[] };
@@ -147,6 +173,53 @@ describe("step-run session", () => {
     await dropRun(req(`/api/dev/runs/${runId}`, "DELETE"), params({ runId }));
     const snap = await getRun(req(`/api/dev/runs/${runId}`, "GET"), params({ runId }));
     expect(snap.status).toBe(404);
+  });
+});
+
+describe("step-mode vision parity", () => {
+  it("threads project attachments into live candidate generation", async () => {
+    const attachment: Attachment = {
+      attachment_id: "ATT-devdemo01-000001",
+      project_id: DEMO.project_id,
+      input_id: null,
+      file_name: "layout.png",
+      mime: "image/png",
+      bytes: 100,
+      data_url: "data:image/png;base64,AAAA",
+      created_at: T0,
+    };
+    await new Repository(getDataStore()).saveAttachment(
+      workspaceHash("dev-console"),
+      attachment,
+    );
+
+    const created = await createRun(req("/api/dev/runs", "POST", { project: DEMO }));
+    const { runId } = (await created.json()) as { runId: string };
+
+    for (const nodeId of [
+      "AG-PROJECT",
+      "AG-STAGE-SELECT",
+      "AG-MANIFEST",
+      "AG-RULES",
+      "AG-FINDINGS",
+      "AG-QUESTIONS",
+    ]) {
+      const res = await step(req(`/api/dev/runs/${runId}/step`, "POST", { nodeId }), params({ runId }));
+      if (!res.ok) throw new Error(`${nodeId}: ${await res.text()}`);
+    }
+
+    process.env.AI_ENABLED = "true";
+    try {
+      const res = await step(
+        req(`/api/dev/runs/${runId}/step`, "POST", { nodeId: "AG-AI-CANDIDATES", ai: true }),
+        params({ runId }),
+      );
+      expect(res.status).toBe(200);
+      expect(mockAiCalls).toHaveLength(1);
+      expect(mockAiCalls[0].images).toEqual([attachment.data_url]);
+    } finally {
+      delete process.env.AI_ENABLED;
+    }
   });
 });
 

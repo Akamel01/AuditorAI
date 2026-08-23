@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-PROJECT
-role: Anchor one audit run to its Project record
+role: 'Project record: metadata + stage_selection + input_values'
 purpose: >-
   Load and freeze the Project record (id, jurisdiction/framework/stage selection, recorded input
   values with their §14 states) as this run's immutable input.
@@ -16,6 +16,9 @@ context:
   project_context: Runs against exactly one Scheme's Project per audit.
   upstream_artifacts:
     - project.record from storage
+  upstream_nodes: []
+  downstream_nodes:
+    - AG-STAGE-SELECT
   relevant_decisions:
     - ADR-0001 platform baseline (seams)
   evidence_required: none — operates on recorded data only

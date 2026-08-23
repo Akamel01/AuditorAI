@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-STAGE-SELECT
-role: Resolve Native Stage to canonical stages with confidence, or reject eligibility
+role: Jurisdiction→Framework→NativeStage resolution with eligibility checks
 purpose: >-
   Validate stage_selection against the jurisdiction pack: native stage exists, is in MVP scope, and
   carries its canonical-stage mapping plus confidence label.
@@ -16,6 +16,10 @@ context:
   project_context: Uses only project_input.stage_selection.
   upstream_artifacts:
     - project.record
+  upstream_nodes:
+    - AG-PROJECT
+  downstream_nodes:
+    - AG-MANIFEST
   relevant_decisions:
     - ADR-0002 canonical stage model
   evidence_required: Pack exceptions carry evidence_ids surfaced on rejection (max 3; engine requireStage).
@@ -49,7 +53,7 @@ state:
     - stage_context
 verification:
   required_checks:
-    - tests/jurisdiction/* cover exception stages (UAE S0 / combined S12, UK absence of S0).
+    - Jurisdiction exception stages (UAE S0 / combined S12, UK absence of S0) stay covered by tests.
 failure:
   retry_policy: 'Deterministic: no retry.'
   escalation_policy: Ineligibility surfaces as user-facing 422 through serverError mapping.

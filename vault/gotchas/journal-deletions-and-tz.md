@@ -1,3 +1,11 @@
+---
+title: Journal deletions by parallel sessions + UTC/local timestamp confusion
+type: gotcha
+date: 2026-08-23
+status: open
+owner: agent
+---
+
 # Journal deletions by parallel sessions + UTC/local timestamp confusion
 
 Incident 2026-08-23 (~01:13–01:21 local): a live parallel agent session deleted

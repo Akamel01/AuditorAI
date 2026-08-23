@@ -18,16 +18,19 @@ export async function persistRun(
   ctx: Pick<NodeRunCtx, "ranAtIso" | "versionStart">,
 ): Promise<{ patch: { persistence_ref: PersistenceRefSlice }; artifacts: AuditArtifact[] }> {
   const repo = new Repository(store);
-  const store_key = `ws:${workspace}:audit:${bundle.json.project_id}:${bundle.json.audit_id}`;
+  const coordinates = `${workspace}/${bundle.json.project_id}/${bundle.json.audit_id}`;
   try {
     await repo.saveAudit(workspace, bundle.json);
-  } catch {
+  } catch (e) {
+    console.warn(
+      `[persist] save failed for ${coordinates}; retrying once (${e instanceof Error ? e.message : String(e)})`,
+    );
     await repo.saveAudit(workspace, bundle.json);
   }
 
   const slice: PersistenceRefSlice = {
     audit_id: bundle.json.audit_id,
-    store_key,
+    project_id: bundle.json.project_id,
     stored_at: ctx.ranAtIso,
   };
   return {

@@ -105,8 +105,7 @@ describe("inference contracts (A2)", () => {
     expect(kinds).toEqual(["rejected"]);
   });
 
-  it("live candidates stay within the declared field subset", async () => {
-    const rogue = {
+  it("live candidates stay within the declared field subset", async () => {    const rogue = {
       kind: "safety_concern",
       category: "x",
       location: null,
@@ -144,5 +143,69 @@ describe("inference contracts (A2)", () => {
     for (const f of result.findings) {
       expect(f.source_trace.some((t) => t.origin === "ai_candidate")).toBe(false);
     }
+  });
+
+  it("rogue kind values are rejected at the boundary with zero leakage into state", async () => {
+    const rogue = {
+      kind: "banana",
+      category: "x",
+      location: null,
+      road_users: [],
+      scenario: null,
+      statement: { text: "t", normative_basis_note: null },
+      evidence: [{ evidence_id: "EV-UK-001", quote: null, use: "supports_concern" }],
+      assumptions: [],
+      rationale: "r",
+      recommendation: null,
+    };
+    const adapter: AiAdapter = {
+      enabled: true,
+      async generateCandidates(): Promise<CandidatesSlice> {
+        return [rogue] as unknown as CandidatesSlice;
+      },
+    };
+
+    const project = loadProject(FILES[0]);
+    const { state, artifacts } = await pipeline.runAllLiveArtifacts(project, T0, {
+      aiAdapter: adapter,
+    });
+
+    expect(state.candidate_findings).toBeNull();
+    const candArt = artifacts.find((a) => a.payload_kind === "candidates.ai");
+    expect(candArt?.validation_status).toBe("rejected");
+    expect(JSON.stringify(candArt?.payload)).toContain("boundary validation failed");
+  });
+
+  it("non-string values in string-typed fields are rejected at the boundary", async () => {
+    const rogue = {
+      kind: "safety_concern",
+      category: 7,
+      location: null,
+      road_users: ["pedestrians"],
+      scenario: null,
+      statement: { text: "t", normative_basis_note: null },
+      evidence: [{ evidence_id: "EV-UK-001", quote: null, use: "supports_concern" }],
+      assumptions: [{ text: "a", basis: null }],
+      rationale: 42,
+      recommendation: null,
+    };
+    const adapter: AiAdapter = {
+      enabled: true,
+      async generateCandidates(): Promise<CandidatesSlice> {
+        return [rogue] as unknown as CandidatesSlice;
+      },
+    };
+
+    const project = loadProject(FILES[0]);
+    const { state, artifacts, result } = await pipeline.runAllLiveArtifacts(project, T0, {
+      aiAdapter: adapter,
+    });
+
+    expect(state.candidate_findings).toBeNull();
+    expect(JSON.stringify(result)).not.toContain("banana");
+    expect(JSON.stringify(result)).not.toContain("42");
+    const candArt = artifacts.find((a) => a.payload_kind === "candidates.ai");
+    expect(candArt?.validation_status).toBe("rejected");
+    expect(JSON.stringify(candArt?.payload)).toContain("boundary validation failed");
   });
 });

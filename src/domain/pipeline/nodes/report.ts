@@ -3,16 +3,13 @@
 // from the caller-injected ran_at.
 import { renderReportMarkdown } from "@/lib/report";
 import { DISCLAIMER } from "@/domain/pipeline/constants";
-import {
-  assembleAuditResult,
-  makeArtifact,
-  requireSlice,
-} from "@/domain/pipeline/nodes/shared";
+import { assembleAuditResult, requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type { NodeFn, ReportBundleSlice } from "@/domain/pipeline/types";
 
 export const runReport: NodeFn = (state, ctx) => {
   requireSlice("AG-REPORT", state, "adjudication");
-  const json = assembleAuditResult(state, ctx.ranAtIso);
+  const json = assembleAuditResult(state, ctx.ranAtIso, "AG-REPORT");
   const slice: ReportBundleSlice = {
     json,
     markdown: renderReportMarkdown(json),

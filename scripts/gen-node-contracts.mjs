@@ -1,9 +1,39 @@
-// N1 generator (#1): emits 11 node contracts via js-yaml (valid-by-construction),
-// validates each by re-parsing, and writes the folder README index.
+// N1 generator (#1): emits node contracts via js-yaml (valid-by-construction),
+// validates each by re-parsing, and writes the folder README index. Node
+// identity (ids, roles, edges) is single-sourced from state/graph-state.json;
+// this file carries only contract-specific content keyed by node id.
 import yaml from "js-yaml";
 import fs from "node:fs";
+import { fromRoot } from "./lib/paths.mjs";
 
 const DIR = "contracts/node-contracts";
+
+const GRAPH = JSON.parse(fs.readFileSync(fromRoot("state", "graph-state.json"), "utf8"));
+const AUDIT_NODES = new Map(GRAPH.graphs.audit_graph.nodes.map((n) => [n.id, n]));
+const AUDIT_EDGES = GRAPH.graphs.audit_graph.edges;
+
+function checkGraphAlignment(C) {
+  const failures = [];
+  for (const nid of Object.keys(C)) {
+    if (!AUDIT_NODES.has(nid)) failures.push(`contract ${nid} has no audit_graph node in state/graph-state.json`);
+  }
+  for (const nid of AUDIT_NODES.keys()) {
+    if (!C[nid]) failures.push(`audit_graph node ${nid} has no contract entry in scripts/gen-node-contracts.mjs`);
+  }
+  if (failures.length) {
+    console.error("GRAPH/CONTRACT MISMATCH:");
+    for (const f of failures) console.error(`  - ${f}`);
+    process.exit(1);
+  }
+}
+
+function edgeEndpoints(nid) {
+  return {
+    upstream_nodes: AUDIT_EDGES.filter((e) => e.to === nid).map((e) => e.from),
+    downstream_nodes: AUDIT_EDGES.filter((e) => e.from === nid).map((e) => e.to),
+  };
+}
+
 const ADR = {
   1: "ADR-0001 platform baseline (seams)",
   2: "ADR-0002 canonical stage model",
@@ -13,7 +43,6 @@ const ADR = {
 const C = {};
 
 C["AG-PROJECT"] = {
-  role: "Anchor one audit run to its Project record",
   purpose: "Load and freeze the Project record (id, jurisdiction/framework/stage selection, recorded input values with their §14 states) as this run's immutable input.",
   det: "deterministic", producer: "domain-engine",
   domain: "The Project is the umbrella record for one auditing effort (CONTEXT.md). This node only reads what already exists; it decides nothing.",
@@ -41,7 +70,6 @@ C["AG-PROJECT"] = {
 };
 
 C["AG-STAGE-SELECT"] = {
-  role: "Resolve Native Stage to canonical stages with confidence, or reject eligibility",
   purpose: "Validate stage_selection against the jurisdiction pack: native stage exists, is in MVP scope, and carries its canonical-stage mapping plus confidence label.",
   det: "deterministic", producer: "domain-engine",
   domain: "Native Stage vs Canonical Stage is ADR-0002 law; bare stage numbers have NO cross-jurisdiction meaning [EV-CA-006].",
@@ -64,13 +92,12 @@ C["AG-STAGE-SELECT"] = {
     "Unknown stage id raises StageNotEligibleError carrying exception evidence_ids.",
   ],
   reads: ["project_input"], writes: ["stage_context"],
-  checks: ["tests/jurisdiction/* cover exception stages (UAE S0 / combined S12, UK absence of S0)."],
+  checks: ["Jurisdiction exception stages (UAE S0 / combined S12, UK absence of S0) stay covered by tests."],
   retry: "Deterministic: no retry.",
   escalate: "Ineligibility surfaces as user-facing 422 through serverError mapping.",
 };
 
 C["AG-MANIFEST"] = {
-  role: "Materialize stage input requirements with resolved states",
   purpose: "Filter the pack's input requirements to those applying to the selected native stage and resolve each stored input value into a manifest state.",
   det: "deterministic", producer: "domain-engine",
   domain: "Requirement levels (required/recommended/optional) drive downstream completeness rules; resolution logic lives in engine resolveState.",
@@ -99,7 +126,6 @@ C["AG-MANIFEST"] = {
 };
 
 C["AG-RULES"] = {
-  role: "Evaluate completeness / process / eligibility rules",
   purpose: "Run all applicable pack rules against the manifest: completeness rules raise missing-information questions; process and eligibility rules raise compliance-question findings.",
   det: "deterministic", producer: "domain-engine",
   domain: "Compliance findings are categorically distinct from safety concerns (CONTEXT.md); nothing here assesses physical safety.",
@@ -122,13 +148,12 @@ C["AG-RULES"] = {
     "Completeness deduplicates evidence_ids with Set semantics.",
   ],
   reads: ["input_manifest"], writes: ["rule_results"],
-  checks: ["tests/domain/engine.test.ts rule coverage stays green after the N2 refactor."],
+  checks: ["Engine rule coverage stays green after the N2 refactor."],
   retry: "Deterministic: no retry.",
   escalate: "Malformed rule shapes are a pack-schema/CI concern.",
 };
 
 C["AG-FINDINGS"] = {
-  role: "Shape raw rule outcomes into schema-valid Finding records",
   purpose: "Give process/eligibility outcomes their full Finding form: ids, statement, evidence links, assumptions, rationale, source_trace, reviewer_status=draft.",
   det: "deterministic", producer: "domain-engine",
   domain: "Finding anatomy follows CONTEXT.md and finding.schema.json: typed, reviewable, provenance-carrying, uncertainty-explicit.",
@@ -146,7 +171,7 @@ C["AG-FINDINGS"] = {
   mutations: ["rule_results"],
   forbidden: ["Emitting kind=safety_concern from deterministic rules.", "Pre-filling recommendations."],
   accept: [
-    "Contract tests bind these exact objects (tests/contract/schemas.test.ts).",
+    "Contract tests bind these exact objects to the committed finding schema.",
     "source_trace.origin === deterministic_rule on every emitted finding.",
   ],
   reads: ["rule_results"], writes: ["rule_results"],
@@ -156,7 +181,6 @@ C["AG-FINDINGS"] = {
 };
 
 C["AG-QUESTIONS"] = {
-  role: "Select framework audit questions applicable to the canonical stages",
   purpose: "Filter pack.audit_questions by overlap between applies_to_canonical and the stage's canonical_stages; emit them unanswered for the auditor's worksheet.",
   det: "deterministic", producer: "domain-engine",
   domain: "Questions are the framework's structured examination instrument — distinct from rule-derived missing-information questions.",
@@ -181,11 +205,26 @@ C["AG-QUESTIONS"] = {
   checks: ["Jurisdiction tests assert expected question membership per stage."],
   retry: "Deterministic: no retry.",
   escalate: "N/A.",
+  post: `
+## Inference contract (locked by A2)
+
+- **Decision — AI-proposed missing-information questions: ALLOWED (declared, dormant).**
+  When activated, AI may propose missing-information questions bounded to the exact
+  \`MissingInformationQuestion\` shape; each must cite registry-resolvable \`evidence_ids\`,
+  enter as draft requiring human confirmation, and be visibly marked AI-proposed.
+  Emission stays within payload_kind \`questions.set\` (\`validation_status=draft\`,
+  \`ai_proposed: true\` marker on the artifact payload); the deterministic pack-derived
+  questions are never replaced or filtered by AI output.
+- **Dormant today:** nothing emits this yet; behavior tests assert emitted kinds stay a
+  subset of declared kinds, so activation later cannot silently widen the boundary.
+- **Recommendation drafting: REJECTED for now** — deferred until the eval corpus shows a
+  quality baseline (deferred fog item). Free-text narrative generation and final
+  determinations remain forbidden everywhere.
+`,
 };
 
 C["AG-AI-CANDIDATES"] = {
-  role: "Optionally generate AI-proposed candidate findings for human adjudication",
-  purpose: "When the AiAdapter seam is enabled, produce CandidateFinding[] grounded in the audit context; candidates join adjudication labelled, never pre-approved.",
+  purpose: "When the AiAdapter seam is enabled, produce CandidateFinding[] grounded in the audit context; candidates are labelled, evidence-gated advisory artifacts for human review, never pre-approved.",
   det: "ai-bounded", producer: "safety-reasoning-agent",
   domain: "AI proposes bounded candidate artifacts only; adjudication disposes. Nothing AI-generated reaches a final determination (workflow doctrine).",
   juris: "Candidates must cite jurisdiction-appropriate evidence_ids or be flagged assumption-only.",
@@ -198,7 +237,8 @@ C["AG-AI-CANDIDATES"] = {
   invariants: [
     "Adapter OFF (default) means empty slice and zero provider calls.",
     "Emitted type is exactly CandidateFinding (the bounded pick of Finding fields in src/lib/ai.ts).",
-    "Every candidate carries producer=safety-reasoning-agent and enters adjudication as draft.",
+    "Every candidate carries producer=safety-reasoning-agent (adapters cannot self-label).",
+    "Candidates are display-only today: their evidence ids are validated by AG-EVIDENCE-LINKS, they never merge into the final finding set, and the candidate slice is dropped before the assembled AuditResult.",
   ],
   mutations: ["candidate_findings"],
   forbidden: [
@@ -212,42 +252,63 @@ C["AG-AI-CANDIDATES"] = {
   ],
   reads: ["stage_context", "input_manifest", "audit_questions"],
   writes: ["candidate_findings"],
-  checks: ["Fake-fetch unit tests for happy/malformed/timeout paths arrive with issue #12 (A1)."],
+  checks: ["Fake-fetch unit tests cover happy/malformed/timeout paths (A1)."],
   retry: "At most one repair attempt on invalid JSON, then degrade to empty.",
   escalate: "Repeated provider failure trips a circuit-breaker and reports a degraded status artifact.",
+  post: `
+## Inference contract (locked by A2)
+
+- **Bounded emission:** this node emits exactly \`CandidateFinding[]\` (payload_kind
+  \`candidates.ai\`, \`validation_status=draft\` when live, \`rejected\` when refusing). No other
+  artifact kind may originate here.
+- **Producer identity is enforced at the boundary:** adapters cannot self-label; both the
+  adapter (\`ZenAiAdapter\`) and the pipeline (\`generateCandidatesLive\`) overwrite \`producer\`
+  to \`safety-reasoning-agent\`.
+- **Uniform refusal semantics** (deterministic path unaffected in every case):
+  - Adapter OFF (default): null slice, zero provider calls, no artifact.
+  - Enabled but only sync context available: null slice + rejected artifact recording the skip.
+  - Live failure (transport/schema after one repair retry/budget exhaustion): null slice +
+    rejected artifact carrying the reason.
+- **Live driver:** inference conducts through \`AuditPipeline.runAllLive\`; the sync batch
+  fold never performs provider calls.
+- **Budgets (R7):** per-call timeout ≤60 s; ≤3 calls per audit run; 0–5 candidate
+  findings per audit run (prompt cap); circuit-breaker after
+  repeated failures; fallback chain Zen→OpenRouter→Groq behind env config.
+- **Vision (M3) pre-declaration:** prompt user-content accepts image blocks; candidates
+  citing attachments must reference \`attachment_ids\` considered. Wiring arrives with M3.
+`,
 };
 
 C["AG-ADJUDICATION"] = {
-  role: "Apply auditor/reviewer decisions to candidate and deterministic findings",
   purpose: "Record per-finding reviewer_status transitions (accepted / accepted_with_edits / rejected), enforce recommendation wording discipline, and finalize the finding set.",
   det: "human", producer: "finding-adjudicator + auditor-human",
   domain: "The Auditor holds final professional responsibility (CONTEXT.md); software assists here but never concludes.",
   juris: "UK practice bans vague wording ('consider') in recommendations [EV-UK-015]; enforced canonically via validateRecommendationWording (banned words: consider, must).",
   project: "Decisions attach to finding_id within this audit only.",
-  upstream: ["candidates.ai?", "findings.deterministic"],
+  upstream: ["findings.deterministic"],
   adrs: [ADR[3] + " wording discipline"],
   ev: ["Reviewer notes may add evidence references; edits preserve the original text trail."],
-  inputs: "rule_results.findings + candidate_findings + human decisions",
+  inputs: "rule_results.findings + human decisions. Candidate findings are display-only context today: they are produced evidence-gated, validated by AG-EVIDENCE-LINKS, and dropped before the assembled report; this node does not consume them.",
   outputs: "SharedState.adjudication + artifact payload_kind=adjudication.decisions (validation_status=verified once applied)",
   invariants: [
     "No finding reaches the final set without explicit reviewer_status other than draft.",
     "Wording violations block save (UI dialog); violations are recorded, never silently stripped.",
     "accepted_with_edits keeps both text versions for auditability.",
+    "A decision targeting an unknown finding_id is never silently dropped: it is recorded in skipped_decision_refs and surfaces under AuditResult limitations.",
   ],
   mutations: ["adjudication"],
-  forbidden: ["Auto-accepting any finding.", "Weakening the wording gate under any flag."],
+  forbidden: ["Auto-accepting any finding.", "Weakening the wording gate under any flag.", "Dropping decisions on unknown finding ids without recording them."],
   accept: [
-    "Playwright flow proves clean adjudication persists and banned wording is rejected via dialog.",
+    "Browser e2e proves clean adjudication persists and banned wording is rejected via dialog.",
     "Designer disagreement flows onward via the response report (UK EV-UK-016), outside this node.",
+    "A rogue finding_id decision appears verbatim under result limitations.",
   ],
-  reads: ["rule_results", "candidate_findings"], writes: ["adjudication"],
-  checks: ["tests/e2e flow.spec.ts adjudication leg; wording-gate unit tests."],
+  reads: ["rule_results"], writes: ["adjudication"],
   retry: "Human-driven: not applicable.",
   escalate: "Disagreement escalates to the designer response process, out of node scope.",
 };
 
 C["AG-EVIDENCE-LINKS"] = {
-  role: "Collect and validate every evidence reference emitted in the run",
   purpose: "Union evidence_ids across manifest, rules, questions, findings and candidates; verify each resolves in the compiled evidence registry before reporting.",
   det: "deterministic", producer: "domain-engine",
   domain: "Every normative claim carries registry provenance (CONTEXT.md Evidence); unresolvable ids mean broken provenance, not softer claims.",
@@ -255,7 +316,7 @@ C["AG-EVIDENCE-LINKS"] = {
   project: "Linkset scoped to this audit's artifacts.",
   upstream: ["all prior artifacts"],
   adrs: [ADR[3]],
-  ev: ["The registry itself: state/evidence-registry.json (114 records at MVP close)."],
+  ev: ["The registry itself: state/evidence-registry.json, compiled by scripts/compile-evidence.mjs."],
   inputs: "All slices carrying evidence_ids",
   outputs: "SharedState.evidence_linkset + artifact payload_kind=evidence.linkset",
   invariants: [
@@ -275,7 +336,6 @@ C["AG-EVIDENCE-LINKS"] = {
 };
 
 C["AG-REPORT"] = {
-  role: "Render the audited result into JSON + Markdown report bundle",
   purpose: "Assemble the final AuditResult (adjudicated findings, questions, limitations, disclaimer) and render its Markdown form for download/print.",
   det: "deterministic", producer: "report-builder",
   domain: "Reports carry the DISCLAIMER verbatim: assistance, not professional judgment; compliance outputs never imply safety.",
@@ -298,13 +358,12 @@ C["AG-REPORT"] = {
     "Snapshot test pins disclaimer + limitations sections.",
   ],
   reads: ["all slices"], writes: ["report_bundle"],
-  checks: ["tests/integration flow report leg."],
+  checks: ["Integration flow covers the report leg."],
   retry: "Deterministic: no retry.",
   escalate: "Rendering failure is a plain 500 — no partial reports ship.",
 };
 
 C["AG-PERSIST"] = {
-  role: "Store the finalized audit behind the DataStore seam",
   purpose: "Write the completed AuditResult via Repository.saveAudit and emit the storage receipt consumed by listings and replays.",
   det: "deterministic", producer: "repository",
   domain: "Audit Artifacts persist attributable outputs (CONTEXT.md); the receipt is the durable pointer enabling replay (N3 refines key scheme).",
@@ -326,7 +385,7 @@ C["AG-PERSIST"] = {
     "Live smoke proved cross-request persistence on production KV.",
   ],
   reads: ["report_bundle"], writes: ["persistence_ref"],
-  checks: ["tests/integration/flow.test.ts persistence legs."],
+  checks: ["Integration flow tests cover the persistence legs."],
   retry: "One retry on transient store failure; then error out — never partial state.",
   escalate: "Store outage surfaces via serverError; the client retains an in-memory copy for manual export.",
 };
@@ -345,12 +404,16 @@ const TITLES = {
   "AG-PERSIST": "Persistence Receipt",
 };
 
+checkGraphAlignment(C);
+
 let ok = true;
+let written = 0;
 for (const nid of Object.keys(C)) {
   const c = C[nid];
+  const node = AUDIT_NODES.get(nid);
   const doc = {
     node_id: nid,
-    role: c.role,
+    role: node.role,
     purpose: c.purpose,
     determinism_class: c.det,
     producer: c.producer,
@@ -359,6 +422,7 @@ for (const nid of Object.keys(C)) {
       jurisdiction_context: c.juris,
       project_context: c.project,
       upstream_artifacts: c.upstream,
+      ...edgeEndpoints(nid),
       relevant_decisions: c.adrs,
       evidence_required: c.ev.join(" "),
     },
@@ -376,15 +440,16 @@ for (const nid of Object.keys(C)) {
     failure: { retry_policy: c.retry, escalation_policy: c.escalate },
   };
   const body = yaml.dump(doc, { lineWidth: 100, noRefs: true });
-  const md = `# Node Contract: ${TITLES[nid]}\n\n\`\`\`yaml\n${body}\`\`\`\n`;
+  const md = `# Node Contract: ${TITLES[nid]}\n\n\`\`\`yaml\n${body}\`\`\`\n${c.post ?? ""}`;
   // inline validation: round-trip must parse and carry mandatory fields
   const back = yaml.load(md.match(/```yaml\n([\s\S]*?)```/)[1]);
-  if (back.node_id !== nid || !back.contract?.invariants?.length || !["deterministic","ai-bounded","human"].includes(back.determinism_class)) {
+  if (back.node_id !== nid || back.role !== node.role || !back.contract?.invariants?.length || !["deterministic","ai-bounded","human"].includes(back.determinism_class)) {
     ok = false; console.error("VALIDATION FAIL", nid);
   }
   fs.writeFileSync(`${DIR}/${nid}.md`, md);
+  written++;
 }
-console.log(ok ? "ALL 11 CONTRACTS WRITTEN + VALIDATED" : "FAILURES PRESENT");
+console.log(ok ? `ALL ${written} CONTRACTS WRITTEN + VALIDATED` : "FAILURES PRESENT");
 
 // README index
 const rows = Object.keys(C).map((nid) =>

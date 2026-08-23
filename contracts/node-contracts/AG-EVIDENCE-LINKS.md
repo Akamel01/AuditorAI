@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-EVIDENCE-LINKS
-role: Collect and validate every evidence reference emitted in the run
+role: Every normative claim traceable to evidence registry ids
 purpose: >-
   Union evidence_ids across manifest, rules, questions, findings and candidates; verify each
   resolves in the compiled evidence registry before reporting.
@@ -16,9 +16,12 @@ context:
   project_context: Linkset scoped to this audit's artifacts.
   upstream_artifacts:
     - all prior artifacts
+  upstream_nodes:
+    - AG-RULES
+  downstream_nodes: []
   relevant_decisions:
     - ADR-0003 finding model
-  evidence_required: 'The registry itself: state/evidence-registry.json (114 records at MVP close).'
+  evidence_required: 'The registry itself: state/evidence-registry.json, compiled by scripts/compile-evidence.mjs.'
 contract:
   inputs: All slices carrying evidence_ids
   outputs: SharedState.evidence_linkset + artifact payload_kind=evidence.linkset

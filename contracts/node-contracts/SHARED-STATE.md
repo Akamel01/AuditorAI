@@ -60,7 +60,9 @@ type EvidenceLinksetSlice = {
 };
 
 type ReportBundleSlice = { json: AuditResult; markdown: string; disclaimer: string };
-type PersistenceRefSlice = { audit_id: string; store_key: string; stored_at: string };
+type PersistenceRefSlice = { audit_id: string; project_id: string; stored_at: string };
+// Stable audit coordinates only — never physical storage keys (Repository owns
+// the key scheme exclusively; ADR-0001).
 ```
 
 ## AuditArtifact envelope

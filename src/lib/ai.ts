@@ -2,6 +2,16 @@
 // bounded candidate artifacts; nothing here can produce final determinations.
 import Ajv from "ajv/dist/2020.js";
 import { getEvidence } from "@/lib/evidence";
+import { BANNED_WORDS } from "@/domain/pipeline/wording";
+import {
+  CircuitBreaker,
+  FailoverEndpoint,
+  chatComplete,
+  extractJsonArray,
+  runInferenceLoop,
+  type ChatMessage,
+  type ReasoningEffort,
+} from "@/lib/inference";
 import type { AuditResult } from "@/domain/types";
 
 export type CandidateFinding = Pick<
@@ -27,6 +37,11 @@ type Finding = AuditResult["findings"][number];
 /** M3 vision budget: max drawings passed as image blocks per judge/candidate call. */
 export const MAX_IMAGES_PER_CALL = 4;
 
+export interface CandidateVocabulary {
+  issue_categories: readonly string[];
+  road_user_categories: readonly string[];
+}
+
 export interface AiAdapter {
   readonly enabled: boolean;
   /**
@@ -38,6 +53,7 @@ export interface AiAdapter {
     audit: AuditResult,
     images?: string[],
     contextNotes?: string[],
+    vocabulary?: CandidateVocabulary,
   ): Promise<CandidateFinding[]>;
 }
 
@@ -50,7 +66,7 @@ export class OffAiAdapter implements AiAdapter {
 
 // ---- Zen adapter (A1): OpenAI-compatible, fetch-only, strict boundary -------
 
-export type ReasoningEffort = "low" | "high" | "max";
+export type { ReasoningEffort };
 
 export interface ZenAiConfig {
   apiKey: string;
@@ -65,15 +81,86 @@ export interface ZenAiConfig {
   fetchImpl?: typeof fetch;
 }
 
-interface ChatMessage {
-  role: "system" | "user" | "assistant";
-  content:
-    | string
-    | ({ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } })[];
-}
-
 const DEFAULT_BASE_URL = "https://opencode.ai/zen/v1";
 const DEFAULT_MODEL = "x-preview-f-free";
+
+interface JsonSchemaish {
+  enum?: readonly string[];
+  type?: string | string[];
+  items?: JsonSchemaish;
+  properties?: Record<string, JsonSchemaish>;
+  required?: string[];
+  minItems?: number;
+  additionalProperties?: boolean;
+}
+
+export const CANDIDATE_FIELD_SCHEMAS: Record<string, JsonSchemaish> = {
+  kind: { enum: ["safety_concern", "compliance_question"] },
+  category: { type: "string" },
+  location: { type: ["string", "null"] },
+  road_users: { type: "array", items: { type: "string" } },
+  scenario: { type: ["string", "null"] },
+  statement: {
+    type: "object",
+    required: ["text"],
+    properties: {
+      text: { type: "string" },
+      normative_basis_note: { type: ["string", "null"] },
+    },
+    additionalProperties: false,
+  },
+  evidence: {
+    type: "array",
+    minItems: 1,
+    items: {
+      type: "object",
+      required: ["evidence_id", "use"],
+      properties: {
+        evidence_id: { type: "string" },
+        quote: { type: ["string", "null"] },
+        use: { enum: ["supports_concern", "defines_requirement", "context"] },
+      },
+      additionalProperties: false,
+    },
+  },
+  assumptions: {
+    type: "array",
+    items: {
+      type: "object",
+      required: ["text"],
+      properties: {
+        text: { type: "string" },
+        basis: { type: ["string", "null"] },
+      },
+      additionalProperties: false,
+    },
+  },
+  rationale: { type: "string" },
+  recommendation: { type: ["string", "null"] },
+};
+
+export const CANDIDATE_FIELDS = Object.keys(CANDIDATE_FIELD_SCHEMAS);
+
+const OPTIONAL_CANDIDATE_FIELDS = new Set(["location", "road_users", "scenario", "recommendation"]);
+
+function schemaSketch(schema: JsonSchemaish): string {
+  if (schema.enum) return schema.enum.map((v) => `"${v}"`).join("|");
+  if (Array.isArray(schema.type)) return schema.type.join("|");
+  if (schema.type === "array") {
+    const items = schemaSketch(schema.items ?? {});
+    return items.startsWith("{") ? `[${items}]` : `${items}[]`;
+  }
+  if (schema.type === "object") {
+    return `{${Object.entries(schema.properties ?? {})
+      .map(([k, v]) => `"${k}":${schemaSketch(v)}`)
+      .join(",")}}`;
+  }
+  return String(schema.type);
+}
+
+const CANDIDATE_JSON_TEMPLATE = `{${CANDIDATE_FIELDS.map(
+  (f) => `"${f}":${schemaSketch(CANDIDATE_FIELD_SCHEMAS[f])}`,
+).join(",")}}`;
 
 const SYSTEM_PROMPT = [
   "You assist a Road Safety Audit by proposing bounded candidate findings for human adjudication.",
@@ -81,8 +168,8 @@ const SYSTEM_PROMPT = [
   "- You never make final determinations; a qualified auditor disposes of every candidate.",
   "- Compliance questions and safety concerns are categorically distinct; do not blur them.",
   "- Every normative claim must cite an evidence_id given to you; invent nothing.",
-  "- Recommendations must be specific and actionable; the words 'consider' and 'must' are banned.",
-  'Respond with ONLY a JSON array. Each item: {"kind":"safety_concern"|"compliance_question","category":string,"location":string|null,"road_users":string[],"scenario":string|null,"statement":{"text":string,"normative_basis_note":string|null},"evidence":[{"evidence_id":string,"quote":string|null,"use":"supports_concern"|"defines_requirement"|"context"}],"assumptions":[{"text":string,"basis":string|null}],"rationale":string,"recommendation":string|null}.',
+  `- Recommendations must be specific and actionable; the words ${BANNED_WORDS.map((w) => `'${w}'`).join(" and ")} are banned.`,
+  `Respond with ONLY a JSON array. Each item: ${CANDIDATE_JSON_TEMPLATE}.`,
 ].join("\n");
 
 const REPAIR_INSTRUCTION =
@@ -91,6 +178,7 @@ const REPAIR_INSTRUCTION =
 export function buildPromptMessages(
   audit: AuditResult,
   images?: string[],
+  vocabulary?: CandidateVocabulary,
 ): ChatMessage[] {
   const evidenceIds = new Set<string>();
   for (const m of audit.input_manifest) for (const id of m.evidence_ids) evidenceIds.add(id);
@@ -112,7 +200,7 @@ export function buildPromptMessages(
   const questionLines = audit.audit_questions.map((q) => `- [${q.question_id}] ${q.text}`);
 
   const text = [
-    `Audit context: ${audit.jurisdiction} / ${audit.framework_name} / native stage ${audit.native_stage_id}.`,
+    `Audit context: ${audit.jurisdiction} / ${audit.framework_name} / native stage ${audit.native_stage_display_name}.`,
     "",
     "Recorded input states:",
     ...(manifestLines.length ? manifestLines : ["- (none defined)"]),
@@ -127,6 +215,13 @@ export function buildPromptMessages(
     "",
     "Evidence registry excerpts (cite only these ids):",
     ...(excerpts.length ? excerpts : ["- (none available)"]),
+    ...(vocabulary
+      ? [
+          "",
+          `Allowed issue categories for 'category' (use one verbatim): ${vocabulary.issue_categories.join(", ")}`,
+          `Allowed road-user categories for 'road_users' (draw from): ${vocabulary.road_user_categories.join(", ")}`,
+        ]
+      : []),
     "",
     "Propose zero to five candidate findings a deterministic rule set could not express.",
   ].join("\n");
@@ -147,76 +242,24 @@ export function buildPromptMessages(
   ];
 }
 
-const candidateFindingSchema = {
-  type: "object",
-  required: [
-    "kind",
-    "category",
-    "statement",
-    "evidence",
-    "assumptions",
-    "rationale",
-  ],
-  properties: {
-    kind: { enum: ["safety_concern", "compliance_question"] },
-    category: { type: "string" },
-    location: { type: ["string", "null"] },
-    road_users: { type: "array", items: { type: "string" } },
-    scenario: { type: ["string", "null"] },
-    statement: {
-      type: "object",
-      required: ["text"],
-      properties: {
-        text: { type: "string" },
-        normative_basis_note: { type: ["string", "null"] },
-      },
-      additionalProperties: false,
-    },
-    evidence: {
-      type: "array",
-      minItems: 1,
-      items: {
-        type: "object",
-        required: ["evidence_id", "use"],
-        properties: {
-          evidence_id: { type: "string" },
-          quote: { type: ["string", "null"] },
-          use: { enum: ["supports_concern", "defines_requirement", "context"] },
-        },
-        additionalProperties: false,
-      },
-    },
-    assumptions: {
-      type: "array",
-      items: {
-        type: "object",
-        required: ["text"],
-        properties: {
-          text: { type: "string" },
-          basis: { type: ["string", "null"] },
-        },
-        additionalProperties: false,
-      },
-    },
-    rationale: { type: "string" },
-    recommendation: { type: ["string", "null"] },
-  },
-  additionalProperties: false,
-} as const;
+function candidateObjectSchema(withEnvelope: boolean): Record<string, unknown> {
+  const properties: Record<string, unknown> = { ...CANDIDATE_FIELD_SCHEMAS };
+  const required = CANDIDATE_FIELDS.filter((f) => !OPTIONAL_CANDIDATE_FIELDS.has(f));
+  if (withEnvelope) {
+    properties.producer = { type: "string" };
+    properties.source_attachment_ids = { type: "array", items: { type: "string" } };
+    required.push("producer");
+  }
+  return { type: "object", required, properties, additionalProperties: false };
+}
 
 const ajv = new Ajv({ strict: false, allErrors: true });
 const validateCandidateArray = ajv.compile({
   type: "array",
-  items: candidateFindingSchema,
+  items: candidateObjectSchema(false),
 });
-
-function extractJsonArray(content: string): unknown {
-  const stripped = content.replace(/```(?:json)?/g, "").trim();
-  const start = stripped.indexOf("[");
-  const end = stripped.lastIndexOf("]");
-  if (start === -1 || end === -1 || end <= start) throw new Error("no JSON array found");
-  return JSON.parse(stripped.slice(start, end + 1));
-}
+export const validateCandidateFinding = ajv.compile(candidateObjectSchema(false));
+export const validateCandidateAtBoundary = ajv.compile(candidateObjectSchema(true));
 
 function labelProducers(items: unknown): CandidateFinding[] {
   return (items as CandidateFinding[]).map((c) => ({
@@ -225,190 +268,128 @@ function labelProducers(items: unknown): CandidateFinding[] {
   }));
 }
 
-export class ZenAiAdapter implements AiAdapter {
-  readonly enabled = true;
-  private consecutiveFailures = 0;
-  private currentBase: string;
-  private currentKey: string;
-  private fallbackSpent = false;
-
-  constructor(private cfg: ZenAiConfig) {
-    this.currentBase = stripTrailingSlash(cfg.baseUrl ?? DEFAULT_BASE_URL);
-    this.currentKey = cfg.apiKey;
-  }
-
-  private get open(): boolean {
-    return this.consecutiveFailures >= (this.cfg.breakerThreshold ?? 3);
-  }
-
-  async generateCandidates(
-    audit: AuditResult,
-    images?: string[],
-    contextNotes?: string[],
-  ): Promise<CandidateFinding[]> {
-    if (this.open) return [];
-
-    let messages = buildPromptMessages(audit, images);
-    if (contextNotes?.length) {
-      const note = `Attachments not shown as images (budget): ${contextNotes.join("; ")}`;
-      messages = [
-        ...messages.slice(0, -1),
-        {
-          role: "user",
-          content:
-            typeof messages[messages.length - 1].content === "string"
-              ? `${String(messages[messages.length - 1].content)}\n\n${note}`
-              : messages[messages.length - 1].content,
-        },
-      ];
-    }
-    const maxCalls = this.cfg.maxCallsPerRun ?? 3;
-    let repairsUsed = 0;
-
-    for (let call = 0; call < maxCalls; call++) {
-      let content: string | null = null;
-      try {
-        content = await this.complete(messages);
-      } catch (e) {
-        if (!this.fallbackSpent && this.cfg.fallbackBaseUrl && this.cfg.fallbackApiKey) {
-          this.currentBase = stripTrailingSlash(this.cfg.fallbackBaseUrl);
-          this.currentKey = this.cfg.fallbackApiKey;
-          this.fallbackSpent = true;
-          continue; // fallback attempt does not consume the repair budget twice
-        }
-        this.recordFailure(`transport failure: ${describe(e)}`);
-        return [];
-      }
-
-      try {
-        const parsed = extractJsonArray(content);
-        if (validateCandidateArray(parsed)) {
-          this.consecutiveFailures = 0;
-          return labelProducers(parsed);
-        }
-        throw new Error(ajvErrors(validateCandidateArray.errors));
-      } catch (e) {
-        if (repairsUsed >= 1) {
-          // Contract: ONE repair retry, then graceful empty.
-          this.recordFailure(`schema violation after one repair retry: ${describe(e)}`);
-          return [];
-        }
-        repairsUsed += 1;
-        messages = [
-          ...messages,
-          { role: "assistant", content: content ?? "" },
-          { role: "user", content: REPAIR_INSTRUCTION },
-        ];
-      }
-    }
-    this.recordFailure("call budget exhausted");
-    return [];
-  }
-
-  private async complete(messages: ChatMessage[]): Promise<string> {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this.cfg.timeoutMs ?? 60_000);
-    try {
-      const res = await (this.cfg.fetchImpl ?? fetch)(`${this.currentBase}/chat/completions`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.currentKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: this.cfg.model ?? DEFAULT_MODEL,
-          messages,
-          reasoning_effort: this.cfg.effort ?? "high",
-        }),
-        signal: controller.signal,
-        cache: "no-store",
-      });
-      if (res.status === 400) {
-        // reasoning_effort wire-param discovery: some gateways reject it.
-        const body = await safeText(res);
-        if (body.includes("reasoning_effort")) {
-          return await this.completeWithoutEffort(messages);
-        }
-        throw new Error(`HTTP 400: ${truncate(body)}`);
-      }
-      if (res.status === 429) throw new Error("HTTP 429 rate limited");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = (await res.json()) as {
-        choices?: { message?: { content?: string } }[];
-      };
-      const content = json.choices?.[0]?.message?.content;
-      if (typeof content !== "string") throw new Error("response missing choices[0].message.content");
-      return content;
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  private async completeWithoutEffort(messages: ChatMessage[]): Promise<string> {
-    const res = await (this.cfg.fetchImpl ?? fetch)(`${this.currentBase}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.currentKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ model: this.cfg.model ?? DEFAULT_MODEL, messages }),
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status} (without reasoning_effort)`);
-    const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    const content = json.choices?.[0]?.message?.content;
-    if (typeof content !== "string") throw new Error("response missing content");
-    return content;
-  }
-
-  private recordFailure(reason: string): void {
-    this.consecutiveFailures += 1;
-    console.warn(
-      `[ai] candidates unavailable (${reason}); consecutive failures=${this.consecutiveFailures}${this.open ? "; circuit breaker OPEN — deterministic path continues" : ""}`,
-    );
-  }
-}
-
-function stripTrailingSlash(url: string): string {
-  return url.endsWith("/") ? url.slice(0, -1) : url;
+function appendContextNotes(messages: ChatMessage[], contextNotes: string[]): ChatMessage[] {
+  const note = `Attachments not shown as images (budget): ${contextNotes.join("; ")}`;
+  const last = messages[messages.length - 1];
+  return [
+    ...messages.slice(0, -1),
+    {
+      role: "user",
+      content: typeof last.content === "string" ? `${last.content}\n\n${note}` : last.content,
+    },
+  ];
 }
 
 function ajvErrors(errors: unknown): string {
   return JSON.stringify(errors);
 }
 
-async function safeText(res: Response): Promise<string> {
-  try {
-    return await res.text();
-  } catch {
-    return "";
+export class ZenAiAdapter implements AiAdapter {
+  readonly enabled = true;
+  private breaker: CircuitBreaker;
+  private endpoints: FailoverEndpoint;
+
+  constructor(private cfg: ZenAiConfig) {
+    this.breaker = new CircuitBreaker(cfg.breakerThreshold ?? 3);
+    this.endpoints = new FailoverEndpoint(
+      { baseUrl: cfg.baseUrl ?? DEFAULT_BASE_URL, apiKey: cfg.apiKey },
+      cfg.fallbackBaseUrl && cfg.fallbackApiKey
+        ? { baseUrl: cfg.fallbackBaseUrl, apiKey: cfg.fallbackApiKey }
+        : null,
+    );
+  }
+
+  async generateCandidates(
+    audit: AuditResult,
+    images?: string[],
+    contextNotes?: string[],
+    vocabulary?: CandidateVocabulary,
+  ): Promise<CandidateFinding[]> {
+    if (this.breaker.open) return [];
+
+    let messages = buildPromptMessages(audit, images, vocabulary);
+    if (contextNotes?.length) messages = appendContextNotes(messages, contextNotes);
+
+    const { outcome } = await runInferenceLoop({
+      budget: this.cfg.maxCallsPerRun ?? 3,
+      initialMessages: messages,
+      repairUserMessage: REPAIR_INSTRUCTION,
+      complete: (msgs) =>
+        chatComplete(
+          {
+            endpoint: this.endpoints.current,
+            model: this.cfg.model ?? DEFAULT_MODEL,
+            effort: this.cfg.effort ?? "high",
+            timeoutMs: this.cfg.timeoutMs,
+            fetchImpl: this.cfg.fetchImpl,
+          },
+          msgs,
+        ),
+      extract: extractJsonArray,
+      validate: (parsed) => {
+        if (!validateCandidateArray(parsed)) throw new Error(ajvErrors(validateCandidateArray.errors));
+        return labelProducers(parsed);
+      },
+      onTransportError: () => this.endpoints.switchToFallback(),
+    });
+
+    switch (outcome.status) {
+      case "ok":
+        this.breaker.recordSuccess();
+        return outcome.value;
+      case "transport-failed":
+        this.recordFailure(`transport failure: ${outcome.reason}`);
+        return [];
+      case "output-invalid":
+        this.recordFailure(`schema violation after one repair retry: ${outcome.reason}`);
+        return [];
+      case "budget-exhausted":
+        this.recordFailure("call budget exhausted");
+        return [];
+    }
+  }
+
+  private recordFailure(reason: string): void {
+    this.breaker.recordFailure();
+    console.warn(
+      `[ai] candidates unavailable (${reason}); consecutive failures=${this.breaker.failureCount}${this.breaker.open ? "; circuit breaker OPEN — deterministic path continues" : ""}`,
+    );
   }
 }
 
-function truncate(s: string, n = 200): string {
-  return s.length > n ? `${s.slice(0, n)}…` : s;
-}
+// ---- Adapter registry --------------------------------------------------------
 
-function describe(e: unknown): string {
-  if (e instanceof Error && e.name === "AbortError") return "timeout";
-  return e instanceof Error ? e.message : String(e);
-}
+export type AiAdapterFactory = () => AiAdapter;
 
-let liveSingleton: ZenAiAdapter | null = null;
+const ADAPTER_FACTORIES: Record<string, AiAdapterFactory> = {
+  off: () => new OffAiAdapter(),
+  zen: () =>
+    new ZenAiAdapter({
+      apiKey: process.env.OPENCODE_API_KEY!,
+      baseUrl: process.env.AI_BASE_URL,
+      model: process.env.AI_MODEL,
+      effort: (process.env.AI_EFFORT as ReasoningEffort | undefined) ?? "high",
+      fallbackBaseUrl: process.env.AI_FALLBACK_BASE_URL,
+      fallbackApiKey: process.env.AI_FALLBACK_API_KEY,
+    }),
+};
+
+const liveSingletons = new Map<string, AiAdapter>();
+
+export function registerAiAdapter(name: string, factory: AiAdapterFactory): void {
+  ADAPTER_FACTORIES[name] = factory;
+}
 
 export function getAiAdapter(): AiAdapter {
   const enabled = process.env.AI_ENABLED === "true" && !!process.env.OPENCODE_API_KEY;
-  if (!enabled) {
-    // Only 'off' ships unless explicitly enabled; future adapters register behind this seam.
-    return new OffAiAdapter();
-  }
-  liveSingleton ??= new ZenAiAdapter({
-    apiKey: process.env.OPENCODE_API_KEY!,
-    baseUrl: process.env.AI_BASE_URL,
-    model: process.env.AI_MODEL,
-    effort: (process.env.AI_EFFORT as ReasoningEffort | undefined) ?? "high",
-    fallbackBaseUrl: process.env.AI_FALLBACK_BASE_URL,
-    fallbackApiKey: process.env.AI_FALLBACK_API_KEY,
-  });
-  return liveSingleton;
+  if (!enabled) return resolveAdapter("off");
+  return resolveAdapter(process.env.AI_ADAPTER ?? "zen");
+}
+
+function resolveAdapter(name: string): AiAdapter {
+  const factory = ADAPTER_FACTORIES[name];
+  if (!factory) throw new Error(`unknown AI_ADAPTER '${name}'`);
+  if (name === "off") return factory();
+  if (!liveSingletons.has(name)) liveSingletons.set(name, factory());
+  return liveSingletons.get(name)!;
 }

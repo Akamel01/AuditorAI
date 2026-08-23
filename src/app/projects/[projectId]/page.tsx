@@ -5,7 +5,15 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import { humanizeEnum } from "@/lib/format";
 import { shrinkImage } from "@/lib/image";
+import {
+  deriveInputState,
+  filterInputsForStage,
+  mergeAttachment,
+  selectValueFor,
+} from "@/domain/input-states";
+import { stageDisplay } from "@/app/_components/stage-label";
 import type { Attachment, InputValueState, Project } from "@/domain/types";
 
 interface StageInfo {
@@ -58,6 +66,13 @@ export default function ProjectPage() {
   const stage = stageInfo.stages.find(
     (s) => s.native_stage_id === project.stage_selection.native_stage_id,
   );
+  const pairing = stage
+    ? stageDisplay({
+        nativeLabel: stage.display_name,
+        canonicalStages: stage.canonical_stages,
+        confidence: stage.confidence,
+      })
+    : null;
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -72,7 +87,7 @@ export default function ProjectPage() {
             Framework: {stageInfo.framework.name} {stageInfo.framework.revision ? `(${stageInfo.framework.revision})` : ""}
           </span>
           <span className="rounded-full bg-white border px-2 py-0.5">
-            Canonical: {stage?.canonical_stages.join(" + ") || "—"} · confidence: {stage?.confidence}
+            Canonical: {pairing ? pairing.canonicalText : ""} · confidence: {stage?.confidence}
           </span>
         </div>
         {stage?.notes && <p className="mt-2 text-xs italic text-amber-700">{stage.notes}</p>}
@@ -97,7 +112,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
       inputs: { input_id: string; label: string; requirement_level: string; description?: string; conditional_on?: string | null; stage_ids: string[]; evidence_ids: string[] }[];
     }>(`/api/inputs/${project.stage_selection.jurisdiction}`).then((d) =>
       setInputs(
-        d.inputs.filter((i) => i.stage_ids.includes(project.stage_selection.native_stage_id)),
+        filterInputsForStage(d.inputs, project.stage_selection.native_stage_id),
       ),
     );
   }, [project.stage_selection.jurisdiction, project.stage_selection.native_stage_id]);
@@ -113,14 +128,10 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
   async function uploadFor(inputId: string, file: File) {
     const form = new FormData();
     form.append("file", file);
-    const key = localStorage.getItem("auditorai.workspace_key") ?? "";
-    const res = await fetch("/api/upload", {
+    const data = await api<{ extracted_text?: string }>("/api/upload", {
       method: "POST",
-      headers: { "x-workspace-key": key },
       body: form,
     });
-    const data = (await res.json()) as { extracted_text?: string; error?: string };
-    if (!res.ok) throw new Error(data.error ?? "upload failed");
     await setInput(inputId, "provided", data.extracted_text ?? "");
   }
 
@@ -131,14 +142,11 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
     form.append("project_id", project.project_id);
     form.append("input_id", inputId);
     form.append("file", new File([shrunk], file.name || "pasted-image.png", { type: shrunk.type }));
-    const key = localStorage.getItem("auditorai.workspace_key") ?? "";
-    const res = await fetch("/api/upload", {
+    const data = await api<{ attachment?: Attachment }>("/api/upload", {
       method: "POST",
-      headers: { "x-workspace-key": key },
       body: form,
     });
-    const data = (await res.json()) as { attachment?: Attachment; error?: string };
-    if (!res.ok || !data.attachment) throw new Error(data.error ?? "attach failed");
+    if (!data.attachment) throw new Error("attach failed");
     const current = project.input_values[inputId];
     await api(`/api/projects/${project.project_id}`, {
       method: "PATCH",
@@ -147,7 +155,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
           [inputId]: {
             state: "provided" as InputValueState,
             value: current?.value ?? "",
-            attachments: [...(current?.attachments ?? []), data.attachment.attachment_id],
+            attachments: mergeAttachment(current?.attachments, data.attachment.attachment_id),
           },
         },
       },
@@ -156,10 +164,8 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
   }
 
   async function detachImage(inputId: string, attachmentId: string) {
-    const key = localStorage.getItem("auditorai.workspace_key") ?? "";
-    await fetch(`/api/projects/${project.project_id}/attachments/${attachmentId}`, {
+    await api(`/api/projects/${project.project_id}/attachments/${attachmentId}`, {
       method: "DELETE",
-      headers: { "x-workspace-key": key },
     });
     onChanged();
   }
@@ -174,14 +180,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
       <ul className="mt-3 space-y-3">
         {inputs.map((i) => {
           const current = project.input_values[i.input_id];
-          const state: InputValueState = current?.state ??
-            (i.requirement_level === "required"
-              ? "required_missing"
-              : i.requirement_level === "recommended"
-                ? "recommended_missing"
-                : i.requirement_level === "optional"
-                  ? "optional_missing"
-                  : "unknown");
+          const state: InputValueState = deriveInputState(i.requirement_level, current);
           return (
             <li key={i.input_id} className="rounded-lg border p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -196,7 +195,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
                           : "border-neutral-300 bg-white text-neutral-600"
                     }`}
                   >
-                    {state.replace("_", " ")}
+                    {humanizeEnum(state)}
                   </span>
                   {i.conditional_on && (
                     <span className="ml-1 text-[11px] text-neutral-400">if {i.conditional_on}</span>
@@ -204,7 +203,7 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
                 </div>
                 <select
                   className="rounded border px-2 py-1 text-xs"
-                  value={state === "required_missing" || state === "recommended_missing" || state === "optional_missing" ? "" : state}
+                  value={selectValueFor(state)}
                   onChange={(e) => {
                     const v = e.target.value as InputValueState;
                     if (v) setInput(i.input_id, v);

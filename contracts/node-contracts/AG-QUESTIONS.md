@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-QUESTIONS
-role: Select framework audit questions applicable to the canonical stages
+role: Stage-relevant audit questions surfaced for human reasoning
 purpose: >-
   Filter pack.audit_questions by overlap between applies_to_canonical and the stage's
   canonical_stages; emit them unanswered for the auditor's worksheet.
@@ -16,6 +16,9 @@ context:
   project_context: addressed=false at emission; humans answer during review.
   upstream_artifacts:
     - context.snapshot
+  upstream_nodes: []
+  downstream_nodes:
+    - AG-ADJUDICATION
   relevant_decisions:
     - ADR-0002 canonical stage model
   evidence_required: source_note and optional road_users carried through untouched.
@@ -52,7 +55,7 @@ failure:
   escalation_policy: N/A.
 ```
 
-## Inference contract (locked by A2, issue #13)
+## Inference contract (locked by A2)
 
 - **Decision — AI-proposed missing-information questions: ALLOWED (declared, dormant).**
   When activated, AI may propose missing-information questions bounded to the exact
@@ -64,5 +67,5 @@ failure:
 - **Dormant today:** nothing emits this yet; behavior tests assert emitted kinds stay a
   subset of declared kinds, so activation later cannot silently widen the boundary.
 - **Recommendation drafting: REJECTED for now** — deferred until the eval corpus shows a
-  quality baseline (fog item on map issue #20). Free-text narrative generation and final
+  quality baseline (deferred fog item). Free-text narrative generation and final
   determinations remain forbidden everywhere.

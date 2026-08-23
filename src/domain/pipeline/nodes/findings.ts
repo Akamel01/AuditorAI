@@ -2,10 +2,8 @@
 // rule outcomes into schema-valid draft Findings: reviewer_status=draft, risk
 // components null, recommendation null, deterministic source trace. Never
 // fabricates safety_concern kinds.
-import {
-  makeArtifact,
-  requireSlice,
-} from "@/domain/pipeline/nodes/shared";
+import { requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type { NodeFn, RuleResultsSlice } from "@/domain/pipeline/types";
 import type { Finding } from "@/domain/types";
 

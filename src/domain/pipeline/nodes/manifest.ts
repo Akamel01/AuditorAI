@@ -1,8 +1,10 @@
 // AG-MANIFEST — Input Manifest (deterministic). Normalizes recorded input
 // values to §14/§27 states for the selected native stage; blank "provided"
 // downgrades to the level-appropriate missing state; conditional_on retained.
+import { missingStateFor } from "@/domain/input-states";
 import { getPack } from "@/domain/packs";
-import { makeArtifact, requireSlice } from "@/domain/pipeline/nodes/shared";
+import { requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   ManifestEntry,
   NodeFn,
@@ -11,19 +13,6 @@ import type {
   InputRequirementLevel,
   InputValueState,
 } from "@/domain/types";
-
-function missingStateFor(level: string): InputValueState {
-  switch (level) {
-    case "required":
-      return "required_missing";
-    case "recommended":
-      return "recommended_missing";
-    case "optional":
-      return "optional_missing";
-    default:
-      return "unknown";
-  }
-}
 
 function resolveState(
   stored: { state: InputValueState; value?: string } | undefined,

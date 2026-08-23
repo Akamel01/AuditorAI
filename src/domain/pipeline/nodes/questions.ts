@@ -2,7 +2,8 @@
 // questions whose canonical span intersects the resolved stage; text quoted
 // verbatim; every question starts unaddressed.
 import { getPack } from "@/domain/packs";
-import { makeArtifact, requireSlice } from "@/domain/pipeline/nodes/shared";
+import { requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   NodeFn,
   QuestionsSlice,

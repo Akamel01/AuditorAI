@@ -6,9 +6,19 @@ import { NextResponse } from "next/server";
 import { notFound, requireWorkspace, serverError } from "@/lib/api";
 import { runAudit } from "@/domain/engine";
 import { getPipeline } from "@/domain/pipeline/pipeline";
+import { getPack } from "@/domain/packs";
+import type { JurisdictionId } from "@/domain/types";
 import { getAiAdapter } from "@/lib/ai";
 
 type Ctx = { params: Promise<{ projectId: string }> };
+
+function packVocabulary(jurisdiction: JurisdictionId) {
+  const pack = getPack(jurisdiction);
+  return {
+    issue_categories: pack.issue_categories,
+    road_user_categories: pack.road_user_categories,
+  };
+}
 
 export async function POST(req: Request, ctx: Ctx) {
   const auth = await requireWorkspace(req);
@@ -28,6 +38,7 @@ export async function POST(req: Request, ctx: Ctx) {
             file_name: a.file_name,
             data_url: a.data_url,
           })),
+          candidateVocabulary: packVocabulary(project.stage_selection.jurisdiction),
         })
       : runAudit(project, ranAtIso);
 

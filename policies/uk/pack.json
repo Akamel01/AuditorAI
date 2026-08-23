@@ -10,6 +10,7 @@
     "publication_date": "2025-04-30",
     "status": "authoritative_current",
     "qualification_note": "Applies to the motorway and trunk road network of the four Overseeing Organisations; local authorities commonly adopt it voluntarily.",
+    "stage_limitation_note": "GG 119 assigns no severity scores to findings; formal risk assessment sits in the designer response [EV-UK-024].",
     "evidence_ids": ["EV-UK-001", "EV-UK-019"]
   },
   "stages": [

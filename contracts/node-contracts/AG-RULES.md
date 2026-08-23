@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-RULES
-role: Evaluate completeness / process / eligibility rules
+role: Deterministic completeness/process/eligibility rules from pack
 purpose: >-
   Run all applicable pack rules against the manifest: completeness rules raise missing-information
   questions; process and eligibility rules raise compliance-question findings.
@@ -16,6 +16,11 @@ context:
   project_context: Operates purely on input_manifest states.
   upstream_artifacts:
     - manifest.table
+  upstream_nodes:
+    - AG-MANIFEST
+  downstream_nodes:
+    - AG-FINDINGS
+    - AG-EVIDENCE-LINKS
   relevant_decisions:
     - ADR-0003 finding model
   evidence_required: Rules carry evidence_ids merged (deduplicated) into questions and findings.
@@ -51,7 +56,7 @@ state:
     - rule_results
 verification:
   required_checks:
-    - tests/domain/engine.test.ts rule coverage stays green after the N2 refactor.
+    - Engine rule coverage stays green after the N2 refactor.
 failure:
   retry_policy: 'Deterministic: no retry.'
   escalation_policy: Malformed rule shapes are a pack-schema/CI concern.

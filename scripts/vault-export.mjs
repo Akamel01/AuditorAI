@@ -5,6 +5,8 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import { emitFrontMatter } from "./lib/frontmatter.mjs";
+import { fromRoot } from "./lib/paths.mjs";
 
 const ROOT = process.cwd();
 const VIEWS = path.join(ROOT, "vault", "views");
@@ -13,19 +15,12 @@ function sha(json) {
   return createHash("sha256").update(JSON.stringify(json)).digest("hex").slice(0, 12);
 }
 
-function fm(fields) {
-  const lines = ["---"];
-  for (const [k, v] of fields) lines.push(`${k}: ${v}`);
-  lines.push("---", "");
-  return lines.join("\n");
-}
-
 function writeView(name, content) {
   writeFileSync(path.join(VIEWS, name), content);
 }
 
 function evidenceRecordNote(rec) {
-  return fm([
+  return emitFrontMatter([
     ["generated", "true"],
     ["type", "evidence-record"],
     ["source", "state/evidence-registry.json"],
@@ -52,7 +47,7 @@ function main() {
   mkdirSync(VIEWS, { recursive: true });
 
   // ---- Evidence registry: index + one note per record ------------------------
-  const ev = JSON.parse(readFileSync(path.join(ROOT, "state/evidence-registry.json"), "utf8"));
+  const ev = JSON.parse(readFileSync(fromRoot("state", "evidence-registry.json"), "utf8"));
   const records = [...ev.evidence_records].sort((a, b) =>
     a.evidence_id.localeCompare(b.evidence_id),
   );
@@ -61,7 +56,7 @@ function main() {
   const byJurisdiction = {};
   for (const r of records) (byJurisdiction[r.jurisdiction] ||= []).push(r.evidence_id);
 
-  let idx = fm([
+  let idx = emitFrontMatter([
     ["generated", "true"],
     ["type", "evidence-index"],
     ["source", "state/evidence-registry.json"],
@@ -81,9 +76,9 @@ function main() {
   }
 
   // ---- Audit graph overview ---------------------------------------------------
-  const gs = JSON.parse(readFileSync(path.join(ROOT, "state/graph-state.json"), "utf8"));
+  const gs = JSON.parse(readFileSync(fromRoot("state", "graph-state.json"), "utf8"));
   const ag = gs.graphs.audit_graph;
-  let graph = fm([
+  let graph = emitFrontMatter([
     ["generated", "true"],
     ["type", "graph-overview"],
     ["source", "state/graph-state.json"],
@@ -100,8 +95,8 @@ function main() {
   writeView("graph-overview.md", graph);
 
   // ---- Validation log ----------------------------------------------------------
-  const vs = JSON.parse(readFileSync(path.join(ROOT, "state/validation-state.json"), "utf8"));
-  let val = fm([
+  const vs = JSON.parse(readFileSync(fromRoot("state", "validation-state.json"), "utf8"));
+  let val = emitFrontMatter([
     ["generated", "true"],
     ["type", "validation-log"],
     ["source", "state/validation-state.json"],

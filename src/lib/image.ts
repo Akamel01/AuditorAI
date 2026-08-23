@@ -1,6 +1,8 @@
 // Client-side image intake: canvas re-encode strips EXIF metadata and
 // downscales so the blob fits the M1 inline cap (≤500 KB per image).
-export const MAX_IMAGE_BYTES = 500 * 1000;
+import { ATTACHMENT_MAX_BYTES } from "@/domain/types";
+
+export const MAX_IMAGE_BYTES = ATTACHMENT_MAX_BYTES;
 
 export async function shrinkImage(file: File | Blob, maxBytes = 480_000): Promise<Blob> {
   if (file.size <= maxBytes && file.type !== "") return file;
@@ -20,7 +22,7 @@ export async function shrinkImage(file: File | Blob, maxBytes = 480_000): Promis
     quality -= 0.15;
     blob = await toBlob(canvas, "image/jpeg", quality);
   }
-  if (blob.size > MAX_IMAGE_BYTES) throw new Error("Image cannot be shrunk below 500 KB");
+  if (blob.size > ATTACHMENT_MAX_BYTES) throw new Error("Image cannot be shrunk below 500 KB");
   return blob;
 }
 

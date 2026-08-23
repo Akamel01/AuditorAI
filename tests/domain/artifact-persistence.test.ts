@@ -6,8 +6,10 @@ import {
   MAX_ARTIFACT_BYTES,
   MemoryStore,
   Repository,
+  UnknownAttachmentError,
 } from "@/lib/persistence";
 import type { AuditArtifact } from "@/domain/pipeline/types";
+import type { Project } from "@/domain/types";
 
 const WS = "wshash0001";
 
@@ -84,5 +86,100 @@ describe("artifact trail persistence (N3)", () => {
     const plan = r.replayPlan(trail);
     expect(plan.trusted.map((a) => a.node_id)).toEqual(["AG-RULES"]);
     expect(plan.regenerate.map((a) => a.validation_status)).toEqual(["draft", "rejected"]);
+  });
+
+  it("orders the trail by numeric seq, surviving seq >= 10 (regression)", async () => {
+    const r = repo();
+    // Node ids chosen so lexicographic key order would differ from seq order.
+    const trail = Array.from({ length: 12 }, (_, i) =>
+      art(i === 0 ? "AG-MANIFEST" : `AG-ZNODE-${i}`, i + 1),
+    );
+    await r.saveArtifactTrailFor(WS, { projectId: "P-x", auditId: "AUD-seq" }, trail);
+
+    const list = await r.listArtifacts(WS, "P-x", "AUD-seq");
+    expect(list).toHaveLength(12);
+    const versions = list.map((a) => a.version);
+    expect(versions).toEqual([...Array.from({ length: 12 }, (_, i) => i + 1)]);
+  });
+
+  it("getMany returns values positionally with nulls for absent keys", async () => {
+    const store = new MemoryStore();
+    const r = new Repository(store);
+    await r.saveProject(WS, {
+      project_id: "P-a",
+      workspace_key_hash: WS,
+      metadata: { name: "A", description: "", scheme_summary: "", authority: "", location: "" },
+      stage_selection: { jurisdiction: "UK", native_stage_id: "uk:S2" },
+      input_values: {},
+      created_at: "2026-08-22T00:00:00.000Z",
+      updated_at: "2026-08-22T00:00:00.000Z",
+    } satisfies Project);
+
+    const got = await store.getMany<object>([
+      Repository.projectKey(WS, "P-a"),
+      Repository.projectKey(WS, "P-missing"),
+    ]);
+    expect(got).toHaveLength(2);
+    expect((got[0] as { project_id: string }).project_id).toBe("P-a");
+    expect(got[1]).toBeNull();
+  });
+
+  it("delByPrefix removes everything under a prefix and reports the count", async () => {
+    const store = new MemoryStore();
+    const r = new Repository(store);
+    const trail = Array.from({ length: 3 }, (_, i) => art(`AG-N${i}`, i + 1));
+    await r.saveArtifactTrailFor(WS, { projectId: "P-x", auditId: "AUD-del" }, trail);
+
+    const deleted = await store.delByPrefix(`ws:${WS}:art:P-x:AUD-del:`);
+    expect(deleted).toBeGreaterThanOrEqual(3);
+    expect(await r.listArtifacts(WS, "P-x", "AUD-del")).toHaveLength(0);
+  });
+
+  it("deleteAttachment repairs input_values references as one operation", async () => {
+    const store = new MemoryStore();
+    const r = new Repository(store);
+    await r.saveProject(WS, {
+      project_id: "P-fix",
+      workspace_key_hash: WS,
+      metadata: { name: "Fix", description: "", scheme_summary: "", authority: "", location: "" },
+      stage_selection: { jurisdiction: "UK", native_stage_id: "uk:S2" },
+      input_values: {
+        drawing_document_register: {
+          state: "provided",
+          value: "v",
+          attachments: ["ATT-gone", "ATT-stays"],
+        },
+        other_input: { state: "provided", value: "w", attachments: ["ATT-gone"] },
+        text_only_input: { state: "provided", value: "x" },
+      },
+      created_at: "2026-08-22T00:00:00.000Z",
+      updated_at: "2026-08-22T00:00:00.000Z",
+    });
+    await r.saveAttachment(WS, {
+      attachment_id: "ATT-gone",
+      project_id: "P-fix",
+      input_id: null,
+      file_name: "g.png",
+      mime: "image/png",
+      bytes: 10,
+      data_url: "data:image/png;base64,AA==",
+      created_at: "2026-08-22T00:00:00.000Z",
+    });
+
+    await r.deleteAttachment(WS, "P-fix", "ATT-gone");
+
+    expect(await r.getAttachment(WS, "P-fix", "ATT-gone")).toBeNull();
+    const project = (await r.getProject(WS, "P-fix"))!;
+    expect(project.input_values.drawing_document_register.attachments).toEqual(["ATT-stays"]);
+    expect(project.input_values.other_input.attachments).toBeUndefined();
+    expect(project.input_values.other_input.state).toBe("provided");
+    expect(project.input_values.text_only_input.attachments).toBeUndefined();
+  });
+
+  it("deleteAttachment on an unknown id throws the typed error", async () => {
+    const r = repo();
+    await expect(r.deleteAttachment(WS, "P-x", "ATT-nope")).rejects.toBeInstanceOf(
+      UnknownAttachmentError,
+    );
   });
 });

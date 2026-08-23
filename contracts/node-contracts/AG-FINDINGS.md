@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-FINDINGS
-role: Shape raw rule outcomes into schema-valid Finding records
+role: Candidate findings as compliance_question drafts (ADR-0003 kinds)
 purpose: >-
   Give process/eligibility outcomes their full Finding form: ids, statement, evidence links,
   assumptions, rationale, source_trace, reviewer_status=draft.
@@ -16,6 +16,9 @@ context:
   project_context: finding_id embeds rule_id + stage for cross-jurisdiction uniqueness.
   upstream_artifacts:
     - rules.results
+  upstream_nodes:
+    - AG-RULES
+  downstream_nodes: []
   relevant_decisions:
     - ADR-0003 finding model
   evidence_required: evidence entries use use=defines_requirement (process) or use=context (eligibility).
@@ -33,7 +36,7 @@ contract:
     - Emitting kind=safety_concern from deterministic rules.
     - Pre-filling recommendations.
   acceptance_criteria:
-    - Contract tests bind these exact objects (tests/contract/schemas.test.ts).
+    - Contract tests bind these exact objects to the committed finding schema.
     - source_trace.origin === deterministic_rule on every emitted finding.
 tools:
   allowed:

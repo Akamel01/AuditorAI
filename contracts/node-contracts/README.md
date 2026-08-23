@@ -15,7 +15,7 @@ adjudication disposes; compliance ≠ safety.
 | AG-FINDINGS | Deterministic Findings Shaping | deterministic | rule_results | rule_results | findings.deterministic | domain-engine |
 | AG-QUESTIONS | Audit Question Selection | deterministic | stage_context | audit_questions | questions.set | domain-engine |
 | AG-AI-CANDIDATES | AI Candidate Generation (bounded) | ai-bounded | stage_context, input_manifest, audit_questions | candidate_findings | candidates.ai | safety-reasoning-agent |
-| AG-ADJUDICATION | Human Adjudication | human | rule_results, candidate_findings | adjudication | adjudication.decisions | finding-adjudicator + auditor-human |
+| AG-ADJUDICATION | Human Adjudication | human | rule_results | adjudication | adjudication.decisions | finding-adjudicator + auditor-human |
 | AG-EVIDENCE-LINKS | Evidence Linkset Validation | deterministic | every slice | evidence_linkset | evidence.linkset | domain-engine |
 | AG-REPORT | Report Assembly | deterministic | all slices | report_bundle | report.bundle | report-builder |
 | AG-PERSIST | Persistence Receipt | deterministic | report_bundle | persistence_ref | persistence.receipt | repository |

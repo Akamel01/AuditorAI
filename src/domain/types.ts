@@ -14,6 +14,13 @@ export const CANONICAL_STAGES: CanonicalStage[] = [
 
 export type JurisdictionId = "INT" | "UK" | "US" | "CA" | "AE";
 
+export const JURISDICTION_IDS: JurisdictionId[] = ["INT", "UK", "US", "CA", "AE"];
+
+/** M1 inline cap: a drawing must fit the KV free-tier value budget. */
+export const ATTACHMENT_MAX_BYTES = 500 * 1000;
+
+export const MAX_ATTACHMENTS_PER_PROJECT = 12;
+
 /** §14 input states — never conflate Unknown with No. */
 export type InputRequirementLevel =
   | "required"
@@ -59,7 +66,7 @@ export interface Attachment {
 export interface InputValue {
   state: InputValueState;
   value?: string;
-  /** Attachment ids referencing this input's drawings (≤12 per project). */
+  /** Attachment ids referencing this input's drawings. */
   attachments?: string[];
 }
 

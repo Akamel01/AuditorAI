@@ -6,9 +6,14 @@
 //   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..10
 //   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
 //   npx tsx scripts/run-eval.ts --no-judge                      # deterministic snapshot check only
+//   OPENCODE_API_KEY=... AI_ENABLED=true npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { runAudit } from "@/domain/engine";
+import { getPipeline } from "@/domain/pipeline/pipeline";
+import { extractJsonObject } from "@/lib/inference";
+import { getAiAdapter } from "@/lib/ai";
 import { DIMENSIONS, THRESHOLDS, type FindingVerdict } from "@/lib/eval-gates";
 import {
   isScoredVerdict,
@@ -27,6 +32,7 @@ const JUDGE_EFFORT = "max"; // R7 effort map: judge = max
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const NO_JUDGE = process.argv.includes("--no-judge");
+const LIVE = process.argv.includes("--live");
 const onlyIdx = process.argv.indexOf("--only");
 const ONLY = onlyIdx !== -1 ? process.argv[onlyIdx + 1] : null;
 const JUDGE_TIMEOUT_MS = Number(process.env.JUDGE_TIMEOUT_MS ?? 150_000);
@@ -89,11 +95,15 @@ const JUDGE_SYSTEM = [
   "Every justification is mandatory one line. No prose outside the JSON.",
 ].join("\n");
 
-async function judgeComplete(messages: { role: string; content: string }[], apiKey: string): Promise<string> {
+export async function judgeComplete(
+  messages: { role: string; content: string }[],
+  apiKey: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), JUDGE_TIMEOUT_MS);
   try {
-    const res = await fetch(`${ZEN_BASE}/chat/completions`, {
+    const res = await fetchImpl(`${ZEN_BASE}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -115,14 +125,6 @@ async function judgeComplete(messages: { role: string; content: string }[], apiK
   } finally {
     clearTimeout(timer);
   }
-}
-
-function extractJsonObject(content: string): unknown {
-  const stripped = content.replace(/```(?:json)?/g, "").trim();
-  const start = stripped.indexOf("{");
-  const end = stripped.lastIndexOf("}");
-  if (start === -1 || end <= start) throw new Error("no JSON object found");
-  return JSON.parse(stripped.slice(start, end + 1));
 }
 
 async function judgeFinding(
@@ -161,8 +163,8 @@ async function judgeFinding(
   return { error: lastError };
 }
 
-function findPriorRunMean(fixtureId: string): number | null {
-  const base = path.join(process.cwd(), "state", "eval-scorecards");
+export function findPriorRunMean(fixtureId: string, scorecardsDir?: string): number | null {
+  const base = scorecardsDir ?? path.join(process.cwd(), "state", "eval-scorecards");
   if (!existsSync(base)) return null;
   const runs = readdirSync(base).sort();
   for (const run of runs.reverse()) {
@@ -181,7 +183,13 @@ function findPriorRunMean(fixtureId: string): number | null {
 
 // ---- Main ---------------------------------------------------------------------
 
+const MODE = LIVE ? (DRY_RUN ? "dry-run-live" : "corpus-live") : DRY_RUN ? "dry-run" : "corpus";
+
 async function main() {
+  if (LIVE && (process.env.AI_ENABLED !== "true" || !process.env.OPENCODE_API_KEY)) {
+    console.error("[eval] --live requires AI_ENABLED=true and OPENCODE_API_KEY in the environment");
+    process.exit(1);
+  }
   const apiKey = process.env.OPENCODE_API_KEY ?? "";
   if (!NO_JUDGE && !apiKey) {
     console.error("[eval] OPENCODE_API_KEY required for the judge phase (or pass --no-judge)");
@@ -192,7 +200,7 @@ async function main() {
   const outDir = path.join(process.cwd(), "state", "eval-scorecards", runId);
   mkdirSync(outDir, { recursive: true });
 
-  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..10)"} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
+  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..10)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
 
   let anyProjectFailed = false;
 
@@ -202,8 +210,15 @@ async function main() {
     ) as Fixture;
     const project = toProject(fx);
 
-    // Phase 1: deterministic Tier-0 check.
-    const result: AuditResult = runAudit(project, T0);
+    // Phase 1: deterministic Tier-0 check (--live conducts candidate
+    // generation through the pipeline's async driver; findings unchanged).
+    const result: AuditResult = LIVE
+      ? (
+          await getPipeline().runAllLiveArtifacts(project, T0, {
+            aiAdapter: getAiAdapter(),
+          })
+        ).result
+      : runAudit(project, T0);
     console.log(`[eval] ${fx.fixture_id}: engine produced ${result.findings.length} findings, ${result.missing_information.length} MI`);
 
     // Subject selection: engine findings when present; otherwise the ORCH-
@@ -253,7 +268,7 @@ async function main() {
       run_id: runId,
       fixture_id: fx.fixture_id,
       fixture_name: fx.name,
-      mode: DRY_RUN ? "dry-run" : "corpus",
+      mode: MODE,
       subject: subject.kind,
       judge: NO_JUDGE
         ? { enabled: false }
@@ -305,7 +320,7 @@ async function main() {
     validation_id: `VAL-2026-08-22-${seq}`,
     date: new Date().toISOString(),
     validator_node: "E4 eval harness",
-    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..10"} (run ${runId})`,
+    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..10"}${LIVE ? " [live]" : ""} (run ${runId})`,
     method: `Pipeline-driven audits; ox-alpha judge (${JUDGE_MODEL} @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)`,
     result: anyProjectFailed ? "FAILED — one or more projects below the corpus pass mark" : "PASSED — all sampled projects meet the corpus pass mark",
     follow_ups: anyProjectFailed ? ["Tier-2 review of failing projects before next AI-touching change"] : [],
@@ -316,7 +331,12 @@ async function main() {
   if (anyProjectFailed) console.warn("[eval] NOTE: gate failure recorded; harness does not fail CI by design");
 }
 
-main().catch((e) => {
-  console.error("[eval] harness failure:", e instanceof Error ? e.message : e);
-  process.exit(1);
-});
+const INVOKED_AS_CLI =
+  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (INVOKED_AS_CLI) {
+  main().catch((e) => {
+    console.error("[eval] harness failure:", e instanceof Error ? e.message : e);
+    process.exit(1);
+  });
+}

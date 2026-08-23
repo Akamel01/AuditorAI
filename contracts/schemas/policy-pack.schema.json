@@ -79,6 +79,10 @@
         "qualification_note": {
           "type": "string"
         },
+        "stage_limitation_note": {
+          "type": "string",
+          "description": "Optional framework-level limitation surfaced verbatim under AuditResult limitations (e.g., scoring practice)."
+        },
         "evidence_ids": {
           "type": "array",
           "items": {

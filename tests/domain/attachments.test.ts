@@ -9,7 +9,7 @@ import {
   DELETE as deleteAttachment,
   GET as getAttachment,
 } from "@/app/api/projects/[projectId]/attachments/[attachmentId]/route";
-import { sniffImageMime } from "@/lib/extract";
+import { sniffImageMime } from "@/lib/intake";
 import type { Attachment } from "@/domain/types";
 
 const KEY = "test-workspace-key-0123456789";

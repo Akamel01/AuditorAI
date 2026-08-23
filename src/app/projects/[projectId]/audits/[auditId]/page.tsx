@@ -4,7 +4,14 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import { humanizeEnum } from "@/lib/format";
 import { renderReportMarkdown } from "@/lib/report";
+import { stageDisplay } from "@/app/_components/stage-label";
+import {
+  REVIEWER_STATUS_ACTIONS,
+  buildFindingUpdate,
+  type ReviewerStatusAction,
+} from "@/domain/finding-review";
 import type { AuditResult, Finding } from "@/domain/types";
 
 export default function AuditPage() {
@@ -30,6 +37,11 @@ export default function AuditPage() {
   if (!audit) return <main className="mx-auto max-w-3xl px-6 py-12 text-neutral-500">Loading…</main>;
 
   const markdown = renderReportMarkdown(audit);
+  const pairing = stageDisplay({
+    nativeLabel: audit.native_stage_display_name,
+    canonicalStages: audit.canonical_stages,
+    confidence: audit.mapping_confidence,
+  });
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -38,8 +50,8 @@ export default function AuditPage() {
       </Link>
       <h1 className="mt-2 text-2xl font-bold tracking-tight">Audit review</h1>
       <p className="mt-1 text-sm text-neutral-600">
-        {audit.framework_name} · {audit.native_stage_display_name} · canonical{" "}
-        {audit.canonical_stages.join(" + ") || "—"} ({audit.mapping_confidence})
+        {audit.framework_name} · {pairing.nativeLabel} · canonical{" "}
+        {pairing.canonicalText} ({pairing.confidence})
       </p>
       <p className="mt-2 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">
         {audit.disclaimer}
@@ -156,19 +168,19 @@ function FindingCard({
   const [note, setNote] = useState(f.reviewer_note ?? "");
   const [busy, setBusy] = useState(false);
 
-  async function patch(status?: Finding["reviewer_status"]) {
+  async function patch(status?: ReviewerStatusAction) {
     setBusy(true);
     try {
       await api(`/api/projects/${projectId}/audits/${auditId}`, {
         method: "PATCH",
         json: {
           finding_updates: [
-            {
+            buildFindingUpdate({
               finding_id: f.finding_id,
-              ...(status ? { reviewer_status: status } : {}),
-              recommendation: rec || null,
-              reviewer_note: note || null,
-            },
+              reviewer_status: status,
+              recommendation: rec,
+              reviewer_note: note,
+            }),
           ],
         },
       });
@@ -190,7 +202,7 @@ function FindingCard({
               : "bg-blue-100 text-blue-800"
           }`}
         >
-          {f.kind.replace(/_/g, " ")}
+          {humanizeEnum(f.kind)}
         </span>
         <code className="text-[11px] text-neutral-500">{f.finding_id}</code>
         <span className="text-[11px] uppercase tracking-wide text-neutral-400">
@@ -221,14 +233,14 @@ function FindingCard({
         className="mt-1 w-full rounded border px-2 py-1.5 text-xs"
       />
       <div className="mt-2 flex flex-wrap gap-2">
-        {(["accepted", "accepted_with_edits", "rejected", "escalated"] as const).map((s) => (
+        {REVIEWER_STATUS_ACTIONS.map((s) => (
           <button
             key={s}
             disabled={busy}
             onClick={() => patch(s)}
             className="rounded border bg-neutral-50 px-2 py-1 text-xs hover:bg-neutral-100 disabled:opacity-40"
           >
-            {s.replace(/_/g, " ")}
+            {humanizeEnum(s)}
           </button>
         ))}
         <button

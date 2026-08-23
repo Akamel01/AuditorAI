@@ -34,5 +34,5 @@ export {
   type AuditPipeline,
   type PipelineRun,
 } from "@/domain/pipeline/pipeline";
-export { BATCH_NODES, DESCRIPTORS, NODE_FNS, NODE_ORDER } from "@/domain/pipeline/registry";
+export { BATCH_NODES, DESCRIPTORS, NODE_FNS } from "@/domain/pipeline/registry";
 export { validateRecommendationWording } from "@/domain/pipeline/wording";

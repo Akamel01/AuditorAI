@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import { stageDisplay } from "@/app/_components/stage-label";
 import type { Project } from "@/domain/types";
 
 export default function ProjectsPage() {
@@ -50,9 +51,10 @@ function NewProjectForm({ onCreated }: { onCreated: () => void }) {
     { id: string; label: string; framework_name: string; framework_status: string }[]
   >([]);
   const [stages, setStages] = useState<
-    { native_stage_id: string; display_name: string; mvp_scope: boolean; confidence: string }[]
+    { native_stage_id: string; display_name: string; canonical_stages: string[]; mvp_scope: boolean; confidence: string }[]
   >([]);
   const [jur, setJur] = useState<string>("");
+  const [stageId, setStageId] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -67,6 +69,7 @@ function NewProjectForm({ onCreated }: { onCreated: () => void }) {
   useEffect(() => {
     if (!jur) return;
     setStages([]);
+    setStageId("");
     api<{ stages: typeof stages }>(`/api/jurisdictions/${jur}/stages`).then((d) =>
       setStages(d.stages.filter((s) => s.mvp_scope)),
     );
@@ -85,8 +88,7 @@ function NewProjectForm({ onCreated }: { onCreated: () => void }) {
             json: {
               name,
               jurisdiction: jur,
-              native_stage_id:
-                (document.getElementById("stage-select") as HTMLSelectElement)?.value ?? "",
+              native_stage_id: stageId,
             },
           });
           setName("");
@@ -127,14 +129,21 @@ function NewProjectForm({ onCreated }: { onCreated: () => void }) {
         </label>
         <label className="text-xs font-medium text-neutral-700 sm:col-span-2">
           Native stage (shown with canonical mapping in the project)
-          <select id="stage-select" required disabled={!stages.length}
+          <select id="stage-select" value={stageId} onChange={(e) => setStageId(e.target.value)} required disabled={!stages.length}
             className="mt-1 w-full rounded border px-2 py-1.5 text-sm">
             <option value="">Select…</option>
-            {stages.map((s) => (
-              <option key={s.native_stage_id} value={s.native_stage_id}>
-                {s.display_name} · mapping confidence: {s.confidence}
-              </option>
-            ))}
+            {stages.map((s) => {
+              const t = stageDisplay({
+                nativeLabel: s.display_name,
+                canonicalStages: s.canonical_stages,
+                confidence: s.confidence,
+              });
+              return (
+                <option key={s.native_stage_id} value={s.native_stage_id}>
+                  {t.nativeLabel} · mapping confidence: {t.confidence}
+                </option>
+              );
+            })}
           </select>
         </label>
       </div>

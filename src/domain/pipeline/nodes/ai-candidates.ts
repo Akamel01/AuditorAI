@@ -4,8 +4,16 @@
 // candidates plus a degraded status artifact; the deterministic path is
 // unaffected. Live inference flows through pipeline.runAllLive →
 // generateCandidatesLive.
-import { getAiAdapter, MAX_IMAGES_PER_CALL, type AiAdapter } from "@/lib/ai";
-import { assembleAuditResult, makeArtifact } from "@/domain/pipeline/nodes/shared";
+import {
+  CANDIDATE_FIELDS,
+  MAX_IMAGES_PER_CALL,
+  getAiAdapter,
+  validateCandidateAtBoundary,
+  type AiAdapter,
+  type CandidateFinding,
+} from "@/lib/ai";
+import { assembleAuditResult } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   CandidatesSlice,
   NodeFn,
@@ -43,21 +51,6 @@ export const runAiCandidates: NodeFn = (_state, ctx) => {
   return { artifacts: [], patch: { candidate_findings: null } };
 };
 
-/** The bounded CandidateFinding subset — nothing outside these keys survives. */
-const CANDIDATE_FIELDS = [
-  "kind",
-  "category",
-  "location",
-  "road_users",
-  "scenario",
-  "statement",
-  "evidence",
-  "assumptions",
-  "rationale",
-  "recommendation",
-  "source_attachment_ids",
-] as const;
-
 /**
  * Live path used by DefaultAuditPipeline.runAllLive: assembles the provisional
  * audit result from current slices and asks the adapter for bounded
@@ -68,7 +61,7 @@ export async function generateCandidatesLive(
   ctx: NodeRunCtx,
   adapter: AiAdapter,
 ): Promise<NodeResult> {
-  const provisional = assembleAuditResult(state, ctx.ranAtIso);
+  const provisional = assembleAuditResult(state, ctx.ranAtIso, "AG-AI-CANDIDATES");
 
   // M3 vision budget: first N drawings become image blocks; the rest degrade
   // to name-only text summaries so nothing is silently dropped.
@@ -85,16 +78,20 @@ export async function generateCandidatesLive(
       provisional,
       images.length ? images : undefined,
       contextNotes.length ? contextNotes : undefined,
+      ctx.candidateVocabulary,
     );
     const consideredIds = shown.map((a) => a.attachment_id);
-    const candidates: CandidatesSlice = raw.map((c) => {
-      const bounded: Record<string, unknown> = { producer: "safety-reasoning-agent" };
-      if (consideredIds.length > 0) bounded.source_attachment_ids = consideredIds;
-      for (const f of CANDIDATE_FIELDS) {
-        if (f in c) bounded[f] = c[f as keyof typeof c];
+    const candidates: CandidatesSlice = [];
+    for (const item of raw) {
+      const bounded = projectCandidate(item, consideredIds);
+      if (!validateCandidateAtBoundary(bounded)) {
+        return refused(
+          ctx,
+          `boundary validation failed: ${JSON.stringify(validateCandidateAtBoundary.errors)}`,
+        );
       }
-      return bounded as CandidatesSlice[number];
-    });
+      candidates.push(bounded);
+    }
     return {
       artifacts: [
         makeArtifact(
@@ -110,22 +107,32 @@ export async function generateCandidatesLive(
       patch: { candidate_findings: candidates },
     };
   } catch (e) {
-    return {
-      artifacts: [
-        makeArtifact(
-          "AG-AI-CANDIDATES",
-          "safety-reasoning-agent",
-          "candidates.ai",
-          1,
-          ctx,
-          "rejected",
-          {
-            skipped: true,
-            reason: `adapter failure: ${e instanceof Error ? e.message : String(e)}`,
-          },
-        ),
-      ],
-      patch: { candidate_findings: null },
-    };
+    return refused(ctx, `adapter failure: ${e instanceof Error ? e.message : String(e)}`);
   }
+}
+
+function projectCandidate(c: CandidateFinding, consideredIds: string[]): CandidateFinding {
+  const bounded: Record<string, unknown> = { producer: "safety-reasoning-agent" };
+  if (consideredIds.length > 0) bounded.source_attachment_ids = consideredIds;
+  for (const f of CANDIDATE_FIELDS) {
+    if (f in c) bounded[f] = c[f as keyof typeof c];
+  }
+  return bounded as CandidateFinding;
+}
+
+function refused(ctx: NodeRunCtx, reason: string): NodeResult {
+  return {
+    artifacts: [
+      makeArtifact(
+        "AG-AI-CANDIDATES",
+        "safety-reasoning-agent",
+        "candidates.ai",
+        1,
+        ctx,
+        "rejected",
+        { skipped: true, reason },
+      ),
+    ],
+    patch: { candidate_findings: null },
+  };
 }

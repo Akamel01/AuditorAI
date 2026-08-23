@@ -1,6 +1,232 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 0,
-  "notes": []
+  "note_count": 15,
+  "notes": [
+    {
+      "path": "vault/gotchas/journal-deletions-and-tz.md",
+      "zone": "vault/gotchas",
+      "title": "Journal deletions by parallel sessions + UTC/local timestamp confusion",
+      "type": "gotcha",
+      "date": "2026-08-23",
+      "status": "open",
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1984
+    },
+    {
+      "path": "vault/gotchas/opencode-api-key-invocation.md",
+      "zone": "vault/gotchas",
+      "title": "OPENCODE_API_KEY handling + eval invocation quirks",
+      "type": "gotcha",
+      "date": "2026-08-22",
+      "status": "open",
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1190
+    },
+    {
+      "path": "vault/journal/2026-08-22-close-map-issue-20.md",
+      "zone": "vault/journal",
+      "title": "v2 map closed — issue #20 synced and shut",
+      "type": "journal",
+      "date": "2026-08-22",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1733
+    },
+    {
+      "path": "vault/journal/2026-08-22-quote-bearing-baselines.md",
+      "zone": "vault/journal",
+      "title": "Quote-bearing baselines for GF-6..10 + first corpus re-run after ω rubric",
+      "type": "journal",
+      "date": "2026-08-22",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2512
+    },
+    {
+      "path": "vault/journal/2026-08-22-vault-created.md",
+      "zone": "vault/journal",
+      "title": "Vault created",
+      "type": "journal",
+      "date": "2026-08-22",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 504
+    },
+    {
+      "path": "vault/journal/2026-08-23-architecture-deepening.md",
+      "zone": "vault/journal",
+      "title": "Architecture deepening sweep v3",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2256
+    },
+    {
+      "path": "vault/journal/2026-08-23-baseline-rot-resolution.md",
+      "zone": "vault/journal",
+      "title": "Baseline-rot resolution — GF-6..10 re-baselined against true sources (§5.3)",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 3613
+    },
+    {
+      "path": "vault/journal/2026-08-23-deletion-attributed.md",
+      "zone": "vault/journal",
+      "title": "Journal deletion attributed — parallel session, not sync tooling",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1009
+    },
+    {
+      "path": "vault/journal/2026-08-23-fog-graduation-review-handoff-d.md",
+      "zone": "vault/journal",
+      "title": "Fog graduation review — items 3/4/5 all held (handoff D)",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2588
+    },
+    {
+      "path": "vault/journal/2026-08-23-gf9-gf10-baseline-rot-resolution.md",
+      "zone": "vault/journal",
+      "title": "GF-9/GF-10 baseline rot resolution complete — all 5 corpus projects pass 100%",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 3003
+    },
+    {
+      "path": "vault/journal/2026-08-23-holdnote-item3-blob-escape-hatch.md",
+      "zone": "vault/journal",
+      "title": "proposal: Hold-note — fog item 3, blob-storage escape hatch (NOT FIRED)",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2256
+    },
+    {
+      "path": "vault/journal/2026-08-23-holdnote-item4-vault-conflict-ux.md",
+      "zone": "vault/journal",
+      "title": "proposal: Hold-note — fog item 4, vault sync-conflict UX (NOT FIRED: 'not yet')",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2034
+    },
+    {
+      "path": "vault/journal/2026-08-23-holdnote-item5-report-recdraft-assists.md",
+      "zone": "vault/journal",
+      "title": "proposal: Hold-note — fog item 5, report-generation + recommendation-drafting LLM assists (NOT FIRED)",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 3112
+    },
+    {
+      "path": "vault/journal/2026-08-23-ticket-21-verify-close.md",
+      "zone": "vault/journal",
+      "title": "Ticket #21 verified and closed — GF-9 residual graduated to #22",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1635
+    },
+    {
+      "path": "vault/journal/2026-08-23-zen-key-rotated.md",
+      "zone": "vault/journal",
+      "title": "Zen API key rotated — handoff A security chore closed",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 935
+    }
+  ]
 }

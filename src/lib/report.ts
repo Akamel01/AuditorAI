@@ -1,6 +1,7 @@
 // Report renderer: AuditResult → deterministic Markdown. JSON output is the
 // AuditResult itself (schema-valid by construction). PDF via browser print.
 import type { AuditResult } from "@/domain/types";
+import { humanizeEnum } from "@/lib/format";
 
 export function renderReportMarkdown(r: AuditResult): string {
   const L: string[] = [];
@@ -23,7 +24,7 @@ export function renderReportMarkdown(r: AuditResult): string {
 
   h(2, "2. Reviewed information");
   for (const m of r.input_manifest) {
-    L.push(`- ${m.label} — *${m.state.replace("_", " ")}* (${m.requirement_level})`);
+    L.push(`- ${m.label} — *${humanizeEnum(m.state)}* (${m.requirement_level})`);
   }
   if (r.input_manifest.length === 0) L.push("- No stage inputs defined.");
   L.push("");

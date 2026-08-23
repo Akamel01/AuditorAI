@@ -70,6 +70,49 @@ try {
   /* already reported above */
 }
 
+// Evidence ids referenced by compiled vault notes must resolve in the registry.
+try {
+  const reg = new Set(
+    JSON.parse(readFileSync(join(STATE_DIR, "evidence-registry.json"), "utf8"))
+      .evidence_records.map((r) => r.evidence_id),
+  );
+  let notes;
+  try {
+    notes = JSON.parse(readFileSync(join(STATE_DIR, "vault-notes.json"), "utf8")).notes ?? [];
+  } catch {
+    notes = null;
+  }
+  if (notes) {
+    for (const n of notes) {
+      for (const id of n.links?.evidence_ids ?? []) {
+        if (!reg.has(id)) failures.push(`vault-notes.json: ${n.path}: evidence_id "${id}" does not resolve in evidence-registry.json`);
+      }
+    }
+  }
+} catch (e) {
+  failures.push(`evidence cross-check failed: ${e.message}`);
+}
+
+// Node contracts must cover exactly the audit_graph node set.
+try {
+  const { readdirSync } = await import("node:fs");
+  const contractsDir = join(ROOT, "contracts", "node-contracts");
+  const contractIds = readdirSync(contractsDir)
+    .filter((f) => /^AG-.*\.md$/.test(f))
+    .map((f) => /^node_id: (\S+)$/m.exec(readFileSync(join(contractsDir, f), "utf8"))?.[1])
+    .filter(Boolean);
+  const graph = JSON.parse(readFileSync(join(STATE_DIR, "graph-state.json"), "utf8"));
+  const graphIds = graph.graphs.audit_graph.nodes.map((n) => n.id);
+  for (const id of contractIds) {
+    if (!graphIds.includes(id)) failures.push(`node-contracts: ${id} has no audit_graph node in graph-state.json`);
+  }
+  for (const id of graphIds) {
+    if (!contractIds.includes(id)) failures.push(`graph-state.json: audit_graph node ${id} has no node contract`);
+  }
+} catch (e) {
+  failures.push(`contract/graph cross-check failed: ${e.message}`);
+}
+
 if (failures.length) {
   console.error("STATE VALIDATION FAILED:");
   for (const f of failures) console.error(`  - ${f}`);

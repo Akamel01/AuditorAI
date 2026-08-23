@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-MANIFEST
-role: Materialize stage input requirements with resolved states
+role: Input normalization to §14/§27 states
 purpose: >-
   Filter the pack's input requirements to those applying to the selected native stage and resolve
   each stored input value into a manifest state.
@@ -16,6 +16,10 @@ context:
   project_context: Reads project_input.input_values keyed by input_id.
   upstream_artifacts:
     - context.snapshot
+  upstream_nodes:
+    - AG-STAGE-SELECT
+  downstream_nodes:
+    - AG-RULES
   relevant_decisions:
     - ADR-0002 canonical stage model
   evidence_required: Each manifest entry carries evidence_ids justifying the requirement itself.

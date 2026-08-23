@@ -1,9 +1,12 @@
 // AG-ADJUDICATION — Human Adjudication (human class). Without recorded human
 // decisions the batch path carries deterministic drafts forward unchanged and
 // unverified. Edited recommendations pass the wording gate; violations are
-// recorded and the edit is not applied.
+// recorded and the edit is not applied. Decisions targeting unknown finding
+// ids are recorded loudly (skipped_decision_refs → result limitations), never
+// silently dropped.
 import { validateRecommendationWording } from "@/domain/pipeline/wording";
-import { makeArtifact, requireSlice } from "@/domain/pipeline/nodes/shared";
+import { requireSlice } from "@/domain/pipeline/result";
+import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {
   AdjudicationSlice,
   NodeFn,
@@ -16,13 +19,17 @@ export const runAdjudication: NodeFn = (state, ctx) => {
 
   let final: Finding[] = rules.deterministic_findings;
   let violations: { finding_id: string; violations: string[] }[] = [];
+  let skippedRefs: string[] = [];
 
   if (decisions.length > 0) {
     const byId = new Map(rules.deterministic_findings.map((f) => [f.finding_id, f]));
     final = rules.deterministic_findings.map((f) => f);
     for (const d of decisions) {
       const idx = final.findIndex((f) => f.finding_id === d.finding_id);
-      if (idx === -1 || !byId.has(d.finding_id)) continue;
+      if (idx === -1 || !byId.has(d.finding_id)) {
+        skippedRefs = [...skippedRefs, d.finding_id];
+        continue;
+      }
 
       if (
         d.action === "accept_with_edits" &&
@@ -56,7 +63,11 @@ export const runAdjudication: NodeFn = (state, ctx) => {
     }
   }
 
-  const slice: AdjudicationSlice = { final_findings: final, wording_violations: violations };
+  const slice: AdjudicationSlice = {
+    final_findings: final,
+    wording_violations: violations,
+    skipped_decision_refs: skippedRefs,
+  };
   return {
     artifacts: [
       makeArtifact(

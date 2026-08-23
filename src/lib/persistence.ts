@@ -1,16 +1,38 @@
 // Persistence seam (ADR-0001): callers depend on this interface only.
 // Adapters: in-memory (tests/dev), Upstash/Vercel-KV REST (production free tier).
-// Swapping stores = env change, never code change.
+// Swapping stores = env change, never code change. Repository owns the physical
+// key scheme exclusively; no other module assembles or parses storage keys.
 import { createHash } from "node:crypto";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
 import type { AuditArtifact } from "@/domain/pipeline/types";
+
+/** The store itself is unreachable/unhealthy: transport failure, non-2xx REST
+ *  status, auth rejection, malformed response. Never used for absent keys —
+ *  those resolve to null so "missing" stays distinguishable from "down". */
+export class StoreUnavailableError extends Error {
+  constructor(detail: string) {
+    super(`storage unavailable: ${detail}`);
+    this.name = "StoreUnavailableError";
+  }
+}
+
+export class UnknownAttachmentError extends Error {
+  constructor(id: string) {
+    super(`unknown attachment ${id}`);
+    this.name = "UnknownAttachmentError";
+  }
+}
 
 export interface DataStore {
   readonly kind: "memory" | "kv";
   put(key: string, value: unknown): Promise<void>;
   get<T>(key: string): Promise<T | null>;
+  getMany<T>(keys: string[]): Promise<(T | null)[]>;
   keys(prefix: string): Promise<string[]>;
   del(key: string): Promise<void>;
+  /** Delete every key under prefix; resolves with the deleted count. KV has
+   *  no atomic multi-delete, so this is ordered best-effort per key. */
+  delByPrefix(prefix: string): Promise<number>;
 }
 
 export class MemoryStore implements DataStore {
@@ -23,11 +45,24 @@ export class MemoryStore implements DataStore {
     const raw = this.m.get(key);
     return raw ? (JSON.parse(raw) as T) : null;
   }
+  async getMany<T>(keys: string[]): Promise<(T | null)[]> {
+    return Promise.all(keys.map((k) => this.get<T>(k)));
+  }
   async keys(prefix: string): Promise<string[]> {
     return [...this.m.keys()].filter((k) => k.startsWith(prefix)).sort();
   }
   async del(key: string): Promise<void> {
     this.m.delete(key);
+  }
+  async delByPrefix(prefix: string): Promise<number> {
+    let n = 0;
+    for (const k of [...this.m.keys()]) {
+      if (k.startsWith(prefix)) {
+        this.m.delete(k);
+        n += 1;
+      }
+    }
+    return n;
   }
 }
 
@@ -36,15 +71,33 @@ export class KvRestStore implements DataStore {
   readonly kind = "kv" as const;
   constructor(private baseUrl: string, private token: string) {}
 
-  private async call(command: unknown[]): Promise<{ result?: unknown } | null> {
-    const res = await fetch(this.baseUrl, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json" },
-      body: JSON.stringify(command),
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as { result?: unknown };
+  /** Upstash REST accepts ONE flat command per request; pipeline-form bodies
+   *  ([[..],[..]]) are rejected as a malformed single command (M1 storage
+   *  probes, issue #6). Batching therefore means concurrent individual
+   *  commands, never a pipelined body. */
+  private async call(command: unknown[]): Promise<{ result?: unknown }> {
+    let res: Response;
+    try {
+      res = await fetch(this.baseUrl, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(command),
+        cache: "no-store",
+      });
+    } catch (e) {
+      throw new StoreUnavailableError(e instanceof Error ? e.message : String(e));
+    }
+    if (!res.ok) throw new StoreUnavailableError(`REST ${res.status}`);
+    let json: { result?: unknown; error?: unknown };
+    try {
+      json = (await res.json()) as { result?: unknown; error?: unknown };
+    } catch {
+      throw new StoreUnavailableError("malformed REST response body");
+    }
+    if (json.error !== undefined && json.error !== null) {
+      throw new StoreUnavailableError(String(json.error));
+    }
+    return json;
   }
 
   async put(key: string, value: unknown): Promise<void> {
@@ -53,17 +106,27 @@ export class KvRestStore implements DataStore {
 
   async get<T>(key: string): Promise<T | null> {
     const json = await this.call(["GET", key]);
-    const raw = json?.result;
+    const raw = json.result;
     return typeof raw === "string" ? (JSON.parse(raw) as T) : null;
+  }
+
+  async getMany<T>(keys: string[]): Promise<(T | null)[]> {
+    return Promise.all(keys.map((k) => this.get<T>(k)));
   }
 
   async keys(prefix: string): Promise<string[]> {
     const json = await this.call(["KEYS", `${prefix}*`]);
-    return Array.isArray(json?.result) ? (json.result as string[]).sort() : [];
+    return Array.isArray(json.result) ? (json.result as string[]).sort() : [];
   }
 
   async del(key: string): Promise<void> {
     await this.call(["DEL", key]);
+  }
+
+  async delByPrefix(prefix: string): Promise<number> {
+    const matches = await this.keys(prefix);
+    await Promise.all(matches.map((k) => this.del(k)));
+    return matches.length;
   }
 }
 
@@ -79,17 +142,17 @@ export function getDataStore(): DataStore {
   return storeSingleton;
 }
 
+/** Test-only seam: drop or replace the ambient singleton so suites stay
+ *  hermetic regardless of ambient env. Pass null to re-derive from env. */
+export function setDataStoreForTests(store: DataStore | null): void {
+  storeSingleton = store;
+}
+
 export function workspaceHash(workspaceKey: string): string {
   // The workspace key is the bearer credential (kept client-side); records are
   // namespaced only by its hash.
   return createHash("sha256").update(workspaceKey).digest("hex").slice(0, 16);
 }
-
-const P = (ws: string, id: string) => `ws:${ws}:project:${id}`;
-const A = (ws: string, pid: string, aid: string) => `ws:${ws}:audit:${pid}:${aid}`;
-const ATT = (ws: string, pid: string, id: string) => `ws:${ws}:attachment:${pid}:${id}`;
-const ART = (ws: string, pid: string, aid: string, node: string, seq: number) =>
-  `ws:${ws}:art:${pid}:${aid}:${node}:${seq}`;
 
 /** N3: per-artifact byte cap at write time (Upstash 10 MiB request cap measured
  * in M1; 512 KB keeps a wide margin while covering any node payload). */
@@ -111,63 +174,127 @@ export interface ArtifactSummary {
   pruned_at: string;
 }
 
-/** Workspace-scoped repository over the store seam. */
+const artifactSeqOf = (key: string): number => {
+  const n = Number.parseInt(key.slice(key.lastIndexOf(":") + 1), 10);
+  return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
+};
+
+/** Workspace-scoped repository over the store seam. Sole owner of the physical
+ *  key scheme (ADR-0001): everything else addresses records through these
+ *  static helpers or through repository methods. */
 export class Repository {
   constructor(private store: DataStore) {}
 
+  // ---- Key scheme ---------------------------------------------------------
+
+  static projectKey(ws: string, projectId: string): string {
+    return `ws:${ws}:project:${projectId}`;
+  }
+  static projectsPrefix(ws: string): string {
+    return `ws:${ws}:project:`;
+  }
+  static auditKey(ws: string, projectId: string, auditId: string): string {
+    return `ws:${ws}:audit:${projectId}:${auditId}`;
+  }
+  static auditsPrefix(ws: string, projectId: string): string {
+    return `ws:${ws}:audit:${projectId}:`;
+  }
+  static attachmentKey(ws: string, projectId: string, attachmentId: string): string {
+    return `ws:${ws}:attachment:${projectId}:${attachmentId}`;
+  }
+  static attachmentsPrefix(ws: string, projectId: string): string {
+    return `ws:${ws}:attachment:${projectId}:`;
+  }
+  static artifactKey(
+    ws: string,
+    projectId: string,
+    auditId: string,
+    nodeId: string,
+    seq: number,
+  ): string {
+    return `ws:${ws}:art:${projectId}:${auditId}:${nodeId}:${seq}`;
+  }
+  static artifactTrailPrefix(ws: string, projectId: string, auditId: string): string {
+    return `ws:${ws}:art:${projectId}:${auditId}:`;
+  }
+  static artifactSummaryKey(ws: string, projectId: string, auditId: string): string {
+    return `${Repository.artifactTrailPrefix(ws, projectId, auditId)}_summary`;
+  }
+
+  // ---- Projects ------------------------------------------------------------
+
   async saveProject(ws: string, project: Project) {
-    await this.store.put(P(ws, project.project_id), project);
+    await this.store.put(Repository.projectKey(ws, project.project_id), project);
   }
   async getProject(ws: string, id: string): Promise<Project | null> {
-    return this.store.get<Project>(P(ws, id));
+    return this.store.get<Project>(Repository.projectKey(ws, id));
   }
   async listProjects(ws: string): Promise<Project[]> {
-    const keys = await this.store.keys(`ws:${ws}:project:`);
-    const out: Project[] = [];
-    for (const k of keys) {
-      const p = await this.store.get<Project>(k);
-      if (p) out.push(p);
-    }
-    return out.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+    const keys = await this.store.keys(Repository.projectsPrefix(ws));
+    const loaded = await this.store.getMany<Project>(keys);
+    return loaded
+      .filter((p): p is Project => p !== null)
+      .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
   }
+
+  // ---- Audits --------------------------------------------------------------
+
   async saveAudit(ws: string, audit: AuditResult) {
-    await this.store.put(A(ws, audit.project_id, audit.audit_id), audit);
+    await this.store.put(Repository.auditKey(ws, audit.project_id, audit.audit_id), audit);
   }
   async getAudit(ws: string, projectId: string, auditId: string): Promise<AuditResult | null> {
-    return this.store.get<AuditResult>(A(ws, projectId, auditId));
+    return this.store.get<AuditResult>(Repository.auditKey(ws, projectId, auditId));
   }
   async listAudits(ws: string, projectId: string): Promise<AuditResult[]> {
-    const keys = await this.store.keys(`ws:${ws}:audit:${projectId}:`);
-    const out: AuditResult[] = [];
-    for (const k of keys) {
-      const a = await this.store.get<AuditResult>(k);
-      if (a) out.push(a);
-    }
-    return out.sort((a, b) => b.ran_at.localeCompare(a.ran_at));
+    const keys = await this.store.keys(Repository.auditsPrefix(ws, projectId));
+    const loaded = await this.store.getMany<AuditResult>(keys);
+    return loaded
+      .filter((a): a is AuditResult => a !== null)
+      .sort((a, b) => b.ran_at.localeCompare(a.ran_at));
   }
+
+  // ---- Attachments -----------------------------------------------------------
 
   async saveAttachment(ws: string, attachment: Attachment) {
     await this.store.put(
-      ATT(ws, attachment.project_id, attachment.attachment_id),
+      Repository.attachmentKey(ws, attachment.project_id, attachment.attachment_id),
       attachment,
     );
   }
   async getAttachment(ws: string, projectId: string, id: string): Promise<Attachment | null> {
-    return this.store.get<Attachment>(ATT(ws, projectId, id));
-  }
-  async deleteAttachment(ws: string, projectId: string, id: string) {
-    const existing = await this.getAttachment(ws, projectId, id);
-    if (!existing) throw new Error(`unknown attachment ${id}`);
-    await this.store.del(ATT(ws, projectId, id));
+    return this.store.get<Attachment>(Repository.attachmentKey(ws, projectId, id));
   }
   async listAttachments(ws: string, projectId: string): Promise<Attachment[]> {
-    const keys = await this.store.keys(`ws:${ws}:attachment:${projectId}:`);
-    const out: Attachment[] = [];
-    for (const k of keys) {
-      const a = await this.store.get<Attachment>(k);
-      if (a) out.push(a);
+    const keys = await this.store.keys(Repository.attachmentsPrefix(ws, projectId));
+    const loaded = await this.store.getMany<Attachment>(keys);
+    return loaded
+      .filter((a): a is Attachment => a !== null)
+      .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  }
+
+  /** Delete an attachment record and repair Project.input_values references as
+   *  one operation: the id is stripped from every referencing input and emptied
+   *  attachment arrays are removed. updated_at advances only when something
+   *  changed. Throws UnknownAttachmentError when no such record exists. */
+  async deleteAttachment(ws: string, projectId: string, id: string): Promise<void> {
+    const existing = await this.getAttachment(ws, projectId, id);
+    if (!existing) throw new UnknownAttachmentError(id);
+    await this.store.del(Repository.attachmentKey(ws, projectId, id));
+
+    const project = await this.getProject(ws, projectId);
+    if (!project) return;
+    let touched = false;
+    for (const v of Object.values(project.input_values)) {
+      if (v.attachments?.includes(id)) {
+        v.attachments = v.attachments.filter((a) => a !== id);
+        if (v.attachments.length === 0) delete v.attachments;
+        touched = true;
+      }
     }
-    return out.sort((a, b) => a.created_at.localeCompare(b.created_at));
+    if (touched) {
+      project.updated_at = new Date().toISOString();
+      await this.saveProject(ws, project);
+    }
   }
 
   // ---- Node-artifact persistence (N3) -----------------------------------------
@@ -189,7 +316,10 @@ export class Repository {
       if (bytes > MAX_ARTIFACT_BYTES) {
         throw new ArtifactTooLargeError(art.node_id, seq, bytes);
       }
-      await this.store.put(ART(ws, identity.projectId, identity.auditId, art.node_id, seq), art);
+      await this.store.put(
+        Repository.artifactKey(ws, identity.projectId, identity.auditId, art.node_id, seq),
+        art,
+      );
     }
     return { stored: seq };
   }
@@ -201,19 +331,19 @@ export class Repository {
     nodeId: string,
     seq: number,
   ): Promise<AuditArtifact | null> {
-    return this.store.get<AuditArtifact>(ART(ws, projectId, auditId, nodeId, seq));
+    return this.store.get<AuditArtifact>(
+      Repository.artifactKey(ws, projectId, auditId, nodeId, seq),
+    );
   }
 
   async listArtifacts(ws: string, projectId: string, auditId: string): Promise<AuditArtifact[]> {
-    const keys = await this.store.keys(`ws:${ws}:art:${projectId}:${auditId}:`);
-    const out: AuditArtifact[] = [];
-    for (const k of keys.sort()) {
-      // Skip the summary record; it lives in the same namespace.
-      if (k.endsWith(":_summary")) continue;
-      const a = await this.store.get<AuditArtifact>(k);
-      if (a) out.push(a);
-    }
-    return out;
+    const prefix = Repository.artifactTrailPrefix(ws, projectId, auditId);
+    const keys = (await this.store.keys(prefix)).filter((k) => !k.endsWith(":_summary"));
+    // Trail order is the global write seq encoded in the key tail; numeric
+    // ordering survives seq >= 10 where lexicographic order breaks.
+    keys.sort((a, b) => artifactSeqOf(a) - artifactSeqOf(b));
+    const loaded = await this.store.getMany<AuditArtifact>(keys);
+    return loaded.filter((a): a is AuditArtifact => a !== null);
   }
 
   /** Replay rule: verified artifacts are trusted as-is; anything else must be
@@ -239,12 +369,9 @@ export class Repository {
       })),
       pruned_at: new Date().toISOString(),
     };
-    await this.store.put(`ws:${ws}:art:${projectId}:${auditId}:_summary`, summary);
-    const keys = await this.store.keys(`ws:${ws}:art:${projectId}:${auditId}:`);
-    for (const k of keys) {
-      if (k.endsWith(":_summary")) continue;
-      await this.store.del(k);
-    }
+    // Ordered deletes (KV has no atomic multi-op): clear the old trail and any
+    // stale summary first, then commit the fresh summary last.
+    await this.store.delByPrefix(Repository.artifactTrailPrefix(ws, projectId, auditId));
+    await this.store.put(Repository.artifactSummaryKey(ws, projectId, auditId), summary);
   }
 }
-

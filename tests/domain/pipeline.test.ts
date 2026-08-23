@@ -9,13 +9,17 @@ import {
   DefaultAuditPipeline,
   mergeState,
 } from "@/domain/pipeline/pipeline";
-import { BATCH_NODES, NODE_ORDER } from "@/domain/pipeline/registry";
+import { BATCH_NODES, NODE_FNS } from "@/domain/pipeline/registry";
 import { AG_NODE_IDS, PAYLOAD_KINDS } from "@/domain/pipeline/types";
-import { MemoryStore } from "@/lib/persistence";
+import { MemoryStore, Repository } from "@/lib/persistence";
 import { runAudit } from "@/domain/engine";
 import type { InputValueState, JurisdictionId, Project } from "@/domain/types";
 import type { AiAdapter } from "@/lib/ai";
-import type { AuditArtifact } from "@/domain/pipeline/types";
+import type {
+  AuditArtifact,
+  NodeFn,
+  SharedState,
+} from "@/domain/pipeline/types";
 
 const T0 = "2026-08-22T00:00:00.000Z";
 
@@ -74,7 +78,7 @@ describe("pipeline describe()", () => {
   it("dependency order is topologically consistent", () => {
     for (const d of descriptors) {
       for (const dep of d.depends_on) {
-        expect(NODE_ORDER.indexOf(dep)).toBeLessThan(NODE_ORDER.indexOf(d.id));
+        expect(AG_NODE_IDS.indexOf(dep)).toBeLessThan(AG_NODE_IDS.indexOf(d.id));
       }
     }
   });
@@ -83,7 +87,7 @@ describe("pipeline describe()", () => {
     for (const d of descriptors) {
       expect(PAYLOAD_KINDS).toContain(d.emits);
       expect(d.executed_in_batch).toBe(BATCH_NODES.includes(d.id));
-      expect(NODE_ORDER).toContain(d.id);
+      expect(AG_NODE_IDS).toContain(d.id);
     }
     expect(BATCH_NODES).not.toContain("AG-PERSIST");
   });
@@ -182,7 +186,13 @@ describe("pipeline execution", () => {
       ranAtIso: T0,
     });
     expect(receipt.patch.persistence_ref?.audit_id).toBe(state.report_bundle!.json.audit_id);
-    const stored = await store.get(receipt.patch.persistence_ref!.store_key);
+    const stored = await store.get(
+      Repository.auditKey(
+        "ws-hash",
+        state.report_bundle!.json.project_id,
+        receipt.patch.persistence_ref!.audit_id,
+      ),
+    );
     expect(stored).not.toBeNull();
   });
 
@@ -212,5 +222,128 @@ describe("pipeline execution", () => {
     );
     expect(adj.wording_violations.length).toBeGreaterThan(0);
     expect(adj.wording_violations[0].violations).toContain("consider");
+  });
+
+  it("adjudication records decisions on unknown finding ids loudly, surfaced as limitations", () => {
+    const project = loadProject(FILES[0]);
+    const { state } = pipeline.runAllArtifacts(project, T0);
+
+    const res = pipeline.runNode("AG-ADJUDICATION", state, {
+      ranAtIso: T0,
+      project,
+      decisions: [
+        { finding_id: "F-DOES-NOT-EXIST", action: "accept" },
+        { finding_id: "F-ALSO-MISSING", action: "reject" },
+      ],
+    });
+    expect(res.patch.adjudication!.skipped_decision_refs).toEqual([
+      "F-DOES-NOT-EXIST",
+      "F-ALSO-MISSING",
+    ]);
+
+    const reported = pipeline.runNode(
+      "AG-REPORT",
+      mergeState(state, res.patch),
+      { ranAtIso: T0, project },
+    );
+    const limitations = reported.patch.report_bundle!.json.limitations;
+    expect(limitations).toContain(
+      "Adjudication recorded a decision targeting unknown finding id 'F-DOES-NOT-EXIST'; it was not applied.",
+    );
+    expect(limitations).toContain(
+      "Adjudication recorded a decision targeting unknown finding id 'F-ALSO-MISSING'; it was not applied.",
+    );
+  });
+
+  it("runNode rejects undeclared slice writes but accepts empty patches", () => {
+    const project = loadProject(FILES[0]);
+    const original = NODE_FNS["AG-PROJECT"];
+    const rogue: NodeFn = () => ({
+      artifacts: [],
+      patch: { rogue_slice: true } as unknown as SharedState,
+    });
+    NODE_FNS["AG-PROJECT"] = rogue;
+    try {
+      expect(() =>
+        pipeline.runNode("AG-PROJECT", pipeline.initialState(), { ranAtIso: T0, project }),
+      ).toThrowError(
+        /AG-PROJECT attempted undeclared slice write\(s\): rogue_slice; declared writes: project_input/,
+      );
+    } finally {
+      NODE_FNS["AG-PROJECT"] = original;
+    }
+
+    const emptyPatch: NodeFn = () => ({ artifacts: [], patch: {} });
+    NODE_FNS["AG-PROJECT"] = emptyPatch;
+    try {
+      const res = pipeline.runNode("AG-PROJECT", pipeline.initialState(), {
+        ranAtIso: T0,
+        project,
+      });
+      expect(res.patch).toEqual({});
+    } finally {
+      NODE_FNS["AG-PROJECT"] = original;
+    }
+  });
+
+  it.each(FILES)("folded runNodeAsync equals runAllArtifacts for %s", async (file) => {
+    const project = loadProject(file);
+    let state = pipeline.initialState();
+    const artifacts: AuditArtifact[] = [];
+    for (const id of BATCH_NODES) {
+      const out = await pipeline.runNodeAsync(id, state, { ranAtIso: T0, project }, artifacts);
+      state = out.state;
+      artifacts.push(...out.artifacts);
+    }
+    const batch = pipeline.runAllArtifacts(project, T0);
+    expect(JSON.stringify(state.report_bundle?.json)).toBe(JSON.stringify(batch.result));
+    expect(state.report_bundle?.markdown).toBe(batch.state.report_bundle?.markdown);
+    expect(artifacts).toEqual(batch.artifacts);
+  });
+
+  it("runNodeAsync dispatches ai-bounded nodes to live inference via the registry", async () => {
+    let calls = 0;
+    const live: AiAdapter = {
+      enabled: true,
+      async generateCandidates() {
+        calls += 1;
+        return [];
+      },
+    };
+    const project = loadProject(FILES[0]);
+    const { state } = pipeline.runAllArtifacts(project, T0);
+
+    const out = await pipeline.runNodeAsync(
+      "AG-AI-CANDIDATES",
+      state,
+      { ranAtIso: T0, project, aiAdapter: live, allowLiveInference: true },
+      [],
+    );
+    expect(calls).toBe(1);
+    expect(out.artifacts.some((a) => a.payload_kind === "candidates.ai")).toBe(true);
+    expect(out.state.candidate_findings).toEqual([]);
+  });
+
+  it("runNodeAsync dispatches the non-batch persistence node via io", async () => {
+    const project = loadProject(FILES[0]);
+    const { state } = pipeline.runAllArtifacts(project, T0);
+    const store = new MemoryStore();
+
+    const out = await pipeline.runNodeAsync(
+      "AG-PERSIST",
+      state,
+      { ranAtIso: T0, project },
+      [],
+      { store, workspace: "ws-hash" },
+    );
+    expect(out.state.persistence_ref?.audit_id).toBe(state.report_bundle!.json.audit_id);
+    const stored = await store.get(
+      Repository.auditKey(
+        "ws-hash",
+        out.state.persistence_ref!.project_id,
+        out.state.persistence_ref!.audit_id,
+      ),
+    );
+    expect(stored).not.toBeNull();
   });
 });

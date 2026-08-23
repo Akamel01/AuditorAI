@@ -2,7 +2,7 @@
 
 ```yaml
 node_id: AG-REPORT
-role: Render the audited result into JSON + Markdown report bundle
+role: Deterministic report rendering (MD/JSON/print-PDF)
 purpose: >-
   Assemble the final AuditResult (adjudicated findings, questions, limitations, disclaimer) and
   render its Markdown form for download/print.
@@ -19,6 +19,10 @@ context:
   upstream_artifacts:
     - adjudication.decisions
     - evidence.linkset
+  upstream_nodes:
+    - AG-ADJUDICATION
+  downstream_nodes:
+    - AG-PERSIST
   relevant_decisions:
     - ADR-0003 finding model
   evidence_required: Reports cite evidence by id; readers resolve via the registry.
@@ -50,7 +54,7 @@ state:
     - report_bundle
 verification:
   required_checks:
-    - tests/integration flow report leg.
+    - Integration flow covers the report leg.
 failure:
   retry_policy: 'Deterministic: no retry.'
   escalation_policy: Rendering failure is a plain 500 — no partial reports ship.

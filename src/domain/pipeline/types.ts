@@ -11,7 +11,7 @@ import type {
   MissingInformationQuestion,
   Project,
 } from "@/domain/types";
-import type { AiAdapter, CandidateFinding } from "@/lib/ai";
+import type { AiAdapter, CandidateFinding, CandidateVocabulary } from "@/lib/ai";
 
 export const AG_NODE_IDS = [
   "AG-PROJECT",
@@ -99,6 +99,8 @@ export type CandidatesSlice = CandidateFinding[];
 export interface AdjudicationSlice {
   final_findings: Finding[];
   wording_violations: { finding_id: string; violations: string[] }[];
+  /** Decisions targeting unknown finding ids, in arrival order; surfaced under limitations. */
+  skipped_decision_refs: string[];
 }
 
 export interface EvidenceLinksetSlice {
@@ -112,11 +114,28 @@ export interface ReportBundleSlice {
   disclaimer: string;
 }
 
+/** Stable audit coordinates, never physical storage keys: nodes must not know
+ *  the store's key layout (ADR-0001; Repository owns that exclusively). */
 export interface PersistenceRefSlice {
   audit_id: string;
-  store_key: string;
+  project_id: string;
   stored_at: string;
 }
+
+export const SHARED_STATE_SLICES = [
+  "project_input",
+  "stage_context",
+  "input_manifest",
+  "rule_results",
+  "audit_questions",
+  "candidate_findings",
+  "adjudication",
+  "evidence_linkset",
+  "report_bundle",
+  "persistence_ref",
+] as const;
+
+export type SliceName = (typeof SHARED_STATE_SLICES)[number];
 
 export interface SharedState {
   project_input?: ProjectInputSlice;
@@ -132,9 +151,14 @@ export interface SharedState {
   persistence_ref?: PersistenceRefSlice;
 }
 
-export type SliceName = {
-  [K in keyof SharedState]-?: K;
-}[keyof SharedState];
+// Compile-time guarantee that the runtime slice list and SharedState's keys
+// never drift apart (single source of truth for chartered slices).
+type SliceSymmetricDifference =
+  | Exclude<SliceName, keyof SharedState>
+  | Exclude<keyof SharedState, SliceName>;
+const _SLICES_MATCH_SHARED_STATE: SliceSymmetricDifference extends never
+  ? true
+  : never = true;
 
 // ---- Artifacts ----------------------------------------------------------------
 
@@ -170,6 +194,8 @@ export interface NodeRunCtx {
   allowLiveInference?: boolean;
   /** M3: resolved drawing attachments for the vision path (already loaded). */
   attachments?: { attachment_id: string; file_name: string; data_url: string }[];
+  /** Pack vocabulary bounding candidate categories (issue/road-user). */
+  candidateVocabulary?: CandidateVocabulary;
 }
 
 export interface NodeResult {
