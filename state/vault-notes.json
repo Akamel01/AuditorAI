@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 20,
+  "note_count": 21,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -241,7 +241,7 @@
         "issues": [],
         "adr": []
       },
-      "body_chars": 2531
+      "body_chars": 3236
     },
     {
       "path": "vault/journal/2026-08-23-phase0-gf9-primary-source.md",
@@ -272,6 +272,21 @@
         "adr": []
       },
       "body_chars": 2555
+    },
+    {
+      "path": "vault/journal/2026-08-23-phase2-sample-corpus.md",
+      "zone": "vault/journal",
+      "title": "Phase 2 complete: 37 sample audits cataloged across four jurisdictions",
+      "type": "journal",
+      "date": "2026-08-23",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1880
     },
     {
       "path": "vault/journal/2026-08-23-ticket-21-verify-close.md",
