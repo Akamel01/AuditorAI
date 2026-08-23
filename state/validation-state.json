@@ -131,6 +131,17 @@
       "follow_ups": [
         "Tier-2 review of failing projects before next AI-touching change"
       ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-013",
+      "date": "2026-08-23T02:09:43.163Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-23T01-56-26-208Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
     }
   ]
 }

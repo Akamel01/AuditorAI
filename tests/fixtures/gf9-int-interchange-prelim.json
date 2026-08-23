@@ -53,7 +53,7 @@
       "evidence": [
         {
           "evidence_id": "EV-IN-001",
-          "quote": null,
+          "quote": "Finally, resources are provided to assist the auditors and designers to identify potential deficiencies and develop suitable strategies to mitigate the consequences.",
           "use": "defines_requirement"
         }
       ],
@@ -101,7 +101,7 @@
       "evidence": [
         {
           "evidence_id": "EV-IN-001",
-          "quote": null,
+          "quote": "The correct use of these processes through the life of the road will ensure that road user safety is maximized, and death and serious injury are minimized.",
           "use": "context"
         }
       ],

@@ -73,7 +73,7 @@
       "evidence": [
         {
           "evidence_id": "EV-UK-015",
-          "quote": null,
+          "quote": "If the pedestrian refuges located at the junctions above are not wide enough to safely house a cyclist, they could be clipped by vehicles travelling through the junction possible resulting in a slight injury accident.",
           "use": "defines_requirement"
         }
       ],
@@ -118,7 +118,7 @@
       "evidence": [
         {
           "evidence_id": "EV-UK-002",
-          "quote": null,
+          "quote": "Swept path analysis has been undertaken and examples of these are included in Figure 4-1 to Figure 4-4. Large vehicles including a 7.5t box van and refuge vehicle have been assessed and these can perform the likely turning movements with some limited over-run into opposing lanes in places.",
           "use": "context"
         }
       ],

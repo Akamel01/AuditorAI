@@ -50,7 +50,7 @@
       "evidence": [
         {
           "evidence_id": "EV-US-016",
-          "quote": null,
+          "quote": "The intersection of Clear Lake Avenue and Dirksen Parkway was designated a high accident location for six consecutive years (1998 through 2003), and the intersection of Hill Street and Clear Lake Avenue was designated a high accident location in 2003.",
           "use": "supports_concern"
         }
       ],
@@ -98,7 +98,7 @@
       "evidence": [
         {
           "evidence_id": "EV-US-001",
-          "quote": null,
+          "quote": "Provide consistent levels of lighting and upgrade lighting at crosswalks.",
           "use": "context"
         }
       ],

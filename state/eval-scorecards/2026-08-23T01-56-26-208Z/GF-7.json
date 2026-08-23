@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-23T01-56-26-208Z",
+  "fixture_id": "GF-7",
+  "fixture_name": "Four-lane arterial improvement — US preliminary design (FHWA case study, PD)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0,
+  "passes_corpus_mark": false,
+  "mean_score": 7.5,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF7-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 0,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 0
+      },
+      "justifications": {
+        "substance": "Deceleration-expectation change from a new auxiliary turn lane and checks of taper length, advance signing, and queue storage are genuine preliminary-design rear-end safety considerations, even though the claimed existing cluster at this approach is unverified.",
+        "evidence_grounding": "EV-US-016 quotes high-crash designations for Clear Lake Ave/Dirksen Pkwy and Hill St/Clear Lake Ave — different intersections from Main Street — so the pivotal 'recorded rear-end pattern' claim has no supporting verbatim quote or recorded input fact and is admitted in the rationale to be a case-study analog, warranting 0.",
+        "jurisdiction_correctness": "Properly typed as a safety_concern kept categorically distinct from compliance questions, with no normative-basis overreach, and appropriately raised at preliminary design where taper and signing remain adjustable.",
+        "recommendation_quality": "Actionable and viable — extend northbound advance warning placement and verify taper storage length against design-year peak queues — though it omits quantified placement distances or reference standards.",
+        "vru_coverage": "Only vehicle occupants are listed; pedestrian implications of an added intersection turn lane (longer crossings, new conflict points at the taper) are neither assessed nor acknowledged, so no credit under the acknowledgment rule."
+      }
+    },
+    {
+      "finding_id": "JB-GF7-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Nighttime pedestrian/cyclist conspicuity at a specific crossing with recorded incident history and rising exposure is a substantive, stage-appropriate preliminary-design safety concern.",
+        "evidence_grounding": "Claims rest on the cited EV-US-001 quote and a recorded incident, but the quote only supplies general context ('Provide consistent levels of lighting and upgrade lighting at crosswalks') and does not directly evidence insufficiency at this crossing, capping below 2.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern with no normative_basis_note, keeping the lighting/retroreflectivity assessment categorically distinct from compliance checking under FHWA RSA semantics.",
+        "recommendation_quality": "Recommendation names two concrete, viable treatments (luminaire coverage over the crossing, high-visibility markings) actionable at preliminary design, though it omits target illuminance values or a specified marking type.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly identified as affected road users and the entire finding centers on their nighttime visibility risk, so VRU impacts are fully considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-23T02:01:34.280Z"
+}

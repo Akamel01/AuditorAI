@@ -51,7 +51,7 @@
       "evidence": [
         {
           "evidence_id": "EV-US-001",
-          "quote": null,
+          "quote": "The innovative HAWK signal, shown in FIGURE A.12, incorporates elements from fire station signals and school bus flashing displays, as well as from European pedestrian signal displays, to provide a familiar signal sequence for drivers and pedestrians.",
           "use": "context"
         }
       ],
@@ -98,7 +98,7 @@
       "evidence": [
         {
           "evidence_id": "EV-US-016",
-          "quote": null,
+          "quote": "duration of pedestrian clearance interval: The pedestrian clearance interval may be short, particularly for elderly pedestrians.",
           "use": "defines_requirement"
         }
       ],

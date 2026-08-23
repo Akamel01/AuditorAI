@@ -54,7 +54,7 @@
       "evidence": [
         {
           "evidence_id": "EV-CA-003",
-          "quote": null,
+          "quote": "A road safety audit is a formal and independent safety performance review of a road transportation project by an experienced team of safety specialists, addressing the safety for all road users.",
           "use": "defines_requirement"
         }
       ],
@@ -99,7 +99,7 @@
       "evidence": [
         {
           "evidence_id": "EV-CA-006",
-          "quote": null,
+          "quote": "TABLE 1 Road Safety Audit Stage Equivalency Table\nTAC Canadian RSA Guide Terminology Alberta Transportation Equivalent\nPlanning Stage RSA Stage 1 RSA\nPreliminary Design Stage RSA Stage 2 RSA\nDetailed Design Stage RSA Stage 3 RSA\nPre-opening Stage RSA Pre-opening Stage RSA",
           "use": "context"
         }
       ],
