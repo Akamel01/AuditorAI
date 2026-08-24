@@ -268,6 +268,24 @@
       "follow_ups": [
         "Tier-2 review of failing projects before next AI-touching change"
       ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-026",
+      "date": "2026-08-24T06:19:18.052Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..10 (run 2026-08-24T06-11-08-387Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-027",
+      "date": "2026-08-24T06:20:30.000Z",
+      "validator_node": "E5 §5 re-baseline (ORCH, owner-ordered AFK execution)",
+      "scope": "GF-10 JB-GF10-002 swap+re-test per ratified rot-family ruling; clears CA ODD incident flag",
+      "method": "Baseline re-authored on authentic evidence: EV-CA-038 added (Alberta §5.6.1–5.6.2 response-report discipline, verbatim-verified vs pypdf extraction); CA pack completeness rule R-CA-NETWORK-CONTINUITY-RESOLVED added so the 'conflicting' MI path is deterministic (tests/domain/gf10-mi-path.test.ts pins fixture↔pack↔engine contract); fixture expected.missing_information_input_ids updated",
+      "result": "PASSED — accepting run 2026-08-24T06-11-08-387Z: GF-10 100% PASS; all five projects 100%. Supersedes failing run 2026-08-23T19-37-04-183Z (JB-GF10-002 evidence_grounding=1). Note: GF-7 zero-drop jitter flagged on unchanged fixture — mean-total variance only, pass rate stable across prior archives.",
+      "follow_ups": []
     }
   ]
 }

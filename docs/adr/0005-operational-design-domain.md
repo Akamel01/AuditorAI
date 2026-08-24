@@ -115,3 +115,7 @@ competence ends*. Three forces make this acute:
   from GF-6..10 manifests, owner-blessed. Refinements vs blessed schema: `canonical_stage` is an
   array (combined-audit spans); omissions default-refuse. Phase-2 wiring (intake refusal +
   result stamping) deferred until candidate-review lands.
+- **v1.0.1 (2026-08-24):** CA×FEASIBILITY_CONCEPT incident flag cleared via eval-gates §5
+  swap+re-test re-baseline (VAL-2026-08-22-027; accepting run `2026-08-24T06-11-08-387Z`,
+  supersedes failing `2026-08-23T19-37-04-183Z`). Cell remains IN, now unflagged. No cell
+  status changes; declaration content otherwise unchanged.

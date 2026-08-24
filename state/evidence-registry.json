@@ -23,8 +23,8 @@
       {
         "file": "canada-rsa-research.md",
         "jurisdiction": "CA",
-        "record_count": 36,
-        "sha256": "287409eff003769b70740c03a49b9731751e15530c878b4bbfa4b4be3c9f5228"
+        "record_count": 37,
+        "sha256": "c3b196a47fad3be299debeee8735d074b6b87d8ce4a731f323e9f26bc7105819"
       },
       {
         "file": "uae-rsa-research.md",
@@ -33,7 +33,7 @@
         "sha256": "0ace6bd93d2449e09125d2126d92a9142f49b14dbeb392296ed42b288a07b46f"
       }
     ],
-    "total_records": 152,
+    "total_records": 153,
     "rule": "regenerated deterministically by scripts/compile-evidence.mjs; edit sources, not this file"
   },
   "evidence_records": [
@@ -1572,6 +1572,20 @@
       "publication_date": "1999",
       "retrieved_date": "2026-08-23",
       "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "CA"
+    },
+    {
+      "evidence_id": "EV-CA-038",
+      "claim": "Alberta Transportation's Road Safety Audit Guidelines §5.6.2 requires the project design team to provide a response report to the audit, developed in consultation with the project sponsor, choosing among accept / conditionally-accept-with-modifications / reject — with the reasons for modifications documented; combined with §5.6.1's filing duty ('A copy of the road safety audit report must be made available to Alberta Transportation'), disagreements between audit findings and project records must carry documented reasons rather than standing unexplained.",
+      "quote": "The project design team must provide a response report to the road safety audit within a reasonable period of time determined in consultation with Alberta Transportation. In preparing the response report, the project team should consult with the project sponsor. Possible responses are: 1. Accept in full and implement changes to project 2. Conditionally accept with modifications. The response report should document the reasons for the modifications 3. Reject with reason",
+      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf",
+      "source_title": "Alberta Transportation Road Safety Audit Guidelines (§5.6.1–5.6.2 Report and Response Report)",
+      "publisher": "Alberta Transportation (prepared by G. Ho Engineering Consultants)",
+      "revision": "Final Report ver 2",
+      "publication_date": "2004-03-19",
+      "retrieved_date": "2026-08-24",
+      "normative_status": "mandatory",
       "confidence": "high",
       "jurisdiction": "CA"
     },

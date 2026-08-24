@@ -81,12 +81,15 @@ describe("ODD declaration", () => {
     }
   });
 
-  it("CA planning cell stays honestly incident-flagged while GF-10 §5 is open", () => {
+  it("CA planning cell is IN with VAL-024 flag cleared after §5 swap+re-test (VAL-2026-08-22-027)", () => {
     const ca = cells.find(
       (c) => c.jurisdiction_id === "canada" && c.canonical_stage.includes("FEASIBILITY_CONCEPT"),
     );
     expect(ca?.status).toBe("in");
-    expect(ca?.incident_flags.length, "open VAL-024 fallout flag").toBeGreaterThanOrEqual(1);
+    expect(
+      ca?.incident_flags.length,
+      "no open flags: re-baseline accepted run 2026-08-24T06-11-08-387Z",
+    ).toBe(0);
   });
 
   it("UK x FEASIBILITY_CONCEPT is recorded as structurally absent", () => {

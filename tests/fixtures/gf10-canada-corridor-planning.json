@@ -94,10 +94,15 @@
       "road_users": [],
       "scenario": "Recorded network-continuity inputs conflict: the ministry corridor plan retains express-collector transfer continuity through all three interchanges while the municipal network-continuity register discontinues the middle-interchange transfer pending ramp-terminal reconfiguration, so the planning scope boundary cannot be confirmed; an unresolved boundary risks the audit excluding movements whose traffic redistributes to interchanges outside the project limits. Vulnerable road users acknowledged: the controlled-access mainline carries no pedestrians or cyclists, but continuity outcomes propagate to downstream arterials where VRUs travel; no VRU-specific exposure is asserted within this corridor question.",
       "statement": {
-        "text": "Reconcile and consistently document the conflicting ministry and municipal network-continuity records before the planning recommendation is finalised, so the practice of undertaking and reporting the Planning Stage RSA rests on clearly specified scope records addressing safety for all road users.",
+        "text": "Reconcile and consistently document the conflicting ministry and municipal network-continuity records before the planning recommendation is finalised — per the Alberta §5.6.2 discipline that responses to audit matters must choose accept / conditionally-accept-with-modifications / reject with documented reasons (EV-CA-038) — so the practice of undertaking and reporting the Planning Stage RSA rests on clearly specified scope records addressing safety for all road users.",
         "normative_basis_note": null
       },
       "evidence": [
+        {
+          "evidence_id": "EV-CA-038",
+          "quote": "The project design team must provide a response report to the road safety audit within a reasonable period of time determined in consultation with Alberta Transportation. In preparing the response report, the project team should consult with the project sponsor. Possible responses are: 1. Accept in full and implement changes to project 2. Conditionally accept with modifications. The response report should document the reasons for the modifications 3. Reject with reason",
+          "use": "supports_concern"
+        },
         {
           "evidence_id": "EV-CA-006",
           "quote": "TABLE 1 Road Safety Audit Stage Equivalency Table\nTAC Canadian RSA Guide Terminology Alberta Transportation Equivalent\nPlanning Stage RSA Stage 1 RSA\nPreliminary Design Stage RSA Stage 2 RSA\nDetailed Design Stage RSA Stage 3 RSA\nPre-opening Stage RSA Pre-opening Stage RSA",
@@ -118,10 +123,10 @@
       },
       "confidence": {
         "label": "high",
-        "basis": "Conflicting state recorded directly in inputs."
+        "basis": "Conflicting state recorded directly in inputs; Alberta §5.6.1–5.6.2 (EV-CA-038) mandates response reports with documented reasons for modifications/rejections and filing of all documents, so an unresolved inter-register conflict is a process non-conformity rather than judgment."
       },
-      "rationale": "Process-style compliance question surfaced by recorded input conflict; completeness consequence framed from the all-road-users definition rather than an asserted collision mechanism.",
-      "recommendation": "Reconcile the ministry corridor plan and municipal network-continuity register records with the ministry planning office and record whether the resolved scope keeps corridor-wide continuity effects inside the audit boundary.",
+      "rationale": "Process-style compliance question surfaced by recorded input conflict; the reconciliation duty is grounded verbatim in EV-CA-038 (documented reasons required for any modification/rejection; reports filed for retrieval), with EV-CA-003 supplying the general documented-procedure duty. Completeness consequence framed from the all-road-users definition rather than an asserted collision mechanism.",
+      "recommendation": "Reconcile the ministry corridor plan and municipal network-continuity register records with the ministry planning office, documenting the resolution reasons per the §5.6.2 response discipline, and record whether the resolved scope keeps corridor-wide continuity effects inside the audit boundary.",
       "source_trace": [
         {
           "origin": "auditor_manual",
@@ -134,10 +139,10 @@
   ],
   "expected": {
     "finding_ids_present": [],
-    "missing_information_input_ids": [],
+    "missing_information_input_ids": ["network_continuity_constraints"],
     "questions_min_count": 1,
     "mapping_confidence": "authoritative",
     "snapshot_recorded": "2026-08-22"
   },
-  "notes": "conflicting network_continuity_constraints exercises the blocking 'conflicting' MI path on the CA pack. Fills the corpus coverage gap noted as thin for Canada."
+  "notes": "conflicting network_continuity_constraints exercises the blocking 'conflicting' MI path on the CA pack (R-CA-NETWORK-CONTINUITY-RESOLVED, deterministic since 2026-08-24; coverage pinned by tests/domain/gf10-mi-path.test.ts). Fills the corpus coverage gap noted as thin for Canada."
 }

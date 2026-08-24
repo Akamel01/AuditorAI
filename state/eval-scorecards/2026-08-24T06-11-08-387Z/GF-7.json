@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T06-11-08-387Z",
+  "fixture_id": "GF-7",
+  "fixture_name": "Four-lane arterial improvement — US preliminary design (FHWA case study, PD)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF7-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Closely-spaced intersection functional-area conflicts between queued, turning, and parking vehicles are a substantive preliminary-design-stage safety issue on a corridor with recorded high-accident designations.",
+        "evidence_grounding": "EV-US-016 provides a verbatim quote directly matching the pivotal claim about queued/turning/parking vehicle interference at Clear Lake Ave and the south service road, satisfying the quote requirement beyond mere registry citation.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under FHWA RSA semantics with no normative-basis claim, keeping the operational-conflict safety issue categorically distinct from any compliance question.",
+        "recommendation_quality": "Recommendation is specific to the named intersection and actionable at preliminary design (turning-movement restrictions plus relocating identified parking stalls clear of the functional area), and is not null.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly acknowledged as potentially present on the commercial corridor, but the conflict mechanism is scoped to vehicle occupants, so VRU treatment is acknowledged rather than substantively analyzed."
+      }
+    },
+    {
+      "finding_id": "JB-GF7-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Queue spillback between signalized intersections ~650 ft apart on a corridor with recorded high-accident designations is a classic, substantive preliminary-design-stage safety concern with clear crash potential (rear-end, intersection blockage).",
+        "evidence_grounding": "Pivotal claim (650 ft spacing to Dirksen Parkway/Clear Lake Avenue signals) is anchored by a verbatim quote in EV-US-001, with the spillback mechanism transparently labelled as a derived inference and corroborated by the FHWA case study Table A.1 reference.",
+        "jurisdiction_correctness": "Correctly filed as a safety_concern under FHWA RSA preliminary-design semantics; no compliance requirement is invoked (normative_basis_note null is appropriate) and the safety issue is kept categorically distinct from any regulatory question.",
+        "recommendation_quality": "Recommendation is specific and viable at this stage: signal coordination/timing review, Do Not Block Intersection signing, and enhanced conspicuity of signing and signal displays are all concrete, implementable measures addressing the identified mechanism.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly acknowledged as crossing both signalized intersections with a reasoned scoping decision, but no VRU-specific impact analysis (e.g., spillback queues obstructing crosswalks or coordination effects on pedestrian phases) is provided, matching the 'not applicable but acknowledged' tier."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T06:15:00.747Z"
+}

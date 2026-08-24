@@ -370,6 +370,17 @@ evidence_records:
     retrieved_date: 2026-08-23
     normative_status: informative
     confidence: high
+  - evidence_id: EV-CA-038
+    claim: "Alberta Transportation's Road Safety Audit Guidelines §5.6.2 requires the project design team to provide a response report to the audit, developed in consultation with the project sponsor, choosing among accept / conditionally-accept-with-modifications / reject — with the reasons for modifications documented; combined with §5.6.1's filing duty ('A copy of the road safety audit report must be made available to Alberta Transportation'), disagreements between audit findings and project records must carry documented reasons rather than standing unexplained."
+    quote: "The project design team must provide a response report to the road safety audit within a reasonable period of time determined in consultation with Alberta Transportation. In preparing the response report, the project team should consult with the project sponsor. Possible responses are: 1. Accept in full and implement changes to project 2. Conditionally accept with modifications. The response report should document the reasons for the modifications 3. Reject with reason"
+    source_url: "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf"
+    source_title: "Alberta Transportation Road Safety Audit Guidelines (§5.6.1–5.6.2 Report and Response Report)"
+    publisher: "Alberta Transportation (prepared by G. Ho Engineering Consultants)"
+    revision: "Final Report ver 2"
+    publication_date: 2004-03-19
+    retrieved_date: "2026-08-24"
+    normative_status: mandatory
+    confidence: high
 ---
 
 # Canada — Road Safety Audit Research (R4)

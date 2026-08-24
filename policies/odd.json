@@ -18,10 +18,14 @@
       "jurisdiction_id": "uk",
       "framework_id": "uk-dmrb-gg119",
       "native_stage_id": "uk:S1",
-      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
       "mapping_confidence": "authoritative",
       "status": "in",
-      "fixture_ids": ["GF-6"],
+      "fixture_ids": [
+        "GF-6"
+      ],
       "incident_flags": [],
       "input_floor": [
         "scheme_description_objectives",
@@ -37,10 +41,14 @@
       "jurisdiction_id": "usa",
       "framework_id": "us-fhwa-rsa",
       "native_stage_id": "us-fhwa:preliminary-design",
-      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
       "mapping_confidence": "interpreted",
       "status": "in",
-      "fixture_ids": ["GF-7"],
+      "fixture_ids": [
+        "GF-7"
+      ],
       "incident_flags": [],
       "input_floor": [
         "project_information_package",
@@ -52,10 +60,14 @@
       "jurisdiction_id": "usa",
       "framework_id": "us-fhwa-rsa",
       "native_stage_id": "us-fhwa:final-design",
-      "canonical_stage": ["DETAILED_DESIGN"],
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
       "mapping_confidence": "interpreted",
       "status": "in",
-      "fixture_ids": ["GF-8"],
+      "fixture_ids": [
+        "GF-8"
+      ],
       "incident_flags": [],
       "input_floor": [
         "project_information_package",
@@ -67,10 +79,14 @@
       "jurisdiction_id": "international",
       "framework_id": "int-piarc-baseline",
       "native_stage_id": "int:preliminary-design",
-      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
       "mapping_confidence": "interpreted",
       "status": "in",
-      "fixture_ids": ["GF-9"],
+      "fixture_ids": [
+        "GF-9"
+      ],
       "incident_flags": [],
       "input_floor": [
         "project_description_objectives",
@@ -82,13 +98,15 @@
       "jurisdiction_id": "canada",
       "framework_id": "ca-tac-crsag-alberta",
       "native_stage_id": "ca-tac:planning",
-      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
       "mapping_confidence": "authoritative",
       "status": "in",
-      "fixture_ids": ["GF-10"],
-      "incident_flags": [
-        "VAL-024 fallout: latest full archive 2026-08-23T19-37-04-183Z fails JB-GF10-002 evidence_grounding after fabricated EV-CA-007 purge; membership rests on passing archives 09-32-11/10-32-40; clears via §5 swap+re-test re-baseline"
+      "fixture_ids": [
+        "GF-10"
       ],
+      "incident_flags": [],
       "input_floor": [
         "design_criteria",
         "route_choice_project_scope"
@@ -99,7 +117,9 @@
       "jurisdiction_id": "uae",
       "framework_id": "ae-ad-dmt-tr540",
       "native_stage_id": "ae-ad:S0",
-      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
       "mapping_confidence": "authoritative",
       "status": "mapped_unproven",
       "fixture_ids": [],
@@ -113,7 +133,9 @@
       "jurisdiction_id": "uae",
       "framework_id": "ae-ad-dmt-tr540",
       "native_stage_id": "ae-ad:S1",
-      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
       "mapping_confidence": "authoritative",
       "status": "mapped_unproven",
       "fixture_ids": [],
@@ -127,7 +149,10 @@
       "jurisdiction_id": "uae",
       "framework_id": "ae-ad-dmt-tr540",
       "native_stage_id": "ae-ad:S12-combined",
-      "canonical_stage": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"],
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN",
+        "DETAILED_DESIGN"
+      ],
       "mapping_confidence": "authoritative",
       "status": "mapped_unproven",
       "fixture_ids": [],
@@ -141,7 +166,9 @@
       "jurisdiction_id": "uae",
       "framework_id": "ae-ad-dmt-tr540",
       "native_stage_id": "ae-ad:S2",
-      "canonical_stage": ["DETAILED_DESIGN"],
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
       "mapping_confidence": "authoritative",
       "status": "mapped_unproven",
       "fixture_ids": [],
@@ -155,7 +182,9 @@
       "jurisdiction_id": "uk",
       "framework_id": "uk-dmrb-gg119",
       "native_stage_id": null,
-      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
       "mapping_confidence": null,
       "status": "structurally_absent",
       "fixture_ids": [],
