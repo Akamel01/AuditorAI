@@ -251,6 +251,17 @@ evidence_records:
     retrieved_date: "2026-08-22"
     normative_status: informative
     confidence: high
+  - evidence_id: EV-UK-025
+    claim: "Transport Scotland's A9 Ballinluig SB Signage Improvements Stage 1&2 Road Safety Audit decision log (BEAR Scotland Form #220) records two accepted problems — forward visibility reduced by road curve and vegetation (cut-back required for clear pedestrian passage) and vegetation obscuring the view to the end of the southbound off-slip, reducing driver awareness of the requirement to slow — with agreed RSA actions extending vegetation clearance; the Overseeing Organisation response is recorded as OK for both."
+    quote: "Curve of road and vegetation reduces forward visibility Cut back shrubbery sufficiently to allow clear passage by pedestrians Vegetation clearance will be extended to include this section. OK Cut back shrubbery Vegetation affects views to end of slip road, reducing driver awareness of requirement to slow"
+    source_url: "https://www.gov.scot/publications/a9-accidents-safety-and-dualling-eir-release/"
+    source_title: "A9 Ballinluig SB Signage Improvements — Stage 1&2 RSA Response Report, decision log Table 3 (FOI/EIR release 202300341022)"
+    publisher: "Transport Scotland / BEAR Scotland Ltd NW Unit"
+    revision: "Form #220 Issue #6"
+    publication_date: "2022"
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
 ---
 
 # UK Road Safety Audit Research — GG 119 / DMRB (Ticket R2)
