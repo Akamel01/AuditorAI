@@ -138,7 +138,7 @@ function createFallbackStore(): DataStore {
   if (!url || !token) return new MemoryStore();
   const kv = new KvRestStore(url, token);
   return {
-    kind: "kv-with-fallback" as const,
+    kind: "kv" as const,
     async put(key: string, value: unknown) {
       try { await kv.put(key, value); }
       catch { await new MemoryStore().put(key, value); }
@@ -168,10 +168,7 @@ function createFallbackStore(): DataStore {
 
 export function getDataStore(): DataStore {
   if (!storeSingleton) {
-    const url = process.env.KV_REST_API_URL;
-    const token = process.env.KV_REST_API_TOKEN;
-    storeSingleton =
-      url && token ? new KvRestStore(url, token) : new MemoryStore();
+    storeSingleton = createFallbackStore();
   }
   return storeSingleton;
 }
