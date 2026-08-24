@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 23,
+  "note_count": 24,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -347,6 +347,21 @@
         "adr": []
       },
       "body_chars": 935
+    },
+    {
+      "path": "vault/journal/2026-08-24-afk-nine-items.md",
+      "zone": "vault/journal",
+      "title": "AFK wave: ODD Phase-1/2 landed, GF-10 re-baselined, corpus extended to 8 real+synthetic fixtures",
+      "type": "journal",
+      "date": "2026-08-24",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 2758
     }
   ]
 }
