@@ -1,9 +1,10 @@
 # INT — Road Safety Audit sample collection (International sources)
 
-Collected 2026-08-23 by sample-audit collection agent. Public-access sources only;
-no login-wall circumvention. Wayback retrieval used only for public-origin documents
-(AfDB PDF is bot-blocked live; fetched its own archived public copy). Early stages
-(feasibility/conceptual + preliminary design) prioritized per mission.
+Collected 2026-08-23 (Round 1) and 2026-08-24 (Round 2) by sample-audit collection agent.
+Public-access sources only; no login-wall circumvention. Wayback retrieval used only for
+public-origin documents (AfDB PDF and NZTA M2PP PDF are bot-blocked live; fetched their own
+archived public copies). Early stages (feasibility/conceptual + preliminary design)
+prioritized per mission.
 
 Native stage naming recorded per source body:
 - **Transport Scotland / Scottish trunk-road contracts** (DMRB GG 119 lineage): Stage 1
@@ -17,6 +18,10 @@ Native stage naming recorded per source body:
 - **AfDB Road Safety Manuals for Africa**: Stage 1 Feasibility Study → Stage 2 Preliminary
   Design → Stage 3 Detailed Design → Stage 4 Pre-Opening → Stage 5 Post-Opening.
 - **iRAP SR4D**: "design stage" assessment of coded designs before construction.
+- **NZTA/Waka Kotahi** (Safe System audit guidelines 2022 lineage): Stage 1 scheme/concept →
+  Stage 2 preliminary design (scheme design) → Stage 3 detailed design → Stage 4
+  pre-opening/post-construction; M2PP artifact predates the 2022 rename and uses
+  "RSA stage 2: Scheme Design" decision-tracking forms (PMM 6.5a/6.6a).
 
 Canonical mapping note: UK/IE Stage 1 ≈ `PRELIMINARY_DESIGN`; CAREC/AfDB numbered stages map
 directly onto `FEASIBILITY_CONCEPT` → `PRELIMINARY_DESIGN` → `DETAILED_DESIGN`; iRAP design
@@ -160,6 +165,127 @@ stage ≈ `PRELIMINARY_DESIGN`–`DETAILED_DESIGN`. Mappings shown alongside nat
 - filename+sha256: ie-abp-eiar-appendix-road-safety-audit.pdf `144b921313565ea5fc1bf7418a5820835a7b20a3469a5d6f3bca1587e256e586`
 - notes: Real Irish Stage 1 audit with VRU (walking trail) findings — good candidate-finding phrasing seed for rural access schemes; 9.4 MB scan-heavy file.
 
+### INT-010 · A7 Boleside Road VRS — combined Stage 1/2 Road Safety Audit report (real UK trunk-road audit)
+
+- id: `int-010-ts-a7-boleside-stage1-2-rsa-report`
+- title: A7 Hawthorns to Boleside (VRS) — Stage 1/2 Road Safety Audit, Scheme ID 23-SE-0801-15, Audit Ref NMC-A7-009 (BEAR Form #359, issue 7)
+- source_url: https://www.gov.scot/binaries/content/documents/govscot/publications/foi-eir-release/2026/04-g/foi-202600509731/documents/foi-202600509731---information-released---annex/foi-202600509731---information-released---annex/govscot%3Adocument/FOI%2B202600509731%2B-%2BInformation%2Breleased%2B-%2BAnnex.pdf (parent FOI/EIR release: https://www.gov.scot/publications/foi-202600509731/, FOI/202600509731, published 2026-07-24; RSA report = scanned pp. 15–32 of the combined annex, extracted locally)
+- publisher: Transport Scotland Roads Directorate (client) / BEAR Scotland Ltd SE Unit (audit team) — released under EIR(S)R 2004
+- retrieved_date: 2026-08-24
+- country/body: Scotland, UK (Scottish Trunk Road Network Management Contract, South East Unit; VRS improvement near Galashiels)
+- native_stage: **Stage 1/2 combined** (GG 119 lineage; small-scheme combined early-stage audit, same practice class as INT-004/005)
+- input_types present: scheme_description + drawings inventory (report structure lists documents reviewed; scan — OCR required before machine use)
+- output_types present: findings_report (problems raised at this Stage 1/2 audit + recommendations)
+- completeness: outputs-only (scan; audit brief/drawings not released; personal-data redactions under reg. 11(2) elsewhere in parent annex)
+- filename+sha256: uk-ts-a7-boleside-stage1-2-rsa-report.pdf `8df6e7a2965fa0c76316d676517e68e29063a280879ee6435b69aabee51780f2`
+- notes: Round-2 extension of the Transport Scotland programme slice to the SE Unit. gov.scot licence footer verbatim: "All content is available under the Open Government Licence v3.0, except for graphic assets and where otherwise stated". Parent annex also holds designer risk register + departure determination (Annexes H/I) — context for recommendation-viability reasoning.
+
+### INT-011 · Keadby 3 Low Carbon Gas Power Station — ES Appendix 10B Stage 1 RSA report (A18 access junctions)
+
+- id: `int-011-uk-keadby3-stage1-rsa`
+- title: The Keadby 3 Low Carbon Gas Power Station Project — Environmental Statement Volume II Appendix 10B: Road Safety Audit Report Stage 1 (Doc Ref 6.3.11/App 10B rev VP1.0, May 2021)
+- source_url: https://www.ssethermal.com/media/va4jhaw3/k3-document-6-3-11-es-appendix-10b-stage-1-road-safety-audit.pdf
+- publisher: Keadby Generation Limited (applicant) / AECOM (author) — DCO examination record, Planning Inspectorate EN010114
+- retrieved_date: 2026-08-24
+- country/body: England, UK (NSIP development-control RSA; ToR GG 119 per §1.1.8)
+- native_stage: Stage 1 (preliminary design of proposed access off the A18 incl. right-turn pocket and AIL route, Belton near Scunthorpe)
+- input_types present: scheme_description (access strategy, TTRO 40 mph construction limit vs NSL), collision data review section (§2.2), drawings inventory (GA drawing 60625943-ACM-XX-XX-DR-D-0000-001 cited in problem tables)
+- output_types present: findings_report (Problems 4.1.x with Location/Drawing/Summary/Recommendation rows incl. RRS redesign + RRRAP-assessment finding and speed-related loss-of-control finding), departures section (§3)
+- completeness: outputs-only (drawings referenced, not appended)
+- filename+sha256: uk-keadby3-stage1-rsa-report-2021.pdf `3ae40933a54bae3dd6398f400930721f1597e115dddcaf3708d9789a527c582c`
+- notes: First England trunk-road-adjacent NSIP artifact in collection; RRRAP-related problem language is a good seed for restraint-system reasoning; published via applicant's DCO document set (Crown copyright planning record).
+
+### INT-012 · Sunnica Energy Farm — Newmarket Rd/site-access junction Stage 1 RSA (NSIP CTMP annex)
+
+- id: `int-012-uk-sunnica-newmarket-rd-stage1-rsa`
+- title: Sunnica Energy Farm ES Appendix 13C Annex E — Sunnica Solar Farm: Newmarket Road / Site Access Junction Stage 1 Road Safety Audit (FINAL; AECOM project 60594170, Sept–Oct 2021)
+- source_url: https://nsip-documents.planninginspectorate.gov.uk/published-documents/EN010106-004850-6.2_Appendix_13C_Framework%20Construction%20Traffic%20Management%20Plan%20and%20Travel%20Plan%20Appendix%20E%20%5BTRACKED%5D.pdf
+- publisher: AECOM Limited for Sunnica Energy (client); Planning Inspectorate Scheme EN010106, Application Document EN010106/APP/6.2
+- retrieved_date: 2026-08-24
+- country/body: England, UK (temporary HGV construction-access T-junction on Newmarket Road near Mildenhall, Suffolk; ToR GG 119)
+- native_stage: Stage 1 (preliminary design of a temporary 13-month construction access, removed post-construction)
+- input_types present: scheme_description (HGV movement profile 9–12 vehicles/day tapering, left-in/left-out restriction at A11(T)), drawings inventory (Appendix A: swept-path TRA_003/004/006, visibility splays TRA_005, dwg 210803_Golf_Links_Road_Site_Access_Option_2; RSA brief dated 15.09.21), site observations (dated daylight visit with weather/surface/off-peak traffic notes)
+- output_types present: findings_report (sections A–E; Problem D1 slow-moving HGV right-turn conflict), recommendations (gateway signage strategy deferred to Stage 2), audit team statement
+- completeness: outputs-only (problem-location plan embedded; drawings listed not appended; no designer response in this annex)
+- filename+sha256: uk-sunnica-newmarket-road-stage1-rsa-2021.pdf `2226b4992986e6de8da1e787b57b45909d9973fd50c1bfdba332f9d02349f991`
+- notes: Temporary-works audit exercises time-limited scheme reasoning (safety case tied to construction phase and reinstatement) — distinct from permanent-scheme audits; qpdf hint-table warnings benign.
+
+### INT-013 · Northampton Gateway SRFI — Stage 1 RSA Response Report (designer-response artifact, England)
+
+- id: `int-013-uk-northampton-gateway-stage1-response`
+- title: Northampton Gateway SRFI Transport Assessment Appendix 31 — Stage 1 Road Safety Audit Response Report (NGW-BWB-GEN-XX-RP-TR-002_RSA1, May 2018)
+- source_url: https://nsip-documents.planninginspectorate.gov.uk/published-documents/TR050006-000450-ES%20TR%20App%2012.1%20-%20TA%20App%2031%20-%20RSA1%20Response%20Report.pdf
+- publisher: BWB Consulting Ltd (designer side, for Roxhill) — DCO examination record, Planning Inspectorate TR050006
+- retrieved_date: 2026-08-24
+- country/body: England, UK (strategic rail freight interchange; M1 J15/J15A trunk-road connections + site roads + A508)
+- native_stage: Stage 1 response (responding to a March 2018 independent Stage 1 audit by BWB's separate road-safety team)
+- input_types present: none (response document embedding the audit text verbatim for cross-reference)
+- output_types present: response_report (items raised per location — J15A, M1 J15, site roads, A508, Roade, Knock Rd… — with designer responses in the audit's nomenclature)
+- completeness: outputs-only
+- filename+sha256: uk-northampton-gateway-stage1-rsa-response-2018.pdf `de89f817d942aa77b0dc1851764cafcddee8c83e0c2fffdaaa8ee7f2aa4b2520`
+- notes: England counterpart to the Scottish response reports INT-006/007; multi-junction scale makes it a good fixture source for response-to-multiple-findings threading. Audit text embedded inside gives partial findings visibility.
+
+### INT-014 · Ardee Old Railway Lands, Amenity Lands & Woodland Walk — Combined Stage 1&2 RSA (Irish public-realm regeneration)
+
+- id: `int-014-ie-abp-ardee-stage1-2-rsa`
+- title: COMBINED STAGE 1&2 ROAD SAFETY AUDIT — Ardee Old Railway Lands, Amenity Lands and Woodland Walk (Report ref 2067R02, FINAL 12-05-2025; Bruton Consulting Engineers Ltd for Louth County Council; TII GE-STY-01024 Dec 2017) — ABP case 323972 application document 13
+- source_url: https://www.pleanala.ie/publicaccess/Case%20Documentation/323972/Applicant%20Documents/Application%20Documents/13%20-%20Ardee%202040%20-%20Stage%201%20&%202%20Road%20Safety%20Audit%20-%20Amenity%20&%20Woodland_0.pdf
+- publisher: Bruton Consulting Engineers Ltd (team leader Norman Bruton TII approval NB 168446; member Owen O'Reilly OO1291756) for Louth County Council; released through An Bord Pleanála case documentation (Ardee 2040 Regeneration Project)
+- retrieved_date: 2026-08-24
+- country/body: Ireland (urban public-realm/community-infrastructure scheme in an N2 market town)
+- native_stage: **Stage 1&2 combined** (Irish F/1/2/1&2/3/4 vocabulary; GE-STY-01024 Dec 2017 named as governing standard)
+- input_types present: drawings inventory (Appendix B: Louth CoCo drawings 06-DR-2001 Rev D … 06-DR-2402 Rev B + Woodland Walk .dwg), site visits (16 Nov 2023 + 3 Jan 2024, weather/surface noted)
+- output_types present: findings_report (Section 3 issues + Section 4 Observation explicitly listing information NOT provided to the audit team: drainage design, cross sections, kerb heights, some road markings, signage, utility diversions, swept paths), recommendations, audit statement/certification, feedback form template (Appendix C)
+- completeness: outputs-only (drawings listed not appended; no completed feedback form in this document)
+- filename+sha256: ie-abp-ardee-stage1-2-rsa-2024.pdf `fc1f90491a37b72bfc5e7cc3b7746fdc5ee98c3201006b47c5b9caaa3dc0395e`
+- notes: VRU-dense public-realm complement to rural int-009. The "not provided to the Audit Team" observation block is direct seed material for input-completeness/intake-gap semantics. Sibling Main Street Ardee Stage 2 RSA exists inside the case's Quality Audit PDF (see gaps).
+
+### INT-015 · Milltown Park, Sandford Road, Dublin 6 — Stage 1 RSA with completed feedback form incl. rejected recommendation
+
+- id: `int-015-ie-abp-milltown-park-stage1-rsa-feedback`
+- title: STAGE 1 ROAD SAFETY AUDIT — Proposed Residential Development at Milltown Park, Sandford Road, Dublin 6 (Report ref 0995R01 FINAL March 2021; Bruton Consulting for DBFL Consulting Engineers) incl. completed RSA feedback form signed 07-04-2021 — ABP case 322160 application docs
+- source_url: https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf
+- publisher: Bruton Consulting Engineers Ltd (Norman Bruton TL NB 168446; Sayed Ahmad Saeed TM SS 3419515) for DBFL Consulting Engineers; released through An Bord Pleanála (EIAR/NIS documentation)
+- retrieved_date: 2026-08-24
+- country/body: Ireland (672-unit residential development accesses + proposed toucan crossing of Milltown Road; 50 km/h context)
+- native_stage: Stage 1 (GE-STY-01024 Dec 2017)
+- input_types present: drawings inventory (190226-DBFL-RD-SP-DR-C-1001 P02 roads layout cited per problem), site visit 22 March 2021
+- output_types present: findings_report (problems 3.1–3.5, all VRU-focused: toucan-crossing footway space, shared-use width, narrow footpaths/wide lane speeds, tactile paving at dropped kerbs, crossing siting), recommendations, completed ROAD SAFETY AUDIT FORM — FEEDBACK ON AUDIT REPORT (accept/reject per problem with reasons, alternative measures, three signature blocks dated 07-04-2021)
+- completeness: outputs-only + **completed designer-response feedback form** (drawings cited not appended)
+- filename+sha256: ie-abp-milltown-park-stage1-rsa-2021.pdf `e26c6ac2763bb6b2be1eb7d14142396a33aeac15ccd347edcefee25b9f2455c8`
+- notes: **Only sampled artifact so far documenting rejection of an audit recommendation**: problem 3.2 answered No/No with justification (shared-area width acceptable given 4.8 m shared access; width constrained by trees/existing walls). Direct real-world analogue of candidate rejection-with-reasons semantics; strong fixture candidate alongside int-008's full package.
+
+### INT-016 · Mackays to Peka Peka (Kāpiti Expressway) — RSA Stage 2 Scheme Design decision-tracking form (NZTA)
+
+- id: `int-016-nz-nzta-m2pp-stage2-decision-tracking`
+- title: Mackays to Peka Peka Scheme Assessment Report Appendix G — Road Safety Audit: "M2PP Kapiti Coast Expressway RSA stage 2: Scheme Design (11-SD)" recommendations decision-tracking forms PMM 6.5a/6.6a (auditors Jos Vroegop, Steve Reddish, Jon England)
+- source_url: live https://www.nzta.govt.nz/assets/projects/mackays-to-peka-peka/docs/scheme-assessment-report/sar-appendix-g.pdf (nzta.govt.nz serves bot-challenge HTML to non-browser clients); retrieved via Wayback capture 20190131083846 of that public-origin URL
+- wayback_url: http://web.archive.org/web/20190131083846if_/https://www.nzta.govt.nz/assets/projects/mackays-to-peka-peka/docs/scheme-assessment-report/sar-appendix-g.pdf
+- publisher: NZ Transport Agency Waka Kotahi (Wellington Northern Corridor RoNS; M2PP Alliance)
+- retrieved_date: 2026-08-24
+- country/body: New Zealand (Kāpiti Coast expressway, first NZ sample in collection)
+- native_stage: **RSA Stage 2 — Scheme Design** ("11-SD"; NZTA vocabulary Stage 1 scheme/concept → 2 preliminary/scheme design → 3 detailed → 4 pre-opening/post-construction)
+- input_types present: none standalone (decision-tracking table references scheme-design recommendations and drawings by item)
+- output_types present: response_report-equivalent — recommendation-by-recommendation rows with severity/risk column, designer comments, and decisions (full vs half interchanges at Poplar Ave/Peka Rd, pedestrian-cyclist crossing desire lines, max kerb lip ≤25 mm for truck tracking, etc.)
+- completeness: outputs-only (scan; OCR required)
+- filename+sha256: nz-nzta-m2pp-stage2-scheme-design-rsa-decision-tracking.pdf `6b86275409e6ed59b06a7ba524344398a7096e8186a2d9b86822c3b90a05eb2f`
+- notes: Shows NZTA's formal decision-tracking mechanism (audit recommendation → designer comment → client decision) — structurally closest overseas analogue to promotion/rejection workflow; complements INT-006/007/013 responses. qpdf hint-table warnings benign.
+
+### INT-017 · CAREC Road Safety Engineering Manual 5: Star Ratings for Road Safety Audit (SR4RSA, worked examples)
+
+- id: `int-017-carec-manual5-sr4rsa-adb-2022`
+- title: CAREC Road Safety Engineering Manual 5: Star Ratings for Road Safety Audit — Section IX Worked Examples illustrating SR4RSA Levels 1–3 (ADB publication stock no. TIM220272-2, June 2022, 74 pp.)
+- source_url: https://www.adb.org/sites/default/files/publication/806631/carec-rse-manual-5-star-ratings-road-safety-audit_0.pdf (publication page: https://www.adb.org/publications/carec-road-safety-engineering-manual-star-ratings)
+- publisher: Asian Development Bank / CAREC Secretariat, June 2022
+- retrieved_date: 2026-08-24
+- country/body: Central Asia Regional Economic Cooperation programme (11 member countries; ADB)
+- native_stage: SR4RSA across design stages (Level 1 desk-based screen → Level 2 design-stage coding → Level 3 detailed scoring incl. motorcyclist-level crash-cost example); iRAP design-assessment lineage
+- input_types present: scheme_description (worked-example road designs: typical cross sections, intersections), traffic_data (iRAP attribute coding records, flow assumptions in examples)
+- output_types present: findings_report-equivalent (star ratings per user group per design iteration), recommendations (countermeasure mapping to star-score deltas), FSI estimates; sample Terms of Reference annex
+- completeness: excerpt — manual with embedded worked examples; not a real named scheme (synthetic/example designs)
+- filename+sha256: carec-manual5-star-ratings-rsa-adb-2022.pdf `b9e8f54bfe6ab2953366461385e2b25bcecb0194676e8fc35fa19ef57532830f`
+- notes: Bridges int-001 (CAREC RSA process) and int-002 (iRAP SR4D) lineages; "situational scrutiny" concept and Level-2 road-design worked example are directly reusable as engine/judge prompt material. Covers Round-2 veins 4+5 in one volume. qpdf hint-table warnings benign.
+
 ## Documented gaps / blocked targets (no file)
 
 | target | what it is | why not collected |
@@ -167,20 +293,28 @@ stage ≈ `PRELIMINARY_DESIGN`–`DETAILED_DESIGN`. Mappings shown alongside nat
 | PIARC RSM case study "Kazakhstan: Road safety audit of 1062 km of road" | Priority-source full case-study PDF (~103 kB) behind the Ch.10.4 case-study link | Open HTML summary exists on roadsafety.piarc.org; file route `/system/files/media/file/rsm_pi_kazakhstan_roadsafetyaudit.pdf` returns 403 anonymous (login-wrapped, verified 2026-08-23). **No Wayback captures exist** (CDX queried for exact URL, `/system/files/media/file/*`, and `/en/media/*` — zero rows). Remedy: free PIARC registration per docs/references/INT/MANIFEST.md. |
 | PIARC RSM case study "Australia: Application of the safe system approach through safe system audit/review" | Main Roads WA zero-deaths project safe-system audit case study (~79 kB PDF) | Same wall: `/system/files/media/file/rsm_pi_australia_applicationofsafesystemaudit.pdf` → 403; no Wayback captures. MRWA's underlying "Policy and Guidelines for Safe System Reviews" is unpublished (cited as such in Austroads AP-R509-16). |
 | Austroads worked RSA examples | No standalone published completed RSAs; AGRS06 Part 6 carries templates only | Austroads publishes guidance/frameworks (AGRS06-19, AP-R509-16 SSF with framework-level examples), not filled scheme audits. Skipped to respect download cap; retrievable free if wanted later. |
-| NZTA/Waka Kotahi scheme RSAs | Procedures doc (TFM9) includes only sample blank forms | No completed real-scheme audits published by NZTA located publicly. |
+| NZTA/Waka Kotahi scheme RSAs | Procedures doc (TFM9) includes only sample blank forms | **Partially resolved Round 2** — INT-016 (M2PP Stage 2 decision-tracking) obtained via Wayback. Remaining gap: completed full RSA reports on named schemes are sparse; Te Ara Tupua design safety audits (2017 + detailed-design 2021, 11 MB/7.7 MB) exist on nzta.govt.nz/projects/te-ara-tupua/publications but nzta.govt.nz serves Incapsula bot-challenge HTML to non-browser clients, and the two Wayback captures of the detailed-design file are truncated at ~1 MiB in our fetch environment. Retriable with browser-session tooling. |
+| Te Ara Tupua Pito-One to Melling walking/cycling link audits | 2017 Design safety audit + Nov 2021 Detailed design road safety audit (redacted), published by Waka Kotahi | See NZTA row above — bot-walled live; archived copies truncated. High-value future target: VRU-critical-mass design audit. |
+| Ardee Main Street Stage 2 RSA (June 2024 + Oct 2024 addendum) | Urban main-street public-realm Stage 2 with TII approval appendix | Present as Appendix B *inside* the case's Quality Audit PDF (19 - Ardee 2040 - Quality Audit (November 2024)_0.pdf, ABP 323972); left un-downloaded this run to respect scope cap — direct candidate for Round 3. |
 | SANRAL scheme RSAs | South Africa publishes methods (TRH 29 / SARRAM lineage), not individual audits | Individual SANRAL project RSAs not in open domain. |
 | World Bank WE-WC corridor RSA reports | Kazakhstan South West Roads Project safeguards docs exist (Inspection Panel report etc.) | The actual RSA reports were never published; WB document portal holds safeguards/procurement records only. |
 | Full multi-file packages (brief + drawings + report + response) | Mission's ideal package shape | Unobtainable publicly at trunk-road scale (client property); closest is INT-008 single-file development-control package. |
 
 ## Coverage summary
 
-- Downloads: **9 files** (7 distinct sources; INT-004–007 form one coherent Transport Scotland programme slice).
-- full-package: INT-008 (single-file, minor scheme).
-- outputs-only (real named schemes): INT-002, INT-004, INT-005, INT-006, INT-007, INT-009.
-- excerpt/manual-with-worked-content: INT-001 (CAREC case studies + checklists), INT-003 (AfDB specimen report).
-- Early-stage emphasis: 6/9 samples sit at feasibility↔detailed-design equivalents (CAREC detailed-design case studies; AfDB Stage 1–3 definitions + specimen; iRAP design-stage; three UK/Irish Stage 1(/2) artifacts).
-- Jurisdiction spread: ADB/CAREC (Kazakhstan among members), iRAP/India, AfDB/Pan-African, Scotland×4, England×1, Ireland×1. Australia/NZ/SANRAL: gap-documented (blocked/unpublished).
-- Integrity: all files `%PDF`-verified and pass `qpdf --check` (benign linearization warnings only; no encryption; no protection removed).
+- Downloads: **17 files** (Round 1: 9; Round 2: 8 — see per-entry sha256). All `%PDF`-verified; qpdf checks pass with benign linearization/hint-table warnings only (no encryption, nothing decrypted).
+- full-package: INT-008 (single-file, minor scheme). outputs-only + completed response/feedback artifacts: INT-015 (feedback form incl. one rejection), INT-016 (decision-tracking form), INT-006/007/013 (response reports).
+- outputs-only (real named schemes): INT-002, INT-004, INT-005, INT-010, INT-011, INT-012, INT-014.
+- excerpt/manual-with-worked-content: INT-001 (CAREC case studies + checklists), INT-003 (AfDB specimen report), INT-017 (CAREC Manual 5 SR4RSA worked examples Levels 1–3).
+- Early-stage emphasis after Round 2: 13/17 samples sit at feasibility↔detailed-design equivalents (all four new UK/Irish audit artifacts are Stage 1(/2) or combined Stage 1&2; NZ sample is Stage 2 scheme design; CAREC M5 examples are design-stage).
+- Jurisdiction spread after Round 2: ADB/CAREC ×2 (incl. SR4RSA manual), iRAP/India, AfDB/Pan-African, Scotland ×5 (+INT-010 SE Unit), England ×4 (NSIP development-control + SRFI response), Ireland ×3 (ABP/EIAR vein productive), New Zealand ×1. Australia/SANRAL still gap-documented below.
+- Response-culture coverage now spans: UK FOI designer responses (Stage 1 + Stage 2), England NSIP response report (multi-junction), Irish completed feedback form **with a rejected recommendation**, and NZTA decision-tracking (designer comment + client decision).
+
+### Round 2 notes (2026-08-24)
+
+- PINS nsip-documents.planninginspectorate.gov.uk and applicant DCO document sets are a rich open vein for England Stage 1 RSAs (search "road safety audit" appendix within EN/TR case records).
+- An Bord Pleanála `pleanala.ie/publicaccess` hosts standalone RSA PDFs under both Case Documentation and EIAR-NIS trees — highest-yield Irish route found so far.
+- nzta.govt.nz direct asset URLs are bot-walled to plain HTTP clients; Wayback captures of public-origin NZTA assets work but large files truncate (~1 MiB) in this environment.
 
 ## Non-goals respected
 

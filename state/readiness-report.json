@@ -1,0 +1,415 @@
+{
+  "schema_note": "T4.x readiness snapshot: judged fixtures x ODD cells x latest Tier-1 archive, plus ADR-0007 role census. Regenerate with: node scripts/readiness-report.mjs [runId]",
+  "generated": "2026-08-24T19:02:41.879Z",
+  "declaration_version": "1.1.1",
+  "latest_archive": "2026-08-24T08-08-49-444Z",
+  "release_test_tier": {
+    "current_gate_set": [
+      "GF-6",
+      "GF-7",
+      "GF-8",
+      "GF-9",
+      "GF-10"
+    ],
+    "real_sample_tier": "dormant until corpus >= 100 cataloged samples (owner decision T3.3)"
+  },
+  "role_census": {
+    "total": 51,
+    "unassigned": 4,
+    "judge-calibration": 16,
+    "engine-fewshot": 6,
+    "reserve": 25
+  },
+  "odd_cells": [
+    {
+      "jurisdiction_id": "uk",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixtures": [
+        "GF-6",
+        "GF-11"
+      ]
+    },
+    {
+      "jurisdiction_id": "usa",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixtures": [
+        "GF-7",
+        "GF-12"
+      ]
+    },
+    {
+      "jurisdiction_id": "usa",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "in",
+      "fixtures": [
+        "GF-8"
+      ]
+    },
+    {
+      "jurisdiction_id": "international",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixtures": [
+        "GF-9"
+      ]
+    },
+    {
+      "jurisdiction_id": "canada",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "in",
+      "fixtures": [
+        "GF-10",
+        "GF-13"
+      ]
+    },
+    {
+      "jurisdiction_id": "uae",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "uae",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "uae",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN",
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "uae",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "uk",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "structurally_absent",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "canada",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "canada",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "international",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "international",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "uk",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    },
+    {
+      "jurisdiction_id": "usa",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixtures": []
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "GF-1",
+      "file": "tests/fixtures/gf1-uk-urban-arterial-stage2.json",
+      "jurisdiction": "UK",
+      "native_stage": "uk:S2",
+      "canonical_stage": null,
+      "source_sample": null,
+      "real_scheme": false,
+      "odd_cell": null,
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "no-scorecard"
+      }
+    },
+    {
+      "id": "GF-10",
+      "file": "tests/fixtures/gf10-canada-corridor-planning.json",
+      "jurisdiction": "CA",
+      "native_stage": "ca-tac:planning",
+      "canonical_stage": null,
+      "source_sample": "https://commons.wikimedia.org/wiki/File:The_Basketweave.svg",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "canada",
+        "stage": [
+          "FEASIBILITY_CONCEPT"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-11",
+      "file": "tests/fixtures/gf11-uk-greatnorthroad-s1.json",
+      "jurisdiction": "UK",
+      "native_stage": "uk:S1",
+      "canonical_stage": null,
+      "source_sample": "https://www.gov.scot/publications/a9-accidents-safety-and-dualling-eir-release/",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "uk",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-12",
+      "file": "tests/fixtures/gf12-usa-hingham-prelim.json",
+      "jurisdiction": "US",
+      "native_stage": "us-fhwa:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "usa",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-13",
+      "file": "tests/fixtures/gf13-ca-neahd-planning.json",
+      "jurisdiction": "CA",
+      "native_stage": "ca-tac:planning",
+      "canonical_stage": null,
+      "source_sample": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "canada",
+        "stage": [
+          "FEASIBILITY_CONCEPT"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-2",
+      "file": "tests/fixtures/gf2-usa-rural-highway-prelim.json",
+      "jurisdiction": "US",
+      "native_stage": "us-fhwa:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": null,
+      "real_scheme": false,
+      "odd_cell": null,
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "no-scorecard"
+      }
+    },
+    {
+      "id": "GF-3",
+      "file": "tests/fixtures/gf3-uae-roundabout-combined-s12.json",
+      "jurisdiction": "AE",
+      "native_stage": "ae-ad:S1_2",
+      "canonical_stage": null,
+      "source_sample": null,
+      "real_scheme": false,
+      "odd_cell": null,
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "no-scorecard"
+      }
+    },
+    {
+      "id": "GF-4",
+      "file": "tests/fixtures/gf4-canada-pedestrian-planning.json",
+      "jurisdiction": "CA",
+      "native_stage": "ca-tac:planning",
+      "canonical_stage": null,
+      "source_sample": null,
+      "real_scheme": false,
+      "odd_cell": null,
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "no-scorecard"
+      }
+    },
+    {
+      "id": "GF-5",
+      "file": "tests/fixtures/gf5-int-roundabout-detailed.json",
+      "jurisdiction": "INT",
+      "native_stage": "int:detailed-design",
+      "canonical_stage": null,
+      "source_sample": null,
+      "real_scheme": false,
+      "odd_cell": null,
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "no-scorecard"
+      }
+    },
+    {
+      "id": "GF-6",
+      "file": "tests/fixtures/gf6-uk-m5j10-stage1.json",
+      "jurisdiction": "UK",
+      "native_stage": "uk:S1",
+      "canonical_stage": null,
+      "source_sample": "https://nsip-documents.planninginspectorate.gov.uk/published-documents/TR010063-000866-TR010063_9.54_road_safety_audit1_response_report.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "uk",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 1,
+        "unscored": 1
+      }
+    },
+    {
+      "id": "GF-7",
+      "file": "tests/fixtures/gf7-usa-arterial-prelim.json",
+      "jurisdiction": "US",
+      "native_stage": "us-fhwa:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": "https://rosap.ntl.bts.gov/view/dot/42592/dot_42592_DS1.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "usa",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 1,
+        "unscored": 1
+      }
+    },
+    {
+      "id": "GF-8",
+      "file": "tests/fixtures/gf8-usa-hawk-final.json",
+      "jurisdiction": "US",
+      "native_stage": "us-fhwa:final-design",
+      "canonical_stage": null,
+      "source_sample": "https://rosap.ntl.bts.gov/view/dot/42592/dot_42592_DS1.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "usa",
+        "stage": [
+          "DETAILED_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-9",
+      "file": "tests/fixtures/gf9-int-interchange-prelim.json",
+      "jurisdiction": "INT",
+      "native_stage": "int:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": "https://commons.wikimedia.org/wiki/File:Cloverleaf_(PSF).svg",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "international",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-24T08-08-49-444Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    }
+  ]
+}

@@ -53,3 +53,15 @@ decisions or direct orders).
 
 - #7 handoff doc for the dedicated readiness-framework session — next.
 - #9 owner download queue unchanged.
+
+## Round 2 addendum (same day)
+
+- Two hunter subagents landed after one provider flake: **23 new samples** — corpus
+  **60 cataloged**. INT+10..17, CA-009..011, US-009..020; all %PDF/sha256 verified,
+  role-assigned per ADR-0007 rules into sample-corpus.json.
+- T4.x harness landed: `scripts/readiness-report.mjs` → `state/readiness-report.json`
+  (fixtures × ODD cells × latest archive + role census).
+- Conversion pattern industrialized: docs/validation/sample-conversion-checklist.md.
+- Owner download queue formalized with evidence of attempts:
+  docs/references/ACQUISITION-BRIEF.md. Dead ends recorded honestly (MassDOT GIS
+  metadata-only, Alberta CKAN exhausted, Kamloops citation rot).

@@ -1,6 +1,7 @@
 # Canada (CA) — Road Safety Audit sample collection
 
-Collected 2026-08-23 by sample-audit collection agent. Public-access sources only.
+Collected 2026-08-23 (Round 1) and 2026-08-24 (Round 2) by sample-audit collection agent.
+Public-access sources only.
 Every file verified `%PDF` magic on arrival; SHA-256 recorded below.
 
 **Native stage vocabularies observed** (recorded verbatim per source):
@@ -16,8 +17,9 @@ Every file verified `%PDF` magic on arrival; SHA-256 recorded below.
   `n/a` (outside the three canonical design stages).
 
 Downloads: **7 live fetches** (+1 local page-extraction from an already-held reference;
-no duplication of `docs/references/CA/`). GF-10 synthetic planning-stage express-collector
-fixture not duplicated.
+no duplication of `docs/references/CA/`). Round 2 (2026-08-24) added **3 more live fetches**
+(+1 section extraction from a newly fetched Final Report).
+GF-10 synthetic planning-stage express-collector fixture not duplicated.
 
 ## Downloaded samples
 
@@ -141,6 +143,51 @@ fixture not duplicated.
 - filename: on-ryerson-waterloo-corridor-rsa-thesis.pdf · sha256: 21a60cfcb38b486f3b4324109946eff05575f1acf6af34430e3b45034fcd576b
 - notes: Academic tier; repository item dated 2021-06-08 (thesis itself early-2000s). Useful as end-to-end student-scale worked audit once OCR'd.
 
+### CA-009 · 17 Avenue SW In-Service Road Safety Review — Executive Summary (City of Calgary / Stantec + TranSafe, Oct 2015)
+
+- id: `ca-009-ab-calgary-17ave-isrsr-exec`
+- title: "17 Avenue SW In-Service Road Safety Review — Executive Summary" (corridor Macleod Trail SE to 14 Street SW; Stantec Consulting Ltd + TranSafe Consulting Ltd for City of Calgary Transportation – Roads, October 2015)
+- source_url: https://www.calgary.ca/content/dam/www/transportation/ti/documents/road-projects/17ave-reconstruction/17avesw-construction-road-safety-review-executive-summary.pdf
+- publisher: City of Calgary Transportation (consultants Stantec + TranSafe)
+- retrieved_date: 2026-08-24
+- province/body: AB — City of Calgary (municipal arterial rehabilitation pre-work ISRSR; safety improvements folded into the 2016 reconstruction)
+- native stage: **in-service road safety review** per TAC Canadian Guide to In-service Road Safety Reviews (2004), explicitly framed to inform a reconstruction design → mapping n/a (in-service; countermeasure set feeds design)
+- input_types present: collision analysis (corridor + homogeneous segments + 12 select intersections), traffic operations (counts, travel time, parking utilization), traffic-conflict observations at 5 intersections, human-factors review
+- output_types present: findings_report (issues corridor-wide/per-segment/per-intersection with photographs), recommendations (short/medium/long-term implementation strategy with quantified benefit-cost ratios from CMF Clearinghouse, HSM, Alberta MORCOAR)
+- completeness: excerpt (executive summary of the fuller review; full report not posted)
+- filename: ab-calgary-17ave-isrsr-exec-2015.pdf · sha256: 505ffa313f8797778a5f009ddba5b0e71600747bd29a15bc6a07071f23517186
+- notes: Municipal ISRSR with fully quantified B/C tables (e.g., reflective strips on primary signal heads B/C 13:1–26:1) — strongest Canadian exemplar of cost-effectiveness-ranked recommendations alongside CA-005's CMF comparisons.
+
+### CA-010 · 34 Street Functional Planning Study — §5.12 Traffic Safety Audit & Mobility Review (Strathcona County/Edmonton, McElhanney 2013)
+
+- id: `ca-010-ab-strathcona-34st-fps-tsa-review`
+- title: 34 Street Functional Planning Study (Baseline Road to Whitemud Drive) Final Report §5.12 "Traffic Safety Audit & Mobility Review" — pp. 61–64 extracted from the Final Report (McElhanney Consulting Services for Strathcona County + City of Edmonton, concept plans dated Apr 2013; study approved by Council Feb 2015)
+- source_url: https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf (section extracted locally; study page: https://www.strathcona.ca/transportation-roads/planning-and-design/34-street-functional-planning-study/)
+- publisher: Strathcona County Transportation Planning & Engineering (with City of Edmonton)
+- retrieved_date: 2026-08-24
+- province/body: AB — Strathcona County + City of Edmonton (6.5 km two-lane undivided → ultimate multi-lane upgrade)
+- native stage: functional planning study traffic-safety audit at concept-plan level → mapping FEASIBILITY_CONCEPT→PRELIMINARY_DESIGN boundary (interpreted; county vocabulary, no bare stage number)
+- input_types present: scheme_description (recommended concept: separated SUP, access consolidation, Aussie-style turn bays, RIRO conversions), drawings (concept plan/profile sets in companion appendices incl. CA-011)
+- output_types present: findings_report (safety benefits bullets + general concerns e.g. permissive left-turn risk across 3+ opposing lanes) and a numbered **Issue/Response table (~30 rows**: driveway weaving distances, trail-crossing conflicts, signalized-intersection driveway treatments, each with designer response)
+- completeness: excerpt (4-page section; standalone audit letter not published separately)
+- filename: ab-strathcona-34st-fps-traffic-safety-audit-review-2013.pdf · sha256: a6d4af372c143fdc42d3f4d4b8d945f9fe166768267ed52445f554ce30f3ef6e
+- notes: The Issue→Response table is the municipal functional-plan analogue of candidate review/promotion; pairs with CA-011 (the alignment sheets the audit reviewed). Round-1 CA-002 pattern repeated in a second Alberta municipal corridor.
+
+### CA-011 · Companion of CA-010 — Appendix H Traffic Safety Audit conceptual alignment sheets (Strathcona County, 2013)
+
+- id: `ca-011-ab-strathcona-34st-audit-alignment-sheets`
+- title: 34 Street Functional Planning Study Appendix H — Traffic Safety Audit: 34th Street Conceptual Alignment sheets 1–9 (CAD export, sheet dates Apr–Jul 2013)
+- source_url: https://storagecdn.strathcona.ca/files/files/appendix_h_safety_audit.pdf
+- publisher: Strathcona County Transportation Planning & Engineering
+- retrieved_date: 2026-08-24
+- province/body: AB — Strathcona County
+- native stage: same engagement as CA-010 → PRELIMINARY_DESIGN boundary (interpreted)
+- input_types present: drawings (9 CAD-export conceptual alignment sheets issued as the audit's reviewed material)
+- output_types present: none (pure engineering input)
+- completeness: inputs-only (companion artifact of CA-010)
+- filename: ab-strathcona-34st-appendix-h-audit-alignment-sheets-2013.pdf · sha256: 3c9cfb3ce33748d7487fb126e374482369650b67e38d1e702508fc66080b4302
+- notes: Shows exactly what auditors were given at concept stage for a rural-fringe arterial upgrade; mirrors round-1 CA-003/004 companion-inputs pattern.
+
 ## Documented gaps / not collected
 
 | item | what it is | why not collected |
@@ -149,16 +196,25 @@ fixture not duplicated.
 | Québec MTQ completed «audits de sécurité routière» | Worked audit reports under the 2012 guide | None located publicly (bv.transports.gouv.qc.ca hosts the guide, not executed audits). French-native stage vocab remains available from the guide in references. |
 | Toronto Vision Zero RSAs (~30 locations/yr program since 2017) | Auditor reports for 14 priority KSI locations (e.g., Yonge St) | Published only as council staff-report summaries (toronto.ca/legdocs), never standalone auditor findings; e.g., "Corridor Safety Review – Queen Street East" (2022), yongeTOmorrow ISSR+RSA mentioned but not attached. |
 | City of Vancouver RSAs | Municipal corridor/intersection audits | No standalone RSA report PDFs located on vancouver.ca this run. |
-| Kamloops five-intersection in-service safety review | Named ISRSR flagged "publicly available" in BC Community Road Safety Toolkit Module 3 | Direct URL not surfaced this run; candidate for a targeted Wayback dig. |
+| Kamloops five-intersection in-service safety review | Named ISRSR flagged "publicly available" in BC Community Road Safety Toolkit Module 3 | **Wayback dig performed Round 2 (2026-08-24)**: the only Kamloops link carried by Module 3 (live and 2025 archived captures, 60 pp.) is the *Safer City Initiative: Intersection Safety Master Plan* PDF; no five-intersection review file exists under kamloops.ca live or in CDX-indexed captures. Source of the "five intersections" snippet not located — treat as citation-rot; Kamloops Vision Zero strategy documents reference the practice but publish no audit reports. |
 | ICBC Municipal Road Safety Audit Program reports | Free municipal RSAs (14 audits for 13 authorities in 2014 alone) | Not centrally published; per-municipality dispersal unknown. |
+| open.alberta.ca additional project RSAs | Named-project RSA datasets beyond NEAHD | **Exhausted Round 2 via CKAN API**: package_search for "road safety audit" returns exactly 3 packages (NEAHD FPS = CA-001; AT RSA guidelines; AT RSA implementation plan). No further Alberta Transportation project RSAs are posted to the open repository. |
+| Strathcona 34 St FPS standalone audit letter | Full audit report behind §5.12 summary | Only the 4-page section and Appendix H sheets are published (CA-010/CA-011); no standalone audit document in the appendix set (A–J). |
+| Edmonton LRT Capital Line South road safety audits | Schedule 4 §5.9 mandates RSAs under the P3 design-build agreement | Contractual requirements published; executed audit reports not posted. |
 | Fredericton–Moncton F-MH stage RSA reports | Canada's first full-lifecycle P3 RSA programme (planning→post-opening) | Actual stage reports not public; only secondary descriptions (Hildebrand & Wilson TAC 2002; CCPPP case study; UNB P3 paper). |
 | Chief Peguis Trail Extension RSAs (Winnipeg) | P3 arterial with RSA by GCS Technology | TAC 2012 construction paper describes programme; RSA report itself unpublished. |
 | Dufferin County Dufferin Rd 17/19 RSA (Sept 2025) | Recent Ontario county RSA w/ sightline findings vs TAC minimums | Reported secondhand in press/staff report; audit document itself not posted. |
 
 ## Coverage summary vs. target package shape
 
-- Files: **8** in this directory (7 live downloads + 1 local extraction), all `%PDF`-verified, all sha256-recorded.
-- Early-stage emphasis achieved: CA-001 (**Planning**, authoritative self-label), CA-002/003/004 (functional-plan package), CA-007 includes the only public **Detailed Design** + **Pre-Opening** worked examples found anywhere in Canada's open corpus.
-- full-package: CA-001, CA-002 (+companions CA-003/004), CA-006, CA-007, CA-008. excerpt: CA-005. inputs-only: CA-003, CA-004.
-- Response-report culture: no standalone designer response report published anywhere sampled; closest structural evidence = CA-007 client-response columns and CA-006's mandated response step.
-- Best candidates for fixture building: **CA-001** (earliest-stage provincial), **CA-002+CA-003+CA-004** (only complete municipal input→output package), **CA-007** (multi-stage worked examples w/ response columns), **CA-005** (CMF-quantified recommendations), **CA-006** (process-formality + VRU/transit users).
+- Files: **11** in this directory (Round 1: 8 = 7 live downloads + 1 local extraction; Round 2: 3), all `%PDF`-verified, all sha256-recorded, all passing `qpdf --check` clean.
+- Early-stage emphasis achieved: CA-001 (**Planning**, authoritative self-label), CA-002/003/004 (functional-plan package), CA-010/011 (functional-planning-study audit section + audited alignment sheets), CA-007 includes the only public **Detailed Design** + **Pre-Opening** worked examples found anywhere in Canada's open corpus.
+- full-package: CA-001, CA-002 (+companions CA-003/004), CA-006, CA-007, CA-008. excerpt: CA-005, CA-009, CA-010. inputs-only: CA-003, CA-004, CA-011.
+- Response-report culture: no standalone designer response report published anywhere sampled; closest structural evidence now includes **CA-007 client-response columns**, **CA-006's mandated response step**, and **CA-010's numbered Issue/Response table** (municipal functional-plan issue→response threading).
+- Best candidates for fixture building: **CA-001** (earliest-stage provincial), **CA-002+CA-003+CA-004** (only complete municipal input→output package), **CA-007** (multi-stage worked examples w/ response columns), **CA-005** + **CA-009** (CMF/B:C-quantified recommendations), **CA-006** (process-formality + VRU/transit users), **CA-010+CA-011** (concept-stage issue→response pair).
+
+### Round 2 notes (2026-08-24)
+
+- Alberta vein via open.alberta.ca is exhausted at named-project level (see gaps). Municipal corridors are the productive Canadian route: City of Calgary posts ISRSR/executive summaries under project pages; Strathcona County posts full FPS packages with audit sections.
+- Kamloops five-intersection report: citation-rot confirmed after Wayback/CDX dig — recommend dropping from future target lists unless a consultant or ICBC source resurfaces.
+- BC MoTI and Québec MTQ structural gaps unchanged this round.
