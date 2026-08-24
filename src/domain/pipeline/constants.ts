@@ -15,3 +15,15 @@ export class StageNotEligibleError extends Error {
     super(reason);
   }
 }
+
+/** Selection falls outside the declared ODD matrix (ADR-0005; default-refuse). */
+export class OddOutsideDomainError extends Error {
+  constructor(
+    public readonly jurisdiction: JurisdictionId,
+    public readonly native_stage_id: string,
+    public readonly odd_status: "structurally_absent" | "unlisted",
+    reason: string,
+  ) {
+    super(reason);
+  }
+}

@@ -10,6 +10,17 @@ export function renderReportMarkdown(r: AuditResult): string {
   h(1, `Road Safety Audit Report — ${r.native_stage_display_name}`);
   L.push(`> ${r.disclaimer}\n`);
 
+  // Three-zone capability language (ADR-0005 decision 9): claims only inside
+  // the declared ODD; "validation pending" for mapped-unproven; floor breach
+  // invalidates the claim outright.
+  if (r.odd_status === "mapped_unproven" && r.odd_stamp) {
+    L.push(`> **Capability status:** ${r.odd_stamp}. No capability claim is made for this jurisdiction–stage combination.\n`);
+  } else if (r.odd_floor_satisfied === false) {
+    L.push(`> **Capability status:** recorded inputs fall below the ODD input floor for this cell; the capability claim does not apply to this run.\n`);
+  } else {
+    L.push(`> **Capability status:** inside ODD v${r.odd_declaration_version} (${r.jurisdiction} × ${r.canonical_stages.join(" + ")}).\n`);
+  }
+
   h(2, "1. Audit metadata");
   L.push(
     `- **Audit ID:** ${r.audit_id}`,

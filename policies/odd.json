@@ -191,6 +191,90 @@
       "incident_flags": [],
       "input_floor": [],
       "scheme_scope_note": "GG 119 v2.0.1 full text contains no feasibility/concept ('Stage F'/'Stage 0') audit; its four-stage list is exhaustive [EV-UK-004][EV-UK-022]. Intake refuses this selection outright."
+    },
+    {
+      "jurisdiction_id": "canada",
+      "framework_id": "ca-tac-crsag-alberta",
+      "native_stage_id": "ca-tac:detailed-design",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
+    },
+    {
+      "jurisdiction_id": "canada",
+      "framework_id": "ca-tac-crsag-alberta",
+      "native_stage_id": "ca-tac:preliminary-design",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
+    },
+    {
+      "jurisdiction_id": "international",
+      "framework_id": "int-piarc-baseline",
+      "native_stage_id": "int:detailed-design",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "mapping_confidence": "interpreted",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
+    },
+    {
+      "jurisdiction_id": "international",
+      "framework_id": "int-piarc-baseline",
+      "native_stage_id": "int:feasibility-concept",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "mapping_confidence": "interpreted",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
+    },
+    {
+      "jurisdiction_id": "uk",
+      "framework_id": "uk-dmrb-gg119",
+      "native_stage_id": "uk:S2",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
+    },
+    {
+      "jurisdiction_id": "usa",
+      "framework_id": "us-fhwa-rsa",
+      "native_stage_id": "us-fhwa:planning",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "mapping_confidence": "interpreted",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": ""
     }
   ]
 }

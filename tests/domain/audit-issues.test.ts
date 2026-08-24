@@ -42,6 +42,10 @@ function draft(auditId: string, marker: string): AuditResult {
     missing_information: [],
     audit_questions: [],
     limitations: [],
+    odd_declaration_version: "1.0.1",
+    odd_status: "in",
+    odd_stamp: null,
+    odd_floor_satisfied: null,
     disclaimer: "d",
   };
 }

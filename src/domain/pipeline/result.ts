@@ -2,6 +2,7 @@
 // calling node so missing-slice diagnostics always name the real caller
 // (AG-REPORT batch assembly vs the AI live path's provisional assembly).
 import { getPack } from "@/domain/packs";
+import { oddClaimZone, oddFloorSatisfied, resolveOdd } from "@/domain/odd";
 import { DISCLAIMER } from "@/domain/pipeline/constants";
 import type {
   AgNodeId,
@@ -63,6 +64,23 @@ export function assembleAuditResult(
     );
   }
 
+  // ODD declaration surface (ADR-0005): membership status, three-zone claim
+  // stamp and input-floor satisfaction ride on every assembled result.
+  const odd = resolveOdd(pack.jurisdiction, sc.canonical_stages);
+  const zone = oddClaimZone(odd);
+  const providedIds = new Set(
+    manifest.filter((m) => m.state === "provided").map((m) => m.input_id),
+  );
+  const floorSatisfied = oddFloorSatisfied(odd, providedIds);
+  if (zone.stamp) {
+    limitations.push(`Capability claim: ${zone.stamp}.`);
+  }
+  if (floorSatisfied === false) {
+    limitations.push(
+      `Capability claim invalid: recorded inputs fall below the ODD input floor for this cell (ADR-0005).`,
+    );
+  }
+
   return {
     audit_id: `AUD-${pi.project_id}-${sc.native_stage_id.replace(/[^A-Za-z0-9]/g, "-")}`,
     project_id: pi.project_id,
@@ -73,6 +91,10 @@ export function assembleAuditResult(
     canonical_stages: sc.canonical_stages,
     mapping_confidence: sc.mapping_confidence,
     ran_at: ranAtIso,
+    odd_declaration_version: odd.declaration_version,
+    odd_status: odd.status === "in" ? "in" : "mapped_unproven",
+    odd_stamp: zone.stamp,
+    odd_floor_satisfied: floorSatisfied,
     input_manifest: manifest.map(({ conditional_on: _c, ...rest }) => rest),
     findings,
     missing_information: rules.missing_information,

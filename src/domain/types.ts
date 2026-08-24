@@ -167,6 +167,11 @@ export interface AuditResult {
   canonical_stages: CanonicalStage[];
   mapping_confidence: "authoritative" | "interpreted" | "inferred";
   ran_at: string;
+  /** ODD declaration surface (ADR-0005): matrix membership + claim validity. */
+  odd_declaration_version: string;
+  odd_status: "in" | "mapped_unproven";
+  odd_stamp: string | null;
+  odd_floor_satisfied: boolean | null;
   input_manifest: {
     input_id: string;
     label: string;

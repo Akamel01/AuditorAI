@@ -23,20 +23,52 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "audit_id": { "type": "string" },
-    "project_id": { "type": "string" },
-    "jurisdiction": { "enum": ["INT", "UK", "US", "CA", "AE"] },
-    "framework_name": { "type": "string" },
-    "native_stage_id": { "type": "string", "pattern": "^[a-z]{2,8}(-[a-z0-9]+)*:[A-Za-z0-9_-]+$" },
-    "native_stage_display_name": { "type": "string" },
+    "audit_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "jurisdiction": {
+      "enum": [
+        "INT",
+        "UK",
+        "US",
+        "CA",
+        "AE"
+      ]
+    },
+    "framework_name": {
+      "type": "string"
+    },
+    "native_stage_id": {
+      "type": "string",
+      "pattern": "^[a-z]{2,8}(-[a-z0-9]+)*:[A-Za-z0-9_-]+$"
+    },
+    "native_stage_display_name": {
+      "type": "string"
+    },
     "canonical_stages": {
       "type": "array",
       "items": {
-        "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"]
+        "enum": [
+          "FEASIBILITY_CONCEPT",
+          "PRELIMINARY_DESIGN",
+          "DETAILED_DESIGN"
+        ]
       }
     },
-    "mapping_confidence": { "enum": ["authoritative", "interpreted", "inferred"] },
-    "ran_at": { "type": "string", "format": "date-time" },
+    "mapping_confidence": {
+      "enum": [
+        "authoritative",
+        "interpreted",
+        "inferred"
+      ]
+    },
+    "ran_at": {
+      "type": "string",
+      "format": "date-time"
+    },
     "input_manifest": {
       "type": "array",
       "items": {
@@ -50,9 +82,20 @@
         ],
         "additionalProperties": false,
         "properties": {
-          "input_id": { "type": "string" },
-          "label": { "type": "string" },
-          "requirement_level": { "enum": ["required", "recommended", "optional", "unknown"] },
+          "input_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "requirement_level": {
+            "enum": [
+              "required",
+              "recommended",
+              "optional",
+              "unknown"
+            ]
+          },
           "state": {
             "enum": [
               "provided",
@@ -65,13 +108,20 @@
               "conflicting"
             ]
           },
-          "evidence_ids": { "type": "array", "items": { "type": "string" } }
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
     "findings": {
       "type": "array",
-      "items": { "$ref": "https://auditorai.dev/schemas/finding.schema.json" }
+      "items": {
+        "$ref": "https://auditorai.dev/schemas/finding.schema.json"
+      }
     },
     "missing_information": {
       "type": "array",
@@ -87,12 +137,32 @@
         ],
         "additionalProperties": false,
         "properties": {
-          "question_id": { "type": "string" },
-          "input_id": { "type": "string" },
-          "label": { "type": "string" },
-          "requirement_level": { "enum": ["required", "recommended", "optional", "unknown"] },
-          "note": { "type": "string" },
-          "evidence_ids": { "type": "array", "items": { "type": "string" } }
+          "question_id": {
+            "type": "string"
+          },
+          "input_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "requirement_level": {
+            "enum": [
+              "required",
+              "recommended",
+              "optional",
+              "unknown"
+            ]
+          },
+          "note": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -111,22 +181,73 @@
         ],
         "additionalProperties": false,
         "properties": {
-          "question_id": { "type": "string" },
-          "text": { "type": "string" },
-          "topic": { "type": "string" },
+          "question_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string"
+          },
           "applies_to_canonical": {
             "type": "array",
             "items": {
-              "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"]
+              "enum": [
+                "FEASIBILITY_CONCEPT",
+                "PRELIMINARY_DESIGN",
+                "DETAILED_DESIGN"
+              ]
             }
           },
-          "road_users": { "type": "array", "items": { "type": "string" } },
-          "source_note": { "type": ["string", "null"] },
-          "addressed": { "type": "boolean" }
+          "road_users": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "addressed": {
+            "type": "boolean"
+          }
         }
       }
     },
-    "limitations": { "type": "array", "items": { "type": "string" } },
-    "disclaimer": { "type": "string", "minLength": 1 }
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "odd_declaration_version": {
+      "type": "string"
+    },
+    "odd_status": {
+      "enum": [
+        "in",
+        "mapped_unproven"
+      ]
+    },
+    "odd_stamp": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "odd_floor_satisfied": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
   }
 }

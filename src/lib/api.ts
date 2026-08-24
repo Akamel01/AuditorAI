@@ -3,7 +3,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { Repository, getDataStore, workspaceHash } from "./persistence";
 import { checkRateLimit } from "./ratelimit";
-import { StageNotEligibleError } from "@/domain/pipeline/constants";
+import { OddOutsideDomainError, StageNotEligibleError } from "@/domain/pipeline/constants";
 import { UploadError } from "./extract";
 import {
   ArtifactTooLargeError,
@@ -103,6 +103,7 @@ interface ErrorMappingEntry {
 // ONE table deciding how any typed error becomes an HTTP response.
 const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof StageNotEligibleError, status: 422, exposeMessage: true },
+  { matches: (e) => e instanceof OddOutsideDomainError, status: 422, exposeMessage: true },
   { matches: (e) => e instanceof UploadError, status: 400, exposeMessage: true },
   { matches: (e) => e instanceof ArtifactTooLargeError, status: 413, exposeMessage: true },
   { matches: (e) => e instanceof UnknownAttachmentError, status: 400, exposeMessage: true },

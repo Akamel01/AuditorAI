@@ -6,6 +6,12 @@ Supports Road Safety Audit practice for **International/general**, **United King
 **United States**, **Canada**, and **United Arab Emirates**, across audit
 **Stages 0–2**, with jurisdiction-specific stage semantics (never silently harmonized).
 
+Capability claims are bounded by a versioned **Operational Design Domain**
+(`policies/odd.json`, ADR-0005): each jurisdiction × stage cell is `in` (proven),
+`mapped_unproven` (declared, validation pending — runs are stamped "outside ODD —
+validation pending"), or structurally absent (refused). Selections outside the matrix
+are refused at intake.
+
 > ⚠️ This software assists the audit process. Final professional responsibility remains
 > with the qualified auditor / road authority.
 

@@ -76,6 +76,9 @@ export interface StageContextSlice {
   native_stage_display_name: string;
   canonical_stages: CanonicalStage[];
   mapping_confidence: "authoritative" | "interpreted" | "inferred";
+  /** ODD matrix membership for this selection (ADR-0005); absent cells refuse upstream. */
+  odd_status: "in" | "mapped_unproven";
+  odd_declaration_version: string;
 }
 
 /** Internal manifest entry; conditional_on is stripped in emitted results. */

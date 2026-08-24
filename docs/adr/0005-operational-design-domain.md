@@ -119,3 +119,10 @@ competence ends*. Three forces make this acute:
   swap+re-test re-baseline (VAL-2026-08-22-027; accepting run `2026-08-24T06-11-08-387Z`,
   supersedes failing `2026-08-23T19-37-04-183Z`). Cell remains IN, now unflagged. No cell
   status changes; declaration content otherwise unchanged.
+- **v1.1.0 (2026-08-24):** matrix expanded to the full pack surface — every mvp_scope stage
+  of all five packs is now declared; legacy stages without judged fixtures are honestly
+  `mapped_unproven` with empty floors. 16 cells: 5 IN, 10 mapped-unproven, 1 structurally-
+  absent. Phase-2 wiring landed: intake refuses structurally-absent/unlisted selections
+  (`OddOutsideDomainError`, HTTP 422 via ERROR_TABLE); mapped-unproven results carry the
+  three-zone stamp "outside ODD v<ver> — validation pending" in limitations + `odd_*`
+  result fields (`contracts/schemas/audit-result.schema.json` extended additively).
