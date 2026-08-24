@@ -40,3 +40,10 @@ owner: agent
 
 - Owner action queue unchanged: PIARC account, HSM, TAC CRSAG, ADG-18 annexes, RTA manual.
 - T3.2 fixture conversion can now target exactly the three R2 samples when scheduled.
+
+## Post-ratification arbitration (same session)
+
+- **EXC-001 resolved by owner**: ae-001-arrb-abudhabi-internal-roads-rsa promoted
+  Reserve → Judge Calibration. Rationale: only public artifact carrying genuine Abu
+  Dhabi audit findings; firewall-safe while release-test remains synthetic.
+  Registry updated (calibration ×9, reserve ×14); queue empty.

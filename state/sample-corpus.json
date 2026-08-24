@@ -39,12 +39,13 @@
     { "id": "ca-006-on-ottawa-octranspo-transitway-rsa", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
     { "id": "ca-007-nb-unb-exemplary-audits", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-noCAxDETAIL-cell", "roles": ["reserve"], "rule": "R1", "notes": "four worked audits incl detailed-design + pre-opening; revisit if CAxDETAIL cell added" },
     { "id": "ca-008-on-ryerson-waterloo-corridor-rsa-thesis", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1", "notes": "scanned, no text layer — OCR before machine use" },
-    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "jurisdiction": "uae", "completeness": "excerpt", "odd_cell_status": "mapped_unproven:UAE", "roles": ["reserve"], "rule": "R1", "notes": "exception candidate: real AD findings; owner may promote to judge-calibration" },
+    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "jurisdiction": "uae", "completeness": "excerpt", "odd_cell_status": "mapped_unproven:UAE", "roles": ["judge-calibration"], "rule": "EXC-001", "notes": "owner-approved exception 2026-08-23: only public artifact with genuine Abu Dhabi audit findings; rubric value despite excerpt grade" },
     { "id": "ae-002-ciht-dubai-rsa-practice-bulletin", "jurisdiction": "uae", "completeness": "excerpt", "odd_cell_status": "n/a-bulletin", "roles": ["unassigned"], "rule": "R4", "notes": "mined EV-AE-033..036" },
     { "id": "us-cat-fhwa-case-studies-compilation", "jurisdiction": "usa", "completeness": "catalog-only", "odd_cell_status": "mixed:10 cases conceptual-x3/prelim-x1/detailed-x4/in-service-x2", "roles": ["judge-calibration"], "rule": "R3", "notes": "single PDF in docs/references/US; engine-consumed during E3 fixture seeding — NEVER eligible for future real-sample release-test tier" }
   ],
-  "exceptions_queue": [
-    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "proposal": "promote to judge-calibration", "reason": "only public artifact with genuine Abu Dhabi audit findings; rubric discussion value despite excerpt grade", "status": "awaiting-owner" }
+  "exceptions_queue": [],
+  "exceptions_resolved": [
+    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "ruling": "promoted to judge-calibration", "decided_by": "owner", "date": "2026-08-23" }
   ],
-  "counts": { "total": 28, "engine_fewshot": 3, "judge_calibration": 8, "reserve": 15, "unassigned": 2 }
+  "counts": { "total": 28, "engine_fewshot": 3, "judge_calibration": 9, "reserve": 14, "unassigned": 2 }
 }
