@@ -1,6 +1,7 @@
 "use client";
-// Project detail: stage card, inputs checklist with states + upload extraction,
-// audit runs. The UI never shows canonical stages without the native label (ADR-0002).
+// Project detail: title block, stage card, inputs checklist with states +
+// upload extraction, audit runs. The UI never shows canonical stages without
+// the native label (ADR-0002).
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -15,6 +16,24 @@ import {
 } from "@/domain/input-states";
 import { stageDisplay } from "@/app/_components/stage-label";
 import type { Attachment, InputValueState, Project } from "@/domain/types";
+import { AppShell } from "@/app/_components/ui/app-shell";
+import { ConfidenceMark, Eyebrow, StateChip } from "@/app/_components/ui/chips";
+import { Button } from "@/app/_components/ui/button";
+import { Panel } from "@/app/_components/ui/panel";
+import { EmptyState, LoadingRows, Skeleton } from "@/app/_components/ui/empty-state";
+import { InlineNotice } from "@/app/_components/ui/inline-notice";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clock,
+  Layers,
+  Paperclip,
+  Pin,
+  Road,
+  Spinner,
+  Upload,
+  X,
+} from "@/app/_components/ui/icons";
 
 interface StageInfo {
   framework: { name: string; publisher: string; revision: string | null; status: string; qualification_note: string | null };
@@ -59,9 +78,26 @@ export default function ProjectPage() {
     load();
   }, [load]);
 
-  if (error) return <main className="mx-auto max-w-3xl px-6 py-12 text-red-600">{error}</main>;
+  if (error)
+    return (
+      <AppShell>
+        <div className="pt-12">
+          <InlineNotice>{error}</InlineNotice>
+        </div>
+      </AppShell>
+    );
+
   if (!project || !stageInfo)
-    return <main className="mx-auto max-w-3xl px-6 py-12 text-neutral-500">Loading…</main>;
+    return (
+      <AppShell>
+        <div className="pt-12">
+          <Skeleton className="h-8 w-1/2" />
+          <div className="mt-6">
+            <LoadingRows rows={4} />
+          </div>
+        </div>
+      </AppShell>
+    );
 
   const stage = stageInfo.stages.find(
     (s) => s.native_stage_id === project.stage_selection.native_stage_id,
@@ -75,45 +111,98 @@ export default function ProjectPage() {
     : null;
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <Link href="/projects" className="text-xs text-neutral-500 hover:underline">← Projects</Link>
-      <h1 className="mt-2 text-2xl font-bold tracking-tight">{project.metadata.name}</h1>
+    <AppShell>
+      <div className="pt-8">
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-faint no-underline transition-colors hover:text-subtle"
+        >
+          <ArrowLeft size={13} />
+          Projects
+        </Link>
 
-      <section className="mt-4 rounded-lg border bg-neutral-50 p-4 text-sm">
-        <div className="font-semibold">{stage?.display_name}</div>
-        <div className="mt-1 text-neutral-600">{stage?.definition}</div>
-        <div className="mt-2 flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full bg-white border px-2 py-0.5">
-            Framework: {stageInfo.framework.name} {stageInfo.framework.revision ? `(${stageInfo.framework.revision})` : ""}
-          </span>
-          <span className="rounded-full bg-white border px-2 py-0.5">
-            Canonical: {pairing ? pairing.canonicalText : ""} · confidence: {stage?.confidence}
-          </span>
+        {/* title block */}
+        <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-hairline bg-hairline md:grid-cols-4">
+          <TitleCell k="Scheme" v={project.metadata.name} />
+          <TitleCell
+            k="Framework"
+            v={
+              <>
+                {stageInfo.framework.name}
+                {stageInfo.framework.revision ? (
+                  <span className="mono ml-1.5 text-[11px] text-subtle">({stageInfo.framework.revision})</span>
+                ) : null}
+              </>
+            }
+          />
+          <TitleCell k="Native stage" v={stage?.display_name ?? project.stage_selection.native_stage_id} />
+          <TitleCell
+            k="Canonical map"
+            v={
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="mono text-[11.5px]">{pairing ? pairing.canonicalText : "—"}</span>
+                {stage && <ConfidenceMark confidence={stage.confidence} />}
+              </span>
+            }
+          />
         </div>
-        {stage?.notes && <p className="mt-2 text-xs italic text-amber-700">{stage.notes}</p>}
-        {stage && stage.evidence_ids.length > 0 && (
-          <p className="mt-1 text-[11px] text-neutral-400">Evidence: {stage.evidence_ids.join(", ")}</p>
+
+        {/* stage definition */}
+        {stage && (
+          <Panel className="mt-4 p-4">
+            <div className="flex items-start gap-3">
+              <Pin size={16} className="mt-1 shrink-0 text-subtle" />
+              <div className="min-w-0">
+                <p className="text-[13.5px] leading-relaxed text-muted">{stage.definition}</p>
+                {stage.notes && (
+                  <p className="formal mt-2 text-[14px] leading-relaxed text-warn">{stage.notes}</p>
+                )}
+                {stage.evidence_ids.length > 0 && (
+                  <p className="mt-2 font-mono text-[10.5px] leading-relaxed text-faint">
+                    Evidence: {stage.evidence_ids.join(" · ")}
+                  </p>
+                )}
+              </div>
+            </div>
+          </Panel>
         )}
-      </section>
 
-      <InputsEditor project={project} onChanged={load} />
+        <InputsEditor project={project} onChanged={load} />
 
-      <AuditsSection projectId={project.project_id} />
-    </main>
+        <AuditsSection projectId={project.project_id} />
+      </div>
+    </AppShell>
   );
 }
 
+function TitleCell({ k, v }: { k: string; v: React.ReactNode }) {
+  return (
+    <div className="bg-surface px-4 py-3">
+      <div className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">{k}</div>
+      <div className="mt-1.5 text-[13px] font-medium leading-snug" title={typeof v === "string" ? v : undefined}>
+        {v}
+      </div>
+    </div>
+  );
+}
+
+/* ————— inputs ————— */
+
+interface InputDef {
+  input_id: string;
+  label: string;
+  requirement_level: string;
+  description?: string;
+  conditional_on?: string | null;
+  stage_ids: string[];
+  evidence_ids: string[];
+}
+
 function InputsEditor({ project, onChanged }: { project: Project; onChanged: () => void }) {
-  const [inputs, setInputs] = useState<
-    { input_id: string; label: string; requirement_level: string; description?: string; conditional_on?: string | null; stage_ids: string[]; evidence_ids: string[] }[]
-  >([]);
+  const [inputs, setInputs] = useState<InputDef[]>([]);
   useEffect(() => {
-    api<{
-      inputs: { input_id: string; label: string; requirement_level: string; description?: string; conditional_on?: string | null; stage_ids: string[]; evidence_ids: string[] }[];
-    }>(`/api/inputs/${project.stage_selection.jurisdiction}`).then((d) =>
-      setInputs(
-        filterInputsForStage(d.inputs, project.stage_selection.native_stage_id),
-      ),
+    api<{ inputs: InputDef[] }>(`/api/inputs/${project.stage_selection.jurisdiction}`).then((d) =>
+      setInputs(filterInputsForStage(d.inputs, project.stage_selection.native_stage_id)),
     );
   }, [project.stage_selection.jurisdiction, project.stage_selection.native_stage_id]);
 
@@ -129,6 +218,9 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
   // rejects unsubstantiated ones). Selecting Provided only reveals the local
   // editing affordances; the first substantive action performs the write.
   const [pendingProvided, setPendingProvided] = useState<string[]>([]);
+  const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
+  const failInput = (inputId: string, err: unknown) =>
+    setInputErrors((prev) => ({ ...prev, [inputId]: String((err as Error).message) }));
   const hasSubstance = (inputId: string) => {
     const v = project.input_values[inputId];
     return !!v?.value?.trim() || !!(v?.attachments && v.attachments.length > 0);
@@ -190,124 +282,155 @@ function InputsEditor({ project, onChanged }: { project: Project; onChanged: () 
     onChanged();
   }
 
+  const provided = inputs.filter((i) => {
+    const s = deriveInputState(i.requirement_level, project.input_values[i.input_id]);
+    return s === "provided";
+  }).length;
+
   return (
-    <section className="mt-8">
-      <h2 className="text-lg font-semibold">Stage inputs</h2>
-      <p className="text-xs text-neutral-500">
-        States follow §27: Provided / Required / Recommended / Optional / Unknown / Not
-        Applicable / Not Available / Conflicting — Unknown is never treated as No.
+    <section className="mt-10">
+      <Eyebrow code="CH 0+030">
+        Stage inputs — {provided}/{inputs.length} provided
+      </Eyebrow>
+      <p className="-mt-2 mb-4 max-w-[74ch] text-[12.5px] leading-relaxed text-subtle">
+        States are explicit and never guessed: Unknown is never treated as No, and a “provided”
+        claim needs substance before it is recorded.
       </p>
-      <ul className="mt-3 space-y-3">
+
+      {inputs.length === 0 && (
+        <EmptyState
+          icon={<Layers size={26} />}
+          title="No stage inputs defined"
+          hint="This framework and stage combination declares no required inputs — the audit will run on process rules and stage questions alone."
+        />
+      )}
+
+      <ul className="space-y-2.5">
         {inputs.map((i) => {
           const current = project.input_values[i.input_id];
           const state: InputValueState = deriveInputState(i.requirement_level, current);
+          const expanded = state === "provided" || !!current?.value || pendingProvided.includes(i.input_id);
           return (
-            <li key={i.input_id} className="rounded-lg border p-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <span className="text-sm font-medium">{i.label}</span>
-                  <span
-                    className={`ml-2 rounded-full border px-2 py-0.5 text-[11px] ${
-                      state === "provided"
-                        ? "border-green-300 bg-green-50 text-green-800"
-                        : state.includes("missing")
-                          ? "border-orange-300 bg-orange-50 text-orange-800"
-                          : "border-neutral-300 bg-white text-neutral-600"
-                    }`}
-                  >
-                    {humanizeEnum(state)}
-                  </span>
+            <li key={i.input_id}>
+              <Panel className={expanded ? "" : "transition-colors duration-150 hover:border-edge"}>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+                  <span className="text-[13.5px] font-medium">{i.label}</span>
+                  <StateChip state={state} label={humanizeEnum(state)} />
                   {i.conditional_on && (
-                    <span className="ml-1 text-[11px] text-neutral-400">if {i.conditional_on}</span>
+                    <span className="font-mono text-[10.5px] text-faint">if {i.conditional_on}</span>
                   )}
-                </div>
-                <select
-                  className="rounded border px-2 py-1 text-xs"
-                  value={selectValueFor(state)}
-                  onChange={(e) => {
-                    const v = e.target.value as InputValueState;
-                    if (!v) return;
-                    if (v === "provided" && !hasSubstance(i.input_id)) {
-                      revealProvided(i.input_id);
-                      return;
-                    }
-                    settleProvided(i.input_id);
-                    setInput(i.input_id, v);
-                  }}
-                >
-                  <option value="">— missing ({i.requirement_level}) —</option>
-                  {STATE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
-              {(state === "provided" || current?.value || pendingProvided.includes(i.input_id)) && (
-                <>
-                  <textarea
-                    defaultValue={current?.value ?? ""}
-                    onBlur={(e) => {
-                      if (!e.target.value.trim() && !hasSubstance(i.input_id)) return;
-                      settleProvided(i.input_id);
-                      setInput(i.input_id, "provided", e.target.value);
-                    }}
-                    onPaste={(e) => {
-                      const img = Array.from(e.clipboardData.items).find((it) =>
-                        it.type.startsWith("image/"),
-                      );
-                      if (img) {
-                        e.preventDefault();
-                        const f = img.getAsFile();
-                        if (f)
-                          attachImage(i.input_id, f).catch((err) => alert(err.message));
-                      }
-                    }}
-                    rows={3}
-                    className="mt-2 w-full rounded border px-2 py-1.5 text-sm"
-                    placeholder="Paste or edit the provided information… (paste an image to attach a drawing)"
-                  />
-                  {current?.attachments && current.attachments.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {current.attachments.map((attId) => (
-                        <AttachmentThumb
-                          key={attId}
-                          projectId={project.project_id}
-                          attachmentId={attId}
-                          onRemove={() => detachImage(i.input_id, attId).catch((err) => alert(err.message))}
-                        />
+                  <span className="ml-auto flex items-center gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-faint">
+                      {i.requirement_level}
+                    </span>
+                    <select
+                      aria-label={`State of ${i.label}`}
+                      className="h-7 cursor-pointer rounded-[5px] border border-edge bg-surface px-1.5 font-mono text-[11px] text-muted transition-colors hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint"
+                      value={selectValueFor(state)}
+                      onChange={(e) => {
+                        const v = e.target.value as InputValueState;
+                        if (!v) return;
+                        if (v === "provided" && !hasSubstance(i.input_id)) {
+                          revealProvided(i.input_id);
+                          return;
+                        }
+                        settleProvided(i.input_id);
+                        setInput(i.input_id, v);
+                      }}
+                    >
+                      <option value="">— missing ({i.requirement_level}) —</option>
+                      {STATE_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
                       ))}
+                    </select>
+                  </span>
+                </div>
+
+                {expanded && (
+                  <div className="border-t border-hairline px-4 py-3">
+                    <textarea
+                      defaultValue={current?.value ?? ""}
+                      onBlur={(e) => {
+                        if (!e.target.value.trim() && !hasSubstance(i.input_id)) return;
+                        settleProvided(i.input_id);
+                        setInput(i.input_id, "provided", e.target.value);
+                      }}
+                      onPaste={(e) => {
+                        const img = Array.from(e.clipboardData.items).find((it) =>
+                          it.type.startsWith("image/"),
+                        );
+                        if (img) {
+                          e.preventDefault();
+                          const f = img.getAsFile();
+                          if (f) attachImage(i.input_id, f).catch((err) => failInput(i.input_id, err));
+                        }
+                      }}
+                      rows={3}
+                      className="w-full resize-y rounded-md border border-edge bg-surface px-3 py-2 text-[13px] leading-relaxed text-text transition-colors placeholder:text-faint hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint"
+                      placeholder="Paste or edit the provided information… (paste an image to attach a drawing)"
+                    />
+
+                    {current?.attachments && current.attachments.length > 0 && (
+                      <div className="mt-2.5 flex flex-wrap gap-2.5">
+                        {current.attachments.map((attId) => (
+                          <AttachmentThumb
+                            key={attId}
+                            projectId={project.project_id}
+                            attachmentId={attId}
+                            onRemove={() => detachImage(i.input_id, attId).catch((err) => failInput(i.input_id, err))}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[11px]">
+                      <label className="inline-flex cursor-pointer items-center gap-1.5 text-accent transition-colors hover:text-accent-strong">
+                        <Upload size={12} />
+                        upload PDF/TXT/MD → extract text
+                        <input
+                          type="file"
+                          accept=".pdf,.txt,.md"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) uploadFor(i.input_id, f).catch((err) => failInput(i.input_id, err));
+                          }}
+                        />
+                      </label>
+                      <label
+                        className="inline-flex cursor-pointer items-center gap-1.5 text-accent transition-colors hover:text-accent-strong"
+                        data-testid={`attach-${i.input_id}`}
+                      >
+                        <Paperclip size={12} />
+                        attach image (PNG/JPEG/WebP, ≤500 KB)
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) attachImage(i.input_id, f).catch((err) => failInput(i.input_id, err));
+                          }}
+                        />
+                      </label>
                     </div>
-                  )}
-                  <div className="mt-1 flex gap-3 text-[11px]">
-                    <label className="cursor-pointer text-blue-600 underline">
-                      upload PDF/TXT/MD → extract text
-                      <input
-                        type="file"
-                        accept=".pdf,.txt,.md"
-                        className="hidden"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) uploadFor(i.input_id, f).catch((err) => alert(err.message));
-                        }}
-                      />
-                    </label>
-                    <label className="cursor-pointer text-blue-600 underline" data-testid={`attach-${i.input_id}`}>
-                      attach image (PNG/JPEG/WebP, ≤500 KB)
-                      <input
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        className="hidden"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) attachImage(i.input_id, f).catch((err) => alert(err.message));
-                        }}
-                      />
-                    </label>
+
+                    {i.evidence_ids.length > 0 && (
+                      <p className="mt-2 font-mono text-[10.5px] text-faint">
+                        Evidence: {i.evidence_ids.join(" · ")}
+                      </p>
+                    )}
+
+                    {inputErrors[i.input_id] && (
+                      <div className="mt-2.5">
+                        <InlineNotice>{inputErrors[i.input_id]}</InlineNotice>
+                      </div>
+                    )}
                   </div>
-                </>
-              )}
-              {i.evidence_ids.length > 0 && (
-                <p className="mt-1 text-[11px] text-neutral-400">Evidence: {i.evidence_ids.join(", ")}</p>
-              )}
+                )}
+              </Panel>
             </li>
           );
         })}
@@ -338,29 +461,32 @@ function AttachmentThumb({
       .catch(() => setSrc(null));
   }, [projectId, attachmentId]);
   return (
-    <div className="relative rounded border bg-white p-1" data-testid={`thumb-${attachmentId}`}>
+    <div className="group relative rounded-md border border-hairline bg-surface p-1" data-testid={`thumb-${attachmentId}`}>
       {src ? (
-        <img src={src} alt={meta?.file_name ?? attachmentId} className="h-16 w-24 rounded object-cover" />
+        <img src={src} alt={meta?.file_name ?? attachmentId} className="h-16 w-24 rounded-[4px] object-cover" />
       ) : (
-        <div className="h-16 w-24 animate-pulse rounded bg-neutral-100" />
+        <Skeleton className="h-16 w-24" />
       )}
-      <div className="mt-0.5 max-w-24 truncate text-[10px] text-neutral-500">
+      <div className="mt-1 max-w-24 truncate font-mono text-[9.5px] text-faint">
         {meta ? `${meta.file_name} · ${Math.round(meta.bytes / 1000)} KB` : attachmentId}
       </div>
       <button
         onClick={onRemove}
         aria-label={`Remove ${attachmentId}`}
-        className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full border bg-white text-[10px] leading-none text-red-600"
+        className="absolute -right-1.5 -top-1.5 grid h-5 w-5 cursor-pointer place-items-center rounded-full border border-edge bg-surface text-concern opacity-0 transition-opacity duration-150 hover:bg-concern-tint group-hover:opacity-100 focus-visible:opacity-100"
       >
-        ×
+        <X size={11} />
       </button>
     </div>
   );
 }
 
+/* ————— audits ————— */
+
 function AuditsSection({ projectId }: { projectId: string }) {
   const [audits, setAudits] = useState<{ audit_id: string; ran_at: string }[]>([]);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     api<{ audits: { audit_id: string; ran_at: string }[] }>(`/api/projects/${projectId}/audits`)
@@ -370,41 +496,77 @@ function AuditsSection({ projectId }: { projectId: string }) {
   useEffect(load, [load]);
 
   return (
-    <section className="mt-8">
-      <h2 className="text-lg font-semibold">Audits</h2>
-      <button
-        disabled={busy}
-        onClick={async () => {
-          setBusy(true);
-          try {
-            const d = await api<{ audit: { audit_id: string } }>(
-              `/api/projects/${projectId}/audits`,
-              { method: "POST" },
-            );
-            location.href = `/projects/${projectId}/audits/${d.audit.audit_id}`;
-          } catch (e) {
-            alert(String((e as Error).message));
-          } finally {
-            setBusy(false);
-          }
-        }}
-        className="mt-2 rounded-lg bg-black px-4 py-2 text-sm text-white disabled:opacity-40"
-      >
-        {busy ? "Running…" : "Run audit"}
-      </button>
-      <ul className="mt-3 space-y-2 text-sm">
-        {audits.map((a) => (
-          <li key={a.audit_id}>
-            <Link
-              href={`/projects/${projectId}/audits/${a.audit_id}`}
-              className="text-blue-700 underline"
-            >
-              {a.audit_id}
-            </Link>{" "}
-            <span className="text-xs text-neutral-500">{new Date(a.ran_at).toLocaleString()}</span>
-          </li>
-        ))}
-      </ul>
+    <section className="mt-10 pb-4">
+      <Eyebrow code="CH 0+060">Audit runs</Eyebrow>
+      <div className="flex flex-wrap items-center gap-4">
+        <Button
+          variant="primary"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError(null);
+            try {
+              const d = await api<{ audit: { audit_id: string } }>(
+                `/api/projects/${projectId}/audits`,
+                { method: "POST" },
+              );
+              location.href = `/projects/${projectId}/audits/${d.audit.audit_id}`;
+            } catch (e) {
+              setError(String((e as Error).message));
+              setBusy(false);
+            }
+          }}
+        >
+          {busy ? (
+            <>
+              <Spinner size={14} />
+              Running audit…
+            </>
+          ) : (
+            <>
+              <Road size={14} />
+              Run audit
+            </>
+          )}
+        </Button>
+        <p className="max-w-[56ch] text-[12.5px] leading-relaxed text-subtle">
+          One run walks the whole alignment — input manifest, process rules, stage questions — and
+          replaces the draft’s results.
+        </p>
+      </div>
+      {error && (
+        <div className="mt-3 max-w-[560px]">
+          <InlineNotice>{error}</InlineNotice>
+        </div>
+      )}
+
+      {audits.length > 0 && (
+        <ul className="mt-5 overflow-hidden rounded-md border border-hairline bg-surface">
+          {audits.map((a, idx) => (
+            <li key={a.audit_id} className="border-b border-hairline last:border-b-0">
+              <Link
+                href={`/projects/${projectId}/audits/${a.audit_id}`}
+                className="group flex items-center gap-3 px-4 py-3 no-underline transition-colors hover:bg-sunken"
+              >
+                <Clock size={14} className="shrink-0 text-faint" />
+                <span className="font-mono text-[12px] text-text">{a.audit_id}</span>
+                <span className="font-mono text-[10.5px] text-faint">
+                  {new Date(a.ran_at).toLocaleString()}
+                </span>
+                {idx === 0 && (
+                  <span className="rounded-full border border-accent-line bg-accent-tint px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-accent">
+                    latest draft
+                  </span>
+                )}
+                <ArrowRight
+                  size={13}
+                  className="ml-auto text-faint transition-transform duration-200 ease-[cubic-bezier(.2,0,0,1)] group-hover:translate-x-0.5"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

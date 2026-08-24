@@ -1,1 +1,265 @@
 @import "tailwindcss";
+
+/*
+ * AuditorAI — "Chainage" design system.
+ * Structure: engineering drawing sheet. Type: IBM Plex trio.
+ * Two themes: light "daylight sheet" (default), dark "night sheet".
+ * Semantic tokens are CSS variables so themes switch at runtime;
+ * @theme inline maps them to Tailwind utilities.
+ */
+
+:root {
+  --canvas: #fafbfc;
+  --surface: #ffffff;
+  --sunken: #f2f4f6;
+  --text: #10151c;
+  --text-2: #39434e;
+  --text-3: #66707c;
+  --text-faint: #98a2ae;
+  --hairline: #e4e8ec;
+  --edge: #ccd3da;
+
+  --accent: #0b4f9e;
+  --accent-strong: #093e7c;
+  --accent-tint: #eef3fa;
+  --accent-line: #bcd0ea;
+  --accent-contrast: #ffffff;
+
+  --concern: #b42318;
+  --concern-tint: #fbefe9;
+  --concern-line: #ecc7ba;
+
+  --warn: #b54708;
+  --warn-tint: #fdf3e6;
+  --warn-line: #ecd3b4;
+
+  --ok: #067647;
+  --ok-tint: #ebf5ee;
+  --ok-line: #bfe0cb;
+
+  --pop-shadow: 0 8px 24px rgba(16, 21, 28, 0.09);
+  --grid-line: #eceff2;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --canvas: #0b0e13;
+  --surface: #11151c;
+  --sunken: #0e1118;
+  --text: #e9eef4;
+  --text-2: #a7b2c0;
+  --text-3: #6d7889;
+  --text-faint: #49525f;
+  --hairline: #222933;
+  --edge: #313a47;
+
+  --accent: #85aede;
+  --accent-strong: #a5c2ea;
+  --accent-tint: #16202e;
+  --accent-line: #33507a;
+  --accent-contrast: #0b0e13;
+
+  --concern: #ff8a70;
+  --concern-tint: #2a1713;
+  --concern-line: #5c2c22;
+
+  --warn: #e8a94e;
+  --warn-tint: #241a0e;
+  --warn-line: #57431f;
+
+  --ok: #5cc08a;
+  --ok-tint: #10201a;
+  --ok-line: #2b4a3a;
+
+  --pop-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  --grid-line: #141922;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-text: var(--text);
+  --color-muted: var(--text-2);
+  --color-subtle: var(--text-3);
+  --color-faint: var(--text-faint);
+  --color-hairline: var(--hairline);
+  --color-edge: var(--edge);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-line: var(--accent-line);
+  --color-accent-contrast: var(--accent-contrast);
+
+  --color-concern: var(--concern);
+  --color-concern-tint: var(--concern-tint);
+  --color-concern-line: var(--concern-line);
+
+  --color-warn: var(--warn);
+  --color-warn-tint: var(--warn-tint);
+  --color-warn-line: var(--warn-line);
+
+  --color-ok: var(--ok);
+  --color-ok-tint: var(--ok-tint);
+  --color-ok-line: var(--ok-line);
+
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+}
+
+/* ————— base ————— */
+
+body {
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-tint);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+/* mono voice: ids, chainage, provenance */
+.mono {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* formal voice: disclaimers, issued-report framing */
+.formal {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-style: italic;
+}
+
+/* ————— motion ————— */
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes stud-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.anim-settle {
+  animation: settle 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+}
+.anim-draw {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: draw 1.4s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+.anim-d2 { animation-delay: 0.25s; }
+.anim-d3 { animation-delay: 0.5s; }
+.anim-d4 { animation-delay: 0.75s; }
+.anim-pulse {
+  animation: stud-pulse 2.6s ease-in-out infinite;
+}
+
+.reveal {
+  opacity: 0;
+  translate: 0 14px;
+  transition:
+    opacity 0.55s cubic-bezier(0.2, 0, 0, 1),
+    translate 0.55s cubic-bezier(0.2, 0, 0, 1);
+}
+.reveal.is-in {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--sunken) 25%, var(--hairline) 50%, var(--sunken) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  .reveal {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .anim-draw {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* theme toggle: swap glyphs without hydration */
+.theme-toggle .icon-moon { display: block; }
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+/* ————— print: the issued report reads on paper ————— */
+
+@media print {
+  :root,
+  [data-theme="dark"] {
+    --canvas: #ffffff;
+    --surface: #ffffff;
+    --sunken: #f6f6f4;
+    --text: #111111;
+    --text-2: #333333;
+    --text-3: #555555;
+    --text-faint: #888888;
+    --hairline: #dddddd;
+    --edge: #bbbbbb;
+    --accent: #0b4f9e;
+    --concern: #b42318;
+  }
+  body {
+    background: #ffffff;
+  }
+}

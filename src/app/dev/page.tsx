@@ -15,9 +15,9 @@ interface RunInfo {
 }
 
 const CLASS_COLORS: Record<string, string> = {
-  deterministic: "#2563eb",
-  "ai-bounded": "#9333ea",
-  human: "#d97706",
+  deterministic: "var(--accent)",
+  "ai-bounded": "var(--concern)",
+  human: "var(--warn)",
 };
 
 export default function DevPage() {
@@ -115,12 +115,14 @@ export default function DevPage() {
 
   return (
     <main className="flex h-screen flex-col md:flex-row">
-      <section className="flex-1 overflow-auto bg-neutral-50 p-4">
-        <h1 className="text-sm font-semibold text-neutral-600">Developer console — audit pipeline</h1>
+      <section className="flex-1 overflow-auto bg-sunken p-4">
+        <h1 className="font-mono text-[11px] uppercase tracking-[0.12em] text-subtle">
+          Developer console — audit pipeline
+        </h1>
         <div className="mt-2 flex flex-wrap items-start gap-2 text-xs">
           <textarea
             rows={4}
-            className="w-full max-w-xl rounded border px-2 py-1 font-mono text-[11px]"
+            className="w-full max-w-xl rounded-md border border-edge bg-surface px-2 py-1 font-mono text-[11px] text-text"
             value={projectJson}
             onChange={(e) => setProjectJson(e.target.value)}
           />
@@ -130,16 +132,23 @@ export default function DevPage() {
               placeholder="ADMIN_KEY"
               value={adminKey}
               onChange={(e) => updateAdminKey(e.target.value)}
-              className="rounded border px-2 py-1"
+              className="rounded-md border border-edge bg-surface px-2 py-1 text-text"
             />
-            <button onClick={createRun} className="rounded bg-black px-3 py-1 text-white">
+            <button
+              onClick={createRun}
+              className="cursor-pointer rounded-md bg-accent px-3 py-1 font-medium text-[color:var(--accent-contrast)] transition-colors hover:bg-accent-strong"
+            >
               Create session
             </button>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 text-muted">
               <input type="checkbox" checked={aiOn} onChange={(e) => setAiOn(e.target.checked)} />
               AI adapter on for AG-AI-CANDIDATES
             </label>
-            <button onClick={finish} disabled={!run} className="rounded border px-3 py-1 disabled:opacity-40">
+            <button
+              onClick={finish}
+              disabled={!run}
+              className="cursor-pointer rounded-md border border-edge bg-surface px-3 py-1 text-muted transition-colors hover:border-faint hover:text-text disabled:opacity-40"
+            >
               Finish &amp; archive trail
             </button>
           </div>
@@ -153,16 +162,16 @@ export default function DevPage() {
                   key={n.id}
                   data-testid={`node-${n.id}`}
                   onClick={() => step(n.id)}
-                  className={`w-48 rounded-lg border bg-white p-2 text-left shadow-sm hover:-translate-y-px ${
-                    executedIds.includes(n.id) ? "border-green-500" : "border-neutral-300"
+                  className={`w-48 cursor-pointer rounded-md border bg-surface p-2 text-left transition-[border-color,translate] duration-150 hover:-translate-y-px ${
+                    executedIds.includes(n.id) ? "border-ok" : "border-edge hover:border-faint"
                   }`}
                 >
-                  <div className="text-[12px] font-semibold">{n.id}</div>
-                  <div className="text-[10px] uppercase tracking-wide" style={{ color: CLASS_COLORS[n.node_class] }}>
+                  <div className="font-mono text-[12px] font-semibold">{n.id}</div>
+                  <div className="font-mono text-[10px] uppercase tracking-wide" style={{ color: CLASS_COLORS[n.node_class] }}>
                     {n.node_class}
                     {n.executed_in_batch ? "" : " · step-only"}
                   </div>
-                  <div className="mt-0.5 text-[10px] text-neutral-500">emits {n.emits}</div>
+                  <div className="mt-0.5 font-mono text-[10px] text-faint">emits {n.emits}</div>
                 </button>
               ))}
             </div>
@@ -170,8 +179,8 @@ export default function DevPage() {
         </div>
       </section>
 
-      <aside className="flex w-full flex-col border-l bg-white md:w-[380px]">
-        <header className="border-b px-4 py-2 text-sm font-semibold">
+      <aside className="flex w-full flex-col border-l border-hairline bg-surface md:w-[380px]">
+        <header className="border-b border-hairline px-4 py-2 text-sm font-semibold">
           {selected ? `${selected.id} — ${selected.name}` : "Click a node to execute + inspect"}
         </header>
         {selected && state && (
@@ -182,7 +191,7 @@ export default function DevPage() {
           />
         )}
         <pre
-          className="flex-1 overflow-auto p-3 font-mono text-[11px]"
+          className="flex-1 overflow-auto p-3 font-mono text-[11px] text-muted"
           data-testid="inspector"
         >
           {selected
@@ -196,8 +205,8 @@ export default function DevPage() {
               )
             : "—"}
         </pre>
-        {message && <div className="border-t px-4 py-2 text-xs text-red-600">{message}</div>}
-        <footer className="border-t px-4 py-2 text-[11px] text-neutral-500">
+        {message && <div className="border-t border-hairline px-4 py-2 text-xs text-concern">{message}</div>}
+        <footer className="border-t border-hairline px-4 py-2 font-mono text-[11px] text-faint">
           Step = click node · edits replace slices whole · finish archives the N3 trail.
         </footer>
       </aside>
@@ -227,16 +236,16 @@ function SliceEditor({
   useEffect(() => setText(value), [value]);
   if (!slice) return null;
   return (
-    <div className="border-b p-3">
-      <div className="mb-1 text-[11px] font-medium text-neutral-600">Edit slice `{slice}`</div>
+    <div className="border-b border-hairline p-3">
+      <div className="mb-1 font-mono text-[11px] font-medium text-subtle">Edit slice `{slice}`</div>
       <textarea
         rows={6}
-        className="w-full rounded border px-2 py-1 font-mono text-[11px]"
+        className="w-full rounded-md border border-edge bg-surface px-2 py-1 font-mono text-[11px] text-text"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
       <button
-        className="mt-1 rounded border px-2 py-1 text-xs"
+        className="mt-1 cursor-pointer rounded-md border border-edge bg-surface px-2 py-1 text-xs text-muted transition-colors hover:border-faint hover:text-text"
         onClick={() => onSave(slice, text).catch(() => undefined)}
       >
         Save slice

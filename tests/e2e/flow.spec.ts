@@ -30,8 +30,8 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   // ---- Open project -------------------------------------------------------
   await page.locator("li", { hasText: "Playwright Corridor" }).locator("a").click();
   await expect(page.getByText(/Stage 2 \(completion of detailed design\)/i)).toBeVisible();
-  await expect(page.getByText(/canonical: DETAILED_DESIGN/i)).toBeVisible();
-  await expect(page.getByText(/confidence: authoritative/i)).toBeVisible();
+  await expect(page.getByText("DETAILED_DESIGN")).toBeVisible();
+  await expect(page.getByText(/confidence · authoritative/i)).toBeVisible();
 
   // ---- Inputs panel reflects §27 states ------------------------------------
   const collision = page.locator("li", {
@@ -58,18 +58,14 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await expect(page.getByText(/Missing information/i).first()).toBeVisible();
 
   // ---- Adjudication: banned wording rejected server-side ----------------------
-  let dialogMessage = "";
-  page.once("dialog", (d) => {
-    dialogMessage = d.message();
-    d.accept();
-  });
+  // (surfaced as an inline notice in the finding card — no browser dialog)
   await card.getByPlaceholder(/recommendation/i).fill(BANNED);
-  await card.getByRole("button", { name: /accepted with edits/i }).click();
-  await expect.poll(() => dialogMessage).toMatch(/banned wording/i);
+  await card.getByRole("button", { name: /accept with edits/i }).click();
+  await expect(card.getByText(/banned wording/i)).toBeVisible({ timeout: 20_000 });
 
   // Clean wording accepted and persisted.
   await card.getByPlaceholder(/recommendation/i).fill(CLEAN);
-  await card.getByRole("button", { name: /accepted with edits/i }).click();
+  await card.getByRole("button", { name: /accept with edits/i }).click();
   await expect(card).toContainText(CLEAN);
   await expect(card).toContainText(/accepted_with_edits/i);
 
@@ -84,8 +80,12 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await expect(page.locator('a[download$=".json"]')).toBeAttached();
 
   // ---- ADR-0004: issuing freezes immutable numbered revisions ------------------
-  page.once("dialog", (d) => d.accept());
+  // (confirmation happens in the designed dialog, not window.confirm)
   await page.getByTestId("issue-report").click();
+  await page
+    .getByRole("alertdialog")
+    .getByRole("button", { name: /issue revision/i })
+    .click();
   const lineage = page.getByTestId("issue-lineage");
   await expect(lineage).toBeVisible({ timeout: 20_000 });
   await expect(lineage.locator("li")).toHaveCount(1);
@@ -93,8 +93,11 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await expect(lineage.locator('a[download$="-I1.md"]')).toBeAttached();
 
   // Re-issue creates the next revision; the first is never replaced.
-  page.once("dialog", (d) => d.accept());
   await page.getByTestId("issue-report").click();
+  await page
+    .getByRole("alertdialog")
+    .getByRole("button", { name: /issue revision/i })
+    .click();
   await expect(lineage.locator("li")).toHaveCount(2, { timeout: 20_000 });
   await expect(lineage.getByText(/^I2$/)).toBeVisible();
 });
