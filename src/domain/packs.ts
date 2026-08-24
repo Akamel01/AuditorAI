@@ -110,8 +110,28 @@ export interface PackIo {
   readUtf8(filePath: string): string;
 }
 
+function resolveBasePath(): string {
+  const base = process.cwd();
+  if (process.env.VERCEL === "1") {
+    // On Vercel, function cwd is a subdirectory (e.g. /var/task/app/api/...).
+    // Traced files are at the lambda root. Go up to find the root.
+    let dir = base;
+    for (let i = 0; i < 6; i++) {
+      try {
+        if (readFileSync(path.join(dir, "policies", "uk", "pack.json"), "utf8")) {
+          return dir;
+        }
+      } catch {}
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  return base;
+}
+
 const defaultPackIo: PackIo = {
-  cwd: () => process.cwd(),
+  cwd: resolveBasePath,
   readUtf8: (filePath) => readFileSync(filePath, "utf8"),
 };
 
