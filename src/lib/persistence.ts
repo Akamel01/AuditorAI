@@ -132,6 +132,40 @@ export class KvRestStore implements DataStore {
 
 let storeSingleton: DataStore | null = null;
 
+function createFallbackStore(): DataStore {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return new MemoryStore();
+  const kv = new KvRestStore(url, token);
+  return {
+    kind: "kv-with-fallback" as const,
+    async put(key: string, value: unknown) {
+      try { await kv.put(key, value); }
+      catch { await new MemoryStore().put(key, value); }
+    },
+    async get<T>(key: string) {
+      try { return await kv.get<T>(key); }
+      catch { return new MemoryStore().get<T>(key); }
+    },
+    async getMany<T>(keys: string[]) {
+      try { return await kv.getMany<T>(keys); }
+      catch { return new MemoryStore().getMany<T>(keys); }
+    },
+    async keys(prefix: string) {
+      try { return await kv.keys(prefix); }
+      catch { return new MemoryStore().keys(prefix); }
+    },
+    async del(key: string) {
+      try { await kv.del(key); }
+      catch { await new MemoryStore().del(key); }
+    },
+    async delByPrefix(prefix: string) {
+      try { return await kv.delByPrefix(prefix); }
+      catch { return new MemoryStore().delByPrefix(prefix); }
+    },
+  };
+}
+
 export function getDataStore(): DataStore {
   if (!storeSingleton) {
     const url = process.env.KV_REST_API_URL;
