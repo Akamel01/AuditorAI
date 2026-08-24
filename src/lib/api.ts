@@ -111,7 +111,7 @@ const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof StoreUnavailableError, status: 503, exposeMessage: false },
 ];
 
-const REDACTED_MESSAGE = "internal server error";
+const REDACTED_MESSAGE = "internal server error [fallback-v3]";
 
 /** Shared error mapper: consults ERROR_TABLE; anything unmapped is logged and
  *  redacted at 500 — internal text never reaches the wire. */
