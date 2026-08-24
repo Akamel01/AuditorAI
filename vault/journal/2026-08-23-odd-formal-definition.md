@@ -40,3 +40,26 @@ Surprises worth keeping:
 Fogged out of this session (candidates for graduation): machine-readable declaration file +
 intake wiring; readiness-campaign sample-inclusion corollary is recorded in ADR-0005 but its
 map remains conversation-only until re-charted; claims-surface enforcement (prose only today).
+
+Addendum (same session, post-commit ce22341) — owner rulings on open items, recorded here
+because execution was scoped OUT of this session:
+
+- **GF-10 / VAL-024**: classification ratified as rot-family (authored baseline lost
+  evidentiary support through legitimate provenance purge; not judge drift, not engine
+  regression). Strategy chosen: **swap + re-test** — replace JB-GF10-002 with a different
+  well-grounded compliance baseline; move the `'conflicting'` MI-path coverage into a
+  deterministic test instead of the judged corpus. CA cell keeps its incident flag until a
+  fresh full archive passes under gates §5 with ORCH review + owner acknowledgement.
+  Executor: a future non-ODD session.
+
+Addendum 2 — ODD declaration Phase 1 (post-ce22341), owner decisions: declaration lives at
+`policies/odd.json` (pack-data-driven idiom); enforcement = intake refusal + result stamping,
+split into phases so nothing collides with the concurrently-running candidate-review session
+(active in `src/domain/types.ts` / `src/lib/ai.ts`). Schema blessed as proposed, refined to
+array `canonical_stage` for combined-audit spans. Input floors derived from GF manifests and
+owner-blessed verbatim (UK collision-analysis stays floor; CA volumes stay above-floor).
+Shipped: `policies/odd.json` v1.0.0 (10 cells), `contracts/schemas/odd-declaration.schema.json`,
+8 invariant tests in `tests/domain/odd-declaration.test.ts`; ADR gained a Declaration log.
+Gotcha worth keeping: fixture filenames drop the id hyphen (`GF-6` → `gf6-*`) — prefix checks
+must strip hyphens before matching.
+

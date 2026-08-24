@@ -106,3 +106,12 @@ competence ends*. Three forces make this acute:
   CA planning cell incident-flagged; resolution follows gates §5 in a separate session.
 - Claims surfaces (README, report covers, marketing copy) inherit three-zone discipline; no
   code enforces prose today.
+
+### Declaration log
+
+- **v1.0.0 (2026-08-23):** initial `policies/odd.json` + `contracts/schemas/odd-declaration.schema.json`
+  + invariant tests (`tests/domain/odd-declaration.test.ts`). 10 cells: 5 IN (CA planning
+  incident-flagged), 4 UAE mapped-unproven, UK×feasibility structurally absent. Floors derived
+  from GF-6..10 manifests, owner-blessed. Refinements vs blessed schema: `canonical_stage` is an
+  array (combined-audit spans); omissions default-refuse. Phase-2 wiring (intake refusal +
+  result stamping) deferred until candidate-review lands.

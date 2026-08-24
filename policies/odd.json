@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0.0",
+  "declaration_version": "1.0.0",
+  "date": "2026-08-23",
+  "adr_ref": "docs/adr/0005-operational-design-domain.md",
+  "decision_ref": "DEC-0006",
+  "_notes": [
+    "Operational Design Domain declaration — machine-readable counterpart of ADR-0005.",
+    "Membership is conjunctive: status 'in' requires an accepted native<->canonical mapping AND at least one gate-passing corpus fixture.",
+    "Selections not found in cells[] are outside the domain by default: intake must refuse them once Phase-2 wiring lands.",
+    "canonical_stage is an array to represent combined-audit spans (Abu Dhabi Stage 1&2 [EV-AE-012]); single-stage cells carry one element.",
+    "input_floor lists minimum input classes the capability claim presumes; below the floor the claim does not apply at all (distinct from Input State degradation above it).",
+    "incident_flags mark cells whose latest full Tier-1 archive regressed; they clear only via eval-gates §5 re-baseline with ORCH review + owner acknowledgement.",
+    "Framework-defined audits deliberately omitted here (UK Interim RSA / Stages 3-4, US Work Zone / Pre-Opening / Existing Road / Land Use phases) are outside v1 scope per ADR-0005's matrix snapshot; omission = refusal."
+  ],
+  "cells": [
+    {
+      "jurisdiction_id": "uk",
+      "framework_id": "uk-dmrb-gg119",
+      "native_stage_id": "uk:S1",
+      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "mapping_confidence": "authoritative",
+      "status": "in",
+      "fixture_ids": ["GF-6"],
+      "incident_flags": [],
+      "input_floor": [
+        "scheme_description_objectives",
+        "design_standards_applied",
+        "design_speeds_and_speed_limits",
+        "traffic_flows_existing_forecast",
+        "collision_data_analysis_36mo",
+        "strategic_decisions_excluded"
+      ],
+      "scheme_scope_note": "Applies where physical highway changes impact road-user behaviour or collision outcome on the strategic road network; like-for-like maintenance excluded; exemption requires a recorded file note [EV-UK-006]. Floor mirrors GG 119 Appendix C core brief [EV-UK-014]."
+    },
+    {
+      "jurisdiction_id": "usa",
+      "framework_id": "us-fhwa-rsa",
+      "native_stage_id": "us-fhwa:preliminary-design",
+      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "mapping_confidence": "interpreted",
+      "status": "in",
+      "fixture_ids": ["GF-7"],
+      "incident_flags": [],
+      "input_floor": [
+        "project_information_package",
+        "design_drawings_current_phase"
+      ],
+      "scheme_scope_note": "US practice names project phases, never numbered stages [EV-US-006]; federal guidance is voluntary and expressly not a standard [EV-US-007]. Floor reflects FHWA's minimal 'necessary materials' expectation [EV-US-003]."
+    },
+    {
+      "jurisdiction_id": "usa",
+      "framework_id": "us-fhwa-rsa",
+      "native_stage_id": "us-fhwa:final-design",
+      "canonical_stage": ["DETAILED_DESIGN"],
+      "mapping_confidence": "interpreted",
+      "status": "in",
+      "fixture_ids": ["GF-8"],
+      "incident_flags": [],
+      "input_floor": [
+        "project_information_package",
+        "design_drawings_current_phase"
+      ],
+      "scheme_scope_note": "Final Design Stage Audit per FHWA phase vocabulary [EV-US-006]; floor as preliminary design."
+    },
+    {
+      "jurisdiction_id": "international",
+      "framework_id": "int-piarc-baseline",
+      "native_stage_id": "int:preliminary-design",
+      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "mapping_confidence": "interpreted",
+      "status": "in",
+      "fixture_ids": ["GF-9"],
+      "incident_flags": [],
+      "input_floor": [
+        "project_description_objectives",
+        "plans_appropriate_to_stage"
+      ],
+      "scheme_scope_note": "Qualified PIARC-derived baseline: no authoritative international standard exists [EV-IN-001..008]; claims inherit that qualification."
+    },
+    {
+      "jurisdiction_id": "canada",
+      "framework_id": "ca-tac-crsag-alberta",
+      "native_stage_id": "ca-tac:planning",
+      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "mapping_confidence": "authoritative",
+      "status": "in",
+      "fixture_ids": ["GF-10"],
+      "incident_flags": [
+        "VAL-024 fallout: latest full archive 2026-08-23T19-37-04-183Z fails JB-GF10-002 evidence_grounding after fabricated EV-CA-007 purge; membership rests on passing archives 09-32-11/10-32-40; clears via §5 swap+re-test re-baseline"
+      ],
+      "input_floor": [
+        "design_criteria",
+        "route_choice_project_scope"
+      ],
+      "scheme_scope_note": "Alberta equivalency table anchors TAC Planning = Stage 1 [EV-CA-005][EV-CA-006]; structural integrity excluded from scope [EV-CA-012]. Volumes sit above-floor pending accessible TAC text [EV-CA-001]."
+    },
+    {
+      "jurisdiction_id": "uae",
+      "framework_id": "ae-ad-dmt-tr540",
+      "native_stage_id": "ae-ad:S0",
+      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [
+        "concept_or_master_plan_options"
+      ],
+      "scheme_scope_note": "Stage 0 feasibility/conceptual audits attach to Master Plan/TIS submissions where flagged [EV-AE-004][EV-AE-005]. No fixture yet: corpus licensing pending [E3]; runs stamp 'outside ODD v1 — validation pending'."
+    },
+    {
+      "jurisdiction_id": "uae",
+      "framework_id": "ae-ad-dmt-tr540",
+      "native_stage_id": "ae-ad:S1",
+      "canonical_stage": ["PRELIMINARY_DESIGN"],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [
+        "general_detail_drawings"
+      ],
+      "scheme_scope_note": "Preliminary design drawings near completion, pre land-commitment [EV-AE-006]. Licensing blocks fixtures [E3]."
+    },
+    {
+      "jurisdiction_id": "uae",
+      "framework_id": "ae-ad-dmt-tr540",
+      "native_stage_id": "ae-ad:S12-combined",
+      "canonical_stage": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN"],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [
+        "general_detail_drawings"
+      ],
+      "scheme_scope_note": "Sanctioned combined Stage 1/2 single-report audit for smaller schemes proceeding directly to detailed design; road authority consulted on required set [EV-AE-012]. Spans two canonical stages."
+    },
+    {
+      "jurisdiction_id": "uae",
+      "framework_id": "ae-ad-dmt-tr540",
+      "native_stage_id": "ae-ad:S2",
+      "canonical_stage": ["DETAILED_DESIGN"],
+      "mapping_confidence": "authoritative",
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [
+        "full_detailed_design_set"
+      ],
+      "scheme_scope_note": "Full detailed design set incl. departures, signal phasing, prior reports [EV-AE-007]. Scope limited to EADRN [EV-AE-002]; Dubai unverified, other Emirates unknown [EV-AE-025]."
+    },
+    {
+      "jurisdiction_id": "uk",
+      "framework_id": "uk-dmrb-gg119",
+      "native_stage_id": null,
+      "canonical_stage": ["FEASIBILITY_CONCEPT"],
+      "mapping_confidence": null,
+      "status": "structurally_absent",
+      "fixture_ids": [],
+      "incident_flags": [],
+      "input_floor": [],
+      "scheme_scope_note": "GG 119 v2.0.1 full text contains no feasibility/concept ('Stage F'/'Stage 0') audit; its four-stage list is exhaustive [EV-UK-004][EV-UK-022]. Intake refuses this selection outright."
+    }
+  ]
+}
