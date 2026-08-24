@@ -137,31 +137,32 @@ function createFallbackStore(): DataStore {
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return new MemoryStore();
   const kv = new KvRestStore(url, token);
+  const fallback = new MemoryStore();
   return {
     kind: "kv" as const,
     async put(key: string, value: unknown) {
       try { await kv.put(key, value); }
-      catch { await new MemoryStore().put(key, value); }
+      catch { await fallback.put(key, value); }
     },
     async get<T>(key: string) {
       try { return await kv.get<T>(key); }
-      catch { return new MemoryStore().get<T>(key); }
+      catch { return fallback.get<T>(key); }
     },
     async getMany<T>(keys: string[]) {
       try { return await kv.getMany<T>(keys); }
-      catch { return new MemoryStore().getMany<T>(keys); }
+      catch { return fallback.getMany<T>(keys); }
     },
     async keys(prefix: string) {
       try { return await kv.keys(prefix); }
-      catch { return new MemoryStore().keys(prefix); }
+      catch { return fallback.keys(prefix); }
     },
     async del(key: string) {
       try { await kv.del(key); }
-      catch { await new MemoryStore().del(key); }
+      catch { return fallback.del(key); }
     },
     async delByPrefix(prefix: string) {
       try { return await kv.delByPrefix(prefix); }
-      catch { return new MemoryStore().delByPrefix(prefix); }
+      catch { return fallback.delByPrefix(prefix); }
     },
   };
 }
