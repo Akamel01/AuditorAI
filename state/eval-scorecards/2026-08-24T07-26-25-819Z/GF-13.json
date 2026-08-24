@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T07-26-25-819Z",
+  "fixture_id": "GF-13",
+  "fixture_name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 1
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF13-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Substandard systems-service spacing (1970 m / 1670 m vs 3000 m preferred) with a concrete weaving-conflict collision mechanism is a core, substantive planning-stage RSA concern for a system/service interchange cluster.",
+        "evidence_grounding": "Pivotal spacing-deficiency claim is backed by the verbatim EV-CA-039 quote ('The spacings are 1970m and 1670m respectively... can lead to congestion and collisions'), with EV-CA-003 anchoring off-network consequence propagation.",
+        "jurisdiction_correctness": "Framed as a safety concern arising from a preferred-spacing deviation rather than a compliance citation, kept within planning-stage scope, and correctly avoids asserting quantified severity at functional-plan level.",
+        "recommendation_quality": "Specific and viable dual path (re-space to 3000 m in next functional-plan iteration or add collector-distributor roadways clearing weaving from the functional area) plus a 2041 staging-volume verification step.",
+        "vru_coverage": "VRU impacts are not applicable on a fully access-controlled ring-road mainline, and the finding explicitly acknowledges this scoping with stated rationale, earning the acknowledged-not-applicable score of 1."
+      }
+    },
+    {
+      "finding_id": "JB-GF13-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Substantive: unresolved local-access connections inside a Highway 16 system interchange are a genuine expectation-violation/speed-differential safety matter, and the missing formal disposition leaves a real, consequential gap in the functional-plan record.",
+        "evidence_grounding": "Pivotal claim (mandatory §5.6.2 response report with accept/conditionally-accept/reject dispositions) is supported by the verbatim EV-CA-038 quote, with EV-CA-003 documenting-procedure duty and EV-CA-006 stage-mapping context; all scenario facts trace to recorded package content with no invented material.",
+        "jurisdiction_correctness": "Compliance question and safety concern stay categorically distinct: the statement confines itself to the Alberta §5.6.2 response-report discipline while the conflict concern remains descriptive, and the Planning Stage = Stage 1 equivalency is applied correctly within the CA/TAC + Alberta framework.",
+        "recommendation_quality": "Specific and actionable: names the §5.6.2 vehicle, requires item-by-item disposition of the §4.1–4.2 issues with reasons, specifies filing with Alberta Transportation alongside the functional plan, and demands removal or justified retention of the flagged connections — all viable standard practice.",
+        "vru_coverage": "Not directly applicable since the access-controlled mainline carries no pedestrians or cyclists, but the finding explicitly acknowledges this and notes the flagged connections route traffic toward the local cross-road network where VRUs travel, warranting the acknowledged-not-applicable score of 1."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T07:47:20.647Z"
+}

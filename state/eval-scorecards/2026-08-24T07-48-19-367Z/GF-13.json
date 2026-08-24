@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-24T07-48-19-367Z",
+  "fixture_id": "GF-13",
+  "fixture_name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF13-002",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF13-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Sub-preferred systems-service spacing (1970 m/1670 m vs 3000 m) placing service interchanges inside the system interchange's functional area, with listed weaving pairs, is a core planning-stage geometric/functional safety concern with a credible rear-end/sideswipe mechanism.",
+        "evidence_grounding": "EV-CA-039 provides a verbatim quote directly supporting the pivotal spacing/functional-area claim, EV-CA-003 grounds the network-wide consequence propagation, assumptions cite recorded input categories, and inference over staging data is explicitly labelled in confidence.",
+        "jurisdiction_correctness": "Framed purely as a safety_concern treating 'preferred' spacing deviation as a risk driver rather than a mandatory-standard breach, keeping the safety question categorically distinct from any compliance assertion, consistent with CRSAG planning-stage semantics.",
+        "recommendation_quality": "Dual-path recommendation (re-space to 3000 m in next functional-plan iteration OR insert collector-distributor roadways) is specific, stage-appropriate, and viable, with a concrete verification step against 2041 staging-year weave volumes.",
+        "vru_coverage": "VRUs are genuinely not applicable on the fully access-controlled mainline, and the finding explicitly acknowledges this and scopes road users to vehicle occupants, satisfying the acknowledge-non-applicability criterion."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T08:07:56.024Z"
+}

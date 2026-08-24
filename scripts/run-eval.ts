@@ -3,7 +3,7 @@
 // workflow_dispatch CI uploads artifacts, never gates PRs.
 //
 // Usage:
-//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..10
+//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..13
 //   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
 //   npx tsx scripts/run-eval.ts --no-judge                      # deterministic snapshot check only
 //   OPENCODE_API_KEY=... AI_ENABLED=true npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
@@ -54,6 +54,9 @@ const ALL_FILES = DRY_RUN
       "gf8-usa-hawk-final.json",
       "gf9-int-interchange-prelim.json",
       "gf10-canada-corridor-planning.json",
+      "gf11-uk-greatnorthroad-s1.json",
+      "gf12-usa-hingham-prelim.json",
+      "gf13-ca-neahd-planning.json",
     ];
 
 const FILES = ONLY ? ALL_FILES.filter((f) => f.includes(ONLY)) : ALL_FILES;
@@ -203,7 +206,7 @@ async function main() {
   const outDir = path.join(process.cwd(), "state", "eval-scorecards", runId);
   mkdirSync(outDir, { recursive: true });
 
-  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..10)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
+  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..13)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
 
   let anyProjectFailed = false;
 
@@ -323,7 +326,7 @@ async function main() {
     validation_id: `VAL-2026-08-22-${seq}`,
     date: new Date().toISOString(),
     validator_node: "E4 eval harness",
-    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..10"}${LIVE ? " [live]" : ""} (run ${runId})`,
+    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..13"}${LIVE ? " [live]" : ""} (run ${runId})`,
     method: `Pipeline-driven audits; ox-alpha judge (${JUDGE_MODEL} @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)`,
     result: anyProjectFailed ? "FAILED — one or more projects below the corpus pass mark" : "PASSED — all sampled projects meet the corpus pass mark",
     follow_ups: anyProjectFailed ? ["Tier-2 review of failing projects before next AI-touching change"] : [],

@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-24T07-26-25-819Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF10-002",
+      "reason": "This operation was aborted"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Decision-load from simultaneous transfer-permission and signage changes at three interchanges on a 420,000 AADT corridor is a genuine planning-stage safety mechanism aligned with CRSAG's network-wide collision-avoidance objective.",
+        "evidence_grounding": "Pivotal 'collisions elsewhere along the route' claim is anchored by the verbatim EV-CA-003 quote, and the change-scope/AADT premises come from recorded corridor inputs, with the inference mechanism transparently labelled medium-confidence rather than invented.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern distinct from any compliance question, invoking the CRSAG audit-objective semantics for off-project-limit impacts appropriate to an Alberta Stage 1 planning RSA.",
+        "recommendation_quality": "Specific and actionable—quarterly single-interchange sequencing plus before/after speed-differential monitoring—and viable given the detector-based volume data already assumed available.",
+        "vru_coverage": "VRUs are correctly identified as not applicable on a controlled-access express-collector mainline and the exclusion is explicitly acknowledged with road_users scoped to vehicle occupants."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T07:43:35.270Z"
+}

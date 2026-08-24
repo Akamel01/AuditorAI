@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T08-08-49-444Z",
+  "fixture_id": "GF-9",
+  "fixture_name": "Cloverleaf-to-urban interchange conversion — INT preliminary design (Wikimedia PD geometry)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF9-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "A shortened collector-distributor weave carrying a recorded 1,100 pcu/h peak-hour design-year flow is a substantive, well-established sideswipe/rear-end exposure mechanism at preliminary design, especially where residual loop traffic merges with new terminal traffic.",
+        "evidence_grounding": "The pivotal claim rests on recorded input facts (GA drawings, 1,100 pcu/h volume) plus the verbatim EV-IN-015 checklist quote covering junction-type suitability, stream channelling and lane balance/continuity, with EV-IN-004 corroborating stage-appropriateness; no invented content detected.",
+        "jurisdiction_correctness": "Framed as a safety_concern with a stage-appropriate PIARC prompt invocation, keeping safety evaluation distinct from compliance claims, with conditional wording ('if the prompts flag inadequacy') preserving the categorical boundary despite mildly premature 'design fault' language.",
+        "recommendation_quality": "Three-part action is specific and viable: apply the named PIARC §10.2 prompts, run HSM Part C/IHSDM interchange evaluations, and lengthen the weave or add entry ramp metering contingent on findings — concrete, actionable, and not a null recommendation.",
+        "vru_coverage": "VRUs are correctly scoped out via recorded grade-separated shared-use paths with explicit acknowledgment, matching the not-applicable-but-acknowledged case."
+      }
+    },
+    {
+      "finding_id": "JB-GF9-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Uncontrolled free-flowing ramp-terminal crossings of retained shared-use paths are a classic interchange VRU continuity hazard squarely relevant at preliminary design, and the finding ties it directly to recorded scheme objectives, making it fully substantive.",
+        "evidence_grounding": "Pivotal normative claim is supported by verbatim quotes from EV-IN-016 and EV-IN-005, and the factual basis (recorded objectives, retained shared-use paths, free-flow ramp entries) is drawn from recorded input facts with no invented content.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under the PIARC-derived international baseline matched to the int:preliminary-design stage via Appendix 1 prompts, keeping the checklist-based safety argument categorically distinct from any compliance question.",
+        "recommendation_quality": "Specific and actionable — named PIARC/Austroads thematic-audit application, Walkability Checklist and CQSI tools, and concrete signalisation or grade-separation at each loop-ramp terminal interface — all viable at preliminary design, despite the 'northern loop-ramp' reference being more granular than the recorded scenario.",
+        "vru_coverage": "Pedestrians and cyclists are the explicit focus of the finding, with their exposure at ramp terminals analysed and dedicated VRU audit instruments invoked, so vulnerable road user impacts are thoroughly considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T08:17:47.493Z"
+}

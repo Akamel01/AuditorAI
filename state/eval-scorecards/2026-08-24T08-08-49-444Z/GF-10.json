@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T08-08-49-444Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Transfer-point decision load under corridor-wide simultaneous lane-permission and signage changes is a recognised human-factors crash mechanism at express-collector mainlines, and AADT 420,000 makes the exposure material at planning stage.",
+        "evidence_grounding": "Pivotal network-displacement element is anchored by the verbatim EV-CA-003 quote ('avoid introducing collisions elsewhere along the route or on the network') while the simultaneity premise rests on recorded corridor inputs (AADT 420,000, revised permissions plus signage rationalisation); nothing invented.",
+        "jurisdiction_correctness": "Maintained categorically as a safety_concern with no compliance conflation, and correctly invokes the CRSAG audit objective covering negative safety impacts outside project limits, which fits a planning-stage corridor-wide view.",
+        "recommendation_quality": "Specific and actionable (one interchange per quarter with before/after speed-differential monitoring) though the quarterly cadence is arbitrary; clearly exceeds the null-recommendation cap.",
+        "vru_coverage": "VRU relevance explicitly considered and reasoned out of scope (controlled-access facility carrying no pedestrians or cyclists), with road users properly narrowed to vehicle occupants."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "A recorded conflict between ministry and municipal continuity registers leaves the planning scope boundary unconfirmable, risking exclusion of redistributing movements — genuine compliance/process substance for a Planning Stage (Stage 1) RSA.",
+        "evidence_grounding": "The pivotal documentation-duty claim is supported verbatim by EV-CA-038 and EV-CA-003 quotes, and the register conflict is presented as recorded input fact rather than invented detail; no fabricated content detected.",
+        "jurisdiction_correctness": "Correctly typed as compliance_question with accurate Planning Stage/Stage 1 anchoring via EV-CA-006 and clean separation from safety-hazard claims; §5.6.2 response discipline is applied analogically to scope reconciliation, a mild stretch but buttressed by the general §5.6 documented-procedure duty.",
+        "recommendation_quality": "Specific and actionable: names both conflicting records, the ministry planning office, documented-reason capture per the response discipline, and an explicit determination of whether corridor-wide continuity effects remain inside the audit boundary.",
+        "vru_coverage": "VRUs correctly identified as absent on the controlled-access mainline, with qualitative acknowledgement of downstream arterial propagation and no exposure overclaimed — not directly applicable but duly acknowledged."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T08:21:45.539Z"
+}

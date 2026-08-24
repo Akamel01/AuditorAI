@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-24T07-26-25-819Z",
+  "fixture_id": "GF-9",
+  "fixture_name": "Cloverleaf-to-urban interchange conversion — INT preliminary design (Wikimedia PD geometry)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF9-001",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0.5
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF9-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Uncontrolled shared-use-path crossings at free-flowing retained-loop ramp terminals are a genuine VRU safety hazard directly relevant to the corridor's recorded continuity objectives at preliminary-design stage.",
+        "evidence_grounding": "Pivotal claim is anchored by the verbatim EV-IN-016 checklist quote and corroborated by the verbatim EV-IN-005 thematic-audit/VRU quote, while the scenario rests on recorded objectives and layout facts; only the 'northern' terminal label is a mild extrapolation.",
+        "jurisdiction_correctness": "Correctly filed as a safety_concern (vru_continuity); PIARC checklist prompts serve as supporting normative basis without being converted into a compliance claim, keeping safety and compliance categorically distinct.",
+        "recommendation_quality": "Specific and stage-viable: names concrete tools (Walkability Checklist, CQSI) and treatments (signalised or grade-separated crossings at both retained loop-ramp terminals), though the 'northern' terminal reference lacks evidential anchoring.",
+        "vru_coverage": "Pedestrians and cyclists are the explicit focus of the finding, with their exposure at ramp-terminal crossings analysed directly, giving full VRU consideration."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T07:39:34.564Z"
+}

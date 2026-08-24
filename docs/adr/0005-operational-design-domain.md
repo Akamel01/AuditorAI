@@ -126,3 +126,8 @@ competence ends*. Three forces make this acute:
   (`OddOutsideDomainError`, HTTP 422 via ERROR_TABLE); mapped-unproven results carry the
   three-zone stamp "outside ODD v<ver> — validation pending" in limitations + `odd_*`
   result fields (`contracts/schemas/audit-result.schema.json` extended additively).
+- **v1.1.1 (2026-08-24):** IN-cell fixture_ids deepened with real-scheme conversions —
+  UK×PRELIMINARY_DESIGN + GF-11 (A9 Ballinluig), US×PRELIMINARY_DESIGN + GF-12 (Hingham
+  Derby St), CA×FEASIBILITY_CONCEPT + GF-13 (NEAHD Ring Road). All three passed Tier-1 in
+  run `2026-08-24T08-08-49-444Z`. No status changes; UAE cells remain mapped-unproven by
+  owner ruling (ADR-0007) pending authentic worked-example material.

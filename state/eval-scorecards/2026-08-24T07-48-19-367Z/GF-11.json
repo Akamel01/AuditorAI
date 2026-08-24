@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-24T07-48-19-367Z",
+  "fixture_id": "GF-11",
+  "fixture_name": "A9 Ballinluig SB signage/VRS-adjacent visibility — real UK Stage 1&2 RSA (Transport Scotland OGL release)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF11-001",
+      "reason": "This operation was aborted"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF11-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Obscured slip-road-end view undermining driver awareness of the slowing requirement on a high-speed trunk-road off-slip is a genuine safety problem directly tied to the signage scheme's stated purpose.",
+        "evidence_grounding": "The pivotal claim rests on a verbatim quote from EV-UK-025 ('Vegetation affects views to end of slip road, reducing driver awareness of requirement to slow'), exceeding registry-id-only citation.",
+        "jurisdiction_correctness": "Correctly framed as a GG 119 safety concern distinct from any compliance question, with the acceptance-criterion framing respecting the audit-team/designer division of responsibilities at Stage 1.",
+        "recommendation_quality": "Specific and actionable: post-clearance drive-through verification of early terminus visibility at design speed, recorded in the handover file alongside the agreed RSA action.",
+        "vru_coverage": "VRUs are not exposed on the slip carriageway itself and the finding explicitly acknowledges this scoping limitation, warranting 1 per the not-applicable-but-acknowledged rule."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T08:05:15.171Z"
+}

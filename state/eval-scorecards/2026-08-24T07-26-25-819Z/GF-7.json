@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-24T07-26-25-819Z",
+  "fixture_id": "GF-7",
+  "fixture_name": "Four-lane arterial improvement — US preliminary design (FHWA case study, PD)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF7-001",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF7-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Queue storage and coordination between signalized intersections only ~650 ft apart on a corridor with recorded high-accident designations is a substantive, well-recognized preliminary-design safety issue squarely within FHWA RSA scope.",
+        "evidence_grounding": "The pivotal 650-ft spacing claim is supported by a verbatim quote from EV-US-001, and the queue-spillback mechanism is transparently labelled as derived inference from that recorded fact rather than invented content.",
+        "jurisdiction_correctness": "Framed purely as a safety_concern with null normative_basis_note and no compliance assertion, correctly preserving the categorical distinction between safety concerns and compliance questions under FHWA RSA semantics.",
+        "recommendation_quality": "Specific and viable at preliminary design—signal coordination, Do Not Block Intersection signing, and enhanced display conspicuousness—though it stops short of naming coordination parameters or turn-pocket/storage remedies.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly acknowledged as crossing both signalized intersections with a reasoned scoping to vehicle occupants based on the spillback mechanism, but VRU-specific effects of retiming (pedestrian phases, crossings blocked by queued vehicles) are not analyzed."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T07:32:43.782Z"
+}

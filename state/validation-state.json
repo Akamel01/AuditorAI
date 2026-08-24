@@ -286,6 +286,44 @@
       "method": "Baseline re-authored on authentic evidence: EV-CA-038 added (Alberta §5.6.1–5.6.2 response-report discipline, verbatim-verified vs pypdf extraction); CA pack completeness rule R-CA-NETWORK-CONTINUITY-RESOLVED added so the 'conflicting' MI path is deterministic (tests/domain/gf10-mi-path.test.ts pins fixture↔pack↔engine contract); fixture expected.missing_information_input_ids updated",
       "result": "PASSED — accepting run 2026-08-24T06-11-08-387Z: GF-10 100% PASS; all five projects 100%. Supersedes failing run 2026-08-23T19-37-04-183Z (JB-GF10-002 evidence_grounding=1). Note: GF-7 zero-drop jitter flagged on unchanged fixture — mean-total variance only, pass rate stable across prior archives.",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-028",
+      "date": "2026-08-24T07:20:08.099Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-05-50-803Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-029",
+      "date": "2026-08-24T07:47:20.650Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-26-25-819Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-030",
+      "date": "2026-08-24T08:07:56.026Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-48-19-367Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-031",
+      "date": "2026-08-24T08:26:15.023Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T08-08-49-444Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
     }
   ]
 }

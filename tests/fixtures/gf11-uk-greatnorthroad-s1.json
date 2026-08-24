@@ -1,0 +1,157 @@
+{
+  "fixture_id": "GF-11",
+  "name": "A9 Ballinluig SB signage/VRS-adjacent visibility — real UK Stage 1&2 RSA (Transport Scotland OGL release)",
+  "jurisdiction": "UK",
+  "native_stage_id": "uk:S1",
+  "metadata": {
+    "name": "A9 Ballinluig Southbound Signage Improvements",
+    "description": "Real Stage 1&2 combined Road Safety Audit (BEAR Scotland Form #220 response to July 2022 Stage 1 audit) on the A9/Ballinluig junction southbound off-slip signage improvement scheme; converted from the gov.scot FOI/EIR release 202300341022.",
+    "scheme_summary": "Improvements to the south-bound off-slip at the A9/Ballinluig junction: signing upgrades with associated vegetation clearance to restore forward visibility for pedestrians and driver awareness of the speed-reduction requirement at the slip-road end.",
+    "authority": "Transport Scotland (Overseeing Organisation); BEAR Scotland Ltd NW Unit (design organisation and audit team)",
+    "location": "A9 Ballinluig, Perth & Kinross, Scotland"
+  },
+  "inputs": {
+    "scheme_description_objectives": {
+      "state": "provided",
+      "value": "Improvements required to the south-bound off-slip at the A9/Ballinluig junction; scheme 22-NW-0801-084 signage improvements package as recorded in the audit brief sections of the released report."
+    },
+    "design_standards_applied": {
+      "state": "provided",
+      "value": "GG 119-lineage trunk-road RSA procedure (Design Organisation certifies RSA actions per Form #220 statements)."
+    },
+    "design_speeds_and_speed_limits": {
+      "state": "required_missing"
+    },
+    "traffic_flows_existing_forecast": {
+      "state": "required_missing"
+    },
+    "collision_data_analysis_36mo": {
+      "state": "provided",
+      "value": "Collision history reviewed by the audit team per the Stage 1&2 procedure recorded in the released report."
+    },
+    "vru_desire_lines": {
+      "state": "recommended_missing"
+    },
+    "environmental_constraints_locality": {
+      "state": "provided",
+      "value": "Roadside vegetation is the dominant environmental constraint: both logged problems concern vegetation affecting visibility."
+    },
+    "strategic_decisions_excluded": {
+      "state": "not_applicable"
+    },
+    "departures_from_standards": {
+      "state": "not_applicable"
+    }
+  },
+  "provenance": {
+    "source_url": "https://www.gov.scot/publications/a9-accidents-safety-and-dualling-eir-release/",
+    "license": "Open Government Licence v3.0 — © Crown copyright, published on gov.scot under FOI/EIR release 202300341022 (licence statement carried on the parent publication page).",
+    "retrieved": "2026-08-24",
+    "extractor": "ORCH converted the released Ballinluig Stage 1&2 RSA response report (Form #220) into this fixture: decision-log problems/recommendations/agreed actions transcribed verbatim; redactions under EIR reg. 11(2) respected by omitting personnel fields entirely rather than paraphrasing them."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF11-001",
+      "kind": "safety_concern",
+      "category": "junctions_interchanges",
+      "location": "A9/Ballinluig junction — southbound off-slip approach curve",
+      "road_users": [
+        "pedestrians",
+        "vehicle occupants"
+      ],
+      "scenario": "The decision log records that road curvature plus roadside vegetation reduces forward visibility on the slip-road approach, and that shrubbery must be cut back sufficiently to allow clear passage by pedestrians; until clearance is extended, pedestrians walking the verge and drivers entering the taper share a corridor whose sight lines are materially constrained. Vulnerable road users are explicitly served by the recommended action (clear pedestrian passage), so VRUs are within scope of this finding.",
+      "statement": {
+        "text": "Extend the vegetation clearance beyond the minimum cut-back so forward visibility for drivers on the curve AND an unobstructed pedestrian passage are both achieved and evidenced, before the signage scheme is handed over.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-UK-025",
+          "quote": "Curve of road and vegetation reduces forward visibility Cut back shrubbery sufficiently to allow clear passage by pedestrians Vegetation clearance will be extended to include this section. OK Cut back shrubbery",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-UK-002",
+          "quote": "Swept path analysis has been undertaken and examples of these are included in Figure 4-1 to Figure 4-4. Large",
+          "use": "context"
+        }
+      ],
+      "assumptions": [
+        {
+          "text": "Recorded agreed action ('Vegetation clearance will be extended') is delivered in full.",
+          "basis": "decision log acceptance"
+        }
+      ],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "Problems, recommendation and agreed action are transcribed from the Overseeing-Organisation-accepted decision log of the real Stage 1&2 audit (EV-UK-025)."
+      },
+      "rationale": "The audit itself logged reduced forward visibility from curve-plus-vegetation with a pedestrian-passage requirement; the finding restates the accepted remediation duty as the closure condition, grounded verbatim in EV-UK-025.",
+      "recommendation": "Deliver and evidence the extended vegetation clearance covering both logged problem locations, confirming post-clearance forward visibility for drivers and unobstructed pedestrian passage along the affected section.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF11-002",
+      "kind": "safety_concern",
+      "category": "signage_markings_lighting",
+      "location": "Southbound off-slip end — view to slip-road terminus",
+      "road_users": [
+        "vehicle occupants"
+      ],
+      "scenario": "The decision log separately records that vegetation affects views to the end of the slip road, reducing driver awareness of the requirement to slow; on a high-speed trunk-road off-slip this awareness failure is precisely the condition signage improvements are meant to correct, so the signage scheme's objective is not met while the view remains obscured. Vulnerable road users are not exposed on the slip carriageway itself; road users scoped to vehicle occupants.",
+      "statement": {
+        "text": "Treat restoration of the view to the slip-road end as a functional acceptance criterion for the signage improvement scheme: verify driver awareness of the slowing requirement after clearance works, not merely completion of cutting.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-UK-025",
+          "quote": "Vegetation affects views to end of slip road, reducing driver awareness of requirement to slow",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "Second logged problem quoted verbatim from the accepted decision log (EV-UK-025); mechanism is driver-awareness loss at a speed transition, matching the scheme purpose recorded in the same document."
+      },
+      "rationale": "Grounded directly in the second decision-log row: obscured slip-road-end view reduces driver slowing awareness; the finding binds the signage scheme's success measure to restored sight lines rather than installed hardware alone.",
+      "recommendation": "After vegetation clearance, verify by drive-through at design speed that the slip-road terminus is visible early enough for the posted slowing requirement, recording the check in the handover file alongside the agreed RSA action.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 3,
+    "mapping_confidence": "authoritative",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "notes": "Source is a combined Stage 1&2 audit (GG 119 permits combined early-stage audits for small schemes); fixture anchors uk:S1 where the pack declares it. The response-report body labels the audited review 'Stage 1' (July 2022) while the file naming says Stage 2 — the discrepancy is preserved honestly rather than resolved by invention. GF-11 deepens the UK×PRELIMINARY_DESIGN IN cell with a real-scheme baseline; no UAE cell implications."
+}

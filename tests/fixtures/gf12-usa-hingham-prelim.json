@@ -1,0 +1,142 @@
+{
+  "fixture_id": "GF-12",
+  "name": "Ramp-terminal arterial reconstruction — US preliminary design (MassDOT HSIP municipal RSA, full package)",
+  "jurisdiction": "US",
+  "native_stage_id": "us-fhwa:preliminary-design",
+  "metadata": {
+    "name": "Derby Street at Route 3 Ramps intersections (Hingham, Massachusetts)",
+    "description": "Road safety audit of the Derby Street intersections with the Route 3 Northbound and Southbound ramps in Hingham, conducted while the intersections were currently under design (MassDOT Project #607309), with HSIP funding conditioned on the RSA and uptake of its identified improvements into the reconstruction design.",
+    "scheme_summary": "Reconstruction and related work on Derby Street from Pond Park Road to Cushing Street covering both partial-cloverleaf Exit 15 ramp terminals: YIELD-controlled ramp right turns, STOP-controlled left turns from the off-ramps, no left-turn queue storage on Derby Street at either on-ramp, a westbound two-to-one lane drop east of Old Derby Street, and an existing mid-block crosswalk across four lanes near Old Derby Street.",
+    "authority": "Town of Hingham (proponent) / Massachusetts Department of Transportation (MassDOT District 5)",
+    "location": "Hingham, Massachusetts, USA"
+  },
+  "inputs": {
+    "project_information_package": {
+      "state": "provided",
+      "value": "RSA background package: the Derby Street / Route 3 NB and SB ramp intersections are listed High Crash Locations in the MAPC region; MassDOT allows HSIP funding for reconstruction only if an RSA is conducted and the proposed design includes RSA-identified safety improvements; the intersections are currently under design (MassDOT Project #607309) as part of the Reconstruction and Related work on Derby Street from Pond Park Road to Cushing Street, Town of Hingham proponent; audit team of Town, MassDOT, FHWA and consultant members reviewed crash data, collision diagrams and existing conditions."
+    },
+    "design_drawings_current_phase": {
+      "state": "provided",
+      "value": "Intersection exhibits at the under-design phase: Figure 1 locus map and Figure 2 plan of the existing Derby Street / Route 3 ramp intersections showing ADTs (17,300 vpd east of the SB ramps, 16,200 vpd over the overpass, 27,000 vpd at the NB ramps), lane assignments, guardrail and sidewalk extents, and the mid-block crosswalk location near Old Derby Street; proposed concepts for the reconstruction are under development for uptake of RSA enhancements."
+    },
+    "crash_history": {
+      "state": "provided",
+      "value": "Crash records from Hingham Police and State Police for September 2010 to August 2013 plus twelve later-received reports: 18 crashes at the Route 3 Northbound Ramps (11 angle/61%, 3 rear-end/17%, 2 sideswipe, 1 head-on, 1 single-vehicle fixed object) and 23 at the Southbound Ramps (12 rear-end/52%, 5 angle/22%, 2 sideswipe, 2 head-on, 2 single-vehicle fixed object); a past collision involving a pedestrian at the mid-block crosswalk near Old Derby Street resulted in a fatality."
+    },
+    "operational_geometric_hf_context": {
+      "state": "provided",
+      "value": "Derby Street is an urban minor arterial posted 40 mph; three lanes west of the SB ramps narrow to a two-lane 44-foot section with 8-foot shoulders, a 15-foot westbound lane allowing maneuvering around the off-ramp left-turn queue, 5.5-foot sidewalks along both ramp intersections, and four lanes east of the NB ramps; left turns from both off-ramps operate at LOS F in the weekday AM, weekday PM and weekend mid-day peaks with queues over five vehicles observed off-peak; drivers exiting the NB ramps must discern the intent of westbound vehicles merging from two lanes to one, and U-turn workarounds via the Hingham Industrial Park were observed."
+    }
+  },
+  "provenance": {
+    "source_url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+    "license": "Public domain as posted (US municipal-government work product of the Town of Hingham / MassDOT HSIP program; no rights-reserved notice or usage restrictions on the source page)",
+    "retrieved": "2026-08-24",
+    "extractor": "ORCH transformed the CHA Consulting December 2013 RSA report 'Derby Street at Route 3 Ramps' (34 pp full package: background, project data, crash tables, Figures 1-2, five numbered safety issues with observations, Table 2 short/mid/long-term enhancement matrix with cost and responsible agency, prompt-list-driven agenda/checklist appendices) into a Project input set; findings language patterned on the report's Safety Issue observation/enhancement structure."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF12-001",
+      "kind": "safety_concern",
+      "category": "ramp_terminal_pedestrian_crossings",
+      "location": "Route 3 Northbound ramp entrances/exits at Derby Street and the mid-block crosswalk west of the ramps near Old Derby Street",
+      "road_users": [
+        "pedestrians",
+        "drivers"
+      ],
+      "scenario": "At the Route 3 Northbound ramps, sidewalks are provided but there are no delineated crosswalks or accessible wheelchair ramps for pedestrians crossing the ramp entrances or exits, and vegetation along the right side of the off-ramp limits driver visibility of pedestrians crossing amid high volumes and complex turn/merge maneuvers. West of the ramps, the existing mid-block crosswalk near Old Derby Street spans four travel lanes at a relatively high-speed location where vehicles accelerate and decelerate for the Route 3 ramps, in the same segment as the westbound lane drop that can divert drivers' attention away from pedestrians; its signage does not meet current MUTCD standards and there is no advance warning. A past pedestrian collision at this location resulted in a fatality. Vulnerable road users acknowledged: pedestrians are the directly exposed user group in this finding; drivers are included because their attention is divided by accelerating/decelerating and merging through the crossing area.",
+      "statement": {
+        "text": "Provide delineated, MUTCD-signed crossings with accessible wheelchair ramps at the Route 3 Northbound ramp entrances and exits, and upgrade or relocate the mid-block crossing near Old Derby Street so pedestrians are separated from accelerating and decelerating ramp traffic.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-030",
+          "quote": "What these types of frequently serious crashes have in common is that they typically occur at locations where the pedestrians and bicyclists are not separated in space through physical means, or in time through traffic controls or operational features.",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-US-032",
+          "quote": "Use signing and lane markings to increase awareness of pedestrians and bicyclists. Signing, crosswalks, barriers, over and underpasses, bridge sidewalks and other traffic control devices may be required to manage traffic movements and to control pedestrian and bicycle movements.",
+          "use": "defines_requirement"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "Crossing deficiencies, vegetation-limited visibility, non-compliant signage and the past fatal pedestrian collision are recorded directly in the sample report's Safety Issue #4 observations; the separation-failure mechanism matches FHWA's characterization of serious pedestrian crashes."
+      },
+      "rationale": "ORCH-as-judge baseline derived from the recorded Safety Issue #4 observations and Table 2 enhancements; distinguishable from quoted evidence, which supplies the national-guidance mechanism (separation failure) and interchange pedestrian-treatment duty rather than site facts.",
+      "recommendation": "Install MUTCD-compliant advance warning and crossing signage at the mid-block crosswalk now; install ADA-compliant wheelchair ramps and designate crosswalks at the Route 3 Northbound ramps as part of the current design; provide signalized pedestrian crossings of the off-ramps and on-ramp within the future traffic signal and relocate the mid-block crossing to the Derby Shoppes signal by extending the north-side sidewalk eastward.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF12-002",
+      "kind": "safety_concern",
+      "category": "undefined_lane_drop_merge_expectancy",
+      "location": "Derby Street westbound approach to the Route 3 Northbound on-ramp, east of Old Derby Street",
+      "road_users": [
+        "drivers"
+      ],
+      "scenario": "The transition from two lanes to one lane on the Derby Street westbound approach to the Route 3 Northbound Ramps is not well defined: pavement striping for the two lanes ends abruptly at the existing crosswalk near Old Derby Street, there is no signage alerting drivers to the impending lane reduction, and the ramp entrance sits a couple hundred feet beyond it, leaving it unclear whether vehicles should merge before the ramp or continue as two lanes with the right lane exiting. Drivers were observed continuing in the right lane toward the on-ramp and then merging left at the ramp location to continue on Derby Street — an unexpected maneuver with collision potential that also forces left-turning drivers exiting the NB ramp to discern the intent of these merging vehicles. Vulnerable road users acknowledged: pedestrians use the adjacent mid-block crosswalk where this same lane drop diverts driver attention (covered in JB-GF12-001); the conflict mechanism in this finding operates between merging and turning vehicles, so road users are scoped to drivers.",
+      "statement": {
+        "text": "Define the westbound lane reduction with advance merge signage and pavement markings ahead of the Route 3 Northbound on-ramp so drivers do not discover the lane drop at the ramp mouth.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-033",
+          "quote": "Pavement striping for the two lanes ends abruptly at the existing crosswalk near Old Derby Street. There is no signage to alert drivers of the impending lane reduction.",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-US-023",
+          "quote": "The principal focus of the RSA is to identify potential road safety issues caused by the design, or by some operational characteristic",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "medium",
+        "basis": "Abrupt striping termination, absent signage and observed late merges are recorded field observations in Safety Issue #2; the report notes no reported crashes specifically attributed to this issue, so the collision mechanism remains potential rather than demonstrated."
+      },
+      "rationale": "ORCH-as-judge baseline derived from recorded Safety Issue #2 field observations; the expectancy/decision-load mechanism between merging and ramp-exiting drivers is labelled inference, distinguishable from quoted evidence.",
+      "recommendation": "Add signage indicating the end of the two-lane section of Derby Street and the need for vehicles to merge into one lane prior to the Route 3 Northbound on-ramp entrance; carry the alternative of extending the two through lanes beyond the ramp entrance, with its mandatory-right-turn trade-off signed in advance, into the ongoing reconstruction design.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 3,
+    "mapping_confidence": "interpreted",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "notes": "Tier-0 snapshot to be recorded from actual deterministic run; baseline findings are judge targets, not engine outputs. Grounded in US-008 (Hingham Derby St @ Route 3 ramps RSA, Dec 2013, CHA Consulting for MassDOT HSIP) via hingham-ma.gov; evidence quotes reused byte-verbatim from pre-verified EV-US-023/EV-US-030/EV-US-032 registry strings. Fills the corpus gap noted in samples/US/index.md: exactly one pre-construction design-stage package in the collection."
+}

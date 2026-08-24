@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: 4dd703dc51e8
-record_count: 27
+source_hash: e6b6b3a61f24
+record_count: 31
 ---
 # Validation log
 
@@ -212,3 +212,29 @@ record_count: 27
 - Date: 2026-08-24T06:20:30.000Z
 - Scope: GF-10 JB-GF10-002 swap+re-test per ratified rot-family ruling; clears CA ODD incident flag
 - Result: **PASSED — accepting run 2026-08-24T06-11-08-387Z: GF-10 100% PASS; all five projects 100%. Supersedes failing run 2026-08-23T19-37-04-183Z (JB-GF10-002 evidence_grounding=1). Note: GF-7 zero-drop jitter flagged on unchanged fixture — mean-total variance only, pass rate stable across prior archives.**
+
+## VAL-2026-08-22-028
+
+- Date: 2026-08-24T07:20:08.099Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-05-50-803Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-029
+
+- Date: 2026-08-24T07:47:20.650Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-26-25-819Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-030
+
+- Date: 2026-08-24T08:07:56.026Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T07-48-19-367Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-031
+
+- Date: 2026-08-24T08:26:15.023Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T08-08-49-444Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**

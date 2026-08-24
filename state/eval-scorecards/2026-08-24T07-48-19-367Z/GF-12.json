@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T07-48-19-367Z",
+  "fixture_id": "GF-12",
+  "fixture_name": "Ramp-terminal arterial reconstruction — US preliminary design (MassDOT HSIP municipal RSA, full package)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF12-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Ramp-terminal pedestrian crossings, a four-lane high-speed mid-block crossing, vegetation-limited visibility, non-compliant signage, and a recorded past fatality are core substantive safety issues squarely relevant at preliminary design for an interchange scheme.",
+        "evidence_grounding": "Pivotal claims are anchored in recorded site observations (Safety Issue #4: crossing deficiencies, vegetation, signage, fatal collision) plus verbatim quotes EV-US-030 (separation-failure mechanism) and EV-US-032 (signing/marking duty) that directly support the concern and requirement.",
+        "jurisdiction_correctness": "Correctly typed as a safety_concern under FHWA RSA semantics; MUTCD/ADA references serve as supporting treatment criteria rather than converting the finding into a compliance item, and evidence uses (supports_concern vs defines_requirement) are properly distinguished.",
+        "recommendation_quality": "Recommendation is specific, staged (immediate signage, current-design ramps/crosswalks, future signalized ramp crossings), and viable including relocation to the Derby Shoppes signal with sidewalk extension—no null or vague elements.",
+        "vru_coverage": "Pedestrians are explicitly identified as the directly exposed vulnerable user group with their exposure mechanisms (crossing ramp traffic, divided driver attention) analyzed; drivers included as interacting users."
+      }
+    },
+    {
+      "finding_id": "JB-GF12-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Undefined lane drop with abruptly terminating striping, absent advance signage, and observed late merges at the ramp mouth create a genuine expectancy/conflict hazard between merging and ramp-exiting drivers — substantive for a preliminary-design RSA.",
+        "evidence_grounding": "Pivotal claim (abrupt striping termination, no signage) is supported by verbatim quote EV-US-033; the observed late-merge behavior is a recorded field observation from Safety Issue #2 rather than invented content, with EV-US-023 framing RSA scope.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern arising from design/operational characteristics consistent with FHWA RSA purpose (EV-US-023); no compliance question conflated, and null normative_basis_note is appropriate for a non-code safety issue.",
+        "recommendation_quality": "Specific and actionable: advance merge signage and pavement markings ahead of the on-ramp, plus a viable alternative (extending two through lanes beyond the ramp with mandatory-right-turn trade-off signed in advance) carried into the ongoing reconstruction design.",
+        "vru_coverage": "Pedestrian exposure at the adjacent mid-block crosswalk is explicitly acknowledged, the driver-attention interaction mechanism identified, and impacts properly delegated to dedicated finding JB-GF12-001 while the vehicle-vehicle mechanism is correctly scoped to drivers."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T08:07:06.913Z"
+}

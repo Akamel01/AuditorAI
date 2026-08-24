@@ -381,6 +381,17 @@ evidence_records:
     retrieved_date: "2026-08-24"
     normative_status: mandatory
     confidence: high
+  - evidence_id: EV-CA-039
+    claim: "The Northeast Anthony Henday Drive / Highway 16 planning-stage RSA (Alberta Transportation, 2009) records that the 130th Avenue (Anthony Henday) and Broadmoor Blvd (Highway 16) service interchanges sit too close to the Highway 16/Anthony Henday system interchange — spacings of 1970 m and 1670 m against a preferred systems–service spacing of 3000 m — placing them within the system interchange's functional operating area with congestion and collision potential."
+    quote: "The spacings are 1970m and 1670m respectively. The preferred systems – service interchange spacing is 3000m. The service interchanges are within the functional operating area of the system interchange which can lead to congestion and collisions."
+    source_url: "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+    source_title: "Northeast Anthony Henday Ring Road Planning Stage RSA (sample corpus CA-001, §4 spacing observations)"
+    publisher: "Alberta Transportation"
+    revision: null
+    publication_date: 2009-01-01
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
 ---
 
 # Canada — Road Safety Audit Research (R4)

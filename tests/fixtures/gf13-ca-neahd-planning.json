@@ -1,0 +1,157 @@
+{
+  "fixture_id": "GF-13",
+  "name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "jurisdiction": "CA",
+  "native_stage_id": "ca-tac:planning",
+  "metadata": {
+    "name": "North East Edmonton Ring Road (Anthony Henday Drive NE) — Planning Stage RSA, Stage 1 – 2041 (1.6 million regional population)",
+    "description": "June 2009 planning-stage road safety audit of the Stage 1 – 2041 functional plan for the northeast Edmonton ring road, prepared by Canadian Highways Institute Ltd. / GCS Technology (Morrall & Smith) for ISL Engineering and Land Services under Alberta Transportation; the audit focused exclusively on safety issues related to the functional plan.",
+    "scheme_summary": "Fully access-controlled free-flow freeway mainline: Anthony Henday Drive from Whitemud Drive to Manning Road and Highway 16 from AHD to Highway 21, with system (directional/cloverleaf) and service (parclo/half-diamond/diamond) interchanges classified in Tables 1–2; single right-hand-side ramp exits throughout.",
+    "authority": "Alberta Transportation",
+    "location": "Edmonton, Alberta, Canada"
+  },
+  "inputs": {
+    "design_criteria": {
+      "state": "provided",
+      "value": "Design Criteria, Anthony Henday Drive, ISL Engineering and Land Services, listed as provided in the Basis of Audit; guidelines referenced: AT Highway Geometric Design Guide (1995, updates to 1999), TAC Geometric Design Guide for Canadian Roads (1999), AT Best Practices for Planning and Design of Freeway Facilities (2004)."
+    },
+    "design_volume_traffic_characteristics": {
+      "state": "provided",
+      "value": "Planning-horizon staging only: Stage 1 – 2041 sized to a 1.6 million regional population; the audit report contains no explicit AADT counts or traffic-mix tables (design-year demand implied by the population staging)."
+    },
+    "route_choice_project_scope": {
+      "state": "provided",
+      "value": "Selected Stage 1 – 2041 functional plan: Anthony Henday Drive from Whitemud Drive to Manning Road and Highway 16 from AHD to Highway 21; the audit focused exclusively on safety issues related to the functional plan."
+    },
+    "access_management_adjacent_developments": {
+      "state": "provided",
+      "value": "Mainline free flow and fully access controlled with single right-hand-side ramp exits; the audit flags local access connections west of Anthony Henday Drive connecting directly to/from EB and WB Highway 16 within the system interchange."
+    },
+    "network_continuity_constraints": {
+      "state": "provided",
+      "value": "Continuity with the existing network addressed through the interchange ladder: ties at Whitemud Drive, Sherwood Park Freeway/Wye Road, Baseline Road, Highway 16 (existing parclo at Sherwood Drive/Cloverbar Road retained) and Manning Drive; river-valley exit grades noted for climbing-lane review. No conflicting continuity records in the package."
+    }
+  },
+  "provenance": {
+    "source_url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+    "license": "Open Government Licence – Alberta (published provincial record via open.alberta.ca; sha256 0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95 per samples/CA/index.md ca-001)",
+    "retrieved": "2026-08-24",
+    "extractor": "Extracted the full 10-page NEAHD Planning Stage RSA letter-report (qpdf --check clean, unencrypted; pypdf text layer) as the geometric context narrative for a ca-tac:planning fixture; interchange Tables 1–2 and the §4.1–4.2 observations were carried over verbatim from the extraction."
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF13-001",
+      "kind": "safety_concern",
+      "category": "junctions_interchanges",
+      "location": "130 Avenue (AHD) and Broadmoor Blvd (Highway 16) service interchanges flanking the Anthony Henday Drive / Highway 16 system interchange",
+      "road_users": [
+        "vehicle occupants"
+      ],
+      "scenario": "Recorded Stage 1 interchange classifications show the 130 Avenue service interchange 1970 m and the Broadmoor Blvd service interchange 1670 m from the Anthony Henday Drive / Highway 16 system interchange, against a preferred systems-service spacing of 3000 m, placing both inside the system interchange's functional operating area; the audit additionally lists potential weaving between adjacent interchange pairs on both mainlines (e.g. Baseline Road/Highway 16 and Highway 16/130 Avenue NB & SB). Weaving and sign comprehension failures in these close-spaced sections risk rear-end and sideswipe collisions during merging, with congestion effects propagating past the scheme limits. Vulnerable road users acknowledged: the ring-road mainline is a fully access-controlled facility carrying no pedestrians or cyclists, so VRUs are not applicable to this finding and road users are scoped to vehicle occupants.",
+      "statement": {
+        "text": "Separate the 130 Avenue and Broadmoor Boulevard service interchanges from the Anthony Henday Drive / Highway 16 system interchange to the preferred 3000 m systems-service spacing, or reconfigure the ramps with collector-distributor roadways so that no weaving section falls within the system interchange's functional operating area.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-039",
+          "quote": "The spacings are 1970m and 1670m respectively. The preferred systems – service interchange spacing is 3000m. The service interchanges are within the functional operating area of the system interchange which can lead to congestion and collisions.",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-CA-003",
+          "quote": "minimise potentially negative safety impacts both within and outside the project limits, i.e. to avoid introducing collisions elsewhere along the route or on the network.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [
+        {
+          "text": "Table 1 and Table 2 spacings reflect the June 2009 Stage 1 functional-plan geometry as issued for audit.",
+          "basis": "interchange classification tables"
+        },
+        {
+          "text": "Design-year weave demand derives from the 1.6-million regional population staging rather than counted volumes.",
+          "basis": "traffic characteristics input"
+        }
+      ],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "medium",
+        "basis": "Sub-standard spacing (1970 m / 1670 m vs 3000 m preferred) and the weaving-pair list are recorded directly in the audit's specific observations, but the merge-conflict collision mechanism at 2041 demand is labelled inference over planning-level staging data."
+      },
+      "rationale": "ORCH-as-judge baseline: spacing-deviation mechanism taken from the audit's own specific observations and general comments rather than synthesized; corridor-wide consequence propagation grounded in the audit objectives quote; no quantified severity asserted at planning level.",
+      "recommendation": "Adopt the 3000 m systems-service spacing in the next functional-plan iteration, or insert collector-distributor roadways between the system interchange and the 130 Avenue and Broadmoor Blvd ramps so weaving completes outside the functional operating area, and verify against 2041 staging-year weave volumes.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF13-002",
+      "kind": "compliance_question",
+      "category": "access_management",
+      "location": "Highway 16 mainline west of Anthony Henday Drive — EB and WB local access connections within the system interchange",
+      "road_users": [],
+      "scenario": "Recorded functional-plan geometry retains local access connections west of Anthony Henday Drive connecting directly to/from both EB and WB Highway 16 inside the system interchange; the audit raises the connection twice, calling it inconsistent design that violates driver expectations and a potential safety issue through conflicts between slower moving local traffic and higher speed through traffic. The published package closes with the audit's concluding remarks alone — no response documentation dispositioning these issues accompanies the letter-report — so the functional-plan record stands with flagged access anomalies and no documented accept / conditionally-accept / reject decision. Vulnerable road users acknowledged: the fully access-controlled mainline carries no pedestrians or cyclists, but the flagged local-access connections move traffic toward the local cross-road network where VRUs travel; no VRU-specific exposure is asserted within the planning-stage material.",
+      "statement": {
+        "text": "Resolve and formally document the disposition of the flagged local access connections — remove them from the functional plan, or accept / conditionally accept with modifications with documented reasons for any retention, per the Alberta §5.6.2 discipline that the project design team must provide a response report choosing among accept / conditionally-accept-with-modifications / reject (EV-CA-038) — before the functional plan record is finalised, so the practice of undertaking and reporting the Planning Stage RSA rests on fully and consistently documented actions.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-038",
+          "quote": "The project design team must provide a response report to the road safety audit within a reasonable period of time determined in consultation with Alberta Transportation. In preparing the response report, the project team should consult with the project sponsor. Possible responses are: 1. Accept in full and implement changes to project 2. Conditionally accept with modifications. The response report should document the reasons for the modifications 3. Reject with reason",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-CA-006",
+          "quote": "TABLE 1 Road Safety Audit Stage Equivalency Table\nTAC Canadian RSA Guide Terminology Alberta Transportation Equivalent\nPlanning Stage RSA Stage 1 RSA\nPreliminary Design Stage RSA Stage 2 RSA\nDetailed Design Stage RSA Stage 3 RSA\nPre-opening Stage RSA Pre-opening Stage RSA",
+          "use": "context"
+        },
+        {
+          "evidence_id": "EV-CA-003",
+          "quote": "It is important that a clear procedure for managing and organising road safety audit is established, and that the practice of undertaking and reporting road safety audit is clearly specified, and that the actions are fully and consistently documented.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The package records findings and concluding remarks only, with no response report; Alberta §5.6.1–5.6.2 (EV-CA-038) mandates response reports with documented reasons for modifications/rejections and filing of all documents, so undispositioned flagged issues in the published functional-plan record is a process non-conformity rather than judgment."
+      },
+      "rationale": "Process-style compliance question surfaced by the recorded package structure: the audit itself raises the local-access-in-system-interchange issue twice as expectation-violating design, and the concluding remarks demand explicitly based trade-offs before plan development moves forward; the disposition duty is grounded verbatim in EV-CA-038, with EV-CA-003 supplying the documented-procedure duty and EV-CA-006 fixing the Planning Stage = Stage 1 mapping context.",
+      "recommendation": "Issue the §5.6.2 response report dispositioning each §4.1–4.2 audit issue — accept, conditionally accept with modifications, or reject with reasons — and file it with Alberta Transportation alongside the functional plan, showing the local access connections removed or their retention justified.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 1,
+    "mapping_confidence": "authoritative",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "notes": "Real-sample companion to GF-10 on the same ca-tac:planning cell: the NEAHD 2009 letter-report grounds both baseline findings in its own Tables 1-2 and §4.1-4.2 observations. network_continuity_constraints is kept honestly 'provided' (GF-10 owns the 'conflicting' blocking path). questions_min_count=3 exercises multi-question policy-pack surfacing on the FEASIBILITY_CONCEPT cell; snapshot 2026-08-24."
+}

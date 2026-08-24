@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-24T07-48-19-367Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0.5
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Decision-load mechanism from simultaneous transfer-permission and signage changes across three interchanges is a real human-factors safety concern consistent with the express-collector corridor context and high recorded AADT.",
+        "evidence_grounding": "Pivotal off-route-collision-migration claim is anchored by verbatim EV-CA-003 quote ('avoid introducing collisions elsewhere along the route') plus recorded corridor inputs (AADT 420,000, three-interchange change scope); nothing invented.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern with null normative_basis_note; no compliance question conflated, and the CRSAG objective quote is used as supporting context rather than misapplied as a mandatory requirement.",
+        "recommendation_quality": "Staging one interchange per quarter with before/after speed-differential monitoring is specific, actionable, measurable, and viable within a planning-stage RSA recommendation.",
+        "vru_coverage": "Explicitly acknowledges VRU non-applicability for the controlled-access mainline and scopes road users to vehicle occupants, satisfying the acknowledgement standard."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Conflicting ministry/municipal continuity records leave the planning scope boundary unconfirmed, creating a concrete completeness risk that redistributed traffic movements fall outside the audit limits — a substantive Stage 1 process/compliance defect, not a vacuous formality.",
+        "evidence_grounding": "The pivotal documentation duty is anchored by verbatim quotes (EV-CA-038 accept/conditional/reject-with-documented-reasons; EV-CA-003 fully and consistently documented actions), and the triggering conflict is a recorded input fact; no invented content detected.",
+        "jurisdiction_correctness": "Correctly typed as a compliance_question with null risk components and no asserted collision mechanism, stage equivalency properly established via EV-CA-006; only mild looseness in mapping the §5.6.2 response-report discipline onto pre-finalisation record reconciliation.",
+        "recommendation_quality": "Specific and actionable: names both conflicting records, assigns the ministry planning office as counterpart, requires documented resolution reasons, and demands an explicit recorded decision on whether continuity effects remain inside the audit boundary.",
+        "vru_coverage": "Goes beyond bare acknowledgment: correctly notes no pedestrians/cyclists on the controlled-access mainline yet traces continuity outcomes to downstream arterials where VRUs travel, while honestly refraining from asserting unverified VRU exposure."
+      }
+    }
+  ],
+  "generated_at": "2026-08-24T07:59:48.711Z"
+}

@@ -330,6 +330,17 @@ evidence_records:
     retrieved_date: "2026-08-23"
     normative_status: recommended
     confidence: high
+  - evidence_id: EV-US-033
+    claim: "The Derby Street @ Route 3 NB ramps RSA (Hingham MA, CHA Consulting, Dec 2013, MassDOT #607309) Safety Issue #2 records a deficient westbound lane drop: pavement striping for the two-lane section ends abruptly near Old Derby Street with no signage alerting drivers to the impending lane reduction, and drivers were observed continuing in the right lane before merging left at the ramp location — an unexpected maneuver with collision potential."
+    quote: "Pavement striping for the two lanes ends abruptly at the existing crosswalk near Old Derby Street. There is no signage to alert drivers of the impending lane reduction."
+    source_url: "https://www.mass.gov/doc/hingham-derby-st-route3-rsa"
+    source_title: "Road Safety Audit — Derby Street @ Route 3 NB/SB Ramps, Hingham MA (Safety Issue #2, sample corpus US-008)"
+    publisher: "CHA Consulting Inc. for MassDOT / Town of Hingham"
+    revision: null
+    publication_date: 2013-12-01
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
 access_notes:
   - "PDF mining pass 2026-08-23: none of the nine docs/references/US PDFs is encrypted (qpdf --show-encryption reports 'File is not encrypted'; some show qpdf --check warnings but open fine). Text extracted with pypdf into files marked ===== PAGE N ===== where N is the PDF page sequence, not the printed page number."
   - "Printed-page offsets vs PDF page markers: FHWA-SA-06-06 printed = PDF - 10; FHWA-SA-20-042 printed = PDF - 8; FHWA-SA-12-018 printed = PDF - 6; ITD manual printed = PDF - 3; SCDOT Ch.10 uses engineering sheet numbers 10.3-N with footer revision 'February 2021'."

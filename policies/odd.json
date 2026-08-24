@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "declaration_version": "1.0.0",
+  "declaration_version": "1.1.1",
   "date": "2026-08-23",
   "adr_ref": "docs/adr/0005-operational-design-domain.md",
   "decision_ref": "DEC-0006",
@@ -24,7 +24,8 @@
       "mapping_confidence": "authoritative",
       "status": "in",
       "fixture_ids": [
-        "GF-6"
+        "GF-6",
+        "GF-11"
       ],
       "incident_flags": [],
       "input_floor": [
@@ -47,7 +48,8 @@
       "mapping_confidence": "interpreted",
       "status": "in",
       "fixture_ids": [
-        "GF-7"
+        "GF-7",
+        "GF-12"
       ],
       "incident_flags": [],
       "input_floor": [
@@ -104,7 +106,8 @@
       "mapping_confidence": "authoritative",
       "status": "in",
       "fixture_ids": [
-        "GF-10"
+        "GF-10",
+        "GF-13"
       ],
       "incident_flags": [],
       "input_floor": [
