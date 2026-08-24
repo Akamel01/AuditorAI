@@ -150,6 +150,35 @@ _Avoid_: supported-jurisdiction list
 capability claim does not apply at all. Distinct from Input State degradation, which governs
 valid-but-thinner runs above the floor.
 
+## Sample corpus
+
+**Audit Sample** — a provenance-recorded set of real-world road-safety-audit artifacts:
+inputs (scheme description, drawings, traffic data, site photos) and/or outputs (findings
+report, checklists, recommendations, designer response). Distinct from synthetic corpus
+fixtures, which are authored to a schema rather than harvested.
+
+**Consumer Role** — one of four canonical assignments of an Audit Sample: Engine Few-shot,
+Judge Calibration, ODD Proof, Release Test. Roles describe how a sample is *consumed*, not
+what it is; one sample may hold several roles over time within the Firewall.
+
+**Engine Few-shot** — samples consumed as exemplars inside engine or judge prompts.
+
+**Judge Calibration** — samples consumed to tune or interrogate judge rubric behaviour.
+
+**ODD Proof** — samples convertible into gate-passing fixtures, the only currency that moves
+a mapped-unproven ODD cell to IN. Excerpt-grade material cannot be ODD Proof.
+
+**Release Test** — held-out samples whose judged results gate release, drawn only from
+samples never previously consumed by Engine Few-shot or Judge Calibration work.
+
+**Firewall** — the prohibition on one Audit Sample serving Release Test together with Engine
+Few-shot or Judge Calibration. Same-programme sample clusters (e.g., successive audits of
+one trunk-road scheme) should not straddle it even where individually permitted.
+(Decision 2026-08-23; ADR-0007.)
+
+**Reserve Corpus** — Audit Samples outside every current ODD cell (e.g., in-service /
+existing-road inspections), held untouched for future domain expansion rather than assigned.
+
 ## System contracts
 
 **Audit Context** — the assembled bundle an audit runs against: project inputs, selected

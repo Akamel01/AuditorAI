@@ -1,0 +1,50 @@
+{
+  "$schema_note": "Sample-corpus consumer-role assignments per ADR-0007. Roles are per-consumer; firewall forbids train∩test and calib∩test (CONTEXT.md §Sample corpus). Rules auto-assign; exceptions queue for owner arbitration.",
+  "schema_version": "1.0.0",
+  "policy": "docs/adr/0007-sample-corpus-split-policy.md",
+  "generated": "2026-08-23",
+  "release_test_policy": {
+    "current_gate_set": ["GF-6", "GF-7", "GF-8", "GF-9", "GF-10"],
+    "real_sample_tier": "dormant until corpus >= 100 cataloged samples (owner decision T3.3)"
+  },
+  "rules": {
+    "R1": "reserve: outside every ODD cell OR reference-grade → Reserve Corpus (untouched)",
+    "R2": "engine-fewshot: full-package AND native stage inside an ODD 'in' cell",
+    "R3": "judge-calibration: outputs-only/excerpt tied to an 'in' cell or active proof effort",
+    "R4": "unassigned: manual/reference-grade document already mined into evidence registry"
+  },
+  "samples": [
+    { "id": "int-001-carec-rsa-manual-adb-2018", "jurisdiction": "international", "completeness": "excerpt", "odd_cell_status": "n/a-manual", "roles": ["unassigned"], "rule": "R4", "notes": "mined EV-IN-017..019" },
+    { "id": "int-002-irap-kship-sr4d-design-assessment", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:INTxPRELIM,DETAILED", "roles": ["judge-calibration"], "rule": "R3" },
+    { "id": "int-003-afdb-rsa-manual-africa-2014", "jurisdiction": "international", "completeness": "excerpt", "odd_cell_status": "n/a-manual", "roles": ["unassigned"], "rule": "R4", "notes": "mined EV-IN-020..021; App-C skeleton is AG-REPORT seed" },
+    { "id": "int-004-ts-a9-pitlochry-south-stage1-2-rsa-report", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:UKxPRELIM", "roles": ["judge-calibration"], "rule": "R3", "notes": "A9 programme cluster — soft co-assignment caution" },
+    { "id": "int-005-ts-a9-drumochter-south-stage1-2-rsa-report", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:UKxPRELIM", "roles": ["judge-calibration"], "rule": "R3", "notes": "A9 cluster" },
+    { "id": "int-006-ts-a9-helmsdale-stage1-rsa-response-report", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:UKxPRELIM", "roles": ["judge-calibration"], "rule": "R3", "notes": "A9 cluster; response-report artifact class" },
+    { "id": "int-007-ts-a9-ballinluig-stage2-rsa-response-report", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:UKxPRELIM", "roles": ["judge-calibration"], "rule": "R3", "notes": "A9 cluster" },
+    { "id": "int-008-uk-great-north-road-stage1-rsa-full-package", "jurisdiction": "international", "completeness": "full-package", "odd_cell_status": "in:UKxPRELIM", "roles": ["engine-fewshot"], "rule": "R2" },
+    { "id": "int-009-ie-lackareagh-wind-farm-stage1-rsa", "jurisdiction": "international", "completeness": "outputs-only", "odd_cell_status": "in:UKxPRELIM-lineage", "roles": ["judge-calibration"], "rule": "R3" },
+    { "id": "us-001-ia-us59-ia9-intersection-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-002-ia-ia28-norwalk-corridor-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-003-or-or211-corridor-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-004-ct-ctfastrak-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-005-dc-blair-cedar-4th-intersection-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-006-mi-annarbor-plymouth-rd-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-007-pa-i80-mercer-rsa", "jurisdiction": "usa", "completeness": "excerpt", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "us-008-ma-hingham-derby-st-route3-rsa", "jurisdiction": "usa", "completeness": "full-package", "odd_cell_status": "in:USxPRELIM", "roles": ["engine-fewshot"], "rule": "R2" },
+    { "id": "ca-001-ab-neahd-planning-stage-rsa", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "in:CAxFEASIBILITY", "roles": ["engine-fewshot"], "rule": "R2", "notes": "cell carries VAL-024 incident flag — re-check at next archive" },
+    { "id": "ca-002-ab-calgary-glenmore-functional-plan-rsa", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-noCAxPRELIM-cell", "roles": ["reserve"], "rule": "R1", "notes": "prime candidate if CAxPRELIM cell added" },
+    { "id": "ca-003-ab-calgary-glenmore-typical-sections", "jurisdiction": "canada", "completeness": "inputs-only", "odd_cell_status": "outside-noCAxPRELIM-cell", "roles": ["reserve"], "rule": "R1", "notes": "companion of ca-002" },
+    { "id": "ca-004-ab-calgary-glenmore-annotated-plan-profiles", "jurisdiction": "canada", "completeness": "inputs-only", "odd_cell_status": "outside-noCAxPRELIM-cell", "roles": ["reserve"], "rule": "R1", "notes": "companion of ca-002" },
+    { "id": "ca-005-mb-pth1-pth5-in-service-review", "jurisdiction": "canada", "completeness": "excerpt", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "ca-006-on-ottawa-octranspo-transitway-rsa", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1" },
+    { "id": "ca-007-nb-unb-exemplary-audits", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-noCAxDETAIL-cell", "roles": ["reserve"], "rule": "R1", "notes": "four worked audits incl detailed-design + pre-opening; revisit if CAxDETAIL cell added" },
+    { "id": "ca-008-on-ryerson-waterloo-corridor-rsa-thesis", "jurisdiction": "canada", "completeness": "full-package", "odd_cell_status": "outside-in-service", "roles": ["reserve"], "rule": "R1", "notes": "scanned, no text layer — OCR before machine use" },
+    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "jurisdiction": "uae", "completeness": "excerpt", "odd_cell_status": "mapped_unproven:UAE", "roles": ["reserve"], "rule": "R1", "notes": "exception candidate: real AD findings; owner may promote to judge-calibration" },
+    { "id": "ae-002-ciht-dubai-rsa-practice-bulletin", "jurisdiction": "uae", "completeness": "excerpt", "odd_cell_status": "n/a-bulletin", "roles": ["unassigned"], "rule": "R4", "notes": "mined EV-AE-033..036" },
+    { "id": "us-cat-fhwa-case-studies-compilation", "jurisdiction": "usa", "completeness": "catalog-only", "odd_cell_status": "mixed:10 cases conceptual-x3/prelim-x1/detailed-x4/in-service-x2", "roles": ["judge-calibration"], "rule": "R3", "notes": "single PDF in docs/references/US; engine-consumed during E3 fixture seeding — NEVER eligible for future real-sample release-test tier" }
+  ],
+  "exceptions_queue": [
+    { "id": "ae-001-arrb-abudhabi-internal-roads-rsa", "proposal": "promote to judge-calibration", "reason": "only public artifact with genuine Abu Dhabi audit findings; rubric discussion value despite excerpt grade", "status": "awaiting-owner" }
+  ],
+  "counts": { "total": 28, "engine_fewshot": 3, "judge_calibration": 8, "reserve": 15, "unassigned": 2 }
+}

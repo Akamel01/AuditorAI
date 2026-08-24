@@ -4,6 +4,10 @@ Collected 2026-08-23 via four jurisdiction agents (opportunistic, full-package p
 early stages emphasized). Per-jurisdiction detail: `INT/index.md`, `US/index.md`,
 `CA/index.md`, `AE/index.md`. Binary PDFs are Git-LFS tracked.
 
+**Consumer-role assignments live in `state/sample-corpus.json`** under the split policy of
+ADR-0007 (per-consumer roles, sample-level firewall, synthetic-only release test this
+phase, in-service material held as Reserve Corpus).
+
 ## Totals
 
 | JJ | cataloged | downloaded | full-package | notes |
