@@ -248,6 +248,11 @@
         "boolean",
         "null"
       ]
+    },
+    "hallucination_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
     }
   }
 }

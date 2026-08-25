@@ -3,7 +3,11 @@
 // unverified. Edited recommendations pass the wording gate; violations are
 // recorded and the edit is not applied. Decisions targeting unknown finding
 // ids are recorded loudly (skipped_decision_refs → result limitations), never
-// silently dropped.
+// silently dropped. ADR-0009 candidate-outcome capture does NOT live here:
+// this node only ever sees engine findings whose source_trace is forced to
+// deterministic_rule by AG-FINDINGS, so no decision can resolve an AI
+// candidate — capture belongs to the post-pipeline PATCH promotion path
+// (candidate-review.ts).
 import { validateRecommendationWording } from "@/domain/pipeline/wording";
 import { requireSlice } from "@/domain/pipeline/result";
 import { makeArtifact } from "@/domain/pipeline/nodes/shared";

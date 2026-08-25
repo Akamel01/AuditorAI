@@ -37,6 +37,9 @@ Thumbs.db
 # Local scratch (never project state)
 tmp/
 
+# Candidate outcome log (ADR-0009): raw auditor work products never enter git.
+state/candidate-outcomes/
+
 # TypeScript incremental build info
 tsconfig.tsbuildinfo
 .vercel

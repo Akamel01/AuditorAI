@@ -2,7 +2,7 @@
 generated: true
 type: graph-overview
 source: state/graph-state.json
-source_hash: b33d4421d6fe
+source_hash: 378941d12fd9
 ---
 # Audit graph (§19)
 
@@ -24,6 +24,10 @@ Bounded-context pipeline the product executes.
   - impl: `engine.makeProcessFinding/makeEligibilityFinding`
 - **AG-AI-CANDIDATES** — Bounded AI candidate findings — OFF in MVP, seam reserved
   - impl: `src/lib/ai.ts (OffAiAdapter default)`
+- **AG-HALLUCINATION-CHECK** — Deterministic hallucination checks (ADR-0010): evidence-id existence, normalized quote match, pack-vocabulary membership; auto-flag, never drop
+  - impl: `src/domain/pipeline/nodes/hallucination-check.ts`
+- **AG-EVIDENCE-USE-AUDIT** — Deterministic evidence-use audit (ADR-0010): citation presence, producer/source_trace enforcement, use-direction consistency; auto-flag, never drop
+  - impl: `src/domain/pipeline/nodes/evidence-use-audit.ts`
 - **AG-ADJUDICATION** — Human review: reviewer_status workflow + wording discipline enforcement
   - impl: `PATCH /api/projects/[id]/audits/[auditId]`
 - **AG-EVIDENCE-LINKS** — Every normative claim traceable to evidence registry ids
@@ -42,5 +46,8 @@ Bounded-context pipeline the product executes.
 - AG-RULES → AG-EVIDENCE-LINKS (EVIDENCE): rule evidence_ids
 - AG-QUESTIONS → AG-ADJUDICATION (CONTEXT): questions for human reasoning
 - AG-AI-CANDIDATES → AG-ADJUDICATION (FEEDBACK): bounded candidates (disabled by default)
+- AG-AI-CANDIDATES → AG-HALLUCINATION-CHECK (VALIDATION): bounded candidates
+- AG-HALLUCINATION-CHECK → AG-EVIDENCE-USE-AUDIT (DATA): auto-flagged candidates + validation_summary
+- AG-EVIDENCE-USE-AUDIT → AG-ADJUDICATION (FEEDBACK): auto-flagged reasons rendered for the human gate
 - AG-ADJUDICATION → AG-REPORT (CONTROL): reviewed findings only
 - AG-REPORT → AG-PERSIST (DATA): AuditResult artifact

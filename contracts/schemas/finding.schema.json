@@ -98,6 +98,16 @@
     "reviewer_status": {
       "enum": ["draft", "accepted", "accepted_with_edits", "rejected", "escalated"]
     },
-    "reviewer_note": { "type": ["string", "null"] }
+    "reviewer_note": { "type": ["string", "null"] },
+    "validation": {
+      "type": "object",
+      "description": "ADR-0010 flag-and-show annotation; present only when deterministic validation flagged the finding.",
+      "required": ["status", "reasons"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "auto-flagged" },
+        "reasons": { "type": "array", "items": { "type": "string" } }
+      }
+    }
   }
 }

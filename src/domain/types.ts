@@ -94,6 +94,13 @@ export interface SourceTrace {
   producer?: string | null;
 }
 
+/** ADR-0010 flag-and-show annotation: a failing item is annotated and stays
+ *  visible to the auditor; it is never removed or dropped. */
+export interface ValidationAnnotation {
+  status: "auto-flagged";
+  reasons: string[];
+}
+
 /** ADR-0003 finding model. */
 export interface Finding {
   finding_id: string;
@@ -117,6 +124,8 @@ export interface Finding {
   source_trace: SourceTrace[];
   reviewer_status: "draft" | "accepted" | "accepted_with_edits" | "rejected" | "escalated";
   reviewer_note: string | null;
+  /** ADR-0010: present only when deterministic validation flagged this finding. */
+  validation?: ValidationAnnotation;
 }
 
 export interface MissingInformationQuestion {
@@ -145,6 +154,8 @@ export interface CandidateFindingRecord {
   producer: string;
   /** Drawing ids this candidate was derived from (vision path). */
   source_attachment_ids?: string[];
+  /** ADR-0010: present only when deterministic validation flagged this candidate. */
+  validation?: ValidationAnnotation;
 }
 
 export interface AuditContext {
@@ -155,6 +166,46 @@ export interface AuditContext {
   canonical_stages: CanonicalStage[];
   mapping_confidence: "authoritative" | "interpreted" | "inferred";
   input_states: Record<string, InputValueState>;
+}
+
+/** ADR-0009: terminal candidate dispositions; escalation is not an outcome. */
+export type CandidateOutcomeAction = "accept" | "accept_with_edits" | "reject";
+
+/** ADR-0009: explicit edit whitelist. Any other change requires a
+ *  schema_version bump first — no derived-field noise. */
+export interface CandidateEditedFields {
+  statement_text?: string;
+  category?: string;
+  recommendation?: string;
+  evidence_ids?: string[];
+}
+
+/** ADR-0009: what the auditor did with one AI candidate at adjudication
+ *  resolution (envelope-free). Raw material of the learning flywheel. */
+export interface CandidateOutcome {
+  occurred_at: string;
+  project_id: string;
+  audit_id: string;
+  odd_stamp: string | null;
+  jurisdiction: JurisdictionId;
+  native_stage_id: string;
+  canonical_stage: CanonicalStage | null;
+  adapter_id: string | null;
+  prompt_hash: string | null;
+  fewshot_ids: string[];
+  /** Full snapshot as presented for adjudication, never the post-edit state. */
+  candidate: CandidateFindingRecord;
+  action: CandidateOutcomeAction;
+  edited_fields?: CandidateEditedFields;
+  note?: string;
+  auditor_pseudonym: string;
+  consent_version: string;
+}
+
+/** Schema-versioned row persisted under state/candidate-outcomes/YYYY-MM.jsonl. */
+export interface CandidateOutcomeRow extends CandidateOutcome {
+  outcome_id: string;
+  schema_version: "1.0.0";
 }
 
 export interface AuditResult {
@@ -192,6 +243,10 @@ export interface AuditResult {
   }[];
   limitations: string[];
   disclaimer: string;
+  /** ADR-0010: share of the hallucination-check population auto-flagged this
+   *  run (flagged / checked). Present whenever AG-HALLUCINATION-CHECK ran;
+   *  additive optional so deterministic-path results are unchanged. */
+  hallucination_rate?: number;
   /** ADR-0006: pending AI candidates on a live-path draft. Absent on
    *  deterministic results; consumed by promotion, never rendered as findings. */
   candidate_findings?: CandidateFindingRecord[];

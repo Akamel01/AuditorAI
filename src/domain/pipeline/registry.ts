@@ -14,6 +14,8 @@ import { runRules } from "@/domain/pipeline/nodes/rules";
 import { runFindings } from "@/domain/pipeline/nodes/findings";
 import { runQuestions } from "@/domain/pipeline/nodes/questions";
 import { runAiCandidates } from "@/domain/pipeline/nodes/ai-candidates";
+import { runHallucinationCheck } from "@/domain/pipeline/nodes/hallucination-check";
+import { runEvidenceUseAudit } from "@/domain/pipeline/nodes/evidence-use-audit";
 import { runAdjudication } from "@/domain/pipeline/nodes/adjudication";
 import { runEvidenceLinks } from "@/domain/pipeline/nodes/evidence-links";
 import { runReport } from "@/domain/pipeline/nodes/report";
@@ -30,6 +32,8 @@ export const NODE_FNS: Record<Exclude<AgNodeId, "AG-PERSIST">, NodeFn> = {
   "AG-FINDINGS": runFindings,
   "AG-QUESTIONS": runQuestions,
   "AG-AI-CANDIDATES": runAiCandidates,
+  "AG-HALLUCINATION-CHECK": runHallucinationCheck,
+  "AG-EVIDENCE-USE-AUDIT": runEvidenceUseAudit,
   "AG-ADJUDICATION": runAdjudication,
   "AG-EVIDENCE-LINKS": runEvidenceLinks,
   "AG-REPORT": runReport,
@@ -115,13 +119,37 @@ export const DESCRIPTORS: NodeDescriptor[] = [
       "Bounded AI candidate findings via the AiAdapter seam; OFF default emits null slice with zero provider calls.",
   },
   {
+    id: "AG-HALLUCINATION-CHECK",
+    name: "Hallucination Check",
+    node_class: "deterministic",
+    reads: ["candidate_findings", "rule_results", "stage_context"],
+    writes: ["candidate_findings", "rule_results", "validation_summary"],
+    emits: "validation.hallucination",
+    depends_on: ["AG-AI-CANDIDATES"],
+    executed_in_batch: true,
+    summary:
+      "Evidence-id existence, normalized quote match and pack-vocabulary membership (ADR-0010); failures annotate auto-flagged, never drop.",
+  },
+  {
+    id: "AG-EVIDENCE-USE-AUDIT",
+    name: "Evidence-Use Audit",
+    node_class: "deterministic",
+    reads: ["candidate_findings", "rule_results"],
+    writes: ["candidate_findings", "rule_results"],
+    emits: "audit.evidence-use",
+    depends_on: ["AG-HALLUCINATION-CHECK"],
+    executed_in_batch: true,
+    summary:
+      "Citation presence, producer/source_trace enforcement and use-direction consistency (ADR-0010); failures annotate auto-flagged, never drop.",
+  },
+  {
     id: "AG-ADJUDICATION",
     name: "Human Adjudication",
     node_class: "human",
     reads: ["rule_results"],
     writes: ["adjudication"],
     emits: "adjudication.decisions",
-    depends_on: ["AG-FINDINGS", "AG-AI-CANDIDATES", "AG-QUESTIONS"],
+    depends_on: ["AG-FINDINGS", "AG-AI-CANDIDATES", "AG-EVIDENCE-USE-AUDIT", "AG-QUESTIONS"],
     executed_in_batch: true,
     summary:
       "Human review workflow + wording discipline; batch mode carries drafts forward unverified; decisions on unknown finding ids are recorded under limitations.",

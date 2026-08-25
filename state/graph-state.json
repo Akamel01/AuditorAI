@@ -35,6 +35,8 @@
         { "id": "AG-QUESTIONS", "impl": "engine.runAudit questions stage", "role": "Stage-relevant audit questions surfaced for human reasoning" },
         { "id": "AG-FINDINGS", "impl": "engine.makeProcessFinding/makeEligibilityFinding", "role": "Candidate findings as compliance_question drafts (ADR-0003 kinds)" },
         { "id": "AG-AI-CANDIDATES", "impl": "src/lib/ai.ts (OffAiAdapter default)", "role": "Bounded AI candidate findings — OFF in MVP, seam reserved" },
+        { "id": "AG-HALLUCINATION-CHECK", "impl": "src/domain/pipeline/nodes/hallucination-check.ts", "role": "Deterministic hallucination checks (ADR-0010): evidence-id existence, normalized quote match, pack-vocabulary membership; auto-flag, never drop" },
+        { "id": "AG-EVIDENCE-USE-AUDIT", "impl": "src/domain/pipeline/nodes/evidence-use-audit.ts", "role": "Deterministic evidence-use audit (ADR-0010): citation presence, producer/source_trace enforcement, use-direction consistency; auto-flag, never drop" },
         { "id": "AG-ADJUDICATION", "impl": "PATCH /api/projects/[id]/audits/[auditId]", "role": "Human review: reviewer_status workflow + wording discipline enforcement" },
         { "id": "AG-EVIDENCE-LINKS", "impl": "src/lib/evidence.ts", "role": "Every normative claim traceable to evidence registry ids" },
         { "id": "AG-REPORT", "impl": "src/lib/report.ts renderReportMarkdown", "role": "Deterministic report rendering (MD/JSON/print-PDF)" },
@@ -48,6 +50,9 @@
         { "from": "AG-RULES", "type": "EVIDENCE", "to": "AG-EVIDENCE-LINKS", "payload": "rule evidence_ids" },
         { "from": "AG-QUESTIONS", "type": "CONTEXT", "to": "AG-ADJUDICATION", "payload": "questions for human reasoning" },
         { "from": "AG-AI-CANDIDATES", "type": "FEEDBACK", "to": "AG-ADJUDICATION", "payload": "bounded candidates (disabled by default)" },
+        { "from": "AG-AI-CANDIDATES", "type": "VALIDATION", "to": "AG-HALLUCINATION-CHECK", "payload": "bounded candidates" },
+        { "from": "AG-HALLUCINATION-CHECK", "type": "DATA", "to": "AG-EVIDENCE-USE-AUDIT", "payload": "auto-flagged candidates + validation_summary" },
+        { "from": "AG-EVIDENCE-USE-AUDIT", "type": "FEEDBACK", "to": "AG-ADJUDICATION", "payload": "auto-flagged reasons rendered for the human gate" },
         { "from": "AG-ADJUDICATION", "type": "CONTROL", "to": "AG-REPORT", "payload": "reviewed findings only" },
         { "from": "AG-REPORT", "type": "DATA", "to": "AG-PERSIST", "payload": "AuditResult artifact" }
       ]

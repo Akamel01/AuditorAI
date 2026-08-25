@@ -2,9 +2,18 @@
 // into Findings on a stored draft. Candidates are their own species; review
 // never flips a shared status — acceptance mints an F-AI-* Finding with
 // explicit provenance, rejection drops the pending entry. Zero route/pipeline
-// imports; routes parse requests and delegate here.
+// imports; routes parse requests and delegate here. ADR-0009: every applied
+// disposition is captured best-effort as a CandidateOutcome row once the whole
+// batch has applied cleanly — a logging failure is swallowed and can never
+// fail or corrupt the promotion.
 import { validateRecommendationWording } from "@/domain/pipeline/wording";
-import type { AuditResult, CandidateFindingRecord, Finding } from "@/domain/types";
+import { buildOutcomeRow, recordCandidateOutcome } from "@/domain/outcomes";
+import type {
+  AuditResult,
+  CandidateFindingRecord,
+  CandidateOutcome,
+  Finding,
+} from "@/domain/types";
 
 export const CANDIDATE_ACTIONS = ["accept", "accept_with_edits", "reject"] as const;
 export type CandidateAction = (typeof CANDIDATE_ACTIONS)[number];
@@ -85,7 +94,10 @@ export function promoteCandidate(
  *  mutated. Any failure leaves nothing half-applied. Indexes refer to the
  *  pending array as the caller saw it: promotions apply highest-index-first so
  *  earlier removals never shift later targets. Rejected candidates are dropped
- *  from pending without minting a Finding (ADR-0006). */
+ *  from pending without minting a Finding (ADR-0006). ADR-0009: each applied
+ *  disposition is captured as a CandidateOutcome row (snapshot = pre-edit
+ *  candidate state, edited_fields only for accept_with_edits); rows flush only
+ *  after the batch applies cleanly, so aborted promotions emit nothing. */
 export function applyCandidatePromotions(
   audit: AuditResult,
   promotions: readonly CandidatePromotion[],
@@ -99,6 +111,8 @@ export function applyCandidatePromotions(
   };
   const pending: PendingCandidates = next.candidate_findings ?? [];
   const ordered = [...promotions].sort((a, b) => b.index - a.index);
+  const occurredAt = new Date().toISOString();
+  const outcomeRows: CandidateOutcome[] = [];
 
   for (const promo of ordered) {
     if (!CANDIDATE_ACTIONS.includes(promo.action)) {
@@ -111,20 +125,61 @@ export function applyCandidatePromotions(
     const candidate = pending[idx];
     if (promo.action === "reject") {
       pending.splice(idx, 1);
+      outcomeRows.push(
+        buildOutcomeRow({
+          occurred_at: occurredAt,
+          project_id: next.project_id,
+          audit_id: next.audit_id,
+          odd_stamp: next.odd_stamp,
+          jurisdiction: next.jurisdiction,
+          native_stage_id: next.native_stage_id,
+          canonical_stage: next.canonical_stages[0] ?? null,
+          action: "reject",
+          candidate,
+          ...(promo.reviewer_note !== undefined ? { note: promo.reviewer_note } : {}),
+        }),
+      );
       continue;
     }
-    const promoted = promoteCandidate(candidate, nextAiSeq(next.findings), {
+    const edits = {
       ...(promo.edited_recommendation !== undefined ? { edited_recommendation: promo.edited_recommendation } : {}),
       ...(promo.edited_statement !== undefined ? { edited_statement: promo.edited_statement } : {}),
       ...(promo.reviewer_note !== undefined ? { reviewer_note: promo.reviewer_note } : {}),
-    });
+    };
+    const promoted = promoteCandidate(candidate, nextAiSeq(next.findings), edits);
     if (!promoted.ok) return promoted;
     next.findings = [...next.findings, promoted.finding];
     pending.splice(idx, 1);
+    outcomeRows.push(
+      buildOutcomeRow({
+        occurred_at: occurredAt,
+        project_id: next.project_id,
+        audit_id: next.audit_id,
+        odd_stamp: next.odd_stamp,
+        jurisdiction: next.jurisdiction,
+        native_stage_id: next.native_stage_id,
+        canonical_stage: next.canonical_stages[0] ?? null,
+        action: promo.action,
+        candidate,
+        ...(promo.action === "accept_with_edits"
+          ? {
+              edited_fields: {
+                // Mirror promoteCandidate's edit semantics: "" is a non-edit.
+                ...(promo.edited_statement ? { statement_text: promo.edited_statement } : {}),
+                ...(promo.edited_recommendation ? { recommendation: promo.edited_recommendation } : {}),
+              },
+            }
+          : {}),
+        ...(promo.reviewer_note !== undefined ? { note: promo.reviewer_note } : {}),
+      }),
+    );
   }
 
   if (pending.length === 0) delete next.candidate_findings;
   else next.candidate_findings = pending;
+
+  // Best-effort ADR-0009 capture, only for fully applied batches.
+  for (const row of outcomeRows) recordCandidateOutcome(row);
   return { ok: true, value: next };
 }
 

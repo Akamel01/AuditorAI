@@ -1,6 +1,6 @@
 # 01 — CandidateOutcome: type, capture, persistence
 
-Type: task · Status: open · Blocked by: —
+Type: task · Status: claimed · Blocked by: —
 
 ## Question
 

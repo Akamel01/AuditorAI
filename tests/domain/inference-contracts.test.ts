@@ -131,6 +131,10 @@ describe("inference contracts (A2)", () => {
 
     const candidate = state.candidate_findings![0] as unknown as Record<string, unknown>;
     for (const key of Object.keys(candidate)) {
+      // 'validation' is not an adapter field: it is the ADR-0010 annotation
+      // added after the boundary by AG-HALLUCINATION-CHECK (this rogue
+      // candidate cites category "x", outside the pack vocabulary).
+      if (key === "validation") continue;
       expect(CANDIDATE_FIELD_BOUND, `${key} is not a declared candidate field`).toContain(key);
     }
     expect(candidate.producer).toBe("safety-reasoning-agent"); // identity re-asserted

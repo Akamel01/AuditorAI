@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/candidate-outcome.schema.json",
+  "title": "CandidateOutcomeRow",
+  "description": "ADR-0009: one append-only row per candidate decision under state/candidate-outcomes/YYYY-MM.jsonl. Edits are an explicit whitelist; other changes require a schema_version bump first.",
+  "type": "object",
+  "required": [
+    "outcome_id",
+    "schema_version",
+    "occurred_at",
+    "project_id",
+    "audit_id",
+    "odd_stamp",
+    "jurisdiction",
+    "native_stage_id",
+    "canonical_stage",
+    "adapter_id",
+    "prompt_hash",
+    "fewshot_ids",
+    "candidate",
+    "action",
+    "auditor_pseudonym",
+    "consent_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "outcome_id": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "occurred_at": { "type": "string", "description": "ISO-8601 instant of adjudication resolution" },
+    "project_id": { "type": "string" },
+    "audit_id": { "type": "string" },
+    "odd_stamp": { "type": ["string", "null"], "description": "ADR-0005 three-zone claim stamp at capture time" },
+    "jurisdiction": { "enum": ["INT", "UK", "US", "CA", "AE"] },
+    "native_stage_id": { "type": "string" },
+    "canonical_stage": {
+      "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN", null]
+    },
+    "adapter_id": { "type": ["string", "null"], "description": "AiAdapter seam id; null until prompt-artifact plumbing lands (ADR-0012)" },
+    "prompt_hash": { "type": ["string", "null"] },
+    "fewshot_ids": { "type": "array", "items": { "type": "string" } },
+    "candidate": {
+      "type": "object",
+      "description": "Full CandidateFindingRecord snapshot as presented for adjudication",
+      "required": ["kind", "category", "statement", "evidence", "assumptions", "rationale", "producer"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["safety_concern", "compliance_question"] },
+        "category": { "type": "string" },
+        "location": { "type": ["string", "null"] },
+        "road_users": { "type": "array", "items": { "type": "string" } },
+        "scenario": { "type": ["string", "null"] },
+        "statement": {
+          "type": "object",
+          "required": ["text"],
+          "additionalProperties": false,
+          "properties": {
+            "text": { "type": "string" },
+            "normative_basis_note": { "type": ["string", "null"] }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["evidence_id", "use"],
+            "additionalProperties": false,
+            "properties": {
+              "evidence_id": { "type": "string" },
+              "quote": { "type": ["string", "null"] },
+              "use": { "enum": ["supports_concern", "defines_requirement", "context"] }
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": { "text": { "type": "string" }, "basis": { "type": ["string", "null"] } }
+          }
+        },
+        "rationale": { "type": "string" },
+        "recommendation": { "type": ["string", "null"] },
+        "producer": { "type": "string" },
+        "source_attachment_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "action": { "enum": ["accept", "accept_with_edits", "reject"] },
+    "edited_fields": {
+      "type": "object",
+      "description": "Explicit whitelist; any other change requires a schema_version bump first",
+      "additionalProperties": false,
+      "properties": {
+        "statement_text": { "type": "string" },
+        "category": { "type": "string" },
+        "recommendation": { "type": "string" },
+        "evidence_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "note": { "type": "string" },
+    "auditor_pseudonym": { "type": "string" },
+    "consent_version": { "type": "string" }
+  }
+}

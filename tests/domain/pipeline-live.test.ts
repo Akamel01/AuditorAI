@@ -77,7 +77,15 @@ describe("pipeline runAllLive", () => {
     expect(candArt?.validation_status).toBe("draft");
 
     // Deterministic output unchanged by live candidates in batch assembly.
-    expect(JSON.stringify(state.report_bundle!.json)).toBe(JSON.stringify(runAudit(project, T0)));
+    // ADR-0010's additive hallucination_rate is the one intended difference:
+    // each side reflects its own checked population (the flagged live
+    // candidate vs the clean engine findings).
+    const engine = runAudit(project, T0);
+    const { hallucination_rate: _liveRate, ...liveJson } = state.report_bundle!.json;
+    const { hallucination_rate: _engineRate, ...engineJson } = engine;
+    expect(JSON.stringify(liveJson)).toBe(JSON.stringify(engineJson));
+    expect(state.report_bundle!.json.hallucination_rate).toBe(1);
+    expect(engine.hallucination_rate).toBe(0);
   });
 
   it("adapter failure degrades to zero candidates + rejected artifact", async () => {

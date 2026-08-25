@@ -26,6 +26,12 @@ export function requireSlice<K extends keyof SharedState>(
   return value as NonNullable<SharedState[K]>;
 }
 
+/** Stable audit id minted from project + native stage; shared by report
+ *  assembly and ADR-0009 outcome capture so the two can never drift. */
+export function auditIdFor(projectId: string, nativeStageId: string): string {
+  return `AUD-${projectId}-${nativeStageId.replace(/[^A-Za-z0-9]/g, "-")}`;
+}
+
 /**
  * Assemble the AuditResult literal from shared slices. Key insertion order
  * mirrors the pre-pipeline engine exactly (golden byte-stability depends on
@@ -82,7 +88,7 @@ export function assembleAuditResult(
   }
 
   return {
-    audit_id: `AUD-${pi.project_id}-${sc.native_stage_id.replace(/[^A-Za-z0-9]/g, "-")}`,
+    audit_id: auditIdFor(pi.project_id, sc.native_stage_id),
     project_id: pi.project_id,
     jurisdiction: pack.jurisdiction,
     framework_name: pack.framework.name,
@@ -101,5 +107,10 @@ export function assembleAuditResult(
     audit_questions: questions,
     limitations,
     disclaimer: DISCLAIMER,
+    // ADR-0010: ride the hallucination-check metrics onto the result so
+    // drafts/reports retain them. Absent when the check has not run.
+    ...(state.validation_summary
+      ? { hallucination_rate: state.validation_summary.rate }
+      : {}),
   };
 }

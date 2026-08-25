@@ -21,6 +21,8 @@ export const AG_NODE_IDS = [
   "AG-FINDINGS",
   "AG-QUESTIONS",
   "AG-AI-CANDIDATES",
+  "AG-HALLUCINATION-CHECK",
+  "AG-EVIDENCE-USE-AUDIT",
   "AG-ADJUDICATION",
   "AG-EVIDENCE-LINKS",
   "AG-REPORT",
@@ -37,6 +39,8 @@ export const PAYLOAD_KINDS = [
   "findings.deterministic",
   "questions.set",
   "candidates.ai",
+  "validation.hallucination",
+  "audit.evidence-use",
   "adjudication.decisions",
   "evidence.linkset",
   "report.bundle",
@@ -111,6 +115,14 @@ export interface EvidenceLinksetSlice {
   registry: string;
 }
 
+/** ADR-0010: per-run hallucination metrics, stamped by AG-HALLUCINATION-CHECK.
+ *  rate = flagged / checked (0 when nothing was checked). */
+export interface ValidationSummarySlice {
+  checked: number;
+  flagged: number;
+  rate: number;
+}
+
 export interface ReportBundleSlice {
   json: AuditResult;
   markdown: string;
@@ -132,6 +144,7 @@ export const SHARED_STATE_SLICES = [
   "rule_results",
   "audit_questions",
   "candidate_findings",
+  "validation_summary",
   "adjudication",
   "evidence_linkset",
   "report_bundle",
@@ -148,6 +161,8 @@ export interface SharedState {
   audit_questions?: QuestionsSlice;
   /** null = node ran with AI off (zero provider calls); absent = not yet run. */
   candidate_findings?: CandidatesSlice | null;
+  /** ADR-0010 per-run hallucination metrics (see ValidationSummarySlice). */
+  validation_summary?: ValidationSummarySlice;
   adjudication?: AdjudicationSlice;
   evidence_linkset?: EvidenceLinksetSlice;
   report_bundle?: ReportBundleSlice;

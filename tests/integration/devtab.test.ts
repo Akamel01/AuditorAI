@@ -91,7 +91,7 @@ describe("step-run session", () => {
     expect(res.status).toBe(200);
     const d = (await res.json()) as { runId: string; descriptors: unknown[]; batchOrder: string[] };
     runId = d.runId;
-    expect(d.descriptors).toHaveLength(11);
+    expect(d.descriptors).toHaveLength(13);
     expect(d.batchOrder).not.toContain("AG-PERSIST");
   });
 
