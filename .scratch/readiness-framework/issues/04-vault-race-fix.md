@@ -1,6 +1,6 @@
 # 04 — Vault determinism race fix
 
-Type: task · Status: claimed · Blocked by: —
+Type: task · Status: resolved · Blocked by: —
 
 ## Question
 
@@ -16,3 +16,15 @@ foreign edits exist.
 
 ## Answer
 
+
+## Answer
+
+RESOLVED 2026-08-25. `scripts/vault-sync.mjs` landed:
+- **sync mode** (default): compiles vault state from a throwaway HEAD worktree and
+  writes it to the working tree — immune to foreign uncommitted journal edits by
+  construction (race-proven: foreign edit present during compile produced byte-identical
+  HEAD output).
+- **--check mode**: what CI effectively does — exits 1 with a fix instruction if the
+  committed vault-notes.json diverges from HEAD compilation.
+AGENTS.md now documents the rule (never bare import/export before commit; use vault-sync)
+plus staging hygiene, eval-gate notes (--topup preference), and keychain secrets.

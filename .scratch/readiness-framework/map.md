@@ -34,6 +34,8 @@ fixed so AFK sessions don't stall on it.
 - [05 — Round-3 hunt MnDOT/UK/IE](issues/05-hunt-mndot-uk-ie.md): +18 samples (INT-018..028, US-021..027); Ardee Stage 2 extracted w/ repeat annotations + TII approval.
 - [06 — Round-3 hunt NCHRP/CAREC/county](issues/06-hunt-nchrp-carec-county.md): +9 net samples (renumbered US-028..033, INT-029..031); NCHRP Synthesis 336 specimens, CAREC M4 VRU cases, GSDG.
 
+- [04 — Vault determinism race fix](issues/04-vault-race-fix.md): scripts/vault-sync.mjs (HEAD-worktree compile; sync + --check modes), race-proven live; AGENTS.md documents the workflow.
+
 ## Not yet specified
 
 - **Legacy-stage cell flips**: whether cataloged material (or round-3 hauls) can seed
