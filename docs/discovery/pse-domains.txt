@@ -1,0 +1,27 @@
+# Programmable Search Engine — canonical site list
+# Paste into https://programmablesearchengine.google.com/controlpanel/<id> "Sites to search".
+# Rules honored (Google rejects public-suffix wildcards like *.com / *.co.uk / *.gov.uk):
+#   - registrable domains or full hosts only, one per line, max ~50 entries
+#   - subdomain inclusion is automatic for listed domains (prefix paths optional)
+# Source of truth for auditorai discovery (mirrors src/discovery/providers JUR_SITE_FILTER intent).
+standardsforhighways.co.uk
+national-infrastructure-consenting.planningregistry.co.uk
+nationalhighways.co.uk
+transport.gov.scot
+gov.wales
+infrastructure-ni.gov.uk
+dot.gov
+rosap.ntl.bts.gov
+dot.state.mn.us
+highways.dot.gov
+open.alberta.ca
+alberta.ca
+gov.bc.ca
+ontario.ca
+qcc.abudhabi.ae
+dmt.gov.ae
+carecprogram.org
+adb.org
+pleanala.ie
+piarc.org
+irap.org

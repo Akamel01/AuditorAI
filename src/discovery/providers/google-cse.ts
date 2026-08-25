@@ -4,6 +4,7 @@ import { hitId } from "@/discovery/ids";
 import { withHostBudget, retryAfterMs } from "@/discovery/ratelimit";
 import { DISCOVERY_SECRETS, resolveSecret } from "@/discovery/keychain";
 import type { DiscoveryHit } from "@/discovery/types";
+import type { JurisdictionId } from "@/domain/types";
 import {
   providerEnabled,
   registerProvider,
@@ -11,6 +12,17 @@ import {
   type DiscoveryProvider,
   type FetchResult,
 } from "./provider-types";
+
+// Site-restricted engines (post-2026-01 PSE policy) already bound results to
+// docs/discovery/pse-domains.txt — adding site: operators here would exclude
+// listed non-gov.TLD domains (e.g. standardsforhighways.co.uk vs site:gov.uk).
+const JUR_LABEL: Record<JurisdictionId, string> = {
+  UK: "(UK OR Britain OR "Highways England" OR "National Highways")",
+  US: "(US OR "United States" OR state DOT)",
+  CA: "(Canada OR Alberta OR Ontario OR British Columbia)",
+  AE: "("Abu Dhabi" OR UAE)",
+  INT: "",
+};
 
 interface CseItem {
   link?: string;
@@ -27,7 +39,8 @@ class GoogleCseProvider implements DiscoveryProvider {
     if (!key || !cx) throw new Error("google-cse requires DISCOVERY_GOOGLE_CSE_KEY/CX env or Keychain auditorai/discovery-cse-key + auditorai/discovery-cse-cx");
     const hits: DiscoveryHit[] = [];
     for (const theme of query.themes.length ? query.themes : ["road safety audit"]) {
-      const q = encodeURIComponent(theme);
+      const jurScope = query.jurisdictions.length === 1 ? JUR_LABEL[query.jurisdictions[0]] : "";
+      const q = encodeURIComponent(`${theme} ${jurScope}`.trim());
       const res = await withHostBudget("www.googleapis.com", () =>
         fetchImpl(
           `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${cx}&q=${q}&num=${Math.min(query.limit ?? 10, 10)}${query.cursor ? `&start=${query.cursor}` : ""}`,
