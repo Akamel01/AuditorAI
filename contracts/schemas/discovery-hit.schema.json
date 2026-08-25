@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Hit",
+  "type": "object",
+  "required": ["hit_id", "url", "source_type", "provider_id", "discovered_at", "licence_hint"],
+  "additionalProperties": false,
+  "properties": {
+    "hit_id": { "type": "string", "pattern": "^HIT-[A-Za-z0-9-]+$" },
+    "url": { "type": "string", "format": "uri" },
+    "source_type": {
+      "enum": ["search-engine", "dot-portal", "planning-portal", "procurement", "institutional-repo"]
+    },
+    "provider_id": { "type": "string", "minLength": 1 },
+    "portal_id": { "type": ["string", "null"] },
+    "discovered_at": { "type": "string", "format": "date-time" },
+    "licence_hint": {
+      "enum": ["ogl-v3", "public-domain", "cc-by", "cc-by-sa", "unknown", "licensed-tier1-pending"]
+    },
+    "http_status": { "type": ["integer", "null"], "minimum": 100, "maximum": 599 },
+    "sha256_hint": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "title_hint": { "type": ["string", "null"] },
+    "jurisdiction_guess": {
+      "enum": ["INT", "UK", "US", "CA", "AE", null]
+    }
+  }
+}

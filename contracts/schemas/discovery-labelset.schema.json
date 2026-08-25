@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Classification LabelSet",
+  "type": "object",
+  "required": [
+    "labelset_id",
+    "bundle_id",
+    "labels",
+    "classifier_trace"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "labelset_id": {
+      "type": "string",
+      "pattern": "^LAB-[A-Za-z0-9-]+$"
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^ACQ-[A-Za-z0-9-]+$"
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": [
+          "doc_id",
+          "role",
+          "confidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "doc_id": {
+            "type": "string",
+            "pattern": "^DOC-[A-Za-z0-9-]+$"
+          },
+          "role": {
+            "enum": [
+              "rsa_report",
+              "checklist",
+              "designer_response",
+              "drawing_set",
+              "supporting_document"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "classifier_trace": {
+      "type": "object",
+      "required": [
+        "classifier_id",
+        "ruleset_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "classifier_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ruleset_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "auto_reserved_doc_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^DOC-[A-Za-z0-9-]+$"
+          }
+        }
+      }
+    }
+  }
+}

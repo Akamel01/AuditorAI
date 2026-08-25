@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0.0",
+  "declaration_version": "1.1.2",
+  "generated": "1970-01-01T00:00:00.000Z",
+  "target_total": 500,
+  "cells": [
+    {
+      "cell_key": "uk:PRELIMINARY_DESIGN",
+      "jurisdiction_id": "UK",
+      "native_stage_id": "uk:S1",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixture_ids": [
+        "GF-6",
+        "GF-11"
+      ],
+      "target": 13,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 1,
+      "uncovered_reasons": [
+        "need 13 more packages (0/13)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "usa:PRELIMINARY_DESIGN",
+      "jurisdiction_id": "US",
+      "native_stage_id": "us-fhwa:preliminary-design",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixture_ids": [
+        "GF-7",
+        "GF-12",
+        "GF-14"
+      ],
+      "target": 13,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 1,
+      "uncovered_reasons": [
+        "need 13 more packages (0/13)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "usa:DETAILED_DESIGN",
+      "jurisdiction_id": "US",
+      "native_stage_id": "us-fhwa:final-design",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "in",
+      "fixture_ids": [
+        "GF-8"
+      ],
+      "target": 40,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 40 more packages (0/40)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "international:PRELIMINARY_DESIGN",
+      "jurisdiction_id": "INT",
+      "native_stage_id": "int:preliminary-design",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "in",
+      "fixture_ids": [
+        "GF-9",
+        "GF-16"
+      ],
+      "target": 13,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 1,
+      "uncovered_reasons": [
+        "need 13 more packages (0/13)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "canada:FEASIBILITY_CONCEPT",
+      "jurisdiction_id": "CA",
+      "native_stage_id": "ca-tac:planning",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "in",
+      "fixture_ids": [
+        "GF-10",
+        "GF-13",
+        "GF-15"
+      ],
+      "target": 13,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 1,
+      "uncovered_reasons": [
+        "need 13 more packages (0/13)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uae:FEASIBILITY_CONCEPT",
+      "jurisdiction_id": "AE",
+      "native_stage_id": "ae-ad:S0",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uae:PRELIMINARY_DESIGN",
+      "jurisdiction_id": "AE",
+      "native_stage_id": "ae-ad:S1",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+      "jurisdiction_id": "AE",
+      "native_stage_id": "ae-ad:S12-combined",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN",
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uae:DETAILED_DESIGN",
+      "jurisdiction_id": "AE",
+      "native_stage_id": "ae-ad:S2",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uk:FEASIBILITY_CONCEPT",
+      "jurisdiction_id": "UK",
+      "native_stage_id": null,
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "structurally_absent",
+      "fixture_ids": [],
+      "target": 0,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "EXCLUDED",
+      "priority": 0,
+      "uncovered_reasons": []
+    },
+    {
+      "cell_key": "canada:DETAILED_DESIGN",
+      "jurisdiction_id": "CA",
+      "native_stage_id": "ca-tac:detailed-design",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "canada:PRELIMINARY_DESIGN",
+      "jurisdiction_id": "CA",
+      "native_stage_id": "ca-tac:preliminary-design",
+      "canonical_stage": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "international:DETAILED_DESIGN",
+      "jurisdiction_id": "INT",
+      "native_stage_id": "int:detailed-design",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "international:FEASIBILITY_CONCEPT",
+      "jurisdiction_id": "INT",
+      "native_stage_id": "int:feasibility-concept",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 41,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 41 more packages (0/41)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "uk:DETAILED_DESIGN",
+      "jurisdiction_id": "UK",
+      "native_stage_id": "uk:S2",
+      "canonical_stage": [
+        "DETAILED_DESIGN"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 40,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 40 more packages (0/40)",
+        "no full-package yet"
+      ]
+    },
+    {
+      "cell_key": "usa:FEASIBILITY_CONCEPT",
+      "jurisdiction_id": "US",
+      "native_stage_id": "us-fhwa:planning",
+      "canonical_stage": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "status": "mapped_unproven",
+      "fixture_ids": [],
+      "target": 40,
+      "have_full_package": 0,
+      "have_total": 0,
+      "label": "MISSING",
+      "priority": 3,
+      "uncovered_reasons": [
+        "need 40 more packages (0/40)",
+        "no full-package yet"
+      ]
+    }
+  ],
+  "gaps_ranked": [
+    "usa:DETAILED_DESIGN",
+    "uae:FEASIBILITY_CONCEPT",
+    "uae:PRELIMINARY_DESIGN",
+    "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+    "uae:DETAILED_DESIGN",
+    "canada:DETAILED_DESIGN",
+    "canada:PRELIMINARY_DESIGN",
+    "international:DETAILED_DESIGN",
+    "international:FEASIBILITY_CONCEPT",
+    "uk:DETAILED_DESIGN",
+    "usa:FEASIBILITY_CONCEPT",
+    "uk:PRELIMINARY_DESIGN",
+    "usa:PRELIMINARY_DESIGN",
+    "international:PRELIMINARY_DESIGN",
+    "canada:FEASIBILITY_CONCEPT"
+  ]
+}

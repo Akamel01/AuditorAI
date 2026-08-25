@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Provenance Record",
+  "type": "object",
+  "required": [
+    "provenance_id", "package_id", "source_urls", "retrieved_at",
+    "sha256_chain", "extraction", "classification", "licence", "odd_cell"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "provenance_id": { "type": "string", "pattern": "^PRV-[A-Za-z0-9-]+$" },
+    "package_id": { "type": "string", "pattern": "^PKG-[A-Za-z0-9-]+$" },
+    "source_urls": { "type": "array", "minItems": 1, "items": { "type": "string", "format": "uri" } },
+    "retrieved_at": { "type": "string", "format": "date-time" },
+    "sha256_chain": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["doc_id", "sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "doc_id": { "type": "string", "pattern": "^DOC-[A-Za-z0-9-]+$" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "required": ["pdf_engine", "ocr_engine"],
+      "additionalProperties": false,
+      "properties": {
+        "pdf_engine": { "type": "string", "minLength": 1 },
+        "ocr_engine": { "type": ["string", "null"] }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": ["classifier_id", "ruleset_version"],
+      "additionalProperties": false,
+      "properties": {
+        "classifier_id": { "type": "string", "minLength": 1 },
+        "ruleset_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "licence": {
+      "enum": ["ogl-v3", "public-domain", "cc-by", "cc-by-sa", "unknown", "licensed-tier1-pending"]
+    },
+    "odd_cell": {
+      "type": "object",
+      "required": ["jurisdiction_id", "canonical_stage", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction_id": { "enum": ["INT", "UK", "US", "CA", "AE"] },
+        "canonical_stage": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"] }
+        },
+        "status": { "enum": ["in", "mapped_unproven"] }
+      }
+    },
+    "firewall_tainted": { "type": "boolean" }
+  }
+}

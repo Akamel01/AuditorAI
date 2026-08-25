@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "Append-only machine ledger for the discovery pipeline (D01..D10). One entry per node emission per run; entries are immutable. Compiled views (odd-coverage.json) are derived — regenerate with scripts/discovery-coverage.ts, never hand-edit.",
+  "created": "2026-08-25",
+  "entries": []
+}
