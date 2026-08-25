@@ -28,6 +28,9 @@ fixed so AFK sessions don't stall on it.
 
 <!-- one line per closed ticket -->
 
+- [01 — Conversions wave 1](issues/01-conversions-wave1.md): GF-14/15/16 real-scheme fixtures fully scored 100% (archive 2026-08-25T07-34-03-343Z); registry 161; odd.json v1.1.2.
+- [03 — Judge transport-flake retry](issues/03-judge-retry.md): 4-attempt backoff in-run + --topup sibling-archive mode (scored verdicts immutable); proven live. 
+
 ## Not yet specified
 
 - **Legacy-stage cell flips**: whether cataloged material (or round-3 hauls) can seed
