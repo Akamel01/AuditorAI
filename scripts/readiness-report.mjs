@@ -78,6 +78,31 @@ const report = {
   fixtures: fixtureRows,
 };
 
+// Learning layer census (ADR-0008..0013): generated numbers for the
+// learning-architecture diagram — never hand-maintained.
+const registry = read("state/evidence-registry.json");
+const regRecords = Object.values(registry).flatMap((v) =>
+  Array.isArray(v) ? v : [],
+);
+const fewshotByCell = {};
+for (const s of corpus.samples) {
+  if (!s.roles.includes("engine-fewshot")) continue;
+  const key = `${s.jurisdiction}:${s.native_stage_id ?? s.odd_cell_status}`;
+  fewshotByCell[key] = (fewshotByCell[key] ?? 0) + 1;
+}
+report.learning_layer = {
+  evidence_records: regRecords.length,
+  corpus_cataloged: corpus.samples.length,
+  fewshot_total: roleCounts["engine-fewshot"] ?? 0,
+  judge_calibration_total: roleCounts["judge-calibration"] ?? 0,
+  fewshot_by_jurisdiction: corpus.samples.reduce((acc, s) => {
+    if (s.roles.includes("engine-fewshot"))
+      acc[s.jurisdiction] = (acc[s.jurisdiction] ?? 0) + 1;
+    return acc;
+  }, {}),
+  rubric_dimensions: "5-dim per src/lib/eval-gates.ts DIMENSIONS",
+};
+
 const outPath = path.join(root, "state", "readiness-report.json");
 fs.writeFileSync(outPath, JSON.stringify(report, null, 2) + "\n");
 

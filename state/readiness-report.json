@@ -1,6 +1,6 @@
 {
   "schema_note": "T4.x readiness snapshot: judged fixtures x ODD cells x latest Tier-1 archive, plus ADR-0007 role census. Regenerate with: node scripts/readiness-report.mjs [runId]",
-  "generated": "2026-08-25T09:38:25.992Z",
+  "generated": "2026-08-25T10:53:47.911Z",
   "declaration_version": "1.1.2",
   "latest_archive": "2026-08-25T07-34-03-343Z",
   "release_test_tier": {
@@ -480,5 +480,17 @@
         "unscored": 0
       }
     }
-  ]
+  ],
+  "learning_layer": {
+    "evidence_records": 161,
+    "corpus_cataloged": 78,
+    "fewshot_total": 6,
+    "judge_calibration_total": 26,
+    "fewshot_by_jurisdiction": {
+      "international": 1,
+      "usa": 3,
+      "canada": 2
+    },
+    "rubric_dimensions": "5-dim per src/lib/eval-gates.ts DIMENSIONS"
+  }
 }

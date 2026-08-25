@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Auditor AI — Learning Architecture v1.1.2</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --surface: #111820;
+    --surface-2: #1a2430;
+    --surface-3: #1e2e3e;
+    --border: #234058;
+    --border-2: #2d4a63;
+    --text: #e6edf3;
+    --muted: #8b9bb0;
+    --dim: #5a6d82;
+    --accent: #3b9eff;
+    --accent-2: #5ee9b5;
+    --accent-3: #f0b429;
+    --accent-4: #ff6b6b;
+    --accent-5: #a78bfa;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --mono: "Geist Mono","SF Mono", ui-monospace, monospace;
+    --sans: "Geist","Inter", system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  /* header */
+  .hdr{position:sticky;top:0;z-index:20;background:rgba(10,14,20,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .hdr h1{font-size:15px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+  .hdr h1 span{color:var(--accent)}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:5px 9px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:var(--surface)}
+  .badge.in{color:#5ee9b5;border-color:rgba(94,233,181,.35);background:rgba(94,233,181,.08)}
+  .badge.mapped{color:#f0b429;border-color:rgba(240,180,41,.35);background:rgba(240,180,41,.08)}
+  .badge.absent{color:#ff6b6b;border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08)}
+  /* layout */
+  .wrap{max-width:1320px;margin:0 auto;padding:28px 28px 60px}
+  .hero{border:1px solid var(--border);border-radius:var(--radius-lg);background:linear-gradient(180deg, rgba(59,158,255,.08), transparent 55%), var(--surface);padding:28px 28px 22px;margin-bottom:22px}
+  .hero h2{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+  .hero p{color:var(--muted);max-width:860px;font-size:14.5px}
+  .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+  .kpi{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface-2);padding:12px 14px}
+  .kpi b{font-family:var(--mono);font-size:22px;letter-spacing:-.02em;display:block}
+  .kpi span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .kpi small{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+  /* sections */
+  h3{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px;font-weight:700}
+  h3 em{color:var(--accent);font-style:normal}
+  .card{border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden}
+  .card-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface-2)}
+  .card-hd h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+  .card-bd{padding:18px}
+  /* graph */
+  .graph{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+  .graph-grid{position:absolute;inset:0;background-image:
+    linear-gradient(rgba(35,64,88,.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35,64,88,.35) 1px, transparent 1px);
+    background-size:32px 32px;opacity:.25;pointer-events:none}
+  .layers{display:grid;grid-template-columns:1fr;gap:0;position:relative}
+  .layer{padding:16px 18px;border-bottom:1px solid var(--border)}
+  .layer:last-child{border-bottom:none}
+  .layer-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .layer-label i{width:8px;height:8px;border-radius:999px;display:inline-block}
+  .nodes{display:flex;flex-wrap:wrap;gap:8px}
+  .node{border:1px solid var(--border);background:var(--surface-2);border-radius:999px;padding:7px 11px;font-size:12px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .node.det{border-color:rgba(59,158,255,.35);background:rgba(59,158,255,.08)}
+  .node.ai{border-color:rgba(240,180,41,.45);background:rgba(240,180,41,.12);box-shadow:0 0 0 1px rgba(240,180,41,.15)}
+  .node.hum{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.1)}
+  .node.store{border-color:rgba(94,233,181,.35);background:rgba(94,233,181,.08)}
+  .node b{font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+  .node small{color:var(--muted);font-size:11px}
+  .edge-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .pill{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:var(--surface-2)}
+  .pill.data{color:#3b9eff;border-color:rgba(59,158,255,.4)}
+  .pill.contract{color:#5ee9b5;border-color:rgba(94,233,181,.4)}
+  .pill.control{color:#a78bfa;border-color:rgba(167,139,250,.4)}
+  .pill.evidence{color:#f0b429;border-color:rgba(240,180,41,.4)}
+  .pill.feedback{color:#ff8a5b;border-color:rgba(255,138,91,.4)}
+  .pill.loop{color:#ff6b6b;border-color:rgba(255,107,107,.4)}
+  /* flow line */
+  .flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+  .flow .arrow{color:var(--dim);font-family:var(--mono);font-size:12px}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);position:sticky;top:0}
+  td{padding:11px 12px;border-bottom:1px solid rgba(35,64,88,.6);vertical-align:top}
+  tr:hover td{background:rgba(59,158,255,.04)}
+  td.mono{font-family:var(--mono);font-size:12px;white-space:nowrap}
+  td.small{font-size:12.5px;color:var(--muted)}
+  .bar{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;border-radius:999px}
+  .bar .fill-in{background:var(--accent-2)}
+  .bar .fill-map{background:var(--accent-3)}
+  .bar .fill-abs{background:var(--accent-4)}
+  /* code */
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#cbd5e1}
+  code{font-family:var(--mono);font-size:12px}
+  .two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+  @media(max-width:980px){.two{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+  .callout{border:1px solid rgba(59,158,255,.25);background:rgba(59,158,255,.08);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:#cbd5e1}
+  .callout strong{color:var(--accent)}
+  .tag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1><span>Auditor AI</span> — Learning Architecture</h1>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <span class="badge">ODD v1.1.2</span>
+    <span class="badge">PIPELINE v1 — 11 NODES</span>
+    <span class="badge">EVIDENCE 161</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- HERO -->
+  <div class="hero">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="tag">Deterministic skeleton — AI gap-filler</span>
+      <span class="tag">Single AI node — prompting + few-shot + evidence injection</span>
+      <span class="tag">One-line adapter swap → fine-tune</span>
+    </div>
+    <h2>End-to-end graph: raw sources → audit → learning loop</h2>
+    <p>Every road-safety audit runs the <b>deterministic 11-node pipeline</b>. One node is AI-bounded and produces <code>CandidateFinding[]</code> for human adjudication. Improvement happens not by retraining weights, but by versioning <b>prompts, few-shot exemplars, evidence registry, and policy packs</b> — all deterministic, auditable, and reversible. The <code>AiAdapter</code> seam makes prompting → fine-tune a <b>one-line</b> config change when data unlocks it.</p>
+    <div class="kpis">
+      <div class="kpi"><span>ODD cells</span><b>16</b><small><span style="color:#5ee9b5">5 IN</span> · <span style="color:#f0b429">10 mapped-unproven</span> · <span style="color:#ff6b6b">1 absent</span></small></div>
+      <div class="kpi"><span>Evidence records</span><b>161</b><small>5 jurisdictions · provenance-tracked</small></div>
+      <div class="kpi"><span>Sample corpus</span><b>78</b><small>6 few-shot · 26 calib · 41 reserve</small></div>
+      <div class="kpi"><span>Fixtures (IN)</span><b>10</b><small>GF-6..16 · gate-passing proof</small></div>
+      <div class="kpi"><span>AI budget / run</span><b>≤3 calls</b><small>MAX_IMAGES 4 · OFF by default</small></div>
+    </div>
+  </div>
+
+  <!-- GRAPH -->
+  <h3><em>01</em> — Node / edge graph (typed)</h3>
+  <div class="graph">
+    <div class="graph-grid"></div>
+    <div class="layers">
+      <!-- Knowledge layer -->
+      <div class="layer">
+        <div class="layer-label"><i style="background:var(--accent-2)"></i> Knowledge layer — deterministic, versioned, provider of CONTEXT / CONTRACT edges</div>
+        <div class="nodes">
+          <span class="node store"><b>POLICY PACKS</b> <small>5 jur · pack.json · AJV-validated</small></span>
+          <span class="node store"><b>EVIDENCE REGISTRY</b> <small>161 · state/evidence-registry.json</small></span>
+          <span class="node store"><b>ODD MATRIX</b> <small>policies/odd.json v1.1.2 · 16 cells</small></span>
+          <span class="node store"><b>FEW-SHOT STORE</b> <small>6 · versioned · jur/stage-matched</small></span>
+          <span class="node store"><b>SYSTEM PROMPT</b> <small>vN artifact · word-discipline</small></span>
+        </div>
+        <div class="edge-legend">
+          <span class="pill contract">CONTRACT — pack inputs ∩ native stage</span>
+          <span class="pill evidence">EVIDENCE — evidence_id → registry claim</span>
+          <span class="pill contract">CONTEXT — stage + question + registry excerpts + vocab</span>
+        </div>
+      </div>
+
+      <!-- Deterministic pipeline -->
+      <div class="layer">
+        <div class="layer-label"><i style="background:var(--accent)"></i> Audit pipeline — 11 nodes · SharedState slices · typed edges · graph-state.json / registry.ts</div>
+        <div class="nodes" style="gap:6px">
+          <span class="node det"><b>AG-PROJECT</b> <small>→ project_input</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-STAGE-SELECT</b> <small>→ stage_context · ODD resolve</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-MANIFEST</b> <small>→ input_manifest · §14 states</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-RULES</b> <small>→ rule_results</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-FINDINGS</b> <small>deterministic drafts</small></span>
+        </div>
+        <div class="nodes" style="margin-top:8px">
+          <span class="node det"><b>AG-QUESTIONS</b> <small>← stage_context · pack audit_questions</small></span>
+          <span style="color:var(--dim);font-family:var(--mono);font-size:11px;align-self:center">converge at ↓</span>
+        </div>
+        <div class="edge-legend">
+          <span class="pill data">DATA — stage_selection · input states · rule outputs</span>
+          <span class="pill control">CONTROL — depends_on (registry)</span>
+          <span class="pill evidence">VALIDATION — unresolved evidence_id → fail-loud</span>
+        </div>
+      </div>
+
+      <!-- AI node -->
+      <div class="layer" style="background:linear-gradient(90deg, rgba(240,180,41,.08), transparent 60%)">
+        <div class="layer-label"><i style="background:var(--accent-3)"></i> AI-bounded node — only learned component · prompting + few-shot + evidence injection · AiAdapter seam</div>
+        <div class="nodes">
+          <span class="node ai"><b>AG-AI-CANDIDATES</b> <small>reads stage_context · input_manifest · audit_questions · rule_results · project_input</small></span>
+          <span class="node ai"><b>assembleAuditResult</b> <small>provisional result</small></span>
+          <span class="node ai"><b>buildPromptMessages</b> <small>+ evidence excerpts + vocab + few-shot</small></span>
+          <span class="node ai"><b>AiAdapter.generateCandidates</b> <small>→ CandidateFinding[] 0–5 · AJV-validated</small></span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <span class="pill" style="color:#f0b429;border-color:rgba(240,180,41,.4)">BOUNDARY — producer="safety-reasoning-agent" enforced · source_attachment_ids tracked</span>
+          <span class="pill" style="color:#f0b429;border-color:rgba(240,180,41,.4)">BUDGET — 4 images · circuit-breaker · repair-once</span>
+          <span class="pill" style="color:#5ee9b5;border-color:rgba(94,233,181,.35)">NEW — HallucinationCheck · EvidenceUseAudit (deterministic post-AI)</span>
+        </div>
+        <div class="flow" style="margin-top:10px">
+          <span class="node store" style="font-size:11px">OffAiAdapter (OFF)</span>
+          <span class="arrow">⇄</span>
+          <span class="node ai" style="font-size:11px">ZenAiAdapter (x-preview-f-free)</span>
+          <span class="arrow">⇄</span>
+          <span class="node" style="font-size:11px;border-style:dashed">FineTunedAdapter (future — same interface)</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--accent-2);margin-left:6px">AI_ADAPTER env — one line</span>
+        </div>
+      </div>
+
+      <!-- Human -->
+      <div class="layer">
+        <div class="layer-label"><i style="background:var(--accent-5)"></i> Human adjudication — ADR-0006 boundary · Candidate ≠ Finding</div>
+        <div class="nodes">
+          <span class="node hum"><b>AG-ADJUDICATION</b> <small>accept · accept_with_edits · reject · escalate · wording discipline</small></span>
+          <span class="node hum"><b>Promotion</b> <small>mints Finding identity + provenance</small></span>
+          <span class="node" style="border-color:rgba(94,233,181,.35);background:rgba(94,233,181,.08)"><b>NEW — CandidateOutcome log</b> <small>{candidate, action, edits, note, auditor}</small></span>
+        </div>
+        <div class="edge-legend">
+          <span class="pill feedback">FEEDBACK — candidates → adjudication · rejections as signal</span>
+          <span class="pill loop">LOOP — CandidateOutcome → few-shot store → prompt · flywheel</span>
+        </div>
+      </div>
+
+      <!-- Closing deterministic -->
+      <div class="layer">
+        <div class="layer-label"><i style="background:var(--accent)"></i> Closing deterministic nodes</div>
+        <div class="nodes">
+          <span class="node det"><b>AG-EVIDENCE-LINKS</b> <small>→ evidence_linkset · registry traceability</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-REPORT</b> <small>→ report_bundle · JSON + Markdown</small></span>
+          <span class="arrow" style="color:var(--dim)">→</span>
+          <span class="node det"><b>AG-PERSIST</b> <small>→ persistence_ref · versioned + immutable issues</small></span>
+        </div>
+      </div>
+
+      <!-- Evaluation offline -->
+      <div class="layer">
+        <div class="layer-label"><i style="background:#ff8a5b"></i> Evaluation & continuous improvement — offline · deterministic rubric · flywheel</div>
+        <div class="nodes">
+          <span class="node" style="border-color:rgba(255,138,91,.35);background:rgba(255,138,91,.08)"><b>EVAL-GATES</b> <small>5-dim rubric · per-finding + corpus + regression</small></span>
+          <span class="node" style="border-color:rgba(255,138,91,.35);background:rgba(255,138,91,.08)"><b>JUDGE CALIB</b> <small>16 samples · rubric tuning</small></span>
+          <span class="node" style="border-color:rgba(255,138,91,.35);background:rgba(255,138,91,.08)"><b>ODD PROOF</b> <small>gate-passing fixture → IN</small></span>
+          <span class="node" style="border-color:rgba(255,138,91,.35);background:rgba(255,138,91,.08)"><b>RELEASE TEST</b> <small>GF-6..16 synthetic · zero-drop</small></span>
+          <span class="node" style="border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08)"><b>NEW — promotionRate · hallucinationRate</b></span>
+        </div>
+        <div class="edge-legend">
+          <span class="pill loop">LOOP — rejections → prompt patch · accept_with_edits → few-shot</span>
+          <span class="pill loop">LOOP — corpus growth → ODD cell IN → more few-shot</span>
+          <span class="pill feedback">FEEDBACK — eval-gates blocks promotion of bad prompts/models</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+    <span class="pill data">■ DATA</span>
+    <span class="pill contract">■ CONTRACT</span>
+    <span class="pill control">■ CONTROL</span>
+    <span class="pill evidence">■ EVIDENCE</span>
+    <span class="pill feedback">■ FEEDBACK</span>
+    <span class="pill loop">■ LOOP</span>
+    <span class="pill">■ VALIDATION</span>
+    <span style="font-size:11px;color:var(--dim);align-self:center">Typed edges from <code>state/graph-state.json</code> · extended for learning system</span>
+  </div>
+
+  <!-- ODD DATA REQUIREMENTS -->
+  <h3><em>02</em> — ODD data requirements per cell (v1.1.2 — 16 cells)</h3>
+  <div class="card">
+    <div class="card-hd">
+      <h4>Capability matrix — what each cell needs to stay IN or become IN</h4>
+      <div style="display:flex;gap:6px">
+        <span class="badge in">5 IN</span>
+        <span class="badge mapped">10 MAPPED_UNPROVEN</span>
+        <span class="badge absent">1 STRUCTURALLY_ABSENT</span>
+      </div>
+    </div>
+    <div style="overflow:auto">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width:170px">Cell (jur · native → canonical)</th>
+            <th>Status</th>
+            <th>Input floor (minimum)</th>
+            <th>Evidence</th>
+            <th>Fixtures</th>
+            <th>Corpus now</th>
+            <th>Data to sustain / promote</th>
+            <th>Learning signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- IN cells -->
+          <tr>
+            <td class="mono">UK · uk:S1 →<br/>PRELIMINARY_DESIGN</td>
+            <td><span class="badge in">IN</span></td>
+            <td class="small">scheme_description_objectives<br/>design_standards_applied<br/>design_speeds_and_speed_limits<br/>traffic_flows_existing_forecast<br/>collision_data_analysis_36mo<br/>strategic_decisions_excluded<br/><span style="color:var(--dim)">GG 119 App C [EV-UK-014]</span></td>
+            <td class="small">EV-UK-001..024<br/>25 UK records<br/><span style="color:var(--accent-2)">authoritative</span></td>
+            <td class="mono">GF-6, GF-11<br/><span style="color:var(--accent-2)">2 passing</span></td>
+            <td class="small">1 few-shot<br/>(int-008)<br/>5 calib<br/><div class="bar"><i class="fill-in" style="width:35%"></i></div></td>
+            <td class="small"><b>Sustain IN:</b> keep fixtures green on every archive.<br/><b>Scale:</b> +2–3 few-shots from distinct schemes (avoid A9 cluster leakage). Cadence outgrown fixtures → add GF.</td>
+            <td class="small">CandidateOutcome for<br/>UK S1 · prompt vN<br/>promotionRate tracked</td>
+          </tr>
+          <tr>
+            <td class="mono">USA · us-fhwa:preliminary-design →<br/>PRELIMINARY_DESIGN</td>
+            <td><span class="badge in">IN</span></td>
+            <td class="small">project_information_package<br/>design_drawings_current_phase<br/><span style="color:var(--dim)">FHWA minimal [EV-US-003]</span></td>
+            <td class="small">EV-US-001..035<br/>~30 US records<br/><span style="color:#f0b429">recommended_practice</span></td>
+            <td class="mono">GF-7, GF-12, GF-14<br/><span style="color:var(--accent-2)">3 passing</span></td>
+            <td class="small">2 few-shot<br/>(us-008, us-017)<br/>2 calib<br/><div class="bar"><i class="fill-in" style="width:55%"></i></div></td>
+            <td class="small"><b>Sustain IN:</b> strongest cell (3 fixtures).<br/><b>Scale:</b> add FHWA 2B/2D cross-section diversity; pair each few-shot with drawings for vision signal.</td>
+            <td class="small">Best cell to pioneer<br/>vision fine-tune signal (drawings present)</td>
+          </tr>
+          <tr>
+            <td class="mono">USA · us-fhwa:final-design →<br/>DETAILED_DESIGN</td>
+            <td><span class="badge in">IN</span></td>
+            <td class="small">project_information_package<br/>design_drawings_current_phase<br/><span style="color:var(--dim)">same floor as prelim</span></td>
+            <td class="small">EV-US-001..035<br/><span style="color:#f0b429">recommended_practice</span></td>
+            <td class="mono">GF-8<br/><span style="color:var(--accent-2)">1 passing</span></td>
+            <td class="small">0 few-shot<br/>0 calib direct<br/><div class="bar"><i class="fill-in" style="width:18%"></i></div></td>
+            <td class="small"><b>Fragile:</b> single-fixture IN. Needs 1–2 more detailed-design fixtures + at least 1 few-shot. Highest priority for data acquisition.</td>
+            <td class="small">Needs CandidateOutcome<br/>accumulation before<br/>any fine-tune</td>
+          </tr>
+          <tr>
+            <td class="mono">INT · int:preliminary-design →<br/>PRELIMINARY_DESIGN</td>
+            <td><span class="badge in">IN</span></td>
+            <td class="small">project_description_objectives<br/>plans_appropriate_to_stage<br/><span style="color:var(--dim)">PIARC qualified baseline</span></td>
+            <td class="small">EV-IN-001..025<br/>25 INT records<br/><span style="color:#f0b429">qualified_baseline</span></td>
+            <td class="mono">GF-9, GF-16<br/><span style="color:var(--accent-2)">2 passing</span></td>
+            <td class="small">0 few-shot direct<br/>1 calib (IRAP KSHIP)<br/><div class="bar"><i class="fill-in" style="width:22%"></i></div></td>
+            <td class="small"><b>Qualified:</b> no authoritative INT standard exists. Sustain via PIARC/CAREC exemplars. Needs international diverse few-shots.</td>
+            <td class="small">Use for cross-jurisdiction<br/>transfer experiments</td>
+          </tr>
+          <tr>
+            <td class="mono">CA · ca-tac:planning →<br/>FEASIBILITY_CONCEPT</td>
+            <td><span class="badge in">IN</span></td>
+            <td class="small">design_criteria<br/>route_choice_project_scope<br/><span style="color:var(--dim)">Alberta equiv. [EV-CA-005/006]</span></td>
+            <td class="small">EV-CA-001..040<br/>~35 CA records<br/><span style="color:var(--accent-2)">provincial_instruments</span></td>
+            <td class="mono">GF-10, GF-13, GF-15<br/><span style="color:var(--accent-2)">3 passing</span></td>
+            <td class="small">1 few-shot<br/>(ca-001 NEAHD)<br/>1 calib<br/><div class="bar"><i class="fill-in" style="width:45%"></i></div></td>
+            <td class="small"><b>Strong:</b> 3 fixtures. Add pre-concept diversity (Glenmore ca-002 is reserve — could promote if CA PRELIM cell added).</td>
+            <td class="small">Only FEASIBILITY cell IN —<br/>valuable for early-stage reasoning</td>
+          </tr>
+
+          <!-- MAPPED_UNPROVEN -->
+          <tr style="background:rgba(240,180,41,.04)">
+            <td class="mono">UAE · ae-ad:S0 →<br/>FEASIBILITY_CONCEPT</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small">concept_or_master_plan_options<br/><span style="color:var(--dim)">Master Plan / TIS [EV-AE-004/005]</span></td>
+            <td class="small">EV-AE-001..040<br/>~35 UAE records<br/><span style="color:var(--accent-2)">authoritative (Abu Dhabi)</span></td>
+            <td class="mono" style="color:var(--accent-3)">0 — needs gate-passing fixture</td>
+            <td class="small">1 calib (ae-001 excerpt)<br/>— not ODD Proof grade<div class="bar"><i class="fill-map" style="width:12%"></i></div></td>
+            <td class="small"><b>Promote needs:</b> 1 full-package auditable sample (inputs + outputs) + E3 licensing. Runs now stamp "outside ODD — validation pending".</td>
+            <td class="small">No few-shot until IN.<br/>Drawings + TIS inputs</td>
+          </tr>
+          <tr style="background:rgba(240,180,41,.04)">
+            <td class="mono">UAE · ae-ad:S1 →<br/>PRELIMINARY_DESIGN</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small">general_detail_drawings<br/><span style="color:var(--dim)">[EV-AE-006]</span></td>
+            <td class="small">EV-AE-001..040</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0 few-shot<div class="bar"><i class="fill-map" style="width:6%"></i></div></td>
+            <td class="small"><b>Promote needs:</b> full-package + eval-gates pass. E3 licensing is blocker.</td>
+            <td class="small">Same as S0</td>
+          </tr>
+          <tr style="background:rgba(240,180,41,.04)">
+            <td class="mono">UAE · ae-ad:S12-combined →<br/>PRELIM + DETAILED</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small">general_detail_drawings<br/><span style="color:var(--dim)">smaller schemes [EV-AE-012]</span></td>
+            <td class="small">EV-AE-001..040</td>
+            <td class="mono" style="color:var(--accent-3)">0 — spans 2 canonical</td>
+            <td class="small">0 few-shot<div class="bar"><i class="fill-map" style="width:6%"></i></div></td>
+            <td class="small"><b>Promote needs:</b> combined-audit exemplar (rare). Dual-canonical key makes this a key test for canonicalKey()</td>
+            <td class="small">Tests multi-canonical<br/>prompt + vocab</td>
+          </tr>
+          <tr style="background:rgba(240,180,41,.04)">
+            <td class="mono">UAE · ae-ad:S2 →<br/>DETAILED_DESIGN</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small">full_detailed_design_set<br/><span style="color:var(--dim)">departures + signals + priors [EV-AE-007]</span></td>
+            <td class="small">EV-AE-001..040</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0 few-shot<div class="bar"><i class="fill-map" style="width:6%"></i></div></td>
+            <td class="small"><b>Promote needs:</b> full detailed set. Most evidence-rich floor — include signal phasing + departures.</td>
+            <td class="small">Rich for recommendation<br/>quality signal</td>
+          </tr>
+          <tr>
+            <td class="mono">UK · uk:S2 →<br/>DETAILED_DESIGN</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small"><span style="color:var(--dim)">floor empty — not yet declared (needs owner floor)</span></td>
+            <td class="small">EV-UK-001..024</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0 few-shot<br/>but A9 Ballinluig is S2<div class="bar"><i class="fill-map" style="width:18%"></i></div></td>
+            <td class="small"><b>Promote needs:</b> detailed-design fixture from UK scheme (Ballinluig int-007 candidate) + floor definition.</td>
+            <td class="small">Add floor: signing, markings, street furniture</td>
+          </tr>
+          <tr>
+            <td class="mono">CA · ca-tac:preliminary-design →<br/>PRELIMINARY_DESIGN</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small"><span style="color:var(--dim)">floor empty</span></td>
+            <td class="small">EV-CA-001..040</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0 few-shot<br/>ca-002 reserve is PRELIM<div class="bar"><i class="fill-map" style="width:10%"></i></div></td>
+            <td class="small">ca-002 Calgary Glenmore functional plan is prime candidate → promote CA PRELIM cell.</td>
+            <td class="small">Unlock Glenmore cluster</td>
+          </tr>
+          <tr>
+            <td class="mono">CA · ca-tac:detailed-design →<br/>DETAILED_DESIGN</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small"><span style="color:var(--dim)">floor empty</span></td>
+            <td class="small">EV-CA-001..040</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">ca-007 4 exemplary audits (reserve)<div class="bar"><i class="fill-map" style="width:14%"></i></div></td>
+            <td class="small">ca-007 is reserve but could seed CA DETAILED if cell priority raised.</td>
+            <td class="small">4 audits in one package</td>
+          </tr>
+          <tr>
+            <td class="mono">INT · int:detailed-design / int:feasibility-concept</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small"><span style="color:var(--dim)">floor empty</span></td>
+            <td class="small">EV-IN-001..025</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0<div class="bar"><i class="fill-map" style="width:6%"></i></div></td>
+            <td class="small">CF: PIARC/CAREC exemplars could fill either FEASIBILITY or DETAILED.</td>
+            <td class="small">Cross-jurisdiction</td>
+          </tr>
+          <tr>
+            <td class="mono">USA · us-fhwa:planning →<br/>FEASIBILITY_CONCEPT</td>
+            <td><span class="badge mapped">mapped_unproven</span></td>
+            <td class="small"><span style="color:var(--dim)">floor empty</span></td>
+            <td class="small">EV-US-001..035</td>
+            <td class="mono" style="color:var(--accent-3)">0</td>
+            <td class="small">0<div class="bar"><i class="fill-map" style="width:6%"></i></div></td>
+            <td class="small">US planning-phase exemplar needed. 3-case FHWA compilation has planning cases.</td>
+            <td class="small">Early-stage option analysis</td>
+          </tr>
+
+          <!-- STRUCTURALLY ABSENT -->
+          <tr style="background:rgba(255,107,107,.06)">
+            <td class="mono">UK · (no native) →<br/>FEASIBILITY_CONCEPT</td>
+            <td><span class="badge absent">structurally_absent</span></td>
+            <td class="small">—</td>
+            <td class="small">—</td>
+            <td class="mono" style="color:var(--accent-4)">— intake refuses</td>
+            <td class="small">—<div class="bar"><i class="fill-abs" style="width:100%"></i></div></td>
+            <td class="small"><b>Never becomes IN.</b> GG 119 has no feasibility audit by design [EV-UK-004]. Intake refuses outright. No data acquisition.</td>
+            <td class="small">No learning signal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-bd" style="background:var(--surface-2);border-top:1px solid var(--border)">
+      <div class="two">
+        <div class="callout"><strong>Data flywheel rule:</strong> Every auditable production run logs a <code>CandidateOutcome</code> (Phase 1). Accepted + edited candidates curate the few-shot store. Gated fixtures promote cells. No separate “data team” — the flywheel is a byproduct of use.</div>
+        <div class="callout" style="border-color:rgba(94,233,181,.25);background:rgba(94,233,181,.06)"><strong>Fine-tune gate (Phase 4):</strong> 500+ CandidateOutcomes / jur / stage <b>and</b> promotion-rate plateau <b>and</b> latency/cost or offline need. Until then, the same <code>AiAdapter</code> interface keeps you on prompting — <b>one env var</b> flips to a local model.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADAPTER SWAP -->
+  <h3><em>03</em> — One-line adapter swap: prompting → fine-tune</h3>
+  <div class="two">
+    <div class="card">
+      <div class="card-hd"><h4>Current — prompting (Zen)</h4><span class="tag">AI_ADAPTER=zen</span></div>
+      <div class="card-bd" style="padding:0"><pre style="border:none;border-radius:0;margin:0">const ADAPTER_FACTORIES = {
+  off: () => new OffAiAdapter(),
+  zen: () => new ZenAiAdapter({
+    apiKey: process.env.OPENCODE_API_KEY,
+    baseUrl: process.env.AI_BASE_URL,
+    model: process.env.AI_MODEL, // x-preview-f-free
+    effort: process.env.AI_EFFORT ?? "high",
+  }),
+};</pre></div>
+    </div>
+    <div class="card" style="border-color:rgba(240,180,41,.35)">
+      <div class="card-hd" style="background:rgba(240,180,41,.08)"><h4>Future — fine-tuned (same interface)</h4><span class="tag" style="color:#f0b429;border-color:rgba(240,180,41,.35)">AI_ADAPTER=ft-uk-s1</span></div>
+      <div class="card-bd" style="padding:0"><pre style="border:none;border-radius:0;margin:0">import { FineTunedAdapter } from "@/lib/ai-finetuned-adapter";
+ADAPTER_FACTORIES["ft-uk-s1"] = () =>
+  new FineTunedAdapter({
+    modelPath: process.env.FT_MODEL_PATH,   // ./models/auditor-uk-s1-lora
+    tokenizerPath: process.env.FT_TOKENIZER_PATH,
+  });
+// generateCandidates(audit, images, notes, vocab)
+// → CandidateFinding[] — identical contract, validated same way</pre></div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:12px">Pipeline code (<code>generateCandidatesLive</code>), schema validation, hallucination checks, adjudication, and eval-gates are <b>unchanged</b>. The adapter is swappable at the seam — no pipeline edits, no schema edits, rollback is one env var.</div>
+
+  <!-- TRAINING TARGET -->
+  <h3><em>04</em> — What is actually learned</h3>
+  <div class="card">
+    <div class="card-hd"><h4>Canonical target: <code>CandidateFinding</code> — the only learned artifact</h4><span class="tag">structured intermediate</span></div>
+    <div class="card-bd">
+      <div class="two">
+        <div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">The model does <b>not</b> learn: stage eligibility, input normalization, rule firing, evidence lookup, report assembly, wording discipline, or ODD gating — all deterministic. It learns only <b>the gap a rule set cannot express</b>: hazard → safety-concern reasoning with proportionate recommendations.</p>
+          <table>
+            <thead><tr><th>Deterministic</th><th>Learned (one node)</th></tr></thead>
+            <tbody>
+              <tr><td class="small">AG-PROJECT / STAGE-SELECT / MANIFEST / RULES / FINDINGS / QUESTIONS / EVIDENCE-LINKS / REPORT / PERSIST</td><td class="small"><b>AG-AI-CANDIDATES</b> — 0–5 candidates · evidence-grounded · bounded by vocab · validated by AJV</td></tr>
+              <tr><td class="small">Policy packs · evidence registry · ODD matrix · eval-gates rubric</td><td class="small">Prompt version (SYSTEM_PROMPT vN) · few-shot exemplars per jur/stage · CandidateOutcome flywheel</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <pre>{
+  kind: "safety_concern" | "compliance_question",
+  category: string,            // bounded by pack vocab
+  location: string | null,
+  road_users: string[],        // bounded by pack vocab
+  scenario: string | null,
+  statement: { text, normative_basis_note },
+  evidence: [{ evidence_id, quote, use }],
+  assumptions: [{ text, basis }],
+  rationale: string,
+  recommendation: string | null, // no "consider"/"must"
+  producer: "safety-reasoning-agent",
+  source_attachment_ids?: string[]
+}</pre>
+          <p style="font-size:11px;color:var(--dim);margin-top:8px">Every normative claim cites a registry ID. <code>validateCandidateAtBoundary</code> enforces it. Candidates never become Findings without explicit promotion (ADR-0006).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.06em;margin-top:22px">Auditor AI · Learning Architecture · ODD v1.1.2 · Evidence 161 · Corpus 78 · Next: Phase 1 — CandidateOutcome log + HallucinationCheck + prompt versioning</p>
+</div>
+</body>
+</html>
