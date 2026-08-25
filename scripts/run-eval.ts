@@ -212,7 +212,6 @@ async function topupMain(parentRunId: string, apiKey: string) {
   const outDir = `${parentDir}-completed`;
   mkdirSync(outDir, { recursive: true });
   console.log(`[eval] topup ${parentRunId} -> ${path.basename(outDir)} judge=${JUDGE_MODEL}@${JUDGE_EFFORT}`);
-  let anyFailed = false;
   const manifest: Record<string, unknown>[] = [];
   for (const file of FILES) {
     const fx = JSON.parse(readFileSync(path.join(process.cwd(), "tests/fixtures", file), "utf8")) as Fixture;
@@ -239,7 +238,7 @@ async function topupMain(parentRunId: string, apiKey: string) {
     }
     const passRate = projectPassRate(verdicts);
     const passesMark = projectPassesCorpusMark(verdicts);
-    if (!passesMark) anyFailed = true;
+    if (!passesMark) console.warn(`[eval] ${fx.fixture_id}: topup gate FAIL`);
     const meanScore = projectMeanScore(verdicts);
     const priorMean = findPriorRunMean(fx.fixture_id);
     const regression = detectRegression(meanScore, priorMean);
