@@ -324,6 +324,55 @@
       "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
       "result": "PASSED — all sampled projects meet the corpus pass mark",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-032",
+      "date": "2026-08-25T06:48:02.503Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T06-29-49-075Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-033",
+      "date": "2026-08-25T07:07:04.363Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T06-49-33-605Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
+    },
+    {
+      "validation_id": "VAL-2026-08-22-034",
+      "date": "2026-08-25T07:26:19.974Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T07-07-28-939Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-035",
+      "date": "2026-08-25T07:28:46.719Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over GF-1..5 dry-run (run 2026-08-25T07-28-46-694Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-036",
+      "date": "2026-08-25T07:48:51.732Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..16 (run 2026-08-25T07-34-03-343Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
     }
   ]
 }

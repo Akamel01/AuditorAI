@@ -1,0 +1,68 @@
+{
+  "run_id": "2026-08-25T06-49-33-605Z-completed-completed",
+  "fixture_id": "GF-16",
+  "fixture_name": "Milltown Park toucan-crossing VRU conflicts — real Irish Stage 1 RSA incl. rejected recommendation (ABP 322160)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0.5,
+  "passes_corpus_mark": false,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 9
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF16-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Constrained shared footway space at a toucan crossing with physical obstructions creating cyclist-pedestrian collision potential is a substantive preliminary-design safety issue squarely within RSA scope.",
+        "evidence_grounding": "EV-IN-025 supplies a verbatim quote directly supporting the pivotal claim (limited space, narrow footpath, signal pole and lighting column obstructions, collision potential); no invented content.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under vulnerable_users with no compliance claim or normative_basis asserted; safety and compliance dimensions remain cleanly separated under the PIARC-derived baseline.",
+        "recommendation_quality": "Recommendation names specific elements (lighting column, signal head consolidation) at the identified location and is actionable and feasible at preliminary-design stage, though it only partially resolves the narrow footway constraint.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly identified as affected users and the cyclist-pedestrian interaction within the shared space is the core of the concern, so VRU impacts are fully considered."
+      }
+    },
+    {
+      "finding_id": "JB-GF16-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 1,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Insufficient width in a shared pedestrian/cyclist area creating collision risk is a genuine, scheme-relevant safety concern for a preliminary-design toucan crossing environment.",
+        "evidence_grounding": "EV-IN-025 provides a verbatim quote but describes limited space on the 'north eastern side' near the toucan crossing, not the 'north western access' the pivotal claim asserts, so the quote does not support the stated location.",
+        "jurisdiction_correctness": "Correctly raised as a safety_concern under vulnerable_users with no compliance framing or normative-basis misuse, keeping the categorical distinction intact despite the locational imprecision.",
+        "recommendation_quality": "'Widen the shared-use area' is specific in intent but generic in detail, and the recorded tree/wall and 4.8 m access constraints make its viability doubtful; not null, so capped at 1.",
+        "vru_coverage": "Pedestrian and cyclist conflict risk is the explicit core of the finding, so vulnerable road user impacts are directly and centrally considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:32:34.420Z",
+  "topup_of_run": "2026-08-25T06-49-33-605Z-completed"
+}

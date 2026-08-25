@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: e6b6b3a61f24
-record_count: 31
+source_hash: 0189ecab222e
+record_count: 36
 ---
 # Validation log
 
@@ -237,4 +237,38 @@ record_count: 31
 
 - Date: 2026-08-24T08:26:15.023Z
 - Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-24T08-08-49-444Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-032
+
+- Date: 2026-08-25T06:48:02.503Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T06-29-49-075Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-033
+
+- Date: 2026-08-25T07:07:04.363Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T06-49-33-605Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change
+
+## VAL-2026-08-22-034
+
+- Date: 2026-08-25T07:26:19.974Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..13 (run 2026-08-25T07-07-28-939Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-035
+
+- Date: 2026-08-25T07:28:46.719Z
+- Scope: Tier-1 judged evaluation over GF-1..5 dry-run (run 2026-08-25T07-28-46-694Z)
+- Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-036
+
+- Date: 2026-08-25T07:48:51.732Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..16 (run 2026-08-25T07-34-03-343Z)
 - Result: **PASSED — all sampled projects meet the corpus pass mark**

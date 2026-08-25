@@ -131,3 +131,8 @@ competence ends*. Three forces make this acute:
   Derby St), CA×FEASIBILITY_CONCEPT + GF-13 (NEAHD Ring Road). All three passed Tier-1 in
   run `2026-08-24T08-08-49-444Z`. No status changes; UAE cells remain mapped-unproven by
   owner ruling (ADR-0007) pending authentic worked-example material.
+- **v1.1.2 (2026-08-25):** second conversion wave (readiness-framework map ticket 01) —
+  US×PRELIMINARY_DESIGN + GF-14 (Somerville McGrath Hwy), CA×FEASIBILITY_CONCEPT +
+  GF-15 (34 St FPS §5.12), INT×PRELIMINARY_DESIGN + GF-16 (Milltown Park, incl. the
+  corpus's first rejected-recommendation artifact as provenance). All three fully scored
+  at 100% in run `2026-08-25T07-34-03-343Z`. No status changes.

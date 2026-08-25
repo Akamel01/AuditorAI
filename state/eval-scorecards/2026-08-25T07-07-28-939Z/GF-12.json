@@ -1,0 +1,41 @@
+{
+  "run_id": "2026-08-25T07-07-28-939Z",
+  "fixture_id": "GF-12",
+  "fixture_name": "Ramp-terminal arterial reconstruction — US preliminary design (MassDOT HSIP municipal RSA, full package)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 0,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF12-001",
+      "reason": "judge HTTP 503"
+    },
+    {
+      "finding_id": "JB-GF12-002",
+      "reason": "judge HTTP 500"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 0,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -10
+  },
+  "tier2_review_required": true,
+  "verdicts": [],
+  "generated_at": "2026-08-25T07:19:30.353Z"
+}

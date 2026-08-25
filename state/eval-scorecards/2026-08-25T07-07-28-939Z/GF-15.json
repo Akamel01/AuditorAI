@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T07-07-28-939Z",
+  "fixture_id": "GF-15",
+  "fixture_name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0.5
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF15-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Permissive left turns across 3+ opposing lanes at accesses and intersections are a well-documented, high-risk conflict mechanism, giving this corridor-wide concern genuine safety substance for a Stage 1 planning RSA.",
+        "evidence_grounding": "The pivotal risk claim is anchored by a verbatim quoted concern (EV-CA-040) with corroborating CRSAG context (EV-CA-003); inference is explicitly separated via the rationale field, so no invented content.",
+        "jurisdiction_correctness": "Framed purely as a safety concern rather than a compliance question, and deferring protected-left phasing analysis to subsequent design stages correctly respects Alberta Stage 1 / CRSAG planning-stage scope.",
+        "recommendation_quality": "Specific and actionable — evaluate protected-left-turn phasing need at named location types during defined later design stages — which is concrete, viable at planning stage, and not null.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly identified as sharing the left-turn conflict space, and the recommendation requires their exposure be accounted for at those conflict points."
+      }
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian network continuity at a new junction on an upgraded corridor is a core planning-stage RSA check, and closing a recorded discontinuity rather than leaving it unbounded defers carries real VRU safety substance.",
+        "evidence_grounding": "The pivotal claim rests on a verbatim quote from Table 5-1 ('Potentially discontinuous sidewalk at new 33 Street connection.') tied to EV-CA-041, exceeding registry-id-only citation.",
+        "jurisdiction_correctness": "Correctly kept as an unquantified continuity/compliance question with null risk components, distinct from any asserted crash-risk hazard, consistent with planning-stage CRSAG framing.",
+        "recommendation_quality": "Specific, actionable, and viable: deliver a continuous sidewalk through the new 33 Street junction in future design stages with an explicit resolution instead of open-ended deferral; not a null recommendation.",
+        "vru_coverage": "Pedestrians are explicitly identified as affected road users and the entire finding centers on their facility continuity, so relevant VRU impact is directly considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:25:45.567Z"
+}

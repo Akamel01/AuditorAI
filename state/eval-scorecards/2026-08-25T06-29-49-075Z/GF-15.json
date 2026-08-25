@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T06-29-49-075Z",
+  "fixture_id": "GF-15",
+  "fixture_name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0,
+  "passes_corpus_mark": false,
+  "mean_score": 8,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF15-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 0
+      },
+      "justifications": {
+        "substance": "Permissive lefts across 3+ opposing lanes at accesses/intersections are a recognized multi-lane conflict pattern with volume-dependent collision risk, a substantive planning-stage concern worth carrying forward.",
+        "evidence_grounding": "Pivotal mechanism (collision risk from permissive lefts across 3+ lanes) is backed by the verbatim EV-CA-040 quote plus EV-CA-003 context, exceeding registry-id-only grounding.",
+        "jurisdiction_correctness": "Framed purely as a safety_concern with no compliance claim, correctly deferring protected-left evaluation to subsequent design stages consistent with Alberta Stage 1 planning-RSA semantics.",
+        "recommendation_quality": "Names the countermeasure (protected-left phasing), scope condition (3+ opposing lanes), locations (accesses/intersections), and timing (subsequent design stages); actionable and viable even without site-specific thresholds.",
+        "vru_coverage": "Road users limited to vehicle occupants; pedestrian exposure under permissive vs protected left phasing at multi-lane corridor crossings is relevant but entirely unacknowledged."
+      }
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 1,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian network continuity at a newly created junction on an upgraded corridor is a genuine planning-stage RSA concern, since unconfirmed sidewalk links can leave pedestrians exposed at the junction.",
+        "evidence_grounding": "The sole cited quote (EV-CA-040) concerns permissive left turns, not the pivotal sidewalk-discontinuity claim, and the referenced Table 5-1 entry carries no evidence_id, so registry-level anchoring caps the score at 1.",
+        "jurisdiction_correctness": "Appropriately framed as a compliance/continuity question deferred to future design stages rather than asserted as a present hazard, keeping compliance and safety categories distinct under planning-stage semantics.",
+        "recommendation_quality": "The recommendation merely restates the designer's existing deferral ('confirm/resolution in future design stages') without specifying required provision, crossing locations, or acceptance criteria, limiting its actionable value.",
+        "vru_coverage": "Pedestrians—the affected vulnerable road users—are explicitly identified as the impacted group and their connectivity is the core of the finding, so VRU impacts are fully considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:46:20.818Z"
+}

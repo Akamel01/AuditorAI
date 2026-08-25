@@ -1,0 +1,141 @@
+{
+  "fixture_id": "GF-15",
+  "name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "jurisdiction": "CA",
+  "native_stage_id": "ca-tac:planning",
+  "metadata": {
+    "name": "34 Street Functional Planning Study — Traffic Safety Audit & Mobility Review",
+    "description": "Real planning-stage safety review embedded in the 34 Street Functional Planning Study (Strathcona County with City of Edmonton, 2013): auditor issue list plus designer's response table (Table 5-1), with Appendix H audited alignment sheets as inputs companion (sample CA-011). Converted from the published final report.",
+    "scheme_summary": "Corridor upgrade concept for 34 Street: added travel lanes and turn bays, shared-use path along the corridor, ramp/intersection reconfigurations between Sherwood Park Freeway and Baseline Road.",
+    "authority": "Strathcona County Transportation Planning & Engineering (with City of Edmonton)",
+    "location": "34 Street corridor, Edmonton / Strathcona County, Alberta"
+  },
+  "inputs": {
+    "design_criteria": {
+      "state": "provided",
+      "value": "Recommended concept plan and profiles for 34 Street (May 2013) reviewed via plan mark-ups; Alberta practice lineage with City of Edmonton protected-prohibited dual-left phasing practice cited."
+    },
+    "design_volume_traffic_characteristics": {
+      "state": "required_missing"
+    },
+    "route_choice_project_scope": {
+      "state": "provided",
+      "value": "Corridor upgrade scope: travel lanes through the corridor and turn bays at intersections; shared-use path along the entire corridor; 78 Avenue right-in/right-out conversion; signalized WB-NB ramp intersection at Sherwood Park Freeway."
+    },
+    "access_management_adjacent_developments": {
+      "state": "provided",
+      "value": "Private accesses along the corridor addressed in review findings on permissive left turns across 3+ opposing lanes."
+    },
+    "network_continuity_constraints": {
+      "state": "required_missing"
+    }
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF15-001",
+      "kind": "safety_concern",
+      "category": "junctions_interchanges",
+      "location": "34 Street corridor — private accesses and intersections",
+      "road_users": [
+        "vehicle occupants",
+        "pedestrians",
+        "cyclists"
+      ],
+      "scenario": "The review records corridor-wide collision risk from permissive left turns across three or more opposing lanes at private accesses and intersections, with risk dependent on left-turn and opposing volumes. Pedestrians and cyclists crossing or traveling along the multi-lane corridor share the conflict space created by those permissive turns, alongside vehicle occupants; protected-left phasing is flagged for consideration at later design stages or future operational phases.",
+      "statement": {
+        "text": "Carry forward protected-left-turn phasing analysis for accesses and intersections across 3+ opposing lanes into subsequent design stages of the 34 Street corridor upgrade.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-040",
+          "quote": "Risk of collisions due to permissive left turns across 3+ opposing lanes at private accesses and intersections along the corridor.",
+          "use": "supports_concern"
+        },
+        {
+          "evidence_id": "EV-CA-003",
+          "quote": "minimise potentially negative safety impacts both within and outside the project limits, i.e. to avoid introducing collisions elsewhere along the route or on the network.",
+          "use": "context"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The permissive-left risk statement is recorded directly in the sample report's general concerns; volume-dependence phrasing preserved from the source."
+      },
+      "rationale": "ORCH-as-judge baseline derived from the recorded concern list; distinguishable from quoted evidence, which supplies the recorded mechanism.",
+      "recommendation": "Evaluate protected-left-turn phasing need for accesses and intersections across 3+ opposing lanes during subsequent design stages, explicitly accounting for pedestrian and cyclist exposure at those conflict points.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "kind": "compliance_question",
+      "category": "vulnerable_users",
+      "location": "New 33 Street connection — sidewalk continuity",
+      "road_users": [
+        "pedestrians"
+      ],
+      "scenario": "The designer response table records a potentially discontinuous sidewalk at the new 33 Street connection, leaving pedestrian connections unconfirmed at a new junction of the upgraded corridor.",
+      "statement": {
+        "text": "Provide a continuous sidewalk through the new 33 Street connection when that junction is built, closing the recorded potential discontinuity.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-CA-041",
+          "quote": "Potentially discontinuous sidewalk at new 33 Street connection.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The discontinuity entry is recorded verbatim in Table 5-1 as an issue with designer response 'sidewalk connections to be confirmed at future design stages'."
+      },
+      "rationale": "ORCH-as-judge baseline framed as a compliance/continuity question because the sample itself defers confirmation to future design stages rather than asserting a hazard.",
+      "recommendation": "Provide a continuous sidewalk connection through the new 33 Street junction in future design stages, resolving the recorded discontinuity rather than deferring it unbounded.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [
+      "network_continuity_constraints"
+    ],
+    "questions_min_count": 1,
+    "mapping_confidence": "authoritative",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "provenance": {
+    "source_url": "https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf",
+    "license": "Published municipal document on strathcona.ca (public domain posting by Strathcona County as study page links the final report; no rights-reserved notice encountered).",
+    "retrieved": "2026-08-24",
+    "extractor": "ORCH converted §5.12 TSA & Mobility Review into this fixture: issue list and Table 5-1 designer responses transcribed verbatim; CA-011 Appendix H alignment sheets serve as inputs companion."
+  }
+}

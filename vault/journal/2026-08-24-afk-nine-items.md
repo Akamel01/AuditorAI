@@ -65,3 +65,16 @@ decisions or direct orders).
 - Owner download queue formalized with evidence of attempts:
   docs/references/ACQUISITION-BRIEF.md. Dead ends recorded honestly (MassDOT GIS
   metadata-only, Alberta CKAN exhausted, Kamloops citation rot).
+
+## Wayfinder wave (Aug 25)
+
+Map charted: .scratch/readiness-framework/ (destination: self-sustaining corpus).
+Tickets 01+03 resolved inline after provider spawn outage:
+- **01 conversions wave 1**: GF-14 Somerville / GF-15 Strathcona pair / GF-16 Milltown
+  (rejection-analogue provenance). Judge feedback drove two honest re-authorings
+  (compliance-question recast; Problem-3.2 quote grounding). Canonical archive
+  2026-08-25T07-34-03-343Z — all three fully scored 100%. Registry 161. odd.json v1.1.2.
+- **03 judge-retry**: 4-attempt transport backoff + --topup mode (never mutates scored
+  verdicts; sibling -completed dir + manifest). Proven live during the flake storm.
+
+Corpus now **11 judged fixtures** (GF-6..16), all real-scheme except golden GF-1..5.

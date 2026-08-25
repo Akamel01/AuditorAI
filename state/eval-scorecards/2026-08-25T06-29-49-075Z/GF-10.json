@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T06-29-49-075Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Decision-load mechanism at high-volume express-collector transfers (AADT 420,000) with simultaneous lane-permission and signage changes is a substantive human-factors safety concern squarely within planning-stage RSA scope.",
+        "evidence_grounding": "Pivotal network-shift concern is supported by the verbatim EV-CA-003 quote on avoiding collisions 'elsewhere along the route', and the factual predicate rests on recorded corridor inputs (volumes, revision scope) rather than invention.",
+        "jurisdiction_correctness": "Correctly framed purely as a safety_concern with no compliance assertion (normative_basis_note null), keeping safety and compliance categorically distinct and respecting CRSAG audit-objective semantics.",
+        "recommendation_quality": "Specific and actionable: one interchange per quarter sequencing with before/after speed-differential monitoring gives a measurable, viable rollout tied to the detector-volume data already available.",
+        "vru_coverage": "Finding explicitly acknowledges controlled-access mainline carries no pedestrians or cyclists, scoping road users to vehicle occupants, satisfying the acknowledge-if-not-applicable standard."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "A recorded inter-register conflict over express-collector transfer continuity genuinely blocks confirmation of the planning-stage audit boundary, with a plausible completeness consequence (excluded movements redistributing beyond project limits), so this is substantive scope/process material for a Planning Stage RSA.",
+        "evidence_grounding": "The pivotal documentation/reconciliation duty rests on verbatim quotes (EV-CA-038 response-report discipline; EV-CA-003 'fully and consistently documented'), and the conflicting records themselves are stated recorded input facts, so no invented content; minor caveat that EV-CA-038 formally governs post-audit responses, used here as an analogous discipline.",
+        "jurisdiction_correctness": "Correctly typed as compliance_question with null risk components and an explicit 'process non-conformity rather than judgment' framing, keeping the categorical distinction from safety concerns intact while respecting Alberta Stage 1 equivalency (EV-CA-006).",
+        "recommendation_quality": "Specific and actionable: names both conflicting instruments and the responsible office, requires documented resolution reasons under the §5.6.2-style discipline, and demands an explicit recorded decision on whether corridor-wide continuity effects stay inside the audit boundary — all viable at planning stage.",
+        "vru_coverage": "Not directly applicable on the controlled-access mainline but explicitly acknowledged, including recognition that continuity outcomes propagate to downstream arterials carrying VRUs without asserting unsupported VRU exposure within this corridor question."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:37:35.515Z"
+}

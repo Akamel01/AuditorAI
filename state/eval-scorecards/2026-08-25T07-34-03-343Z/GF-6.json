@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-25T07-34-03-343Z",
+  "fixture_id": "GF-6",
+  "fixture_name": "M5 Junction 10 Improvements — UK Stage 1 (real scheme, OGL)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF6-001",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF6-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Stop-line repositioning adjacent to a junction can genuinely alter large-vehicle tracking, and the cited analysis already notes limited over-run into opposing lanes, making re-verification substantive for Stage 1.",
+        "evidence_grounding": "Verbatim quote EV-UK-002 confirms the existing swept-path assessment for the 7.5t box van and refuse vehicle including the over-run caveat, and the stop-line repositioning premise is presented as a recorded input fact, so the pivotal claim is anchored.",
+        "jurisdiction_correctness": "Correctly framed as a compliance/confirmation question distinct from an asserted safety problem, with null risk components and explicit scoping that avoids conflating compliance checking with a recorded GG 119 problem.",
+        "recommendation_quality": "Specific and actionable: re-run large-vehicle swept-path analysis over the as-adjusted stop-line positions, with a clear timing gate before Stage 2, all technically viable.",
+        "vru_coverage": "Pedestrians and cyclists, refuges, and desire lines are acknowledged as recorded context, but the finding explicitly scopes out VRU-specific exposure as not applicable to the vehicle-tracking question, matching the acknowledged-but-not-applicable case."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:35:23.968Z"
+}

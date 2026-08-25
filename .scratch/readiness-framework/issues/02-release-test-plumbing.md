@@ -1,6 +1,6 @@
 # 02 — Release-test tier plumbing (dormant until ≥100)
 
-Type: task · Status: open · Blocked by: —
+Type: task · Status: claimed · Blocked by: —
 
 ## Question
 

@@ -1,6 +1,6 @@
 # 05 — Round-3 hunt: MnDOT batch + UK FOI + Ardee Main Street
 
-Type: research · Status: open · Blocked by: —
+Type: research · Status: claimed · Blocked by: —
 
 ## Question
 

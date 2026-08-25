@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-25T07-07-28-939Z",
+  "fixture_id": "GF-13",
+  "fixture_name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF13-002",
+      "reason": "fetch failed"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF13-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Sub-standard systems-service spacing (1970 m / 1670 m vs 3000 m preferred) driving weaving-related rear-end/sideswipe mechanisms at a major system interchange is substantive planning-stage safety content for this scheme.",
+        "evidence_grounding": "Pivotal spacing/functional-operating-area claim is verbatim quoted from EV-CA-039 and network-propagation from EV-CA-003; staging-based demand inference is transparently labelled in assumptions and confidence.",
+        "jurisdiction_correctness": "Correctly framed as a safety concern under CRSAG planning-stage objectives without asserting a standards-compliance breach, keeping the preferred-vs-mandatory spacing distinction clean.",
+        "recommendation_quality": "Offers two specific, standard remedies (relocate to 3000 m spacing or collector-distributor roadways removing weave from the functional area) with a 2041-volume verification step, though relocation feasibility is left untested.",
+        "vru_coverage": "VRUs are not applicable on a fully access-controlled mainline, and this is explicitly acknowledged with road-user scope limited to vehicle occupants."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:22:16.107Z"
+}

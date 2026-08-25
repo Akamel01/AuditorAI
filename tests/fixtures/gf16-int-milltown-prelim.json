@@ -1,0 +1,133 @@
+{
+  "fixture_id": "GF-16",
+  "name": "Milltown Park toucan-crossing VRU conflicts — real Irish Stage 1 RSA incl. rejected recommendation (ABP 322160)",
+  "jurisdiction": "INT",
+  "native_stage_id": "int:preliminary-design",
+  "metadata": {
+    "name": "Milltown Park Stage 1 Road Safety Audit",
+    "description": "Real Stage 1 RSA of the proposed Milltown Park development access arrangements (Dublin), Bruton Consulting Engineers for DBFL Consulting Engineers (site visit completed 22 Mar 2021), released through An Bord Pleanála planning documentation. Appendix C feedback form records a REJECTED recommendation (Problem 3.2) with reasons accepted by auditors — the corpus's rejection-analogue artifact.",
+    "scheme_summary": "Proposed development access: toucan crossing on Sandford Road, shared-use areas and footpath connections onto Sandford Road and Miltown Road.",
+    "authority": "An Bord Pleanála (statutory record); developer design team DBFL Consulting Engineers",
+    "location": "Milltown Park / Sandford Road / Miltown Road, Dublin, Ireland"
+  },
+  "inputs": {
+    "project_description_objectives": {
+      "state": "provided",
+      "value": "Stage 1 RSA of proposed residential-development road layout covering the Sandford Road toucan crossing and active-travel connections (drawings 190226-DBFL-RD-SP-DR-C-1001 P02 et al.)."
+    },
+    "plans_appropriate_to_stage": {
+      "state": "provided",
+      "value": "Roads layout drawing referenced per problem location entries in the audit report."
+    },
+    "traffic_data_expected_users": {
+      "state": "required_missing"
+    },
+    "independence_declaration": {
+      "state": "not_applicable"
+    },
+    "safety_targets_overlay": {
+      "state": "optional_missing"
+    }
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF16-001",
+      "kind": "safety_concern",
+      "category": "vulnerable_users",
+      "location": "Sandford Road — north eastern side of the proposed toucan crossing",
+      "road_users": [
+        "pedestrians",
+        "cyclists"
+      ],
+      "scenario": "The audit records limited space at the north eastern side of the proposed toucan crossing for bicycles and pedestrians given the relatively narrow footpath and obstructions from traffic signal poles and a large lighting column, creating collision potential between cyclists and pedestrians sharing the constrained space.",
+      "statement": {
+        "text": "Relocate the lighting column and provide a single set of signal heads for pedestrians and vehicular traffic so the toucan-crossing shared space is not obstructed.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-IN-025",
+          "quote": "There is limited space at the north eastern side of the proposed toucan crossing on Sandford Road for bicycles and pedestrians given the relatively narrow footpath and the obstructions from the traffic signal poles and the large lighting column. This could lead to collisions between cyclists and pedestrians.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The constrained-space observation is recorded verbatim in Problem 3.1 of the sample report; user-group collision potential is the audit's own wording."
+      },
+      "rationale": "ORCH-as-judge baseline derived from the recorded problem/recommendation pair; quoted evidence supplies the recorded condition itself.",
+      "recommendation": "Relocate the lighting column and use single-set pedestrian/vehicular signal heads at the Sandford Road toucan crossing.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF16-002",
+      "kind": "safety_concern",
+      "category": "vulnerable_users",
+      "location": "Sandford Road — north western approach shared-use area",
+      "road_users": [
+        "pedestrians",
+        "cyclists"
+      ],
+      "scenario": "The audit records that the width of the shared pedestrian/cyclist area approaching the north western access onto Sandford Road may be insufficient for both user groups, with potential for collisions. The designer rejected this recommendation citing the 4.8 m shared access from Sandford Road and tree/wall constraints, with auditors accepting that response — carried here as provenance context, not baseline substance.",
+      "statement": {
+        "text": "Provide a wider shared-use area on the approach to the north western access onto Sandford Road to avoid collisions between cyclists and pedestrians.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-IN-026",
+          "quote": "The width of the section of shared use area for pedestrian and cyclists on approach to the north western access onto Sandford Road may not be sufficient to cater for both user groups and could lead to collisions.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "Recorded verbatim in Problem 3.2 of the sample report; its rejection history lives in provenance and reviewer_note so the baseline stays the audit's own output."
+      },
+      "rationale": "ORCH-as-judge baseline derived from Problem 3.2; rejection-analogue material deliberately kept out of the judged substance.",
+      "recommendation": "Widen the shared-use area approaching the north western access onto Sandford Road.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": "Designer rejected Problem 3.2 (feedback form: cyclists primarily access via the 4.8 m wide shared access; tree/existing-wall constraints); auditors accepted the rejection."
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 1,
+    "mapping_confidence": "interpreted",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "provenance": {
+    "source_url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+    "license": "Open government licence-equivalent public release: statutory planning documentation published for public access by An Bord Pleanála (© Bruton Consulting Engineers Ltd 2021 remains; no further rights-reserved restriction stated on the released file).",
+    "retrieved": "2026-08-24",
+    "extractor": "ORCH converted the DBFL Stage 1 RSA into this fixture: Problems 3.1–3.2 transcribed verbatim; Appendix C feedback form's rejection of Problem 3.2 (with auditor acceptance) recorded in provenance notes."
+  }
+}

@@ -48,6 +48,9 @@ const FILES = [
   "gf11-uk-greatnorthroad-s1.json",
   "gf12-usa-hingham-prelim.json",
   "gf13-ca-neahd-planning.json",
+  "gf14-usa-somerville-prelim.json",
+  "gf15-ca-strathcona-planning.json",
+  "gf16-int-milltown-prelim.json",
 ];
 
 function load(file: string): CorpusFixture {

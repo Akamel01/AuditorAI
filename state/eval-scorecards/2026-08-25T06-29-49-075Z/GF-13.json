@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T06-29-49-075Z",
+  "fixture_id": "GF-13",
+  "fixture_name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF13-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Sub-standard systems-service spacing (1970 m/1670 m vs 3000 m preferred) with weaving inside the system interchange functional area is a substantive, well-mechanized planning-stage safety issue (rear-end/sideswipe merge conflicts, congestion propagation beyond scheme limits).",
+        "evidence_grounding": "Pivotal spacing claim rests on the verbatim EV-CA-039 quote stating the measured spacings, the 3000 m preferred value, and the functional-area collision consequence, with EV-CA-003 quoting the audit objective covering off-limit propagation; inference is honestly flagged as medium confidence.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern arising from a 'preferred' spacing guideline rather than asserted non-compliance, keeping the categorical distinction intact under CRSAG planning-stage semantics.",
+        "recommendation_quality": "Specific, dual-path remedy (re-space to 3000 m in next functional-plan iteration or collector-distributor ramps eliminating weaving within the functional area) plus verification against 2041 staging volumes—concrete, actionable, and viable at Stage 1.",
+        "vru_coverage": "Explicitly acknowledges that the access-controlled mainline carries no pedestrians or cyclists and scopes road users to vehicle occupants, satisfying the not-applicable-but-acknowledged condition."
+      }
+    },
+    {
+      "finding_id": "JB-GF13-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Unresolved flagged local-access connections inside a high-speed system interchange carry genuine planning-stage safety weight (slow local traffic mixing with through traffic), and the missing response disposition is a real process gap affecting whether the risk is managed at all.",
+        "evidence_grounding": "The pivotal duty is supported by the verbatim EV-CA-038 quote mandating a response report with accept/conditionally-accept/reject options, reinforced by EV-CA-003's verbatim documented-procedure language and the recorded package fact that no response documentation accompanies the audit.",
+        "jurisdiction_correctness": "Correctly typed as a compliance_question under Alberta Stage 1 (EV-CA-006 mapping); the safety conflict is treated solely as the object requiring disposition rather than restated as a competing safety finding, keeping categories distinct.",
+        "recommendation_quality": "Specific and actionable — issue and file the §5.6.2 response report choosing accept/conditionally-accept/reject per flagged issue, with removal or justified retention of the access connections shown — and viable within normal Alberta RSA workflow.",
+        "vru_coverage": "VRU relevance is acknowledged and reasoned (no pedestrians/cyclists on the access-controlled mainline; connections lead toward VRU-using cross roads) with no exposure asserted, matching the not-applicable-but-acknowledged case."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:42:37.882Z"
+}

@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T06-49-33-605Z",
+  "fixture_id": "GF-9",
+  "fixture_name": "Cloverleaf-to-urban interchange conversion — INT preliminary design (Wikimedia PD geometry)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF9-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Shortened collector-distributor weave carrying a recorded 1,100 pcu/h design-year peak-hour volume concentrates lane-change demand, giving a real sideswipe/rear-end exposure mechanism worth flagging at preliminary design before geometry is fixed.",
+        "evidence_grounding": "Pivotal claim rests on the verbatim EV-IN-015 quote covering junction-type suitability, stream channelling and lane balance/through-lane continuity, corroborated by EV-IN-004 confirming stage-specific PIARC checklists, alongside recorded geometry and volume inputs.",
+        "jurisdiction_correctness": "PIARC Appendix 1 prompts are correctly deployed as preliminary-design audit prompts in the INT framework, and the item stays a safety_concern without converting checklist prompts into compliance assertions.",
+        "recommendation_quality": "Recommendation is specific and staged: apply the named checklist items, test adequacy with HSM Part C interchange models or IHSDM, then conditionally lengthen the weave or add ramp metering — all viable at this design stage.",
+        "vru_coverage": "VRUs are explicitly addressed and scoped out with a reasoned basis (grade-separated shared-use paths give no exposure to the motorised weave); not applicable but acknowledged, so scored 1."
+      }
+    },
+    {
+      "finding_id": "JB-GF9-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Uncontrolled shared-use-path crossings at free-flowing ramp terminals are a substantive, well-recognised VRU safety deficiency, and preliminary design is precisely the stage where controlled/grade-separated crossings can still be designed in.",
+        "evidence_grounding": "Pivotal claim is anchored by a verbatim PIARC Appendix 1 preliminary-design prompt quote (EV-IN-016) plus corroborating EV-IN-005 on VRU needs, while the scheme-specific facts cited (objectives committing to continuity, retained paths/loops) are presented as recorded input facts.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under the qualified PIARC-derived international preliminary-design baseline, using checklist prompts as audit criteria rather than asserting compliance non-conformity, so compliance and safety categories remain distinct.",
+        "recommendation_quality": "Specific and actionable: named tools (Walkability Checklist, CQSI), a defined treatment type (signalised or grade-separated) and located crossings at both retained loop-ramp terminals including the northern loop, all viable at preliminary design stage.",
+        "vru_coverage": "Pedestrians and cyclists are the explicit focus of the finding, with their exposure at ramp-terminal crossings directly analysed and carried into the recommendation."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:56:13.848Z"
+}

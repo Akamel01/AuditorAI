@@ -5,8 +5,8 @@
       {
         "file": "international-rsa-research.md",
         "jurisdiction": "INT",
-        "record_count": 24,
-        "sha256": "59e20ab08f5faaa4bd277070e349d69ef191cf1a1605fb9df9a169b8516c9f1a"
+        "record_count": 26,
+        "sha256": "28d08c61a0d2d75822fe8547056047e4f639815eef7e319c6cfdb8387f39b9ea"
       },
       {
         "file": "uk-rsa-research.md",
@@ -17,14 +17,14 @@
       {
         "file": "usa-rsa-research.md",
         "jurisdiction": "US",
-        "record_count": 33,
-        "sha256": "ec4d358ae5a7b7dda4f01dc0bfdf21e1aa25e99114a1041d6e44bcafa914778d"
+        "record_count": 35,
+        "sha256": "173e21cd92f682cc507ba6ceab27e91ed695d51b721369ea1f553a651efaef03"
       },
       {
         "file": "canada-rsa-research.md",
         "jurisdiction": "CA",
-        "record_count": 38,
-        "sha256": "343249e1bd8a45c00b2e7c20245e1a33b4980cb2c821d3197f72c625af4419af"
+        "record_count": 39,
+        "sha256": "a1a64f5090a14af898a0e3fedf1d9139e643ee9fb3ab46b3d346a8c393f6a544"
       },
       {
         "file": "uae-rsa-research.md",
@@ -33,7 +33,7 @@
         "sha256": "0ace6bd93d2449e09125d2126d92a9142f49b14dbeb392296ed42b288a07b46f"
       }
     ],
-    "total_records": 156,
+    "total_records": 161,
     "rule": "regenerated deterministically by scripts/compile-evidence.mjs; edit sources, not this file"
   },
   "evidence_records": [
@@ -355,6 +355,34 @@
       "revision": null,
       "publication_date": "2007-10",
       "retrieved_date": "2026-08-23",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "INT"
+    },
+    {
+      "evidence_id": "EV-IN-025",
+      "claim": "The Milltown Park Stage 1 RSA (DBFL Consulting, Mar 2021, released through An Bord Pleanála) records constrained space for cyclists and pedestrians at the proposed Sandford Road toucan crossing — narrow footpath plus signal-pole and lighting-column obstructions creating collision potential between user groups.",
+      "quote": "There is limited space at the north eastern side of the proposed toucan crossing on Sandford Road for bicycles and pedestrians given the relatively narrow footpath and the obstructions from the traffic signal poles and the large lighting column. This could lead to collisions between cyclists and pedestrians.",
+      "source_url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+      "source_title": "Stage 1 Road Safety Audit — Milltown Park, Dublin (sample corpus INT-015, Problem 3.1)",
+      "publisher": "Bruton Consulting Engineers Ltd for DBFL Consulting Engineers",
+      "revision": null,
+      "publication_date": "2021-03-22",
+      "retrieved_date": "2026-08-24",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "INT"
+    },
+    {
+      "evidence_id": "EV-IN-026",
+      "claim": "The Milltown Park Stage 1 RSA records (Problem 3.2) that the width of the shared pedestrian/cyclist area approaching the north western access onto Sandford Road may be insufficient for both user groups, with collision potential.",
+      "quote": "The width of the section of shared use area for pedestrian and cyclists on approach to the north western access onto Sandford Road may not be sufficient to cater for both user groups and could lead to collisions.",
+      "source_url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+      "source_title": "Stage 1 Road Safety Audit — Milltown Park, Dublin (sample corpus INT-015, Problem 3.2)",
+      "publisher": "Bruton Consulting Engineers Ltd for DBFL Consulting Engineers",
+      "revision": null,
+      "publication_date": "2021-03-22",
+      "retrieved_date": "2026-08-24",
       "normative_status": "informative",
       "confidence": "high",
       "jurisdiction": "INT"
@@ -1126,6 +1154,34 @@
       "jurisdiction": "US"
     },
     {
+      "evidence_id": "EV-US-034",
+      "claim": "The Somerville McGrath Highway (Rte 28) @ Mystic Ave/Broadway RSA (HNTB for MassDOT, Dec 2016, design-stage) records dysfunctional pedestrian signals at McGrath Highway/Broadway and non-compliant pedestrian crossings, plus a bicycle connectivity gap along West/East Broadway through the intersection.",
+      "quote": "Investigate and fix existing dysfunctional pedestrian signals.",
+      "source_url": "https://d3n8a8pro7vhmx.cloudfront.net/repmikeconnolly/pages/344/attachments/original/1620369336/Road_Safety_Audit_Somerville_McGrathHwy_Rte28_at_MysticAve_and_Broadway_RSA.pdf?1620369336",
+      "source_title": "Road Safety Audit — McGrath Highway (Rte 28)/Mystic Ave (Rte 38) & Broadway, Somerville MA (sample corpus US-017)",
+      "publisher": "MassDOT Highway Division Safety Section (HNTB Corporation)",
+      "revision": null,
+      "publication_date": "2016-12-08",
+      "retrieved_date": "2026-08-24",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "US"
+    },
+    {
+      "evidence_id": "EV-US-035",
+      "claim": "The Somerville McGrath RSA further records that pedestrian crossings at McGrath Highway/Broadway do not comply with AAB/ADA Standards across markings, refuge islands, detectable warnings, APS push buttons and countdown signals.",
+      "quote": "Update all pedestrian crossings to comply with AAB/ADA Standards (update crosswalk markings, pedestrian refuge island size, detectable warning panels, APS push buttons and countdown signals).",
+      "source_url": "https://d3n8a8pro7vhmx.cloudfront.net/repmikeconnolly/pages/344/attachments/original/1620369336/Road_Safety_Audit_Somerville_McGrathHwy_Rte28_at_MysticAve_and_Broadway_RSA.pdf?1620369336",
+      "source_title": "Road Safety Audit — McGrath Highway/Mystic Ave & Broadway, Somerville MA (sample corpus US-017)",
+      "publisher": "MassDOT Highway Division Safety Section (HNTB Corporation)",
+      "revision": null,
+      "publication_date": "2016-12-08",
+      "retrieved_date": "2026-08-24",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "US"
+    },
+    {
       "evidence_id": "EV-CA-001",
       "claim": "TAC publishes 'The Canadian Road Safety Audit Guide' (publication code PTM-CRSAG-E, 81 pages, publication date December 19, 2001) as a publication type 'national guidelines', containing chapters on basic road safety audit concepts, procedures, conducting audits, audit teams and pilot programs, with appendices including case studies, further reading and an audit prompt list.",
       "source_url": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/publications/ptm-crsag-e/",
@@ -1626,6 +1682,20 @@
       "publisher": "Alberta Transportation",
       "revision": null,
       "publication_date": "2009-01-01",
+      "retrieved_date": "2026-08-24",
+      "normative_status": "informative",
+      "confidence": "high",
+      "jurisdiction": "CA"
+    },
+    {
+      "evidence_id": "EV-CA-040",
+      "claim": "The 34 Street Functional Planning Study safety & mobility review (Strathcona County / City of Edmonton, 2013) records a corridor-wide collision risk from permissive left turns across three or more opposing lanes at private accesses and intersections, flagging protected-left phasing for later design stages.",
+      "quote": "Risk of collisions due to permissive left turns across 3+ opposing lanes at private accesses and intersections along the corridor.",
+      "source_url": "https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf",
+      "source_title": "34 Street FPS §5.12 Traffic Safety Audit & Mobility Review (sample corpus CA-010)",
+      "publisher": "Strathcona County Transportation Planning & Engineering (with City of Edmonton)",
+      "revision": null,
+      "publication_date": "2013-05-01",
       "retrieved_date": "2026-08-24",
       "normative_status": "informative",
       "confidence": "high",

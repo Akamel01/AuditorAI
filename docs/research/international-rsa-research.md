@@ -260,6 +260,28 @@ evidence_records:
     retrieved_date: "2026-08-23"
     normative_status: informative
     confidence: high
+  - evidence_id: EV-IN-025
+    claim: "The Milltown Park Stage 1 RSA (DBFL Consulting, Mar 2021, released through An Bord Pleanála) records constrained space for cyclists and pedestrians at the proposed Sandford Road toucan crossing — narrow footpath plus signal-pole and lighting-column obstructions creating collision potential between user groups."
+    quote: "There is limited space at the north eastern side of the proposed toucan crossing on Sandford Road for bicycles and pedestrians given the relatively narrow footpath and the obstructions from the traffic signal poles and the large lighting column. This could lead to collisions between cyclists and pedestrians."
+    source_url: "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf"
+    source_title: "Stage 1 Road Safety Audit — Milltown Park, Dublin (sample corpus INT-015, Problem 3.1)"
+    publisher: "Bruton Consulting Engineers Ltd for DBFL Consulting Engineers"
+    revision: null
+    publication_date: 2021-03-22
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
+  - evidence_id: EV-IN-026
+    claim: "The Milltown Park Stage 1 RSA records (Problem 3.2) that the width of the shared pedestrian/cyclist area approaching the north western access onto Sandford Road may be insufficient for both user groups, with collision potential."
+    quote: "The width of the section of shared use area for pedestrian and cyclists on approach to the north western access onto Sandford Road may not be sufficient to cater for both user groups and could lead to collisions."
+    source_url: "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf"
+    source_title: "Stage 1 Road Safety Audit — Milltown Park, Dublin (sample corpus INT-015, Problem 3.2)"
+    publisher: "Bruton Consulting Engineers Ltd for DBFL Consulting Engineers"
+    revision: null
+    publication_date: 2021-03-22
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
 access_notes:
   - Records EV-IN-017…EV-IN-024 were extracted 2026-08-23 from the four in-repo PDFs named in their
     `source_url`s (CAREC, AfDB, iRAP/KSHIP from tests/fixtures/samples/INT; PIARC Paris-2007 presentation

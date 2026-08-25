@@ -1,0 +1,56 @@
+{
+  "run_id": "2026-08-25T06-49-33-605Z-completed",
+  "fixture_id": "GF-16",
+  "fixture_name": "Milltown Park toucan-crossing VRU conflicts — real Irish Stage 1 RSA incl. rejected recommendation (ABP 322160)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF16-002",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 10
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF16-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Constrained shared footway space at a toucan crossing with physical obstructions creating cyclist-pedestrian collision potential is a substantive preliminary-design safety issue squarely within RSA scope.",
+        "evidence_grounding": "EV-IN-025 supplies a verbatim quote directly supporting the pivotal claim (limited space, narrow footpath, signal pole and lighting column obstructions, collision potential); no invented content.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under vulnerable_users with no compliance claim or normative_basis asserted; safety and compliance dimensions remain cleanly separated under the PIARC-derived baseline.",
+        "recommendation_quality": "Recommendation names specific elements (lighting column, signal head consolidation) at the identified location and is actionable and feasible at preliminary-design stage, though it only partially resolves the narrow footway constraint.",
+        "vru_coverage": "Pedestrians and cyclists are explicitly identified as affected users and the cyclist-pedestrian interaction within the shared space is the core of the concern, so VRU impacts are fully considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:30:36.278Z",
+  "topup_of_run": "2026-08-25T06-49-33-605Z"
+}

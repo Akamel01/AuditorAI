@@ -1,0 +1,68 @@
+{
+  "run_id": "2026-08-25T06-49-33-605Z-completed",
+  "fixture_id": "GF-14",
+  "fixture_name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 10
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF14-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Unreliable pedestrian indications at a high-volume urban arterial crossing is a real, substantive safety issue squarely relevant at preliminary design.",
+        "evidence_grounding": "Pivotal claim of existing dysfunctional pedestrian signals is backed by the verbatim quote 'Investigate and fix existing dysfunctional pedestrian signals.' from cited EV-US-034.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern distinct from any MUTCD compliance question, consistent with FHWA RSA semantics at preliminary design.",
+        "recommendation_quality": "Specific (intersection, user group), actionable (investigate and repair), and viable within the current design stage, though fix details are left open.",
+        "vru_coverage": "Pedestrian exposure and reliance on the displays is the explicit focus, so vulnerable road user impact is fully considered."
+      }
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "AAB/ADA conformance of crosswalk markings, refuge islands, detectable warnings, APS and countdown signals is substantive for a US preliminary-design scheme serving pedestrians.",
+        "evidence_grounding": "The pivotal claim rests on a verbatim quoted registry entry (EV-US-035) recording the update-to-comply prescription, exceeding the citation-alone cap.",
+        "jurisdiction_correctness": "AAB/ADA Standards are correctly treated as mandatory instruments for pedestrian access at public intersections, and the compliance question is kept categorically distinct from any safety verdict.",
+        "recommendation_quality": "The recommendation enumerates five concrete crossing elements to be brought into compliance within the current design stage, making it specific, actionable and viable at preliminary design.",
+        "vru_coverage": "Pedestrians, the relevant VRU group here, are the explicit subject across all listed crossing elements, so impacts on them are fully considered."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:30:18.423Z",
+  "topup_of_run": "2026-08-25T06-49-33-605Z"
+}

@@ -1,0 +1,129 @@
+{
+  "fixture_id": "GF-14",
+  "name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "jurisdiction": "US",
+  "native_stage_id": "us-fhwa:preliminary-design",
+  "metadata": {
+    "name": "Somerville McGrath Highway Intersections RSA",
+    "description": "Real design-stage Road Safety Audit of McGrath Highway (Route 28) at Mystic Avenue (Route 38) and Broadway (Route 28), Somerville MA; HNTB Corporation for MassDOT Highway Division Safety Section with a multidisciplinary RSA team (meetings December 2016). Converted from the publicly co-published report.",
+    "scheme_summary": "Existing urban signalized intersections on the Route 28 corridor under design-stage review for pedestrian, bicycle and vehicle safety enhancements.",
+    "authority": "MassDOT Highway Division Safety Section; City of Somerville",
+    "location": "Somerville, Massachusetts"
+  },
+  "inputs": {
+    "project_information_package": {
+      "state": "provided",
+      "value": "Design-stage RSA background: two High-Crash-Location-class signalized intersections on the Route 28 corridor reviewed by a multidisciplinary RSA team per FHWA RSA process."
+    },
+    "design_drawings_current_phase": {
+      "state": "provided",
+      "value": "Existing geometries and conditions presented to the RSA team for both intersections (crash history and speed regulations provided in advance)."
+    },
+    "crash_history": {
+      "state": "provided",
+      "value": "Crash history summaries supplied to participants in advance for Route 28/Broadway and Route 28/Route 38."
+    },
+    "operational_geometric_hf_context": {
+      "state": "required_missing"
+    }
+  },
+  "expected_findings_baseline": [
+    {
+      "finding_id": "JB-GF14-001",
+      "kind": "safety_concern",
+      "category": "signals_markings_lighting",
+      "location": "McGrath Highway/Broadway intersection — pedestrian signals and crossings",
+      "road_users": [
+        "pedestrians"
+      ],
+      "scenario": "The RSA records existing dysfunctional pedestrian signals at McGrath Highway/Broadway: pedestrians relying on those displays may receive no or contradictory guidance while crossing a high-volume urban arterial at the design stage under review.",
+      "statement": {
+        "text": "Investigate and fix existing dysfunctional pedestrian signals before the design progresses so pedestrian indications provide reliable guidance at McGrath Highway/Broadway.",
+        "normative_basis_note": null
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-034",
+          "quote": "Investigate and fix existing dysfunctional pedestrian signals.",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The signal deficiency is recorded directly in the sample report's safety-issue table for McGrath Highway/Broadway; the exposure scenario is derived reasoning about pedestrians relying on the displays."
+      },
+      "rationale": "ORCH-as-judge baseline derived from the recorded safety issue and its listed enhancement; distinguishable from quoted evidence, which supplies the recorded deficiency itself.",
+      "recommendation": "Investigate and fix existing dysfunctional pedestrian signals as part of the current design stage.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "kind": "compliance_question",
+      "category": "vulnerable_users",
+      "location": "All pedestrian crossings at both audited intersections",
+      "road_users": [
+        "pedestrians"
+      ],
+      "scenario": "The RSA's enhancement list calls for updating all pedestrian crossings — crosswalk markings, pedestrian refuge island size, detectable warning panels, APS push buttons and countdown signals — to comply with AAB/ADA Standards. Whether current provisions meet those standards is a normative conformance question recorded as requiring update work; it is categorically distinct from any safety judgment.",
+      "statement": {
+        "text": "Update all pedestrian crossings to comply with AAB/ADA Standards, including crosswalk markings, pedestrian refuge island size, detectable warning panels, APS push buttons and countdown signals.",
+        "normative_basis_note": "AAB/ADA Standards apply to pedestrian access elements at these public intersections; the audit records an update-to-comply entry rather than a determination."
+      },
+      "evidence": [
+        {
+          "evidence_id": "EV-US-035",
+          "quote": "Update all pedestrian crossings to comply with AAB/ADA Standards (update crosswalk markings, pedestrian refuge island size, detectable warning panels, APS push buttons and countdown signals).",
+          "use": "supports_concern"
+        }
+      ],
+      "assumptions": [],
+      "risk_components": {
+        "severity": null,
+        "likelihood": null,
+        "exposure": null,
+        "scale_id": null
+      },
+      "confidence": {
+        "label": "high",
+        "basis": "The enhancement-list entry is recorded verbatim in the sample report; treated as a compliance question because AAB/ADA Standards are mandatory instruments, with the update entry indicating non-conforming elements without asserting a regulatory verdict."
+      },
+      "rationale": "ORCH-as-judge baseline framed as a compliance question per the judge-feedback categorical line: the sample supplies an update-to-comply prescription, not a safety finding.",
+      "recommendation": "Update all pedestrian crossings to comply with AAB/ADA Standards within the current design.",
+      "source_trace": [
+        {
+          "origin": "auditor_manual",
+          "producer": "safety-reasoning-agent"
+        }
+      ],
+      "reviewer_status": "draft",
+      "reviewer_note": null
+    }
+  ],
+  "expected": {
+    "finding_ids_present": [],
+    "missing_information_input_ids": [],
+    "questions_min_count": 3,
+    "mapping_confidence": "interpreted",
+    "snapshot_recorded": "2026-08-24"
+  },
+  "provenance": {
+    "source_url": "https://d3n8a8pro7vhmx.cloudfront.net/repmikeconnolly/pages/344/attachments/original/1620369336/Road_Safety_Audit_Somerville_McGrathHwy_Rte28_at_MysticAve_and_Broadway_RSA.pdf?1620369336",
+    "license": "Public domain as posted (US state/municipal work product distributed through the MassDOT RSA program; no rights-reserved notice encountered on the co-publication used for corpus harvest).",
+    "retrieved": "2026-08-24",
+    "extractor": "ORCH converted the HNTB/MassDOT Somerville RSA into this fixture: Table-4 safety issues transcribed verbatim as baseline concerns; designer response reports absent (structural scarcity noted in corpus docs)."
+  }
+}

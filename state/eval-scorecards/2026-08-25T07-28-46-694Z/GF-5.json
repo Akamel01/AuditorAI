@@ -1,0 +1,29 @@
+{
+  "run_id": "2026-08-25T07-28-46-694Z",
+  "fixture_id": "GF-5",
+  "fixture_name": "Roundabout conversion — International baseline, detailed design",
+  "mode": "dry-run",
+  "subject": "engine-findings",
+  "judge": {
+    "enabled": false
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 0,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 0,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [],
+  "generated_at": "2026-08-25T07:28:46.718Z"
+}

@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-08-25T06-29-49-075Z",
+  "fixture_id": "GF-11",
+  "fixture_name": "A9 Ballinluig SB signage/VRS-adjacent visibility — real UK Stage 1&2 RSA (Transport Scotland OGL release)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 1,
+  "findings_unscored": [
+    {
+      "finding_id": "JB-GF11-002",
+      "reason": "judge HTTP 503"
+    }
+  ],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0.5
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF11-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Constrained forward visibility from curve-plus-vegetation on an off-slip approach, with a shared driver/pedestrian verge corridor, is a genuine, location-specific hazard and the finding converts the logged remediation duty into a verified handover condition rather than restating it vacuously.",
+        "evidence_grounding": "Pivotal claims (visibility reduction, pedestrian-passage requirement, agreed extension action) are all directly supported by the verbatim EV-UK-025 quote, with EV-UK-002 used only as context; only the phrase 'both logged problem locations' mildly conflates two issues with two locations.",
+        "jurisdiction_correctness": "Correctly typed as a safety_concern with no compliance/normative basis asserted, respecting GG 119 semantics where the auditor raises problems and seeks designer action rather than enforcing compliance clauses.",
+        "recommendation_quality": "Specific and actionable (deliver and evidence extended clearance covering both issues, confirm post-clearance visibility and pedestrian passage before handover) and clearly viable, though it lacks quantitative acceptance criteria such as a required SSD or minimum verge width.",
+        "vru_coverage": "Pedestrians are explicitly named as affected road users, the cited log entry expressly requires clear pedestrian passage, and the scenario confirms VRUs are in scope, so vulnerable-user impacts are fully considered and central to the recommendation."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:38:50.882Z"
+}

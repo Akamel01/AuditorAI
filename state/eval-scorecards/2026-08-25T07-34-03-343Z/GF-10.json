@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T07-34-03-343Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Decision-load risk from simultaneous unfamiliar transfer-lane assignments at high-volume express-collector points is a genuine driver-behaviour/collision-migration hazard appropriate to a planning-stage RSA.",
+        "evidence_grounding": "Pivotal claim is anchored by a verbatim EV-CA-003 quote on avoiding collisions elsewhere along the route, combined with recorded corridor facts (AADT 420,000, three-interchange permission revision concurrent with signage rationalisation); no invented content detected.",
+        "jurisdiction_correctness": "CRSAG planning-stage semantics respected: the quoted audit-objective language correctly frames an off-network safety impact, and the finding remains categorically a safety concern with no compliance question conflated into it (normative_basis_note appropriately null).",
+        "recommendation_quality": "Recommendation is specific and actionable—sequential one-interchange-per-quarter rollout with before/after speed-differential monitoring—and is operationally viable for staged corridor implementation.",
+        "vru_coverage": "Not applicable since a controlled-access express-collector mainline excludes pedestrians and cyclists, but the finding explicitly acknowledges this and scopes road users to vehicle occupants."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "An unresolved inter-agency conflict over express-collector transfer continuity genuinely threatens the Stage 1 audit scope boundary and could exclude redistributed movements across all three interchanges, a substantive planning-stage completeness issue.",
+        "evidence_grounding": "The pivotal documentation duty is anchored by verbatim quotes EV-CA-038 (accept/conditionally accept/reject with documented reasons) and EV-CA-003 (clearly specified and consistently documented procedure), while the record conflict itself is a recorded input fact rather than invented content.",
+        "jurisdiction_correctness": "Correctly filed as a compliance_question distinct from any asserted safety deficiency, uses the Alberta Stage 1 equivalency (EV-CA-006) appropriately, and invokes the §5.6.2 response discipline only as a documentation standard without converting it into a safety claim.",
+        "recommendation_quality": "Specific and viable: names both conflicting records, identifies the ministry planning office as counterpart, requires documented resolution reasons under the cited discipline, and forces an explicit scope-boundary decision before finalisation.",
+        "vru_coverage": "Not directly applicable on a controlled-access mainline, but the finding explicitly acknowledges propagation of continuity outcomes to downstream arterials carrying pedestrians and cyclists while refraining from asserting unsupported VRU exposure."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:42:02.771Z"
+}

@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T07-34-03-343Z",
+  "fixture_id": "GF-14",
+  "fixture_name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 10
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF14-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Dysfunctional pedestrian signals at a high-volume urban arterial crossing create genuine wrong-information/absent-guidance risk for pedestrians, a substantive safety issue appropriate to raise at preliminary design stage.",
+        "evidence_grounding": "Verbatim quote EV-US-034 ('Investigate and fix existing dysfunctional pedestrian signals.') directly records the pivotal deficiency, tied via the finding to the McGrath Highway/Broadway safety-issue table.",
+        "jurisdiction_correctness": "Correctly framed as a categorical safety_concern about pedestrian guidance reliability, with no conflation into MUTCD compliance assertions and no invented normative basis.",
+        "recommendation_quality": "Actionable and viable within the current design stage—identify, investigate, and repair the deficient pedestrian indications—though modest in added specificity beyond the source item.",
+        "vru_coverage": "Pedestrians—the relevant VRU group—are explicitly the affected road user class and the exposure scenario centers on their reliance on the displays."
+      }
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Concrete accessibility-compliance substance covering named pedestrian elements (crosswalks, refuge islands, detectable warnings, APS, countdown signals) at defined intersections under mandatory AAB/ADA instruments.",
+        "evidence_grounding": "Pivotal claim is anchored by registry-id EV-US-035 plus a matching verbatim quote of the enhancement-list entry, satisfying the quote requirement for a 2.",
+        "jurisdiction_correctness": "Correctly typed as a compliance_question with categorical separation asserted from safety judgment and null risk components, consistent with FHWA RSA framing of normative conformance items.",
+        "recommendation_quality": "Specific and viable at preliminary design—conform all crossings across the enumerated elements within the current design—though it closely mirrors the source entry.",
+        "vru_coverage": "Pedestrians are the sole affected road user class and their accessibility needs are fully addressed by the finding's scope."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T07:47:00.173Z"
+}

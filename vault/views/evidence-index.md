@@ -2,8 +2,8 @@
 generated: true
 type: evidence-index
 source: state/evidence-registry.json
-source_hash: 5cb97ff9feb5
-record_count: 156
+source_hash: a5b0e4409061
+record_count: 161
 ---
 # Evidence index
 
@@ -49,7 +49,7 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-AE-035]]
 - [[EV-AE-036]]
 
-## CA (38)
+## CA (39)
 
 - [[EV-CA-001]]
 - [[EV-CA-002]]
@@ -89,8 +89,9 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-CA-037]]
 - [[EV-CA-038]]
 - [[EV-CA-039]]
+- [[EV-CA-040]]
 
-## INT (24)
+## INT (26)
 
 - [[EV-INT-001]]
 - [[EV-INT-002]]
@@ -116,6 +117,8 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-INT-022]]
 - [[EV-INT-023]]
 - [[EV-INT-024]]
+- [[EV-INT-025]]
+- [[EV-INT-026]]
 
 ## UK (25)
 
@@ -145,7 +148,7 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-UK-024]]
 - [[EV-UK-025]]
 
-## US (33)
+## US (35)
 
 - [[EV-US-001]]
 - [[EV-US-002]]
@@ -180,3 +183,5 @@ Compiled from `state/evidence-registry.json` — do not edit by hand.
 - [[EV-US-031]]
 - [[EV-US-032]]
 - [[EV-US-033]]
+- [[EV-US-034]]
+- [[EV-US-035]]

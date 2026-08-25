@@ -1,6 +1,6 @@
 # 06 — Round-3 hunt: NCHRP/TRB + CAREC vols + county RSAs
 
-Type: research · Status: open · Blocked by: —
+Type: research · Status: claimed · Blocked by: —
 
 ## Question
 

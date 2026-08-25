@@ -392,6 +392,18 @@ evidence_records:
     retrieved_date: "2026-08-24"
     normative_status: informative
     confidence: high
+  - evidence_id: EV-CA-040
+    claim: "The 34 Street Functional Planning Study safety & mobility review (Strathcona County / City of Edmonton, 2013) records a corridor-wide collision risk from permissive left turns across three or more opposing lanes at private accesses and intersections, flagging protected-left phasing for later design stages."
+    quote: "Risk of collisions due to permissive left turns across 3+ opposing lanes at private accesses and intersections along the corridor."
+    source_url: "https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf"
+    source_title: "34 Street FPS §5.12 Traffic Safety Audit & Mobility Review (sample corpus CA-010)"
+    publisher: "Strathcona County Transportation Planning & Engineering (with City of Edmonton)"
+    revision: null
+    publication_date: 2013-05-01
+    retrieved_date: "2026-08-24"
+    normative_status: informative
+    confidence: high
+
 ---
 
 # Canada — Road Safety Audit Research (R4)

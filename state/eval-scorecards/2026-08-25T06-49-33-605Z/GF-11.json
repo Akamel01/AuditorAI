@@ -1,0 +1,67 @@
+{
+  "run_id": "2026-08-25T06-49-33-605Z",
+  "fixture_id": "GF-11",
+  "fixture_name": "A9 Ballinluig SB signage/VRS-adjacent visibility — real UK Stage 1&2 RSA (Transport Scotland OGL release)",
+  "mode": "corpus",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF11-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Real, scheme-specific hazard recorded in the accepted decision log: curve-plus-vegetation materially constrains forward visibility on the southbound off-slip approach while drivers and verge-walking pedestrians share the constrained corridor.",
+        "evidence_grounding": "Pivotal claims (reduced forward visibility, shrubbery cut-back for pedestrian passage, agreed clearance extension) are supported by a verbatim quote in EV-UK-025, exceeding registry-id citation; EV-UK-002 adds legitimate context.",
+        "jurisdiction_correctness": "Correctly classified as a safety_concern with no compliance question conflated into it; GG 119 Stage 1 audit semantics (logged problem, agreed action, closure condition) are respected.",
+        "recommendation_quality": "Specific and viable: deliver extended clearance across the logged sections, then evidence post-cut driver sight lines and unobstructed pedestrian passage before handover; minor looseness in referencing 'both' problem locations without enumerating them.",
+        "vru_coverage": "Pedestrians are explicitly named as affected road users and the recommended action explicitly secures their unobstructed passage alongside driver visibility, so VRU impacts are squarely addressed."
+      }
+    },
+    {
+      "finding_id": "JB-GF11-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Observed vegetation obstructing the slip-road-end view on a high-speed trunk-road off-slip directly undermines driver awareness of the slowing requirement, a genuine and substantive safety mechanism squarely within the signage scheme's stated purpose.",
+        "evidence_grounding": "The pivotal claim is supported by a verbatim quote from decision-log entry EV-UK-025 ('Vegetation affects views to end of slip road, reducing driver awareness of requirement to slow'), satisfying the requirement for quoted evidence rather than registry citation alone.",
+        "jurisdiction_correctness": "Correctly framed as a safety concern under DMRB GG 119 Stage 1 semantics, kept categorically distinct from any compliance question, and aligned to the accepted decision log and agreed RSA action process.",
+        "recommendation_quality": "The recommendation is specific and actionable—verify restored sight lines by design-speed drive-through after clearance and record the check in the handover file—giving a concrete, viable acceptance criterion tied to the recorded action.",
+        "vru_coverage": "VRUs are not plausibly exposed on the slip carriageway and the finding explicitly scopes road users to vehicle occupants while acknowledging this exclusion, so the non-applicable-but-acknowledged condition applies."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T06:59:23.622Z"
+}

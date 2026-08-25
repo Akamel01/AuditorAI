@@ -3,7 +3,7 @@
 // workflow_dispatch CI uploads artifacts, never gates PRs.
 //
 // Usage:
-//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..13
+//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..16
 //   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
 //   npx tsx scripts/run-eval.ts --no-judge                      # deterministic snapshot check only
 //   OPENCODE_API_KEY=... AI_ENABLED=true npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
@@ -38,6 +38,8 @@ const NO_JUDGE = process.argv.includes("--no-judge");
 const LIVE = process.argv.includes("--live");
 const onlyIdx = process.argv.indexOf("--only");
 const ONLY = onlyIdx !== -1 ? process.argv[onlyIdx + 1] : null;
+const topupIdx = process.argv.indexOf("--topup");
+const TOPUP = topupIdx !== -1 ? process.argv[topupIdx + 1] : null;
 const JUDGE_TIMEOUT_MS = Number(process.env.JUDGE_TIMEOUT_MS ?? 150_000);
 
 const ALL_FILES = DRY_RUN
@@ -57,6 +59,9 @@ const ALL_FILES = DRY_RUN
       "gf11-uk-greatnorthroad-s1.json",
       "gf12-usa-hingham-prelim.json",
       "gf13-ca-neahd-planning.json",
+      "gf14-usa-somerville-prelim.json",
+      "gf15-ca-strathcona-planning.json",
+      "gf16-int-milltown-prelim.json",
     ];
 
 const FILES = ONLY ? ALL_FILES.filter((f) => f.includes(ONLY)) : ALL_FILES;
@@ -148,13 +153,16 @@ async function judgeFinding(
     { role: "user", content: user },
   ];
   let lastError = "";
-  for (let attempt = 0; attempt < 2; attempt++) {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const parsed = extractJsonObject(await judgeComplete(messages, apiKey));
       if (isScoredVerdict(parsed)) return parsed;
       throw new Error("verdict failed rubric shape");
     } catch (e) {
       lastError = e instanceof Error ? e.message : String(e);
+      if (/HTTP|aborted|network|fetch failed|503|502|504/i.test(lastError) && attempt < 3)
+        await sleep(2000 * 2 ** attempt); // transport flake backoff: 2s/4s/8s
       if (attempt === 0)
         messages.push({
           role: "assistant",
@@ -189,6 +197,76 @@ export function findPriorRunMean(fixtureId: string, scorecardsDir?: string): num
 
 // ---- Main ---------------------------------------------------------------------
 
+
+// ---- Top-up -------------------------------------------------------------------
+// Re-judges ONLY unscored findings of an existing archive into a sibling
+// `<runId>-completed` directory. Original archive files are never mutated;
+// scored verdicts are carried over verbatim so determinism of prior results
+// is preserved.
+async function topupMain(parentRunId: string, apiKey: string) {
+  const parentDir = path.join(process.cwd(), "state", "eval-scorecards", parentRunId);
+  if (!existsSync(parentDir)) {
+    console.error(`[eval] topup: no such archive ${parentRunId}`);
+    process.exit(1);
+  }
+  const outDir = `${parentDir}-completed`;
+  mkdirSync(outDir, { recursive: true });
+  console.log(`[eval] topup ${parentRunId} -> ${path.basename(outDir)} judge=${JUDGE_MODEL}@${JUDGE_EFFORT}`);
+  let anyFailed = false;
+  const manifest: Record<string, unknown>[] = [];
+  for (const file of FILES) {
+    const fx = JSON.parse(readFileSync(path.join(process.cwd(), "tests/fixtures", file), "utf8")) as Fixture;
+    const cardPath = path.join(parentDir, `${fx.fixture_id}.json`);
+    if (!existsSync(cardPath)) continue;
+    const card = JSON.parse(readFileSync(cardPath, "utf8")) as {
+      subject: string; verdicts: FindingVerdict[]; findings_unscored: { finding_id: string }[];
+    };
+    const unscoredIds = new Set(card.findings_unscored.map((u) => u.finding_id));
+    if (!unscoredIds.size || card.subject !== "judge-baseline") continue;
+    const baselines = (fx.expected_findings_baseline ?? []) as { finding_id: string }[];
+    const verdicts = [...card.verdicts];
+    const stillUnscored: { finding_id: string; reason: string }[] = [];
+    for (const f of baselines) {
+      if (!unscoredIds.has(f.finding_id)) continue;
+      console.log(`[eval] ${fx.fixture_id}: topping up ${f.finding_id}`);
+      const v = await judgeFinding(
+        f,
+        { jurisdiction: fx.jurisdiction, framework: fx.jurisdiction + " pack", stage: fx.native_stage_id },
+        apiKey,
+      );
+      if ("error" in v) stillUnscored.push({ finding_id: f.finding_id, reason: v.error });
+      else verdicts.push(v);
+    }
+    const passRate = projectPassRate(verdicts);
+    const passesMark = projectPassesCorpusMark(verdicts);
+    if (!passesMark) anyFailed = true;
+    const meanScore = projectMeanScore(verdicts);
+    const priorMean = findPriorRunMean(fx.fixture_id);
+    const regression = detectRegression(meanScore, priorMean);
+    const merged = {
+      ...card,
+      run_id: path.basename(outDir),
+      findings_scored: verdicts.length,
+      findings_unscored: stillUnscored,
+      pass_rate: Math.round(passRate * 1000) / 1000,
+      passes_corpus_mark: passesMark,
+      mean_score: meanScore,
+      regression_vs_prior: regression,
+      tier2_review_required: regression.regression || !passesMark,
+      verdicts,
+      topup_of_run: parentRunId,
+      generated_at: new Date().toISOString(),
+    };
+    writeFileSync(path.join(outDir, `${fx.fixture_id}.json`), JSON.stringify(merged, null, 2));
+    manifest.push({ fixture_id: fx.fixture_id, topped_up: [...unscoredIds], still_unscored: stillUnscored.map((x) => x.finding_id) });
+    console.log(
+      `[eval] ${fx.fixture_id} [${card.subject}]: scored=${verdicts.length} unscored=${stillUnscored.length} passRate=${(passRate * 100).toFixed(0)}% mark=${passesMark ? "PASS" : "FAIL"}${regression.regression ? " REGRESSION" : ""}`,
+    );
+  }
+  writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify({ parent_run: parentRunId, fixtures: manifest }, null, 2));
+  console.log(`[eval] topup complete -> state/eval-scorecards/${path.basename(outDir)}`);
+}
+
 const MODE = LIVE ? (DRY_RUN ? "dry-run-live" : "corpus-live") : DRY_RUN ? "dry-run" : "corpus";
 
 async function main() {
@@ -206,7 +284,7 @@ async function main() {
   const outDir = path.join(process.cwd(), "state", "eval-scorecards", runId);
   mkdirSync(outDir, { recursive: true });
 
-  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..13)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
+  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..16)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
 
   let anyProjectFailed = false;
 
@@ -326,7 +404,7 @@ async function main() {
     validation_id: `VAL-2026-08-22-${seq}`,
     date: new Date().toISOString(),
     validator_node: "E4 eval harness",
-    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..13"}${LIVE ? " [live]" : ""} (run ${runId})`,
+    scope: `Tier-1 judged evaluation over ${DRY_RUN ? "GF-1..5 dry-run" : "corpus GF-6..16"}${LIVE ? " [live]" : ""} (run ${runId})`,
     method: `Pipeline-driven audits; ox-alpha judge (${JUDGE_MODEL} @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)`,
     result: anyProjectFailed ? "FAILED — one or more projects below the corpus pass mark" : "PASSED — all sampled projects meet the corpus pass mark",
     follow_ups: anyProjectFailed ? ["Tier-2 review of failing projects before next AI-touching change"] : [],
@@ -337,11 +415,21 @@ async function main() {
   if (anyProjectFailed) console.warn("[eval] NOTE: gate failure recorded; harness does not fail CI by design");
 }
 
+async function entry() {
+  if (TOPUP) {
+    const apiKey = process.env.OPENCODE_API_KEY ?? "";
+    if (!apiKey) { console.error("[eval] OPENCODE_API_KEY required for topup"); process.exit(1); }
+    await topupMain(TOPUP, apiKey);
+    return;
+  }
+  await main();
+}
+
 const INVOKED_AS_CLI =
   process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (INVOKED_AS_CLI) {
-  main().catch((e) => {
+  entry().catch((e) => {
     console.error("[eval] harness failure:", e instanceof Error ? e.message : e);
     process.exit(1);
   });

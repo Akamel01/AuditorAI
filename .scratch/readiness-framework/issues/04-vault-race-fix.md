@@ -1,6 +1,6 @@
 # 04 — Vault determinism race fix
 
-Type: task · Status: open · Blocked by: —
+Type: task · Status: claimed · Blocked by: —
 
 ## Question
 
