@@ -124,6 +124,7 @@
     "source_url": "https://d3n8a8pro7vhmx.cloudfront.net/repmikeconnolly/pages/344/attachments/original/1620369336/Road_Safety_Audit_Somerville_McGrathHwy_Rte28_at_MysticAve_and_Broadway_RSA.pdf?1620369336",
     "license": "Public domain as posted (US state/municipal work product distributed through the MassDOT RSA program; no rights-reserved notice encountered on the co-publication used for corpus harvest).",
     "retrieved": "2026-08-24",
-    "extractor": "ORCH converted the HNTB/MassDOT Somerville RSA into this fixture: Table-4 safety issues transcribed verbatim as baseline concerns; designer response reports absent (structural scarcity noted in corpus docs)."
+    "extractor": "ORCH converted the HNTB/MassDOT Somerville RSA into this fixture: Table-4 safety issues transcribed verbatim as baseline concerns; designer response reports absent (structural scarcity noted in corpus docs).",
+    "source_samples": ["us-017-somerville-mcgrath-hwy-rsa"]
   }
 }

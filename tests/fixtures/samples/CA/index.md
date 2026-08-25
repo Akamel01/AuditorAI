@@ -160,7 +160,7 @@ GF-10 synthetic planning-stage express-collector fixture not duplicated.
 
 ### CA-010 · 34 Street Functional Planning Study — §5.12 Traffic Safety Audit & Mobility Review (Strathcona County/Edmonton, McElhanney 2013)
 
-- id: `ca-010-ab-strathcona-34st-fps-tsa-review`
+- id: `ca-010-34st-fps-tsa-mobility-review`
 - title: 34 Street Functional Planning Study (Baseline Road to Whitemud Drive) Final Report §5.12 "Traffic Safety Audit & Mobility Review" — pp. 61–64 extracted from the Final Report (McElhanney Consulting Services for Strathcona County + City of Edmonton, concept plans dated Apr 2013; study approved by Council Feb 2015)
 - source_url: https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf (section extracted locally; study page: https://www.strathcona.ca/transportation-roads/planning-and-design/34-street-functional-planning-study/)
 - publisher: Strathcona County Transportation Planning & Engineering (with City of Edmonton)
@@ -175,7 +175,7 @@ GF-10 synthetic planning-stage express-collector fixture not duplicated.
 
 ### CA-011 · Companion of CA-010 — Appendix H Traffic Safety Audit conceptual alignment sheets (Strathcona County, 2013)
 
-- id: `ca-011-ab-strathcona-34st-audit-alignment-sheets`
+- id: `ca-011-34st-fps-appendix-h-alignment-sheets`
 - title: 34 Street Functional Planning Study Appendix H — Traffic Safety Audit: 34th Street Conceptual Alignment sheets 1–9 (CAD export, sheet dates Apr–Jul 2013)
 - source_url: https://storagecdn.strathcona.ca/files/files/appendix_h_safety_audit.pdf
 - publisher: Strathcona County Transportation Planning & Engineering

@@ -7,6 +7,7 @@
 //   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
 //   npx tsx scripts/run-eval.ts --no-judge                      # deterministic snapshot check only
 //   OPENCODE_API_KEY=... AI_ENABLED=true npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
+//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --mode release-test      # real-sample tier (ADR-0007; refuses while corpus < 100)
 //
 // Policy (DEC 2026-08-23): --live spends paid inference tokens; owner-run only,
 // on demand, never automated or CI-scheduled.
@@ -27,6 +28,13 @@ import {
   detectRegression,
 } from "@/lib/eval-gates";
 import type { AuditResult, InputValueState, JurisdictionId, Project } from "@/domain/types";
+import {
+  assertReleaseTestSources,
+  fixtureRoleSection,
+  fixtureSampleIds,
+  RELEASE_TEST_CORPUS_FLOOR,
+  type RoleSection,
+} from "@/domain/split-firewall";
 
 const T0 = "2026-08-22T00:00:00.000Z";
 const ZEN_BASE = process.env.AI_BASE_URL ?? "https://opencode.ai/zen/v1";
@@ -40,6 +48,27 @@ const onlyIdx = process.argv.indexOf("--only");
 const ONLY = onlyIdx !== -1 ? process.argv[onlyIdx + 1] : null;
 const topupIdx = process.argv.indexOf("--topup");
 const TOPUP = topupIdx !== -1 ? process.argv[topupIdx + 1] : null;
+
+export type EvalMode = "corpus" | "release-test";
+
+export function parseRunMode(argv: string[]): EvalMode {
+  const idx = argv.indexOf("--mode");
+  if (idx === -1) return "corpus";
+  const value = argv[idx + 1];
+  if (value !== "corpus" && value !== "release-test") {
+    throw new Error(`--mode must be "corpus" or "release-test" (got ${JSON.stringify(value ?? "<missing>")})`);
+  }
+  return value;
+}
+
+export let RUN_MODE: EvalMode;
+try {
+  RUN_MODE = parseRunMode(process.argv);
+} catch (e) {
+  console.error(`[eval] ${(e as Error).message}`);
+  process.exit(1);
+}
+
 const JUDGE_TIMEOUT_MS = Number(process.env.JUDGE_TIMEOUT_MS ?? 150_000);
 
 const ALL_FILES = DRY_RUN
@@ -74,6 +103,10 @@ interface Fixture {
   metadata: Project["metadata"];
   inputs: Record<string, { state: InputValueState; value?: string }>;
   expected_findings_baseline?: unknown[];
+}
+
+interface SampleCorpusCatalog {
+  samples: { id: string; roles: string[] }[];
 }
 
 function toProject(fx: Fixture): Project {
@@ -283,14 +316,45 @@ async function main() {
   const outDir = path.join(process.cwd(), "state", "eval-scorecards", runId);
   mkdirSync(outDir, { recursive: true });
 
-  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..16)"}${LIVE ? "+live" : ""} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
+  const corpus = JSON.parse(
+    readFileSync(path.join(process.cwd(), "state", "sample-corpus.json"), "utf8"),
+  ) as SampleCorpusCatalog;
+  const catalogedCount = corpus.samples.length;
+  const roleById: Record<string, string[]> = {};
+  for (const s of corpus.samples) roleById[s.id] = s.roles;
+  const rolesFor = (id: string) => roleById[id];
+
+  const FIXTURES = FILES.map((file) => ({
+    file,
+    fx: JSON.parse(readFileSync(path.join(process.cwd(), "tests/fixtures", file), "utf8")) as Fixture,
+  }));
+
+  // Release-test tier gate (ADR-0007): refuse before any judging while the
+  // catalog is below the floor; once active, every source sample must be
+  // firewall-virgin.
+  if (RUN_MODE === "release-test") {
+    try {
+      assertReleaseTestSources(catalogedCount, FIXTURES.map((f) => f.fx), rolesFor);
+    } catch (e) {
+      console.error(`[eval] REFUSED: ${e instanceof Error ? e.message : String(e)}`);
+      process.exit(2);
+    }
+  }
+
+  console.log(`[eval] run ${runId} mode=${DRY_RUN ? "dry-run(GF-1..5)" : "corpus(GF-6..16)"}${LIVE ? "+live" : ""} tier=${RUN_MODE} judge=${NO_JUDGE ? "off" : JUDGE_MODEL}@${JUDGE_EFFORT}`);
 
   let anyProjectFailed = false;
 
-  for (const file of FILES) {
-    const fx = JSON.parse(
-      readFileSync(path.join(process.cwd(), "tests/fixtures", file), "utf8"),
-    ) as Fixture;
+  const sectionTally = new Map<RoleSection, { fixtures: number; pass: number; fail: number }>();
+  const tally = (section: RoleSection, passesMark: boolean) => {
+    const t = sectionTally.get(section) ?? { fixtures: 0, pass: 0, fail: 0 };
+    t.fixtures += 1;
+    if (passesMark) t.pass += 1;
+    else t.fail += 1;
+    sectionTally.set(section, t);
+  };
+
+  for (const { fx } of FIXTURES) {
     const project = toProject(fx);
 
     // Phase 1: deterministic Tier-0 check (--live conducts candidate
@@ -347,11 +411,16 @@ async function main() {
     const passesMark = NO_JUDGE ? true : projectPassesCorpusMark(verdicts);
     if (!passesMark) anyProjectFailed = true;
 
+    const roleSection = fixtureRoleSection(fixtureSampleIds(fx), rolesFor);
+    tally(roleSection, passesMark);
+
     const scorecard = {
       run_id: runId,
       fixture_id: fx.fixture_id,
       fixture_name: fx.name,
       mode: MODE,
+      run_tier: RUN_MODE,
+      role_section: roleSection,
       subject: subject.kind,
       judge: NO_JUDGE
         ? { enabled: false }
@@ -393,6 +462,18 @@ async function main() {
     console.log(
       `[eval] ${fx.fixture_id} [${subject.kind}]: scored=${verdicts.length} unscored=${unscored.length} passRate=${(passRate * 100).toFixed(0)}% mark=${passesMark ? "PASS" : "FAIL"}${regression.regression ? " REGRESSION" : ""}`,
     );
+  }
+
+  // Readiness sections: role-aware split view per ADR-0007 (counts only; no
+  // gating semantics — the corpus mark above remains the sole gate).
+  console.log(`[eval] readiness sections (ADR-0007 roles; corpus=${catalogedCount} cataloged):`);
+  for (const section of ["engine-fewshot", "judge-calibration", "release-test", "reserve", "unlinked"] as RoleSection[]) {
+    const t = sectionTally.get(section) ?? { fixtures: 0, pass: 0, fail: 0 };
+    const dormant =
+      section === "release-test" && catalogedCount < RELEASE_TEST_CORPUS_FLOOR
+        ? ` (dormant until corpus >= ${RELEASE_TEST_CORPUS_FLOOR})`
+        : "";
+    console.log(`[eval]   ${section}: ${t.fixtures} fixture(s), pass=${t.pass}, fail=${t.fail}${dormant}`);
   }
 
   // validation-state record.

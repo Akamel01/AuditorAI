@@ -40,6 +40,7 @@ fixed so AFK sessions don't stall on it.
 - **Release-test activation ceremony**: at ≥100 cataloged, selecting the first held-out
   batch (never-consumed samples only, cluster-aware firewall) and defining its judged
   gate. Graduates when the threshold is near.
+- **Post-activation hardening** (from ticket-02 review): distinct `firewall-tainted` tally bucket for mixed-role fixtures; require non-empty declared provenance per fixture once the release-test tier activates; extend integrity scan to cross-check samples/*/index.md headings against registry ids.
 - **Corpus quality audit at scale**: dedupe pass and same-programme cluster check across
   the full registry once past ~90 (firewall rule against straddling).
 

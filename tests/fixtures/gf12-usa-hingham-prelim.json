@@ -32,7 +32,8 @@
     "source_url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
     "license": "Public domain as posted (US municipal-government work product of the Town of Hingham / MassDOT HSIP program; no rights-reserved notice or usage restrictions on the source page)",
     "retrieved": "2026-08-24",
-    "extractor": "ORCH transformed the CHA Consulting December 2013 RSA report 'Derby Street at Route 3 Ramps' (34 pp full package: background, project data, crash tables, Figures 1-2, five numbered safety issues with observations, Table 2 short/mid/long-term enhancement matrix with cost and responsible agency, prompt-list-driven agenda/checklist appendices) into a Project input set; findings language patterned on the report's Safety Issue observation/enhancement structure."
+    "extractor": "ORCH transformed the CHA Consulting December 2013 RSA report 'Derby Street at Route 3 Ramps' (34 pp full package: background, project data, crash tables, Figures 1-2, five numbered safety issues with observations, Table 2 short/mid/long-term enhancement matrix with cost and responsible agency, prompt-list-driven agenda/checklist appendices) into a Project input set; findings language patterned on the report's Safety Issue observation/enhancement structure.",
+    "source_samples": ["us-008-ma-hingham-derby-st-route3-rsa"]
   },
   "expected_findings_baseline": [
     {

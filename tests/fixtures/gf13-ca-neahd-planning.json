@@ -36,7 +36,8 @@
     "source_url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
     "license": "Open Government Licence – Alberta (published provincial record via open.alberta.ca; sha256 0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95 per samples/CA/index.md ca-001)",
     "retrieved": "2026-08-24",
-    "extractor": "Extracted the full 10-page NEAHD Planning Stage RSA letter-report (qpdf --check clean, unencrypted; pypdf text layer) as the geometric context narrative for a ca-tac:planning fixture; interchange Tables 1–2 and the §4.1–4.2 observations were carried over verbatim from the extraction."
+    "extractor": "Extracted the full 10-page NEAHD Planning Stage RSA letter-report (qpdf --check clean, unencrypted; pypdf text layer) as the geometric context narrative for a ca-tac:planning fixture; interchange Tables 1–2 and the §4.1–4.2 observations were carried over verbatim from the extraction.",
+    "source_samples": ["ca-001-ab-neahd-planning-stage-rsa"]
   },
   "expected_findings_baseline": [
     {

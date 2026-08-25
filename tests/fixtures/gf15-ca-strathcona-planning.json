@@ -136,6 +136,7 @@
     "source_url": "https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf",
     "license": "Published municipal document on strathcona.ca (public domain posting by Strathcona County as study page links the final report; no rights-reserved notice encountered).",
     "retrieved": "2026-08-24",
-    "extractor": "ORCH converted §5.12 TSA & Mobility Review into this fixture: issue list and Table 5-1 designer responses transcribed verbatim; CA-011 Appendix H alignment sheets serve as inputs companion."
+    "extractor": "ORCH converted §5.12 TSA & Mobility Review into this fixture: issue list and Table 5-1 designer responses transcribed verbatim; CA-011 Appendix H alignment sheets serve as inputs companion.",
+    "source_samples": ["ca-010-34st-fps-tsa-mobility-review", "ca-011-34st-fps-appendix-h-alignment-sheets"]
   }
 }
