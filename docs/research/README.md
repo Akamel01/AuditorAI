@@ -4,12 +4,15 @@ Cited findings from primary/authoritative sources. One document per jurisdiction
 cross-cutting syntheses:
 
 ```text
-international-rsa-research.md
-uk-rsa-research.md
-usa-rsa-research.md
-canada-rsa-research.md
-uae-rsa-research.md
-stage-normalization.md
+international-rsa-research.md   ← compiled into state/evidence-registry.json
+uk-rsa-research.md             ←
+usa-rsa-research.md            ←
+canada-rsa-research.md         ←
+uae-rsa-research.md            ←
+
+Only the five jurisdiction research files are registry sources (see
+scripts/compile-evidence.mjs). Engineering notes that are NOT registry sources
+live in docs/dev-notes/ (see its CONTEXT.md).
 inputs-and-outputs.md
 standards-conflict-analysis.md
 ```
