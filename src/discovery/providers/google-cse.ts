@@ -17,10 +17,10 @@ import {
 // docs/discovery/pse-domains.txt — adding site: operators here would exclude
 // listed non-gov.TLD domains (e.g. standardsforhighways.co.uk vs site:gov.uk).
 const JUR_LABEL: Record<JurisdictionId, string> = {
-  UK: "(UK OR Britain OR "Highways England" OR "National Highways")",
-  US: "(US OR "United States" OR state DOT)",
-  CA: "(Canada OR Alberta OR Ontario OR British Columbia)",
-  AE: "("Abu Dhabi" OR UAE)",
+  UK: '(UK OR Britain OR "Highways England" OR "National Highways")',
+  US: '(US OR "United States" OR state DOT)',
+  CA: '(Canada OR Alberta OR Ontario OR "British Columbia")',
+  AE: '("Abu Dhabi" OR UAE)',
   INT: "",
 };
 
