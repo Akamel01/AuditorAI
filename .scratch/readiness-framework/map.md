@@ -29,7 +29,7 @@ fixed so AFK sessions don't stall on it.
 <!-- one line per closed ticket -->
 
 - [01 — Conversions wave 1](issues/01-conversions-wave1.md): GF-14/15/16 real-scheme fixtures fully scored 100% (archive 2026-08-25T07-34-03-343Z); registry 161; odd.json v1.1.2.
-- [03 — Judge transport-flake retry](issues/03-judge-retry.md): 4-attempt backoff in-run + --topup sibling-archive mode (scored verdicts immutable); proven live. 
+- [03 — Judge transport-flake retry](issues/03-judge-retry.md): 4-attempt backoff in-run + --topup sibling-archive mode (scored verdicts immutable); proven live. - [02 — Release-test tier plumbing](issues/02-release-test-plumbing.md): dormant gate at <100 cataloged (exit 2 pre-judging), ADR-0007 firewall module, role-aware scorecard sections; fixtures retro-linked where provable.
 
 ## Not yet specified
 
