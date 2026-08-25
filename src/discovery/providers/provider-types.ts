@@ -3,6 +3,7 @@
 // family; adapters never widen the Hit schema.
 import type { DiscoveryHit } from "@/discovery/types";
 import type { JurisdictionId } from "@/domain/types";
+import { DISCOVERY_SECRETS, resolveSecret } from "@/discovery/keychain";
 
 export interface DiscoverQuery {
   jurisdictions: JurisdictionId[];
@@ -37,24 +38,28 @@ export function listProviderIds(): string[] {
 }
 
 /**
- * Live providers are opt-in via env keys; without keys only the offline seed
- * provider resolves. Mirrors AI_ENABLED=false determinism guarantee.
+ * Live providers are opt-in via secrets (env var first, then macOS Keychain
+ * under auditorai/*); without a secret only the offline seed provider resolves.
+ * Mirrors AI_ENABLED=false determinism guarantee.
  */
-export function resolveProvider(id: string): DiscoveryProvider | null {
-  const factory = FACTORIES[id];
-  if (!factory) return null;
-  return factory();
-}
-
 export function providerEnabled(id: string): boolean {
   switch (id) {
-    case "bing-search":
-      return !!process.env.DISCOVERY_BING_API_KEY;
+    case "brave-search":
+      return resolveSecret(DISCOVERY_SECRETS.brave) !== null;
     case "google-cse":
-      return !!process.env.DISCOVERY_GOOGLE_CSE_KEY && !!process.env.DISCOVERY_GOOGLE_CSE_CX;
+      return (
+        resolveSecret(DISCOVERY_SECRETS.googleCseKey) !== null &&
+        resolveSecret(DISCOVERY_SECRETS.googleCseCx) !== null
+      );
     case "seed-portals":
       return true; // offline curated seeds — always available
     default:
       return false;
   }
+}
+
+export function resolveProvider(id: string): DiscoveryProvider | null {
+  const factory = FACTORIES[id];
+  if (!factory) return null;
+  return factory();
 }

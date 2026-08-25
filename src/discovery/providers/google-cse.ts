@@ -2,6 +2,7 @@
 // OFF without DISCOVERY_GOOGLE_CSE_KEY + DISCOVERY_GOOGLE_CSE_CX.
 import { hitId } from "@/discovery/ids";
 import { withHostBudget, retryAfterMs } from "@/discovery/ratelimit";
+import { DISCOVERY_SECRETS, resolveSecret } from "@/discovery/keychain";
 import type { DiscoveryHit } from "@/discovery/types";
 import {
   providerEnabled,
@@ -21,9 +22,9 @@ class GoogleCseProvider implements DiscoveryProvider {
   readonly source_type = "search-engine" as const;
 
   async discover(query: DiscoverQuery, fetchImpl: typeof fetch = fetch): Promise<DiscoveryHit[]> {
-    const key = process.env.DISCOVERY_GOOGLE_CSE_KEY;
-    const cx = process.env.DISCOVERY_GOOGLE_CSE_CX;
-    if (!key || !cx) throw new Error("google-cse requires DISCOVERY_GOOGLE_CSE_KEY and DISCOVERY_GOOGLE_CSE_CX");
+    const key = resolveSecret(DISCOVERY_SECRETS.googleCseKey);
+    const cx = resolveSecret(DISCOVERY_SECRETS.googleCseCx);
+    if (!key || !cx) throw new Error("google-cse requires DISCOVERY_GOOGLE_CSE_KEY/CX env or Keychain auditorai/discovery-cse-key + auditorai/discovery-cse-cx");
     const hits: DiscoveryHit[] = [];
     for (const theme of query.themes.length ? query.themes : ["road safety audit"]) {
       const q = encodeURIComponent(theme);
