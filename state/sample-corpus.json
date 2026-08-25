@@ -2,7 +2,7 @@
   "$schema_note": "Sample-corpus consumer-role assignments per ADR-0007. Roles are per-consumer; firewall forbids train∩test and calib∩test (CONTEXT.md §Sample corpus). Rules auto-assign; exceptions queue for owner arbitration.",
   "schema_version": "1.0.0",
   "policy": "docs/adr/0007-sample-corpus-split-policy.md",
-  "generated": "2026-08-24",
+  "generated": "2026-08-25",
   "release_test_policy": {
     "current_gate_set": [
       "GF-6",
@@ -567,6 +567,303 @@
       ],
       "rule": "R1",
       "notes": "delta-island intersections"
+    },
+    {
+      "id": "int-018-ardee-main-street-stage2-rsa",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "ireland stage 2 + repeat annotations",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "Ardee extraction w/ TII approval email; rerun carry-over semantics"
+    },
+    {
+      "id": "int-019-ts-a975-stage-3-4-5-lifecycle-slice",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "uk post-construction lifecycle",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "outside declared cells (stage 3/4/5 legacy)"
+    },
+    {
+      "id": "int-020-a90-swallow-hotel-rsa",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "uk stage class per doc",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "Transport Scotland A975 slice companion"
+    },
+    {
+      "id": "int-021-a14-bar-hill-stage3-rsa",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "uk stage 3",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "legacy stage outside declared cells"
+    },
+    {
+      "id": "int-022-tfl-elephant-castle-stage3",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "london stage 3",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "legacy stage; TfL reuse rights unstated"
+    },
+    {
+      "id": "int-023-tfl-st-georges-circus-stage3",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "london stage 3",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "as above"
+    },
+    {
+      "id": "int-024-oxfordshire-iffley-stage2-3",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "county stage 2/3 pair part A",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "legacy stages"
+    },
+    {
+      "id": "int-025-oxfordshire-iffley-stage1-response",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "county stage 1 designer response",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "response-report class"
+    },
+    {
+      "id": "int-026-northamptonshire-county-stage2",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "county stage 2",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "legacy stage"
+    },
+    {
+      "id": "int-027-northamptonshire-county-stage3",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "county stage 2→3 pair part B",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "legacy stage"
+    },
+    {
+      "id": "int-028-signed-designer-response-report",
+      "jurisdiction": "international",
+      "completeness": "outputs-only",
+      "odd_cell_status": "designer response (scarcest class)",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "signed response report"
+    },
+    {
+      "id": "us-021-mndot-us-8-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-022-mndot-th-3-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-023-mndot-th-5-lake-elmo-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-024-mndot-us-14-rsa-a",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-025-mndot-us-14-rsa-b",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-026-us-12-post-audit-presentation",
+      "jurisdiction": "usa",
+      "completeness": "outputs-only",
+      "odd_cell_status": "post-audit deck companion to us-011",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "lifecycle triple us-010/011/026"
+    },
+    {
+      "id": "us-027-hwy-7-minnetonka-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road + agency comment letters",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "agency comments answering draft findings"
+    },
+    {
+      "id": "int-029-carec-manual3-roadside-hazard-management-adb-2018",
+      "jurisdiction": "international",
+      "completeness": "excerpt",
+      "odd_cell_status": "n/a-manual",
+      "roles": [
+        "unassigned"
+      ],
+      "rule": "R4",
+      "notes": "reference-grade manual"
+    },
+    {
+      "id": "int-030-carec-manual4-pedestrian-safety-adb-2021",
+      "jurisdiction": "international",
+      "completeness": "excerpt",
+      "odd_cell_status": "VRU before/after case studies x7",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "worked examples"
+    },
+    {
+      "id": "int-031-irap-gdci-gsdg-star-rated-street-designs",
+      "jurisdiction": "international",
+      "completeness": "excerpt",
+      "odd_cell_status": "design-stage assessment x2",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "GSDG typologies"
+    },
+    {
+      "id": "us-028-nchrp-synthesis-336-road-safety-audits",
+      "jurisdiction": "usa",
+      "completeness": "compilation",
+      "odd_cell_status": "specimen audits + checklists",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "NCHRP synthesis specimens"
+    },
+    {
+      "id": "us-029-fhwa-sa-16-120-transit-rsa-casestudies",
+      "jurisdiction": "usa",
+      "completeness": "compilation",
+      "odd_cell_status": "transit-access lens cases",
+      "roles": [
+        "judge-calibration"
+      ],
+      "rule": "R3",
+      "notes": "FHWA case batch"
+    },
+    {
+      "id": "us-030-ma-boston-cambridge-st-allston-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-031-ma-worcester-chandler-st-corridor-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "remote-format RSA",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "first remote-format sample"
+    },
+    {
+      "id": "us-032-ma-northborough-bartlett-st-rsa",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "MPO-authored self-performed TMCs",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "in-service class"
+    },
+    {
+      "id": "us-033-sc-greenville-green-ave-road-safety-assessment",
+      "jurisdiction": "usa",
+      "completeness": "full-package",
+      "odd_cell_status": "existing-road → reserve",
+      "roles": [
+        "reserve"
+      ],
+      "rule": "R1",
+      "notes": "first SC sample"
     }
   ],
   "exceptions_queue": [],
@@ -579,10 +876,10 @@
     }
   ],
   "counts": {
-    "total": 51,
+    "total": 78,
     "engine_fewshot": 6,
-    "judge_calibration": 16,
-    "reserve": 25,
-    "unassigned": 4
+    "judge_calibration": 26,
+    "reserve": 41,
+    "unassigned": 5
   }
 }

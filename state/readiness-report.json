@@ -1,8 +1,8 @@
 {
   "schema_note": "T4.x readiness snapshot: judged fixtures x ODD cells x latest Tier-1 archive, plus ADR-0007 role census. Regenerate with: node scripts/readiness-report.mjs [runId]",
-  "generated": "2026-08-24T19:02:41.879Z",
-  "declaration_version": "1.1.1",
-  "latest_archive": "2026-08-24T08-08-49-444Z",
+  "generated": "2026-08-25T09:38:25.992Z",
+  "declaration_version": "1.1.2",
+  "latest_archive": "2026-08-25T07-34-03-343Z",
   "release_test_tier": {
     "current_gate_set": [
       "GF-6",
@@ -14,11 +14,11 @@
     "real_sample_tier": "dormant until corpus >= 100 cataloged samples (owner decision T3.3)"
   },
   "role_census": {
-    "total": 51,
-    "unassigned": 4,
-    "judge-calibration": 16,
+    "total": 78,
+    "unassigned": 5,
+    "judge-calibration": 26,
     "engine-fewshot": 6,
-    "reserve": 25
+    "reserve": 41
   },
   "odd_cells": [
     {
@@ -40,7 +40,8 @@
       "status": "in",
       "fixtures": [
         "GF-7",
-        "GF-12"
+        "GF-12",
+        "GF-14"
       ]
     },
     {
@@ -60,7 +61,8 @@
       ],
       "status": "in",
       "fixtures": [
-        "GF-9"
+        "GF-9",
+        "GF-16"
       ]
     },
     {
@@ -71,7 +73,8 @@
       "status": "in",
       "fixtures": [
         "GF-10",
-        "GF-13"
+        "GF-13",
+        "GF-15"
       ]
     },
     {
@@ -175,7 +178,7 @@
       "real_scheme": false,
       "odd_cell": null,
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "no-scorecard"
       }
     },
@@ -194,7 +197,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,
@@ -216,7 +219,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,
@@ -238,7 +241,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,
@@ -260,7 +263,73 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-14",
+      "file": "tests/fixtures/gf14-usa-somerville-prelim.json",
+      "jurisdiction": "US",
+      "native_stage": "us-fhwa:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": "https://d3n8a8pro7vhmx.cloudfront.net/repmikeconnolly/pages/344/attachments/original/1620369336/Road_Safety_Audit_Somerville_McGrathHwy_Rte28_at_MysticAve_and_Broadway_RSA.pdf?1620369336",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "usa",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-25T07-34-03-343Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-15",
+      "file": "tests/fixtures/gf15-ca-strathcona-planning.json",
+      "jurisdiction": "CA",
+      "native_stage": "ca-tac:planning",
+      "canonical_stage": null,
+      "source_sample": "https://storagecdn.strathcona.ca/files/files/34_street_final_report.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "canada",
+        "stage": [
+          "FEASIBILITY_CONCEPT"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-25T07-34-03-343Z",
+        "mark": "PASS",
+        "pass_rate": 1,
+        "scored": 2,
+        "unscored": 0
+      }
+    },
+    {
+      "id": "GF-16",
+      "file": "tests/fixtures/gf16-int-milltown-prelim.json",
+      "jurisdiction": "INT",
+      "native_stage": "int:preliminary-design",
+      "canonical_stage": null,
+      "source_sample": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+      "real_scheme": true,
+      "odd_cell": {
+        "jurisdictions": "international",
+        "stage": [
+          "PRELIMINARY_DESIGN"
+        ]
+      },
+      "gate": {
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,
@@ -277,7 +346,7 @@
       "real_scheme": false,
       "odd_cell": null,
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "no-scorecard"
       }
     },
@@ -291,7 +360,7 @@
       "real_scheme": false,
       "odd_cell": null,
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "no-scorecard"
       }
     },
@@ -305,7 +374,7 @@
       "real_scheme": false,
       "odd_cell": null,
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "no-scorecard"
       }
     },
@@ -319,7 +388,7 @@
       "real_scheme": false,
       "odd_cell": null,
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "no-scorecard"
       }
     },
@@ -338,7 +407,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 1,
@@ -360,11 +429,11 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
-        "scored": 1,
-        "unscored": 1
+        "scored": 2,
+        "unscored": 0
       }
     },
     {
@@ -382,7 +451,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,
@@ -404,7 +473,7 @@
         ]
       },
       "gate": {
-        "run": "2026-08-24T08-08-49-444Z",
+        "run": "2026-08-25T07-34-03-343Z",
         "mark": "PASS",
         "pass_rate": 1,
         "scored": 2,

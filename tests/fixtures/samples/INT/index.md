@@ -1,6 +1,7 @@
 # INT — Road Safety Audit sample collection (International sources)
 
-Collected 2026-08-23 (Round 1) and 2026-08-24 (Round 2) by sample-audit collection agent.
+Collected 2026-08-23 (Round 1), 2026-08-24 (Round 2) and 2026-08-25 (Round 3) by
+sample-audit collection agent.
 Public-access sources only; no login-wall circumvention. Wayback retrieval used only for
 public-origin documents (AfDB PDF and NZTA M2PP PDF are bot-blocked live; fetched their own
 archived public copies). Early stages (feasibility/conceptual + preliminary design)
@@ -286,6 +287,219 @@ stage ≈ `PRELIMINARY_DESIGN`–`DETAILED_DESIGN`. Mappings shown alongside nat
 - filename+sha256: carec-manual5-star-ratings-rsa-adb-2022.pdf `b9e8f54bfe6ab2953366461385e2b25bcecb0194676e8fc35fa19ef57532830f`
 - notes: Bridges int-001 (CAREC RSA process) and int-002 (iRAP SR4D) lineages; "situational scrutiny" concept and Level-2 road-design worked example are directly reusable as engine/judge prompt material. Covers Round-2 veins 4+5 in one volume. qpdf hint-table warnings benign.
 
+### INT-117 · CAREC Road Safety Engineering Manual 3: Roadside Hazard Management (worked case studies)
+
+- id: `int-029-carec-manual3-roadside-hazard-management-adb-2018`
+- title: CAREC Road Safety Engineering Manual 3 – Roadside Hazard Management (ADB publication, April 2018, ISBN 978-92-9261-106-4 print / 978-92-9261-107-1 electronic, 90 pp.)
+- source_url: https://carecprogram.org/uploads/CAREC-Manual-3_RSHM.pdf (open mirror; publication page adb.org/publications/carec-road-safety-engineering-manual-roadside-hazard-management)
+- publisher: Asian Development Bank / CAREC Secretariat
+- retrieved_date: 2026-08-25
+- country/body: Central Asia Regional Economic Cooperation programme (11 member countries; ADB)
+- native_stage: hazard management across project lifecycle; treatment-selection reasoning tied to design-stage decisions (clear-zone, hazard removal/relocation/protection hierarchy)
+- input_types present: scheme_description (worked treatment scenarios incl. an urban interchange widening example), drawings (treatment sketches/typical layouts), site_photos (before/after)
+- output_types present: recommendations-equivalent (Chapter 4 treating-hazards decision reasoning with cost/feasibility trade-offs), findings-style worked case studies (~pp.31–35: embankment/furniture hazards, unidirectional RRPM example, urban interchange widening case study 4)
+- completeness: excerpt — manual with embedded worked examples; not a real named scheme
+- filename+sha256: carec-manual3-roadside-hazard-management-adb-2018.pdf `984cef8b8dc445835e5fa44a433cfcec20ed0a26e1544758b3ec974f9005806a`
+- notes: Licence verbatim (ADB series statement): "Creative Commons Attribution 3.0 IGO License" (CC BY 3.0 IGO). Companion volume to int-001/int-017; the clear-zone/hazard-treatment trade-off prose is good seed material for recommendation-viability reasoning. qpdf hint-table warnings benign.
+
+### INT-118 · CAREC Road Safety Engineering Manual 4: Pedestrian Safety (seven VRU case studies)
+
+- id: `int-030-carec-manual4-pedestrian-safety-adb-2021`
+- title: CAREC Road Safety Engineering Manual 4: Pedestrian Safety (ADB publication, February 2021, Publication Stock No. TIM210073-2, DOI 10.22617/TIM210073-2, ISBN 978-92-9262-126-1 print / 127-8 electronic / 128-5 ebook, 132 pp.)
+- source_url: https://carecprogram.org/uploads/CAREC-RSE-Manual-4-Pedestrian-Safety.pdf (open mirror; publication page adb.org/publications/carec-road-safety-engineering-manual-pedestrian-safety)
+- publisher: Asian Development Bank / CAREC Secretariat ("© 2021 Asian Development Bank… Some rights reserved.")
+- retrieved_date: 2026-08-25
+- country/body: Central Asia Regional Economic Cooperation programme (11 member countries; ADB)
+- native_stage: VRU facility provision guidance spanning planning → detailed design → roadworks (crossing facilities, footpaths, school-zone treatments); canonical ≈ FEASIBILITY_CONCEPT→DETAILED_DESIGN reference class
+- input_types present: scheme_description (seven Chapter VIII case-study schemes: e.g. pelican/ped-operated signals on a >20,000 vpd median-divided arterial, school-fronting highway footpath), drawings (facility layout figures), site_photos (**before/after photographs per case study**)
+- output_types present: recommendations-equivalent (treatment selection tables incl. child/senior pedestrian design considerations), findings-style case studies (Ch. VIII "Seven case studies… prepared by the ADB road safety engineering consultants")
+- completeness: excerpt — manual with embedded before/after case studies; not real named audit schemes
+- filename+sha256: carec-manual4-pedestrian-safety-adb-2021.pdf `d8f2f1159d8712d026bb0bebad0d7f887ea6a6217b8fb232be81fb0c8abc9cec`
+- notes: Licence verbatim from copyright page: "Creative Commons Attribution 3.0 IGO license (CC BY 3.0 IGO)". Strongest VRU-worked-example volume of the series — pairs with int-009/int-014/int-015 Irish VRU findings as countermeasure-catalogue context. qpdf hint-table warnings benign.
+
+### INT-119 · iRAP Star Ratings of NACTO-GDCI's Global Street Design Guide (design-stage assessments)
+
+- id: `int-031-irap-gdci-gsdg-star-rated-street-designs`
+- title: iRAP Star Ratings of NACTO-GDCI's Global Street Design Guide (56 pp.)
+- source_url: https://gdci.wpengine.com/wp-content/uploads/2020/10/iRAP-Star-Ratings-of-the-GSDG.pdf (announced by Global Designing Cities Initiative as free supplement to the GSDG; announcement post incl. FR/PT/ES editions dated 20 Jan 2023; PDF host path indicates Oct 2020 upload — document itself undated)
+- publisher: NACTO Global Designing Cities Initiative with iRAP
+- retrieved_date: 2026-08-25
+- country/body: Global (urban street typologies; iRAP methodology)
+- native_stage: **design-stage assessment** — star ratings assigned to rendered street *designs* (not built roads) across ~20 typologies: pedestrian-only streets, laneways, parklets, shared streets (commercial/residential), residential streets, neighborhood main streets, central one-way streets etc.; iRAP SR4D lineage, canonical ≈ PRELIMINARY_DESIGN–DETAILED_DESIGN
+- input_types present: scheme_description (GSDG design renderings w/ dimensions), drawings (street cross-section renders per typology)
+- output_types present: findings_report-equivalent (star ratings per user group per design + "star rating features"/design-attribute annotations per rendering), recommendations-equivalent (design-modification guidance: corner radii, accessibility ramps, green infrastructure etc.)
+- completeness: excerpt — typology-level design assessments; no named client scheme
+- filename+sha256: irap-gdci-global-street-design-guide-star-ratings.pdf `24aa180548b425bd771b471650892f73c4cf626f77f84c9a4afb76e86ca97646`
+- notes: Second documented design-assessment artifact beyond KSHIP (fills vein d alongside int-002). No explicit licence block inside PDF — published as free public web asset by NACTO-GDCI; iRAP methodology citation rules apply. Urban-VRU complement to CAREC M5's rural/highway examples.
+
+### INT-018 · Ardee Main Street, Co. Louth — Stage 2 RSA with TII approval correspondence (extracted from Quality Audit PDF)
+
+- id: `int-018-ie-abp-ardee-mainstreet-stage2-rsa`
+- title: STAGE 2 ROAD SAFETY AUDIT — Main Street Ardee (Report ref 2067R02 Rev 1, June 2024 + October 2024 Addendum FINAL; Bruton Consulting Engineers Ltd for Louth County Council; TII GE-STY-01024 Dec 2017) incl. Appendices A–D — extracted from ABP case 323972 document "19 - Ardee 2040 - Quality Audit (November 2024)" Appendix B
+- source_url: parent https://www.pleanala.ie/publicaccess/Case%20Documentation/323972/Applicant%20Documents/Application%20Documents/19%20-%20Ardee%202040%20-%20Quality%20Audit%20(November%202024)_0.pdf (RSA = pp. 27–84 of the parent; extracted locally into a standalone PDF)
+- publisher: Bruton Consulting Engineers Ltd for Louth County Council; released through An Bord Pleanála case documentation (Ardee 2040 Regeneration Project)
+- retrieved_date: 2026-08-25
+- country/body: Ireland (N2 national-primary urban main street through Ardee town centre; public-realm regeneration)
+- native_stage: **Stage 2** (Irish F/1/2/1&2/3/4 vocabulary; GE-STY-01024 Dec 2017 governing standard; canonical ≈ DETAILED_DESIGN)
+- input_types present: drawings inventory (Appendix B: information supplied to the audit team — June 2024 drawing list LOUX3002-P-000-112/114… + October 2024 list HDC1256 1002(K)/1004(K), 533273-NOD-… kerb/layout/revised drawings), problem-location maps (Appendix A, June + October sets)
+- output_types present: findings_report (Problems 3.1–3.31 June 2024 + addendum problems 3A.1–3A.6 October 2024, many explicitly marked "Repeat of Issue X in the Stage 1&2 RSA" / "Update of Issue X" — cross-audit carry-over tracking), recommendations, observations section (4.1 "not been provided to the Audit Team": site clearance, cross sections, some road markings…), audit statement/certification, feedback-form template (Appendix C), **Appendix D: TII approval email** (Pat Phelan TII → Turley, July 26 2024 — non-standard approval on the shared-street proposal)
+- completeness: outputs-only extracted (drawings listed not appended; feedback form template not returned completed in this artifact)
+- filename+sha256: ie-abp-ardee-mainstreet-stage2-rsa-2024.pdf `7747ff27a14f42ed1aa34a1ba2d444c885f958313fba46bec3c9f417e9c795ef`
+- notes: Resolves the round-2 gap flag. The repeat/update problem annotations give real cross-run carry-over semantics (same scheme re-audited after design revision); the TII non-standard-approval email is direct evidence for exception/escalation handling. Pairs with int-014 (sibling Stage 1&2 on the same regeneration programme). Scan-free text layer.
+
+### INT-019 · A975/Foveran Link Road junction (A90) — Stage 3 Road Safety Audit report (Transport Scotland FOI/EIR)
+
+- id: `int-019-ts-a975-foveran-link-stage3-rsa-report`
+- title: Stage 3 Road Safety Audit — A975 and Foveran Link Road junction (Annex A to Transport Scotland EIR/202500483574, responded 30 Sep 2025, published 9 Dec 2025)
+- source_url: https://www.gov.scot/binaries/content/documents/govscot/publications/foi-eir-release/2025/12-a/foi-202500483574/documents/eir-202500483574---information-released---annex-a/eir-202500483574---information-released---annex-a/govscot%3Adocument/EIR%2B202500483574%2B-%2BInformation%2Breleased%2B-%2BAnnex%2BA.pdf (parent release: https://www.gov.scot/publications/foi-202500483574/)
+- publisher: Transport Scotland Roads Directorate — released under EIR(S)R 2004
+- retrieved_date: 2026-08-25
+- country/body: Scotland, UK (Aberdeenshire; A90 ↔ A975 Foveran/Newburgh junction)
+- native_stage: **Stage 3** — completion of construction (GG 119 lineage; first full Stage 3 report in the collection)
+- input_types present: scan without text layer — structure per release description; OCR required before machine use
+- output_types present: findings_report (Stage 3 class)
+- completeness: outputs-only (scan; reg. 11(2) personal-data redactions apply to the parent release)
+- filename+sha256: uk-ts-a975-foveran-link-stage3-rsa.pdf `541de7e423c8e2e06f9782dc582c60ec01f557abea09aa3e67c737c7d03bbff4`
+- notes: First Stage 3-class Scottish trunk-road artifact sampled (prior TS items were Stage 1/2-combined VRS audits + responses). gov.scot licence footer verbatim: "All content is available under the Open Government Licence v3.0, except for graphic assets and where otherwise stated". Same release supplies its Stage 4 and Stage 5 companions (int-020/int-021).
+
+### INT-020 · A975/Foveran Link Road — Stage 4 Road Safety Audit report (monitoring)
+
+- id: `int-020-ts-a975-foveran-link-stage4-rsa-report`
+- title: Stage 4 Road Safety Audit — whole project incl. A975/Foveran Link Road (Annex B to EIR/202500483574 as int-019)
+- source_url: https://www.gov.scot/binaries/content/documents/govscot/publications/foi-eir-release/2025/12-a/foi-202500483574/documents/eir-202500483574---information-released---annex-b/eir-202500483574---information-released---annex-b/govscot%3Adocument/EIR%2B202500483574%2B-%2BInformation%2Breleased%2B-%2BAnnex%2BB.pdf
+- publisher: Transport Scotland Roads Directorate — released under EIR(S)R 2004
+- retrieved_date: 2026-08-25
+- country/body: Scotland, UK
+- native_stage: **Stage 4** — post-opening monitoring (accident-data-based per HD19/03/GG 119 practice; outside the three canonical design stages)
+- input_types present: scan without text layer — OCR required
+- output_types present: monitoring-report class findings (crash/operational review)
+- completeness: outputs-only (scan)
+- filename+sha256: uk-ts-a975-foveran-link-stage4-rsa.pdf `bb92ab5b5e2cefe88967be725008a537b0b14bae2c3e7b6c5255991a0b261341`
+- notes: With int-019/int-021 forms a complete Stage 3→4→5 lifecycle slice from one scheme — the only place the corpus shows what post-opening audit artifacts look like in GG 119-lineage practice.
+
+### INT-021 · A975/Foveran Link Road — Stage 5 Road Safety Audit report (further monitoring)
+
+- id: `int-021-ts-a975-foveran-link-stage5-rsa-report`
+- title: Stage 5 Road Safety Audit — whole project incl. A975/Foveran Link Road (Annex C to EIR/202500483574 as int-019)
+- source_url: https://www.gov.scot/binaries/content/documents/govscot/publications/foi-eir-release/2025/12-a/foi-202500483574/documents/eir-202500483574---information-released---annex-c/eir-202500483574---information-released---annex-c/govscot%3Adocument/EIR%2B202500483574%2B-%2BInformation%2Breleased%2B-%2BAnnex%2BC.pdf
+- publisher: Transport Scotland Roads Directorate — released under EIR(S)R 2004
+- retrieved_date: 2026-08-25
+- country/body: Scotland, UK
+- native_stage: **Stage 5** (native vocabulary as stated by Transport Scotland's release; beyond the DMRB GG 119 four-stage set — recorded as-published, mapping n/a)
+- input_types present: scan without text layer — OCR required
+- output_types present: monitoring-report class findings
+- completeness: outputs-only (scan)
+- filename+sha256: uk-ts-a975-foveran-link-stage5-rsa.pdf `cef72b140153a98922740cb43e3a2ff980ef54406d2406883880d2b3e6729026`
+- notes: "Stage 5" label is jurisdiction-native usage from this release — evidence that stage numbering does NOT stop at GG 119's Stage 4 in all body practice; supports the Native-Stage-always rule.
+
+### INT-022 · A90 Swallow Hotel roundabout — road safety audit information (Transport Scotland FOI/EIR)
+
+- id: `int-022-ts-a90-swallow-hotel-roundabout-rsa-info`
+- title: Road safety audit information — A90 Swallow Hotel roundabout (Annex A to Transport Scotland EIR/202500464778, published 23 Jul 2025)
+- source_url: https://www.gov.scot/binaries/content/documents/govscot/publications/foi-eir-release/2025/07-d/foi-202500464778/documents/eir-202500464778---information-released---annex-a/eir-202500464778---information-released---annex-a/govscot%3Adocument/EIR%2B202500464778%2B-%2BInformation%2Breleased%2B-%2BAnnex%2BA.pdf (parent release: https://www.gov.scot/publications/foi-202500464778/)
+- publisher: Transport Scotland Roads Directorate — released under EIR(S)R 2004
+- retrieved_date: 2026-08-25
+- country/body: Scotland, UK (Perthshire A90 junction)
+- native_stage: not verifiable without OCR (scan has no text layer; request asked for "the signed safety audit" for the junction)
+- input_types present: unknown pending OCR
+- output_types present: RSA artifact(s), 17 pp scanned
+- completeness: outputs-only (scan; no text layer — OCR required before any machine use)
+- filename+sha256: uk-ts-a90-swallow-hotel-roundabout-rsa-info.pdf `e0810f20b45f87960b6435084a33b3899123d4586d81ed64c73a40e26f533b24`
+- notes: Held at scan-grade pending OCR tooling in the fetch environment (no rasterizer available this run); identity anchored by the release page. gov.scot OGL v3.0 footer applies as int-019.
+
+### INT-023 · A14 Cambridge–Huntingdon, Bar Hill Junction — Stage 3 Road Safety Audit report (Highways England)
+
+- id: `int-023-uk-he-a14-barhill-stage3-rsa-report`
+- title: A14 Cambridge to Huntingdon Improvement Scheme — Bar Hill Junction Stage 3 Road Safety Audit (406395DS-TPN-ITD-117-A Rev 001, October 2020; Mott MacDonald Sweco JV for Highways England)
+- source_url: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/974442/Annex_1_-_Stage_3_Road_Safety_Audit.pdf
+- publisher: Highways England (National Highways) via GOV.UK publication record; prepared by MMSJV under the Project Support Framework (Consultancy) 2011–2015
+- retrieved_date: 2026-08-25
+- country/body: England, UK (motorway-adjacent major-scheme junction; Section 4 of A14 C2H)
+- native_stage: **Stage 3** — audit of completed works incl. an Interim Stage 3 history (§2.2); pre-opening/completion-of-construction class, canonical beyond detailed-design window
+- input_types present: drawings inventory (Appendix A documents/drawings reviewed; Appendix B key plans w/ problem locations), site visit record (daylight + darkness, video-recorded drive-through, weather/surface notes, police invite declined), departures & relaxations section
+- output_types present: findings_report (Problem 001… with Location/Summary structure), recommendations ("all issues … required for action"), previous-audits register (Stage 1, Stage 2 ×2, Interim Stage 3), GG 119 audit team statement signed
+- completeness: outputs-only (full report though — brief/drawings listed not appended)
+- filename+sha256: uk-he-a14-barhill-junction-stage3-rsa-2020.pdf `beaed8942de071fce23cc2c1a1d491a017211f5b46f6396974c7a9a437af398f`
+- notes: First National Highways (SRN major-scheme) worked audit in the collection; clean GG 119-era text layer. Hosted on GOV.UK assets (OGL v3.0: "All content is available under the Open Government Licence v3.0, except where otherwise stated"; document itself © Highways England/MMSJV within that release).
+
+### INT-024 · Elephant & Castle — Stage 3 Road Safety Audit report (TfL FOI)
+
+- id: `int-024-uk-tfl-elephant-castle-stage3-rsa`
+- title: "Elephant and Castle Stage 3 Version C (Final Issue)" Road Safety Audit [redacted] (released under TfL FOI-1053-1718, published 11 Oct 2017)
+- source_url: https://foi.tfl.gov.uk/FOI-1053-1718/Elephant%20and%20Castle%20Stage%203%20Version%20C%20%28Final%20Issue%29_Redacted.pdf (request page: tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-1053-1718)
+- publisher: Transport for London (FOI release; personal data removed under s.40(2) FOIA 2000)
+- retrieved_date: 2026-08-25
+- country/body: Greater London, UK (major signalized gyratory scheme; TfL road-authority practice — first TfL sample in the collection)
+- native_stage: Stage 3 (completion of construction/pre-opening class; canonical beyond detailed-design window)
+- input_types present: scan without text layer (36 pp) — OCR required; redacted release
+- output_types present: findings_report (Stage 3 class)
+- completeness: outputs-only (scan, s.40(2)-redacted)
+- filename+sha256: uk-tfl-elephant-castle-stage3-rsa-2017.pdf `9f1e610919fc81921da1dec3e646432b6ffd4df6e20741cc02a6a2e337346466`
+- notes: Companion to int-025 in the same release (requester asked for Stage 3+4; TfL held no Stage 4 yet — response records that fact). No open licence stated on the release page (page footer: "Copyright TfL"); treat reuse-rights as unverified.
+
+### INT-025 · St George's Circus / Westminster Bridge Road (Southwark) — Stage 3 Road Safety Audit report (TfL FOI)
+
+- id: `int-025-uk-tfl-stgeorges-circus-stage3-rsa`
+- title: "Road Safety Audit Stage 3 Southwark" [redacted] — St George's Circus and Westminster Bridge Road scheme (released under TfL FOI-1053-1718, published 11 Oct 2017)
+- source_url: https://foi.tfl.gov.uk/FOI-1053-1718/Road%20Safety%20Audit%20Stage%203%20Southwark_Redacted.pdf (request page as int-024)
+- publisher: Transport for London (FOI release; s.40(2) FOIA redactions)
+- retrieved_date: 2026-08-25
+- country/body: Greater London, UK
+- native_stage: Stage 3 (completion of construction class)
+- input_types present: scan without text layer — OCR required
+- output_types present: findings_report (Stage 3 class; report language per search snippet recommends problems "be studied for implementation")
+- completeness: outputs-only (scan, redacted)
+- filename+sha256: uk-tfl-stgeorges-circus-westminster-br-stage3-rsa-2017.pdf `ff035a83467a0b7e3e997311f27319b8e55218eb7fa291589e9d188365c3a090`
+- notes: PDF metadata (title/creation Aug 2017) corroborates provenance. Same licence caveat as int-024.
+
+### INT-026 · Iffley Road, Oxford (ATT2 Quickways) — Stage 2 Road Safety Audit report (county FOI/EIR via WhatDoTheyKnow)
+
+- id: `int-026-uk-oxfordshire-iffley-road-stage2-rsa`
+- title: ATT2 Quickways – Iffley Road, Oxford — Stage 2 Road Safety Audit (FINAL, May 2022; Oxfordshire County Council Active Travel Tranche 2)
+- source_url: released via WhatDoTheyKnow request "Road Safety Audits 1,2,& 3 for the Newman Road / A4158 Junction" (whatdotheyknow.com/request/road_safety_audits_12_3_for_the, response attach/4; live WDTK 403s plain curl — fetched via Wayback capture 20240608234419 of the public-origin attachment URL)
+- wayback_url: http://web.archive.org/web/20240608234419if_/https://www.whatdotheyknow.com/request/road_safety_audits_12_3_for_the/response/2396503/attach/4/RSA2%20CAP%20TGE%20IR%20ED000208%20Iffley%20May%202022.pdf
+- publisher: Oxfordshire County Council (EIR release; document prepared for OCC by Milestone Infrastructure Limited)
+- retrieved_date: 2026-08-25
+- country/body: England, UK (urban cycle-route scheme on an arterial street; county highway-authority active-travel programme)
+- native_stage: Stage 2 — detailed design (GG 119-lineage vocabulary; canonical ≈ DETAILED_DESIGN)
+- input_types present: traffic_data (2000–2019 flows: 8,300–11,000 vehicles/day, pedal cycles second-most common mode, cycle volumes), scheme description, drawings referenced per item
+- output_types present: findings_report (numbered problems + recommendations), distribution/status sheet (Draft/Final issue control)
+- completeness: outputs-only (drawings cited not appended)
+- filename+sha256: uk-oxfordshire-iffley-road-stage2-rsa-2022.pdf `e06728b679681590f1c1f821db2a5415154333cbef5041e3579fa19279a1117d`
+- notes: First English county/city non-NSIP design-stage RSA sampled; pairs with int-027 (post-opening Stage 3 on the same built scheme) and int-028 (Stage 1 response) — a three-artifact county-programme slice. No explicit licence statement captured on host; underlying OCC EIR release.
+
+### INT-027 · Iffley Road, Oxford — Stage 3 Road Safety Audit report (RSA0214, post-implementation)
+
+- id: `int-027-uk-oxfordshire-iffley-road-stage3-rsa`
+- title: RSA0214 – Oxford Quickways, Iffley Road — Stage 3 Road Safety Audit (Milestone Infrastructure for Oxfordshire County Council; audit of works implemented March 2023)
+- source_url: WhatDoTheyKnow request as int-026 (response attach/5; Wayback capture 20240608224729)
+- wayback_url: http://web.archive.org/web/20240608224729if_/https://www.whatdotheyknow.com/request/road_safety_audits_12_3_for_the/response/2396503/attach/5/RSA0214%20Iffley%20Rd%20RSA3%20Report%20Final.pdf
+- publisher: Oxfordshire County Council / Milestone Infrastructure Limited
+- retrieved_date: 2026-08-25
+- country/body: England, UK
+- native_stage: **Stage 3** — post-implementation audit of the completed quickway (includes §3 "Items raised at previous road safety audits" carry-over section; CPZ redistribution context documented)
+- input_types present: site description (urban mixed-use corridor), project details table, previous-RSA items register
+- output_types present: findings_report (Stage 3 problems + recommendations)
+- completeness: outputs-only (29 pp)
+- filename+sha256: uk-oxfordshire-iffley-road-stage3-rsa-2023.pdf `b58ddad1c4342a9b8a2bc386121a5669aa6e1bb0d64c50214c19d5afbbbc6bad`
+- notes: Text-layer clean; together with int-026 demonstrates Stage 2→Stage 3 progression with explicit previous-items carry-over — direct seed material for rerun/carry-over semantics.
+
+### INT-028 · Iffley Road, Oxford — Stage 1 Road Safety Audit Response Report (designer-response artifact)
+
+- id: `int-028-uk-oxfordshire-iffley-road-stage1-response`
+- title: Stage 1 Road Safety Audit Response Report — Active Travel Tranche 2 Oxford Quickways, Iffley Road (December 2021, signed; Milestone Infrastructure Ltd as Design Organisation, Oxfordshire County Council as Overseeing Organisation)
+- source_url: WhatDoTheyKnow request as int-026 (response attach/3; Wayback capture 20240609023611)
+- wayback_url: http://web.archive.org/web/20240609023611if_/https://www.whatdotheyknow.com/request/road_safety_audits_12_3_for_the/response/2396503/attach/3/605020%20MIL%20HGN%20IFF%20RSA%20CH%20101%20RSA%20Stage1%20Response%20Report%20signed.pdf
+- publisher: Oxfordshire County Council (designer-side document authored by Milestone Infrastructure Ltd)
+- retrieved_date: 2026-08-25
+- country/body: England, UK
+- native_stage: Stage 1 response (canonical ≈ PRELIMINARY_DESIGN response)
+- input_types present: none (response document)
+- output_types present: response_report — authorisation sheet with named sign-offs (Prepared by Design Organisation Senior Engineer/Design Lead, Approved by Overseeing Organisation) + problem-by-problem responses
+- completeness: outputs-only (15 pp; text-layer clean)
+- filename+sha256: uk-oxfordshire-iffley-road-stage1-response-2021.pdf `57cceab9beaf6f28bc6c0fdd4a40a04c7f93ddc1c5e22b5343f05debc54f34c7`
+- notes: Scarce-class designer-response artifact #6 in the corpus, and the first with both signature blocks fully populated on a named-authorisation sheet (GG 119 collaborative-response model in county practice). Licence: none stated on host; underlying OCC EIR release.
+
 ## Documented gaps / blocked targets (no file)
 
 | target | what it is | why not collected |
@@ -295,26 +509,40 @@ stage ≈ `PRELIMINARY_DESIGN`–`DETAILED_DESIGN`. Mappings shown alongside nat
 | Austroads worked RSA examples | No standalone published completed RSAs; AGRS06 Part 6 carries templates only | Austroads publishes guidance/frameworks (AGRS06-19, AP-R509-16 SSF with framework-level examples), not filled scheme audits. Skipped to respect download cap; retrievable free if wanted later. |
 | NZTA/Waka Kotahi scheme RSAs | Procedures doc (TFM9) includes only sample blank forms | **Partially resolved Round 2** — INT-016 (M2PP Stage 2 decision-tracking) obtained via Wayback. Remaining gap: completed full RSA reports on named schemes are sparse; Te Ara Tupua design safety audits (2017 + detailed-design 2021, 11 MB/7.7 MB) exist on nzta.govt.nz/projects/te-ara-tupua/publications but nzta.govt.nz serves Incapsula bot-challenge HTML to non-browser clients, and the two Wayback captures of the detailed-design file are truncated at ~1 MiB in our fetch environment. Retriable with browser-session tooling. |
 | Te Ara Tupua Pito-One to Melling walking/cycling link audits | 2017 Design safety audit + Nov 2021 Detailed design road safety audit (redacted), published by Waka Kotahi | See NZTA row above — bot-walled live; archived copies truncated. High-value future target: VRU-critical-mass design audit. |
-| Ardee Main Street Stage 2 RSA (June 2024 + Oct 2024 addendum) | Urban main-street public-realm Stage 2 with TII approval appendix | Present as Appendix B *inside* the case's Quality Audit PDF (19 - Ardee 2040 - Quality Audit (November 2024)_0.pdf, ABP 323972); left un-downloaded this run to respect scope cap — direct candidate for Round 3. |
+| Ardee Main Street Stage 2 RSA (June 2024 + Oct 2024 addendum) | Urban main-street public-realm Stage 2 with TII approval appendix | **Resolved Round 3** — extracted from the parent Quality Audit PDF as int-018. |
 | SANRAL scheme RSAs | South Africa publishes methods (TRH 29 / SARRAM lineage), not individual audits | Individual SANRAL project RSAs not in open domain. |
+| Welsh Government trunk-road RSAs (A55/A487/A470 class) | ATISN FOI disclosure log on gov.wales | Round-3 search surfaced no RSA-bearing ATISN directly; aggregator flagged "FOI release 26689: A487 at Pentrwyn Garnedd" (published ~Mar 2026) but its gov.wales URL could not be resolved this run (guessed slugs 404 — needs a manual gov.wales publications search for the exact slug). No login wall involved. |
 | World Bank WE-WC corridor RSA reports | Kazakhstan South West Roads Project safeguards docs exist (Inspection Panel report etc.) | The actual RSA reports were never published; WB document portal holds safeguards/procurement records only. |
+| CAREC Manual 2: Safer Road Works | Remaining RSA-adjacent series volume (fetched + inspected this round) | No worked examples/case studies — pure traffic-management-plan process guidance; fails the worked-example sample bar (int-001/017/117/118 all carry worked content). File discarded; volume stays reference-class. |
+| CAREC Manuals 6 Blackspots / 7 Speed Management | Final two series volumes | Outside the RSA scope (blackspot programmes / speed policy); not hunted this round — reference-class only. |
+| Named-scheme SR4D design assessments beyond KSHIP | IndiaRAP names Gujarat R&B, UP PWD, Kerala STP as SRfD users (~2,000 km shaped) | No per-project public SR4D report located; closest additions are int-119 (GSDG typology renders) and int-117/118 (worked examples). WB P175118 ISR checked — status report only, discarded. |
 | Full multi-file packages (brief + drawings + report + response) | Mission's ideal package shape | Unobtainable publicly at trunk-road scale (client property); closest is INT-008 single-file development-control package. |
 
 ## Coverage summary
 
-- Downloads: **17 files** (Round 1: 9; Round 2: 8 — see per-entry sha256). All `%PDF`-verified; qpdf checks pass with benign linearization/hint-table warnings only (no encryption, nothing decrypted).
-- full-package: INT-008 (single-file, minor scheme). outputs-only + completed response/feedback artifacts: INT-015 (feedback form incl. one rejection), INT-016 (decision-tracking form), INT-006/007/013 (response reports).
-- outputs-only (real named schemes): INT-002, INT-004, INT-005, INT-010, INT-011, INT-012, INT-014.
-- excerpt/manual-with-worked-content: INT-001 (CAREC case studies + checklists), INT-003 (AfDB specimen report), INT-017 (CAREC Manual 5 SR4RSA worked examples Levels 1–3).
-- Early-stage emphasis after Round 2: 13/17 samples sit at feasibility↔detailed-design equivalents (all four new UK/Irish audit artifacts are Stage 1(/2) or combined Stage 1&2; NZ sample is Stage 2 scheme design; CAREC M5 examples are design-stage).
-- Jurisdiction spread after Round 2: ADB/CAREC ×2 (incl. SR4RSA manual), iRAP/India, AfDB/Pan-African, Scotland ×5 (+INT-010 SE Unit), England ×4 (NSIP development-control + SRFI response), Ireland ×3 (ABP/EIAR vein productive), New Zealand ×1. Australia/SANRAL still gap-documented below.
-- Response-culture coverage now spans: UK FOI designer responses (Stage 1 + Stage 2), England NSIP response report (multi-junction), Irish completed feedback form **with a rejected recommendation**, and NZTA decision-tracking (designer comment + client decision).
+- Downloads: **31 files** (Round 1: 9; Round 2: 8; Round 3: 14 — see per-entry sha256). All `%PDF`-verified; qpdf checks pass with benign linearization/hint-table warnings only (no encryption, nothing decrypted).
+- full-package: INT-008 (single-file, minor scheme). outputs-only + completed response/feedback artifacts: INT-015 (feedback form incl. one rejection), INT-016 (decision-tracking form), INT-006/007/013/028 (response reports).
+- outputs-only (real named schemes): INT-002, INT-004, INT-005, INT-010, INT-011, INT-012, INT-014, INT-018, INT-023, INT-026, INT-027.
+- excerpt/manual-with-worked-content: INT-001 (CAREC case studies + checklists), INT-003 (AfDB specimen report), INT-017 (CAREC Manual 5 SR4RSA worked examples Levels 1–3), INT-117 (CAREC Manual 3 roadside-hazard case studies), INT-118 (CAREC Manual 4 seven VRU before/after case studies), INT-119 (iRAP×NACTO-GDCI star-rated street designs — second design-assessment artifact beyond KSHIP).
+- scan-grade (no text layer; OCR required before machine use): INT-010, INT-019…INT-022, INT-024, INT-025.
+- Early-stage emphasis: 15/28 samples sit at feasibility↔detailed-design equivalents. Round 3 deliberately shifted coverage downstream — first Stage 3-class reports (INT-019, INT-023, INT-025, INT-024, INT-027), first monitoring-class artifacts (INT-020/021), and a Stage 2 with cross-run carry-over annotations (INT-018).
+- Jurisdiction spread after Round 3: ADB/CAREC ×4 (Manuals 1, 3, 4, 5), iRAP/India + iRAP×GDCI global design renders, AfDB/Pan-African, Scotland ×9 (+A975 Stage 3/4/5 lifecycle slice, +A90 Swallow Hotel), England ×10 (+Highways England A14 Bar Hill Stage 3, +TfL London ×2 Stage 3s, +Oxfordshire county slice ×3 incl. signed response report), Ireland ×4 (+Ardee Main Street Stage 2 w/ TII approval email), New Zealand ×1. Australia/SANRAL/Welsh Government still gap-documented below.
+- Response-culture coverage now spans: UK FOI designer responses (Stage 1 + Stage 2), England NSIP response report (multi-junction), Irish completed feedback form **with a rejected recommendation**, NZTA decision-tracking (designer comment + client decision), and an England county **signed authorisation-sheet response report** (INT-028) plus stakeholder comment-letter responses to draft findings (see US-027).
 
 ### Round 2 notes (2026-08-24)
 
 - PINS nsip-documents.planninginspectorate.gov.uk and applicant DCO document sets are a rich open vein for England Stage 1 RSAs (search "road safety audit" appendix within EN/TR case records).
 - An Bord Pleanála `pleanala.ie/publicaccess` hosts standalone RSA PDFs under both Case Documentation and EIAR-NIS trees — highest-yield Irish route found so far.
 - nzta.govt.nz direct asset URLs are bot-walled to plain HTTP clients; Wayback captures of public-origin NZTA assets work but large files truncate (~1 MiB) in this environment.
+
+### Round 3 notes (2026-08-25)
+
+- gov.scot FOI/EIR releases remain the richest Scottish vein: EIR/202500483574 (A90–A975 junction) alone yielded a complete Stage 3→4→5 lifecycle slice from one scheme. Search FOI references for "road safety audit" on gov.scot/publications.
+- WhatDoTheyKnow blocks plain curl (403 HTML), but its **attachment URLs are Wayback-captured** when the request page is archived — the Oxfordshire Iffley Road trio (int-026…028 incl. a signed designer response report) came entirely from CDX-located captures. Query CDX for `whatdotheyknow.com/request/*/response/*/attach/*` patterns.
+- TfL's foi.tfl.gov.uk attachment host is curl-friendly; FOI pages listing RSA releases (e.g. FOI-1053-1718) can be enumerated via site search. No open licence is stated on TfL FOI pages — reuse rights unverified for int-024/025.
+- GOV.UK assets (`assets.publishing.service.gov.uk`) host National Highways/DfT RSA PDFs curl-free (int-023); hunt via `"road safety audit" site:gov.uk` publication records.
+- Welsh Government ATISN disclosure log produced no resolvable RSA-bearing release this run (see gaps row).
+- No OCR rasterizer was available in this fetch environment; six new artifacts are held at scan-grade pending OCR (flagged per-entry).
 
 ## Non-goals respected
 

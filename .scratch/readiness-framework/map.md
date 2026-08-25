@@ -31,6 +31,9 @@ fixed so AFK sessions don't stall on it.
 - [01 — Conversions wave 1](issues/01-conversions-wave1.md): GF-14/15/16 real-scheme fixtures fully scored 100% (archive 2026-08-25T07-34-03-343Z); registry 161; odd.json v1.1.2.
 - [03 — Judge transport-flake retry](issues/03-judge-retry.md): 4-attempt backoff in-run + --topup sibling-archive mode (scored verdicts immutable); proven live. - [02 — Release-test tier plumbing](issues/02-release-test-plumbing.md): dormant gate at <100 cataloged (exit 2 pre-judging), ADR-0007 firewall module, role-aware scorecard sections; fixtures retro-linked where provable.
 
+- [05 — Round-3 hunt MnDOT/UK/IE](issues/05-hunt-mndot-uk-ie.md): +18 samples (INT-018..028, US-021..027); Ardee Stage 2 extracted w/ repeat annotations + TII approval.
+- [06 — Round-3 hunt NCHRP/CAREC/county](issues/06-hunt-nchrp-carec-county.md): +9 net samples (renumbered US-028..033, INT-029..031); NCHRP Synthesis 336 specimens, CAREC M4 VRU cases, GSDG.
+
 ## Not yet specified
 
 - **Legacy-stage cell flips**: whether cataloged material (or round-3 hauls) can seed

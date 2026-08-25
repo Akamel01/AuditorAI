@@ -19,6 +19,16 @@ headers); the two ROSAP-hosted samples below were retrieved from Wayback capture
 the exact ROSAP `*_DS1.pdf` artifacts. All other files fetched live from agency hosts.
 Every downloaded file verified `%PDF` magic on arrival.
 
+**Round 3 (2026-08-25): US-120…US-125 added** — NCHRP/TRB free-PDF vein opened
+(Synthesis 336 via onlinepubs.trb.org; FHWA-SA-16-120 via Wayback of safety.fhwa.dot.gov)
+plus municipal/MPO corridor batch (Boston, Worcester, Northborough MPO-authored,
+Greenville SC). Renumbered us-028..033 after collision-free merge with parallel collection run.
+
+**Round 3 (2026-08-25): US-021…US-027 added** — the deferred MnDOT edocs batch
+downloaded in full (5 RSAR technical reports + the US 12 post-audit presentation)
+plus the Hwy 7 report recovered from a city-council packet co-publication. See gaps
+for what remains of that vein (nothing curl-fetchable).
+
 ## Downloaded samples
 
 ### US-001 · RSA of US 59 @ IA 9 intersection, Osceola County, Iowa (InTrans 11-421)
@@ -324,6 +334,203 @@ Every downloaded file verified `%PDF` magic on arrival.
 - filename: ma-wayland-route20-oldconnpath-plainrd-rsa.pdf · sha256: 7449f4bbdc4c3a0853299c993c9f3b49d100bd4fb1412af6506cec17a7a96d5b
 - notes: Cleanest example of geometry-induced crash-cluster reasoning (redundant delta-island movements → rear-end concentration). Sister report for Weston Rt 20 located (see gaps).
 
+### US-120 · NCHRP Synthesis 336: Road Safety Audits — with Appendix C Sample Audit Reports (TRB, 2004)
+
+- id: `us-028-nchrp-synthesis-336-road-safety-audits`
+- title: "Road Safety Audits — A Synthesis of Highway Practice" (NCHRP Synthesis 336)
+- source_url: https://onlinepubs.trb.org/onlinepubs/nchrp/nchrp_syn_336.pdf (catalog: nap.nationalacademies.org/catalog/23343; free PDF served live by TRB onlinepubs — no NAP login needed)
+- publisher: Transportation Research Board, NCHRP (authors E.M. Wilson & M.E. Lipinski), 2004, 136 pp.; ISBN 0-309-07015-5
+- retrieved_date: 2026-08-25
+- state/agency: Multi-state survey of practice — 38 state DOTs + 6 Canadian provinces responded (2003 survey)
+- native phase: synthesis of RSA/RSAR state of practice incl. program design-stage vocabulary; specimen audit reports annexed → mapping n/a (reference+specimen class)
+- input_types present: scheme_description (inside embedded sample reports: Route 60 MP 8.7–10.4 widening preliminary-design RSA; Route 51 @ Slade St, "Town of Layton" intersection preliminary-design RSA; Route 197 Stanford design RSA)
+- output_types present: findings_report specimens (Appendix C ≈ print pp.41–82: course-derived sample RSA plus three worked example reports, one referencing a Stage 1 report + designer responses), checklists (**Appendix D**: FHWA 1997 international scanning-tour RSA checklist set — intersections, geometric, signage/lighting, general issues)
+- completeness: compilation/specimen depth (no real-scheme raw packages)
+- filename: nchrp-synthesis-336-road-safety-audits-2004.pdf · sha256: a01a34190ea3c25c40f1052a6538d8c1a5b4bb3d0e4d4058285185483a035b69
+- notes: Licence verbatim from title page: "© 2004 Transportation Research Board". Primary TRB/NCHRP item for vein (a); its "conceptual/preliminary/advanced design stage" survey vocabulary reinforces the phase-not-Stage-N reading. Pairs with US-014/US-015 as the third FHWA/TRB case-study-class artifact.
+
+### US-121 · Improving Access to Transit Using Road Safety Audits: Four Case Studies (FHWA-SA-16-120, Oct 2016)
+
+- id: `us-029-fhwa-sa-16-120-transit-rsa-casestudies`
+- title: "Improving Access to Transit Using Road Safety Audits: Four Case Studies"
+- source_url: https://safety.fhwa.dot.gov/rsa/resources/docs/fhwasa16120.pdf
+- retrieval_url_used: http://web.archive.org/web/20250201034130if_/https://safety.fhwa.dot.gov/rsa/resources/docs/fhwasa16120.pdf (live safety.fhwa.dot.gov bot-walled per gaps row; full 14 MB capture intact)
+- publisher: FHWA Office of Safety (VHB; authors Goughnour, Revilla, Pitts), October 2016, 59 pp.
+- retrieved_date: 2026-08-25
+- state/agency: Multi-agency transit-access batch — Asheville NC (NCDOT/City), Orange County FL (LYNX/Central FL RTA/MetroPlan Orlando/FDOT), Springfield OR (City), Tucson AZ (Sun Tran/City)
+- native phase: existing-road RSAs focused on bus stop/transit-corridor access and VRU crossings → mapping n/a
+- input_types present: scheme_description per site, traffic_data (crash histories), site_photos, drawings (location figures/bus-stop diagrams)
+- output_types present: findings_report + recommendations per case study; eight-step RSA process walkthrough; benefit/cost framing w/ USDOT crash-cost values
+- completeness: compilation (case-study depth, not raw packages)
+- filename: us-fhwa-sa-16-120-transit-rsa-casestudies.pdf · sha256: c4b56f8ff508abd361aceb0fa2dcf47a27ba994b81f884e689f5799b54bf1480
+- notes: Distribution statement verbatim: "No restrictions. This document is available to the public through the National Technical Information Service, Springfield, Virginia 22161." Adds the **transit-access RSA lens** (bus stop siting, crossing-to-stop desire lines) absent from the corpus; Tucson site is distinct from CS-08 (2006 program).
+
+### US-122 · Cambridge Street corridor RSA, Allston, Boston (McMahon for MassDOT/City, Dec 2014)
+
+- id: `us-030-ma-boston-cambridge-st-allston-rsa`
+- title: "Road Safety Audit — Cambridge Street, Allston, City of Boston" (DRAFT)
+- source_url: https://www.cityofboston.gov/ons/pdfs/report.pdf (hosted under Mayor's Office of Neighborhood Services public path)
+- publisher: McMahon Associates, Inc. for MassDOT / City of Boston (December 2014, 40 pp.)
+- retrieved_date: 2026-08-25
+- state/agency: Massachusetts — City of Boston (BTD/BPWD/BPD/BEMS) + MassDOT + Boston MPO/CTPS
+- native phase: existing-road corridor RSA (Soldiers Field Rd/MassPike off-ramps → Harvard Ave segment) → mapping n/a
+- input_types present: scheme_description, traffic_data (crash context), drawings (locus figures)
+- output_types present: findings_report, recommendations (short/long-term enhancement tables)
+- completeness: full-package body (public copy carries DRAFT watermark; no response report)
+- filename: ma-boston-cambridge-st-allston-rsa.pdf · sha256: e47169868952e0f77df52ac4ee0387fea228304c2276f3b9ba1eb4a5a57cc811
+- notes: Municipal self-hosted corridor RSA adjacent to the Allston I-90 multimodal project area; large city-agency audit team roster documented.
+
+### US-123 · Chandler Street (Route 122) corridor RSA, Worcester (VHB for MassDOT/City, Aug 2020)
+
+- id: `us-031-ma-worcester-chandler-st-corridor-rsa`
+- title: "Road Safety Audit — Chandler Street Corridor, City of Worcester"
+- source_url: https://www.worcesterma.gov/chandler-street-may-street-improvements/chandler-street-road-safety-audit.pdf
+- publisher: VHB for MassDOT / City of Worcester (August 4, 2020, 59 pp.)
+- retrieved_date: 2026-08-25
+- state/agency: Massachusetts — City of Worcester DPW&P / MassDOT District 3 / CMRPC
+- native phase: existing-road corridor RSA (Hadwen Rd → Chandler Magnet Elementary School; HSIP high-crash cluster at May St) → mapping n/a
+- input_types present: scheme_description, traffic_data (2016–2018 crash diagrams/tables from WPD+MassDOT), drawings (locus/figures), **360° corridor video footage** reviewed by team
+- output_types present: findings_report (numbered safety issues incl. markings/parking, ped-bike accommodations, geometry), recommendations (per-location enhancement tables w/ time frame/cost/jurisdiction), checklists (agenda appendix)
+- completeness: full-package (teleconference RSA during COVID — remote-format process evidence; emergency-responder comments solicited post-meeting)
+- filename: ma-worcester-chandler-st-corridor-rsa.pdf · sha256: c5eb7c113c2e6fe146d464bfe9a67446a84f25ab53c726953e5a3369b4fb330f
+- notes: First sample documenting a **fully remote audit format** (Zoom + 360 video instead of field visit) — useful fixture material for input-modality variance (site observations vs recorded media).
+
+### US-124 · Bartlett Street corridor RSA, Northborough (CMRPC — MPO-authored, Oct 2021)
+
+- id: `us-032-ma-northborough-bartlett-st-rsa`
+- title: "Road Safety Audit — Bartlett Street, Town of Northborough"
+- source_url: https://cmrpc.org/wp-content/uploads/2024/05/2021-Bartlett-Street-Road-Safety-Audit.pdf
+- publisher: Central Massachusetts Regional Planning Commission (CMRPC) for the Town of Northborough (October 28, 2021, 45 pp.)
+- retrieved_date: 2026-08-25
+- state/agency: Massachusetts — Town of Northborough / CMRPC (MPO as author, not just participant)
+- native phase: existing-road corridor RSA (Main St/MA-20 HSIP cluster → Cedar Hill Rd; warehouse-freight growth context) → mapping n/a
+- input_types present: scheme_description (land-use/zoning split along corridor), traffic_data (**three turning-movement counts self-performed by CMRPC** incl. truck classifications; speed runs), drawings (corridor/potential-enhancement figures)
+- output_types present: findings_report (intersection-by-intersection west→east), recommendations (incl. temporary/interim ped-bike layout reasoning), checklists (agenda/contacts/crash appendices)
+- completeness: full-package
+- filename: ma-northborough-bartlett-st-rsa.pdf · sha256: 1657b23847bc42252ef23f33e1eab0b285b36faad3a5431c1eb8c4af154c84f1
+- notes: Distinct producer class: an **MPO-authored** RSA that generated its own counts rather than consuming agency data — exercises Audit Context assembly by the auditor side.
+
+### US-125 · Green Avenue (S-5) Road Safety Assessment, Greenville, South Carolina (AECOM for City, Oct 2024)
+
+- id: `us-033-sc-greenville-green-ave-road-safety-assessment`
+- title: "Road Safety Assessment — Green Avenue (S-5) from Bagwell Circle to S Markley Street" (Rev 1, October 2024)
+- source_url: https://www.greenvillesc.gov/DocumentCenter/View/29848/Green-Avenue-Road-Safety-Assessment-PDF
+- retrieval_url_used: http://web.archive.org/web/20250318025340if_/https://www.greenvillesc.gov/DocumentCenter/View/29848/Green-Avenue-Road-Safety-Assessment-PDF (greenvillesc.gov CivicPlus serves HTML challenge to curl; full archived copy of same public file)
+- publisher: AECOM (Poplin/Nelson/Eckenrode) for City of Greenville Engineering; partners SCDOT, Greenville County, Greenville County Schools
+- retrieved_date: 2026-08-25
+- state/agency: South Carolina — City of Greenville / SCDOT / Greenville County (first SC sample)
+- native phase: existing-road corridor assessment ("Road Safety Assessment" — FHWA's newer naming alongside RSA) → mapping n/a; draft presented at Oct 22, 2024 project-preview meeting with public comment window to Nov 30, 2024
+- input_types present: scheme_description (corridor + school-zone context), traffic_data (AADT 3,900–7,400 vpd 2022; 85th-percentile speeds 5–9 mph over limit), drawings (concept figures incl. Dunbar St roundabout/signalization options)
+- output_types present: findings_report, recommendations (sidewalk repairs, high-visibility crosswalks, ped signals, road-diet option flagged for further analysis)
+- completeness: full-package (single-document assessment; revision history table on file)
+- filename: sc-greenville-green-ave-road-safety-assessment.pdf · sha256: e53501b2db6047f05a102b4448af67a6be381913509c95cd5c0e42dbc697bdfc
+- notes: Copyright line verbatim on cover: "Copyright © 2024 by AECOM All rights reserved." Documents the **RSA-as-public-engagement-input** pattern (budgeting feeder); sibling Dunbar Street assessment announced but not located publicly (see gaps).
+
+### US-021 · US 8 (TH 8) I-35 to MN/WI border corridor RSA, Minnesota (MnDOT, Feb 2014)
+
+- id: `us-021-mn-us8-i35-wi-border-rsa`
+- title: "U.S. Trunk Highway 8: I-35 to MN/WI Border — Road Safety Audit: Technical Report"
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401740
+- publisher: Minnesota Department of Transportation (MnCMAT crash data 2008–2012)
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT / Chisago County cities (Chisago City, Lindstrom, Shafer, Center City, Taylors Falls)
+- native phase: existing-road corridor RSA (rural/urban mix to Wisconsin border) → mapping n/a
+- input_types present: scheme_description (corridor improvement history), traffic_data (MnCMAT 2008–2012 crashes), drawings (segment exhibits)
+- output_types present: findings_report, recommendations (short/medium/long-term structure)
+- completeness: full-package (39 pp technical-report format)
+- filename: mn-us8-i35-wi-border-rsa.pdf · sha256: c0b26740959f7ca3b2e9a831eaaa636f4022dd52f264b197a6822b410a64d943
+- notes: First of the round-3 deferred-MnDOT batch; documents the "road safety investigation" framing (is crash pattern unusual given prior improvements?).
+
+### US-022 · TH 3 Farmington/Empire Township RSA, Minnesota (MnDOT, Dec 2006)
+
+- id: `us-022-mn-th3-farmington-empire-rsa`
+- title: "TH 3 from CSAH 46 (160th Street W.) to CSAH 50 (Elm Street) in the City of Farmington and Empire Township — Road Safety Audit" (final report, December 2006)
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401813
+- publisher: Minnesota Department of Transportation (independent multi-disciplinary RSA team; stakeholders meeting at Lakeville Water Treatment Facility documented)
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT / Cities of Farmington & Lakeville, Empire Township
+- native phase: existing-corridor safety audit (pre-improvement investigation) → mapping n/a
+- input_types present: scheme_description (segment location map), stakeholders-meeting record, drawings (segment figures)
+- output_types present: findings_report, recommendations
+- completeness: full-package (21 pp; oldest dated artifact in the collection)
+- filename: mn-th3-farmington-empire-rsa.pdf · sha256: bfeac26e635ef985504981930220aef2cfff91620769cef8029aa32577318ebf
+- notes: Extends MnDOT vein back to 2006 — useful for longitudinal phrasing-drift comparison against US-009…US-013 (2015–2025) and US-021…US-026.
+
+### US-023 · MNTH 5 Jamaca Ave–Manning Ave/CSAH 15 (Lake Elmo) RSAR Technical Report, Minnesota (MnDOT, Feb 2013)
+
+- id: `us-023-mn-hwy5-lake-elmo-rsar`
+- title: "MnDOT Trunk Highway 5: Jamaca Avenue to Manning Avenue/CSAH 15 — Road Safety Audit Review Technical Report" (February 13, 2013)
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401776
+- publisher: Minnesota Department of Transportation (RSAR team roster incl. Brad Estochen State Safety Engineer, Derek Leuer Safety Engineer)
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT Metro District (Lake Elmo/Woodbury area)
+- native phase: existing-road corridor RSA review (RSAR) → mapping n/a
+- input_types present: scheme_description (corridor history), traffic_data (crash analysis), drawings (exhibits)
+- output_types present: findings_report, recommendations
+- completeness: full-package (30 pp)
+- filename: mn-hwy5-lake-elmo-rsar.pdf · sha256: 675b70c4bac5ee78ea7f816b2f75370c369c4942e81be862589d78deb9c9008d
+- notes: Named "Road Safety Audit Review" — MnDOT's corridor-RSA variant label; team-roster table format is clean role-modeling material.
+
+### US-024 · US 14 Owatonna–Dodge Center RSAR Technical Report, Minnesota (MnDOT, Sep 2013)
+
+- id: `us-024-mn-us14-owatonna-dodge-center-rsar`
+- title: "US Highway 14: Owatonna to Dodge Center — Road Safety Audit Review Technical Report" (September 26, 2013)
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401805
+- publisher: Minnesota Department of Transportation
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT District 6 coordination documented (meeting with District)
+- native phase: existing-road rural corridor RSA review → mapping n/a
+- input_types present: scheme_description (corridor limits), traffic_data (crash data), drawings (exhibits), district future-plans meeting record
+- output_types present: findings_report, recommendations
+- completeness: full-package (29 pp)
+- filename: mn-us14-owatonna-dodge-center-rsar.pdf · sha256: be6d0a33ecd201b321ec0e6fa08329157c4ab37494d584621f64d8d4a1181766
+- notes: Documents district future-plans as an explicit RSA input (§1.3 Meeting With MnDOT District 6) — Audit Context assembly evidence.
+
+### US-025 · US 14 Mankato–New Ulm RSAR Technical Report, Minnesota (MnDOT, Apr 2012)
+
+- id: `us-025-mn-us14-mankato-new-ulm-rsar`
+- title: "U.S. Highway 14: Mankato to New Ulm — Road Safety Audit Review Technical Report" (April 17, 2012)
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401810
+- publisher: Minnesota Department of Transportation
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT District 7 (USTH 14 Partnership meeting documented)
+- native phase: existing-road rural corridor RSA review → mapping n/a
+- input_types present: scheme_description, traffic_data (crash data), drawings (exhibits), partnership/district meeting records
+- output_types present: findings_report, recommendations
+- completeness: full-package (42 pp)
+- filename: mn-us14-mankato-new-ulm-rsar.pdf · sha256: 2c62f8c88c0f93f1f338fb0cfcae03d599e64aef148c8ea7f1fd1e2d74155faa
+- notes: Completes the two US 14 siblings — same-programme pair enabling cross-sample comparison like the UK VRS pair (INT-004/005).
+
+### US-026 · US 12 RSA Post-Audit Presentation, Minnesota (MnDOT/HDR, Aug 2015)
+
+- id: `us-026-mn-us12-post-audit-presentation`
+- title: "US 12 Road Safety Audit — Post-Audit Presentation" (August 6, 2015; © 2015 HDR, Inc.)
+- source_url: https://edocs-public.dot.state.mn.us/edocs_public/DMResultSet/download?docId=26401632
+- publisher: Minnesota Department of Transportation (consultant HDR Engineering)
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT District 3
+- native phase: post-audit stakeholder briefing for the Sept 2015 US 12 RSA → mapping n/a (third lifecycle artifact)
+- input_types present: none standalone (recaps briefing-book inputs and findings)
+- output_types present: presentation deck (52 slides) summarizing findings/recommendations for public/stakeholder delivery
+- completeness: outputs-only (companion to US-010 briefing book + US-011 technical report)
+- filename: mn-us12-post-audit-presentation.pdf · sha256: 0606260f82e20517d096374e031d16e3c4544c50abad13b684bac8eaa1ffc52d
+- notes: **Only post-audit communication artifact in either jurisdiction collection** — completes the rare MnDOT triple (input packet → report → post-audit presentation) on one programme. Gaps-row guess that docId 26401632 was a Twin Ports presentation was wrong: MnDOT's RSA page confirms it is the US 12 deck, and no Twin Ports presentation is published.
+
+### US-027 · Hwy 7 St Louis Park–Hollywood Township RSA Report + comment letters, Minnesota (MnDOT, Jul 2022)
+
+- id: `us-027-mn-hwy7-slp-hollywoodtownship-rsa-report`
+- title: "Highway 7 Road Safety Audit Report" (July 2022; 32-mi corridor, Hwy 100 St Louis Park → Carver Co Rd 33 Hollywood Township) incl. Appendix A comment letters — extracted from City of Minnetonka City Council Agenda Item 6B packet (Nov 14, 2022)
+- source_url: https://d3n9y02raazwpg.cloudfront.net/eminnetonka/e778741a-9874-4638-9dfe-93875c4264f2-a135b2d3-3a47-466a-9381-c77c650143d3-1696000219.pdf (parent: City of Minnetonka council agenda packet, Agenda Item 6B "State Highway 7 MnDOT Safety Audit Report"; MnDOT project page dot.state.mn.us/metro/projects/hwy7slp-hollywood offers the full report only "on contact")
+- publisher: Minnesota Department of Transportation (audit conducted Nov 2021–Jun 2022; FHWA Community Planner + Kimley-Horn on review team) — publicly co-published as a City of Minnetonka council-packet attachment; Excelsior DocumentCenter holds only the 1-page overview
+- retrieved_date: 2026-08-25
+- state/agency: Minnesota — MnDOT Metro District / cities St Louis Park, Hopkins, Minnetonka, Deephaven, Excelsior, Chanhassen, Shorewood, Victoria, Minnetrista, St Bonifacius + Laketown/Watertown/Hollywood Townships
+- native phase: existing-road corridor RSA (rural/suburban/urban segments; Feb 2022 field review during COVID protocols) → mapping n/a
+- input_types present: scheme_description (three-segment split w/ characteristics), traffic_data (2016–2020 crash analysis, critical-index intersection ranking #1–69, speed-zone evaluation, survey demographics), drawings (improvement-summary maps per segment)
+- output_types present: findings_report, recommendations (short/medium/long-term tables Tables 11–13), **Appendix A stakeholder comment letters** (St Louis Park engineering memo; City of Greenwood letter) responding to draft findings
+- completeness: full-package extracted (pp. 29–88 of parent packet, 60 pp; parent packet pages excluded)
+- filename: mn-hwy7-slp-hollywoodtownship-rsa-report.pdf · sha256: 6dc1649216241128e7a11f59d7db565f37a3025cf7d975bf6d2e7723cfc463be
+- notes: Closest US analogue to an input→findings→response loop found so far: formal agency comment letters answering draft findings (UK response-report culture equivalent is thinner — letters, not a decision log). Critical-index crash-ranking method is reusable systemic-screening logic. Licence: no statement on host hosts; MnDOT public-report content republished in council packet (public record).
+
 ## Catalog: FHWA RSA Case Studies compilation (NOT re-downloaded)
 
 Reference copy already held at `docs/references/US/fhwa-rsa-case-studies-compilation.pdf`
@@ -360,15 +567,31 @@ phase-percent based, never Stage-N.
 | Maryland SHA RSA procedures (2006) | Stage 1 Feasibility → Stage 2 Preliminary → Stage 3 Final → Stage 4 Pre-opening → Stage 5 Operations structure w/ checklists | Procedures/checklists only, no worked example attached; aii.transportation.org PDF noted for future framework work. |
 | MassDOT GIS RSA service — **resolved as metadata-only** (round-2 probe) | ArcGIS REST 11.3: layer 0 (898 rows, 6 districts) + table "Road Safety Audits Attachments" at `gis.massdot.state.ma.us/arcgis/rest/services/Roads/RoadSafetyAudits/MapServer` | `Report_Link` field holds **internal Windows paths** (`S:\HQ\Planning\SafetyAudit/DistrictN/…pdf`) — no binary attachments, no public document proxy (hub app is an Experience Builder shell; direct-path probe 404). The 898-row inventory itself is a useful corpus map: individual reports must be hunted on town DocumentCenters / mass.gov / consultant or legislator co-publications (as done for US-017). |
 | Caltrans / WSDOT / NYSDOT / FDOT worked RSAs | Named-project full RSA reports | Still no worked project-RSA on their open trees — Caltrans footprint is HSIP training decks (RSA process slides, not audits). **MnDOT is the counter-example**: its edocs-public `DMResultSet/download?docId=` endpoints serve full RSA PDFs to plain curl (see US-009…013). |
-| MnDOT deferred siblings (located, curl-fetchable) | US 8 I-35→WI border (docId 26401740), TH 3 Farmington (26401813), Hwy 5 Lake Elmo (26401776), US 14 Owatonna–Dodge Ctr (26401805), US 14 N Mankato–New Ulm (26401810), Twin Ports + US 12 post-audit presentations (26401632…) | Deferred as redundant with US-009…013 this round; all listed on dot.state.mn.us/trafficeng/safety/rsa — richest repeat vein for future expansion. Post-audit presentations would add a third lifecycle artifact type (input packet → report → response/presentation). |
+| MnDOT deferred siblings (located, curl-fetchable) | US 8 I-35→WI border (docId 26401740), TH 3 Farmington (26401813), Hwy 5 Lake Elmo (26401776), US 14 Owatonna–Dodge Ctr (26401805), US 14 N Mankato–New Ulm (26401810), Twin Ports + US 12 post-audit presentations (26401632…) | **Resolved Round 3** — all five RSAR technical reports + the post-audit presentation downloaded as US-021…US-026. Corrections: docId 26401632 is the *US 12* Post-Audit Presentation (US-026), and **no Twin Ports presentation exists** on the MnDOT RSA page (dot.state.mn.us/trafficeng/safety/rsa) — only the work-zone report (already US-012). The page's remaining items are all already cataloged or non-audit: "Minnesota County Roadway Safety Plans Final Report" (docId 26401549) is a guidance document, held out of the sample set; Hwy 7 full report is "contact us"-gated on MnDOT but was recovered via co-publication (US-027). Vein exhausted for curl-fetchable artifacts. |
 | MA trio near-duplicates (Stow Rt117/Hudson Rd 2022; Weston Rt20 @ Highland St+Love Ln 2020) | Same Vanasse/Toole "MassDOT-check" family as US-020 | Located + staged during round 2 but cataloged only one member (US-020) to preserve sample diversity; URLs in this row are the record. Stow: stow-ma.gov/DocumentCenter/View/1489/MassDOT---Road-Safety-Audit-PDF · Weston: westonma.gov/DocumentCenter/View/22857/Final-Road-Safety-Audit---Weston---MassDOT-Check---April-29-PDF |
-| highways.dot.gov / safety.fhwa.dot.gov direct PDFs | Canonical FHWA RSA web docs | Akamai-blocked (consistent across rounds). govinfo.gov PURLs work for GPO-deposited FHWA reports (used for US-015). |
+| highways.dot.gov / safety.fhwa.dot.gov direct PDFs | Canonical FHWA RSA web docs | Akamai-blocked (consistent across rounds). govinfo.gov PURLs work for GPO-deposited FHWA reports (used for US-015); safety.fhwa.dot.gov PDF worked via Wayback full capture (US-121, 14 MB intact — route proven for FHWA-SA series not on govinfo). |
+| INDOT Road Safety Audit Guidelines (updated Mar 2026) | State procedures manual with **Attachment 1 Example RSA Report** (Smith Pike Rd @ Forrest Park Dr, Monroe County — anonymized), Attachment 2 Example Response Letter, Attachment 3 Prompt List; in.gov/indot/files/B7-Road-Safety-Audit-Procedures.pdf | Reference-class program manual — same hold-out rule as VDOT manual row above. Example attachments are teaching artifacts, not real audits; noted here because example response letters are otherwise unsampled anywhere (response-report gap below). |
+| Indy DPW Shelby St @ Raymond St RSA (Nov 2025) | City DPW intersection RSA (102 crashes Jun 2022–Jun 2025; 11 near-term + 5 long-term countermeasures quoted verbatim by WTHR) | No public PDF located on indy.gov this round — news coverage only; candidate for public-records request. Six RSAs/year claimed by DPW — potential recurring city vein if published. |
+| Greenville Dunbar Street assessment | Sibling corridor assessment by City Engineering + AECOM announced Oct 2024 alongside US-125 (roundabout/signal options at S Calhoun St) | Not located on greenvillesc.gov DocumentCenter this round (CivicPlus bot-walls curl; Wayback prefix query returned only the Green Ave file). Retriable via browser-session tooling. |
+
+## Round 3 notes (2026-08-25)
+
+- onlinepubs.trb.org serves NCHRP Synthesis-era PDFs free to plain curl (no Akamai wall) — richest untapped TRB vein for pre-2010 synthesis/report back-catalog.
+- safety.fhwa.dot.gov legacy `/rsa/resources/docs/*` PDFs are fully captured by Wayback (digest-stable captures since 2016) — use CDX first, govinfo second.
+- CivicPlus DocumentCenter hosts (greenvillesc.gov class) serve HTML challenges to curl but their files are archived whole — check `web.archive.org/cdx` for `/DocumentCenter/View/<id>/*` before giving up.
 
 ## Coverage summary vs. target package shape
 
-- Downloads: **round 1: 8/8; round 2: 12/12 succeeded**, all `%PDF`-verified, all sha256-recorded above.
+- Downloads: **round 1: 8/8; round 2: 12/12; round 3: 7/7**, all `%PDF`-verified, all sha256-recorded above.
 - full-package: US-001…US-006, US-008, US-009, US-011, US-012, US-013, US-016…US-020 (single-document audits embedding scheme/data context + findings + recommendations; none include a designer response — see gaps).
 - inputs-only: US-010 (briefing book). compilation/case-study depth: US-007 (excerpt), US-014, US-015.
 - Phase coverage after round 2: existing-road/in-service still dominant, now plus **construction/work-zone** (US-012), **feasibility/concept design-stage** (US-014 RI Burma Rd 0–1% concept; MT I-90 design w/ forecast volumes), **preliminary-design-context** (US-008, US-017), **pure input artifact** (US-010), tribal/federal batch (US-015).
 - Inputs-bearing (drawings/plans/exhibits embedded): 9 of round-2 entries (US-009, 010, 011, 012, 013, 014, 017, 018, 019) — design-artifact depth strongest in US-014's proposed-design renders.
 - Best full-package candidates for fixture building: **US-008 + US-017** (design-stage), **US-010 + US-011** (input-packet → report pair), **US-006** (rating matrix + HSM), **US-005** (alternatives reasoning), **US-004** (tiered recommendations), **US-012** (work-zone phase), **US-018** (VRU-triggered + large-team roster).
+- Round 3 additions: **US-120** (TRB synthesis w/ specimen audit reports + FHWA scanning-tour checklists), **US-121** (transit-access lens), **US-122…124** (city/MPO corridor batch incl. remote-format US-123 and MPO-authored US-124), **US-125** (SC; assessment-as-engagement pattern). Downloads round 3: 6/6 succeeded, all `%PDF`-verified, sha256 recorded above. Producer-class spread after round 3: state DOT / MassDOT program / city DPW+consultant / MPO-authored / FHWA compilation / TRB-NCHRP synthesis.
+
+### Round 3 notes (2026-08-25)
+
+- MnDOT edocs `DMResultSet/download?docId=` endpoints remain plain-curl friendly; the round-3 batch (US-021…US-026) took the program's public RSA inventory to full coverage. The vein is now exhausted: every listed artifact is cataloged or documented non-audit/gated.
+- US-027 demonstrates the council-packet co-publication route for "contact us"-gated state DOT reports (same pattern as US-017's legislator co-publication). The Hwy 7 packet also carries Appendix A comment letters — the nearest US practice gets to a response report.
+- US-026 gives the corpus its third lifecycle artifact class on one programme (US-010 inputs → US-011 report → US-026 post-audit deck): direct fixture material for Run/issued-artifact replacement semantics.
