@@ -5,7 +5,12 @@
 import { NextResponse } from "next/server";
 import { badRequest, notFound, requireWorkspace, serverError } from "@/lib/api";
 import { validateRecommendationWording } from "@/domain/engine";
-import { applyCandidatePromotions, type CandidatePromotion } from "@/domain/candidate-review";
+import {
+  applyCandidatePromotions,
+  type CandidatePromotion,
+  type OutcomeConsent,
+} from "@/domain/candidate-review";
+import { PROMPT_HASH, PROMPT_VERSION, getAiAdapterId } from "@/lib/ai";
 import type { Finding } from "@/domain/types";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
@@ -39,6 +44,11 @@ export async function PATCH(req: Request, ctx: Ctx) {
       }[];
       question_marked?: { question_id: string; addressed: boolean }[];
       candidate_promotions?: CandidatePromotion[];
+      /** Ticket 05 (ADR-0009 §4): capture posture for outcome logging.
+       *  Absent ⇒ logged under defaults (devtab/tests stable);
+       *  {declined:true} ⇒ promotion applies, no outcome row is written. */
+      consent?: OutcomeConsent;
+      auditor_pseudonym?: string;
     };
 
     for (const u of body.finding_updates ?? []) {
@@ -70,7 +80,37 @@ export async function PATCH(req: Request, ctx: Ctx) {
     }
 
     if (body.candidate_promotions?.length) {
-      const applied = applyCandidatePromotions(audit, body.candidate_promotions);
+      const consent = body.consent;
+      if (
+        consent !== undefined &&
+        consent !== null &&
+        (typeof consent !== "object" ||
+          ("declined" in consent && consent.declined !== true) ||
+          (!("declined" in consent) && typeof (consent as { version?: unknown }).version !== "string"))
+      ) {
+        return badRequest("invalid consent: expected {version} or {declined:true}");
+      }
+      const pseudonym = body.auditor_pseudonym;
+      if (pseudonym !== undefined && (typeof pseudonym !== "string" || pseudonym.trim() === "")) {
+        return badRequest("invalid auditor_pseudonym: expected a non-empty string");
+      }
+      // ADR-0012 run-level provenance fallback from the live adapter/prompt
+      // getters; candidates stamped with generation_provenance at generation
+      // time keep their own identity field-by-field (buildOutcomeRow).
+      const run_provenance = {
+        adapter_id: getAiAdapterId(),
+        prompt_version: PROMPT_VERSION,
+        prompt_hash: PROMPT_HASH,
+      };
+      const applied = applyCandidatePromotions(
+        audit,
+        body.candidate_promotions,
+        {
+          ...(consent !== undefined && consent !== null ? { consent } : {}),
+          ...(pseudonym !== undefined ? { auditor_pseudonym: pseudonym.trim() } : {}),
+          run_provenance,
+        },
+      );
       if (!applied.ok) return badRequest(applied.error);
       audit.findings = applied.value.findings;
       if (applied.value.candidate_findings)

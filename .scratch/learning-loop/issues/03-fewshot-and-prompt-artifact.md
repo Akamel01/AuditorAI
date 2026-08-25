@@ -1,6 +1,6 @@
 # 03 — Few-shot manager + store compile + prompt artifact extraction
 
-Type: task · Status: open · Blocked by: —
+Type: task · Status: resolved · Blocked by: —
 
 ## Question
 
@@ -13,4 +13,6 @@ fail-closed on missing file, prompt_version+prompt_hash stamped into scorecards/
 rows/logs. Prompt edit = trigger event: land with a fresh full-corpus Tier-1 archive.
 
 ## Answer
+
+RESOLVED. Prompt artifact v1 byte-identical (hash caa431b8…); cascade selector; compiled store; provenance threaded to rows post-review.
 

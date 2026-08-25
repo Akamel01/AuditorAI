@@ -39,6 +39,10 @@ with the Phase-4 fine-tune gate (ADR-0013) standing immutable over all of it.
 - [02 Validation nodes](issues/02-validation-nodes.md): two registered nodes, flag-and-show, AI-off parity, rate into AuditResult.
 - [06 Per-cell table](issues/06-per-cell-data-table.md): generated markdown+JSON for all 16 cells.
 
+- [03 Few-shot manager + prompt artifact](issues/03-fewshot-and-prompt-artifact.md): prompts/system-prompt.md v1 fail-closed, PROMPT_HASH stamped end-to-end; store compiled w/ firewall enforcement.
+- [04 Metrics + diagram](issues/04-metrics-and-diagram.md): PromotionRate/HallucinationRate mechanism-first; render-learning-html.ts regenerates KPIs.
+- [05 UI capture](issues/05-ui-adjudication-capture.md): consent-gated adjudication capture wired through existing PATCH contract.
+
 ## Not yet specified
 
 - Numeric investigation thresholds for PromotionRate/HallucinationRate — deliberately

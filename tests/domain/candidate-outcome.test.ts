@@ -16,6 +16,7 @@ import {
   DEFAULT_AUDITOR_PSEUDONYM,
   JsonlOutcomeSink,
   RETENTION_TTL_DAYS,
+  outcomeTripwireSink,
   setCandidateOutcomeSinkForTests,
   type CandidateOutcomeSink,
 } from "@/domain/outcomes";
@@ -78,7 +79,9 @@ class MemorySink implements CandidateOutcomeSink {
 }
 
 afterEach(() => {
-  setCandidateOutcomeSinkForTests(null);
+  // Re-arm the tripwire (never null): null would restore the default
+  // filesystem sink and silently leak rows into state/candidate-outcomes/.
+  setCandidateOutcomeSinkForTests(outcomeTripwireSink());
 });
 
 describe("candidate-outcome.schema.json", () => {
@@ -213,6 +216,71 @@ describe("capture on the PATCH promotion path", () => {
     expect(sink.rows).toHaveLength(0);
   });
 
+  it("consent declined (ticket 05): dispositions still apply, but no row reaches the sink", () => {
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+
+    const applied = applyCandidatePromotions(
+      draft([candidate(), candidate()]),
+      [
+        { index: 0, action: "accept" },
+        { index: 1, action: "reject", reviewer_note: "duplicate" },
+      ],
+      { consent: { declined: true } },
+    );
+    expect(applied.ok).toBe(true);
+    if (!applied.ok) return;
+    expect(applied.value.findings.map((f) => f.finding_id)).toEqual(["F-AI-001"]);
+    expect(applied.value.candidate_findings).toBeUndefined();
+    expect(sink.rows).toHaveLength(0);
+  });
+
+  it("explicit consent + pseudonym stamp every row; category/evidence edits ride the whitelist (ticket 05)", () => {
+    const c = candidate({
+      evidence: [
+        { evidence_id: "EV-UK-002", quote: null, use: "supports_concern" as const },
+        { evidence_id: "EV-UK-009", quote: null, use: "supports_concern" as const },
+      ],
+    });
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+
+    const applied = applyCandidatePromotions(
+      draft([c]),
+      [
+        {
+          index: 0,
+          action: "accept_with_edits",
+          edited_statement: "Sight lines restricted by parked vehicles.",
+          edited_category: "crossings",
+          edited_recommendation: "Extend the visibility splay before opening.",
+          edited_evidence_ids: ["EV-UK-009"],
+          reviewer_note: "checked site photos",
+        },
+      ],
+      { consent: { version: CONSENT_VERSION }, auditor_pseudonym: "auditor-b2" },
+    );
+    expect(applied.ok).toBe(true);
+
+    expect(sink.rows).toHaveLength(1);
+    const [row] = sink.rows;
+    expect(row.auditor_pseudonym).toBe("auditor-b2");
+    expect(row.consent_version).toBe(CONSENT_VERSION);
+    // Exactly the ADR-0009 whitelist, no derived-field noise.
+    expect(row.edited_fields).toEqual({
+      statement_text: "Sight lines restricted by parked vehicles.",
+      category: "crossings",
+      recommendation: "Extend the visibility splay before opening.",
+      evidence_ids: ["EV-UK-009"],
+    });
+    // The promoted finding mirrors the edits the outcome row logs.
+    if (!applied.ok) return;
+    const f = applied.value.findings[0];
+    expect(f.category).toBe("crossings");
+    expect(f.evidence.map((e) => e.evidence_id)).toEqual(["EV-UK-009"]);
+    expect(f.reviewer_status).toBe("accepted_with_edits");
+  });
+
   it("a sink failure never blocks or corrupts the promotion", () => {
     setCandidateOutcomeSinkForTests({
       append() {
@@ -228,6 +296,100 @@ describe("capture on the PATCH promotion path", () => {
     if (!applied.ok) return;
     expect(applied.value.findings.map((f) => f.finding_id)).toEqual(["F-AI-001"]);
     expect(applied.value.candidate_findings).toBeUndefined();
+  });
+});
+
+describe("outcome-row provenance (ADR-0012)", () => {
+  const ajv = new Ajv({ strict: false, allErrors: true });
+  const validate = ajv.compile(candidateOutcomeSchema);
+
+  function enveloped(row: CandidateOutcomeRow): CandidateOutcomeRow {
+    return { ...row, outcome_id: "OUT-P1", schema_version: "1.0.0" };
+  }
+
+  it("a stamped candidate carries its exact generation identity onto every row, beating run_provenance", () => {
+    const provenance = {
+      adapter_id: "zen",
+      prompt_version: 1,
+      prompt_hash: "abc123",
+      fewshot_ids: ["FS-001", "FS-002"],
+    };
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+
+    const applied = applyCandidatePromotions(
+      draft([candidate({ generation_provenance: provenance }), candidate({ category: "crossings" })]),
+      [
+        { index: 0, action: "accept" },
+        { index: 1, action: "reject" },
+      ],
+      // Audit-level approximation from the PATCH route loses to a stamp
+      // field-by-field, and still covers this batch's one unstamped candidate.
+      { run_provenance: { adapter_id: "off", prompt_version: 9, prompt_hash: "stale" } },
+    );
+    expect(applied.ok).toBe(true);
+    // Highest-index-first application ⇒ rows arrive reject-before-accept.
+    expect(sink.rows.map((r) => r.action)).toEqual(["reject", "accept"]);
+
+    const [unstampedRow, stampedRow] = sink.rows;
+    // Stamped row: exactly the candidate's generation identity, not the
+    // audit-level approximation.
+    expect(stampedRow.adapter_id).toBe("zen");
+    expect(stampedRow.prompt_version).toBe(1);
+    expect(stampedRow.prompt_hash).toBe("abc123");
+    expect(stampedRow.fewshot_ids).toEqual(["FS-001", "FS-002"]);
+    // The stamp rides on the persisted candidate snapshot too.
+    expect(stampedRow.candidate.generation_provenance).toEqual(provenance);
+    // Rows built from stamped candidates stay contract-valid.
+    expect(validate(enveloped(stampedRow))).toBe(true);
+
+    // Unstamped sibling in the same batch falls through to run_provenance.
+    expect(unstampedRow.adapter_id).toBe("off");
+    expect(unstampedRow.prompt_version).toBe(9);
+    expect(unstampedRow.prompt_hash).toBe("stale");
+    expect(unstampedRow.fewshot_ids).toEqual([]);
+    expect(unstampedRow.candidate.generation_provenance).toBeUndefined();
+    expect(validate(enveloped(unstampedRow))).toBe(true);
+  });
+
+  it("an unstamped candidate falls back to the caller's run_provenance", () => {
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+
+    const applied = applyCandidatePromotions(
+      draft([candidate()]),
+      [{ index: 0, action: "accept" }],
+      {
+        run_provenance: { adapter_id: "zen", prompt_version: 2, prompt_hash: "def456" },
+      },
+    );
+    expect(applied.ok).toBe(true);
+
+    expect(sink.rows).toHaveLength(1);
+    const [row] = sink.rows;
+    expect(row.adapter_id).toBe("zen");
+    expect(row.prompt_version).toBe(2);
+    expect(row.prompt_hash).toBe("def456");
+    expect(row.fewshot_ids).toEqual([]);
+    expect(validate(enveloped(row))).toBe(true);
+  });
+
+  it("neither stamp nor run_provenance keeps the legacy shape (nulls, empty fewshot_ids)", () => {
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+
+    const applied = applyCandidatePromotions(draft([candidate()]), [
+      { index: 0, action: "reject", reviewer_note: "duplicate" },
+    ]);
+    expect(applied.ok).toBe(true);
+
+    expect(sink.rows).toHaveLength(1);
+    const [row] = sink.rows;
+    expect(row.adapter_id).toBeNull();
+    expect(row.prompt_hash).toBeNull();
+    expect(Object.hasOwn(row, "prompt_version")).toBe(false);
+    expect(row.fewshot_ids).toEqual([]);
+    expect(validate(enveloped(row))).toBe(true);
   });
 });
 

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 24,
+  "note_count": 25,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -362,6 +362,21 @@
         "adr": []
       },
       "body_chars": 4217
+    },
+    {
+      "path": "vault/journal/2026-08-25-learning-loop-phase1.md",
+      "zone": "vault/journal",
+      "title": "Learning-loop Phase 1 executed AFK — outcomes, validation nodes, fewshot/prompt artifacts, metrics, UI capture",
+      "type": "journal",
+      "date": "2026-08-25",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1660
     }
   ]
 }

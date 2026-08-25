@@ -3,7 +3,7 @@
 - Status: Accepted
 - Date: 2026-08-25
 - Deciders: owner (live grilling, learning-architecture wave), ORCH
-- Context artifacts: ADR-0008..0012, `scripts/readiness-report.mjs`,
+- Context artifacts: ADR-0008..0012, `scripts/readiness-report.ts`,
   learning-architecture handoff §4/§10, eval-gates §2
 
 ## Context

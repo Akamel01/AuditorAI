@@ -99,6 +99,18 @@
       "enum": ["draft", "accepted", "accepted_with_edits", "rejected", "escalated"]
     },
     "reviewer_note": { "type": ["string", "null"] },
+    "generation_provenance": {
+      "type": "object",
+      "description": "ADR-0012 generation-time identity; additive optional. Stamped by the live candidate path after boundary projection, never emitted by adapters.",
+      "required": ["adapter_id", "prompt_version", "prompt_hash", "fewshot_ids"],
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": { "type": ["string", "null"] },
+        "prompt_version": { "type": ["integer", "null"], "minimum": 1 },
+        "prompt_hash": { "type": ["string", "null"] },
+        "fewshot_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
     "validation": {
       "type": "object",
       "description": "ADR-0010 flag-and-show annotation; present only when deterministic validation flagged the finding.",

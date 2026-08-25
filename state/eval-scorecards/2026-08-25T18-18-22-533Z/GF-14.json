@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T18-18-22-533Z",
+  "fixture_id": "GF-14",
+  "fixture_name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF14-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Unreliable or contradictory pedestrian indications at a high-volume urban arterial crossing create real wrong-decision/crash risk and sit squarely within FHWA RSA signals/markings/lighting scope at preliminary design.",
+        "evidence_grounding": "Pivotal deficiency is anchored by the verbatim quote in EV-US-034 recording 'existing dysfunctional pedestrian signals' from the sample report's safety-issue table, with the exposure scenario transparently labeled as derived reasoning rather than invented fact.",
+        "jurisdiction_correctness": "Correctly typed as a safety_concern with normative_basis_note null, keeping the FHWA RSA safety framing distinct from any MUTCD compliance question about signal warrants or timings.",
+        "recommendation_quality": "'Investigate and fix existing dysfunctional pedestrian signals' is concrete, feasible, and anchored to the current design stage, though it stops short of naming a responsible owner or the specific repair mechanism.",
+        "vru_coverage": "Pedestrians — the directly affected vulnerable road user group — are the explicit focus, with their reliance on the displays treated as the exposure pathway."
+      }
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 1,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Enumerated accessibility deliverables (crosswalk markings, refuge island sizing, detectable warnings, APS/countdown) across all crossings at both intersections constitute substantive compliance content at preliminary design, when remediation is cheapest.",
+        "evidence_grounding": "Pivotal update-to-comply claim is anchored by verbatim quote EV-US-035 matching the recorded enhancement-list entry word-for-word; nothing invented beyond paraphrase.",
+        "jurisdiction_correctness": "Correctly typed as compliance_question with null risk components and an explicit note separating normative AAB/ADA conformance from any safety verdict, preserving the categorical distinction required of the framework.",
+        "recommendation_quality": "Actionable and viable ('update within the current design') but essentially echoes the source enhancement entry without added technical anchors such as standard sections, dimensional criteria, or verification steps, capping it at marginal-plus.",
+        "vru_coverage": "Finding is entirely pedestrian-centered, addressing mobility- and sensory-impaired users via detectable warnings and APS, so VRU impacts are fully considered where applicable."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T18:38:05.200Z"
+}

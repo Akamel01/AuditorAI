@@ -1,11 +1,19 @@
 // Candidate review over the real API surface: promotions persist on the
 // stored draft, wording violations are rejected loudly, and issuance over
 // unreviewed candidates appends the loud limitation to the snapshot only.
+// Ticket 05 (ADR-0009 §4): the PATCH body's consent/auditor_pseudonym posture
+// governs outcome-row emission, verified through the memory-sink seam.
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PATCH as patchAudit } from "@/app/api/projects/[projectId]/audits/[auditId]/route";
 import { POST as postIssue } from "@/app/api/projects/[projectId]/audits/[auditId]/issues/route";
 import { MemoryStore, Repository, setDataStoreForTests, workspaceHash } from "@/lib/persistence";
-import type { AuditResult } from "@/domain/types";
+import { PROMPT_HASH, PROMPT_VERSION, getAiAdapterId } from "@/lib/ai";
+import {
+  outcomeTripwireSink,
+  setCandidateOutcomeSinkForTests,
+  type CandidateOutcomeSink,
+} from "@/domain/outcomes";
+import type { AuditResult, CandidateOutcomeRow } from "@/domain/types";
 
 const T0 = "2026-08-23T00:00:00.000Z";
 const KEY = "candidate-e2e-key-00000001";
@@ -82,6 +90,9 @@ beforeEach(() => {
 
 afterEach(() => {
   setDataStoreForTests(null);
+  // Re-arm the tripwire (never null): null would restore the default
+  // filesystem sink and silently leak rows into state/candidate-outcomes/.
+  setCandidateOutcomeSinkForTests(outcomeTripwireSink());
 });
 
 async function seed() {
@@ -143,6 +154,96 @@ describe("PATCH /audits/[auditId] candidate_promotions", () => {
     );
     expect(res.status).toBe(400);
     expect(((await res.json()) as { error: string }).error).toBe("unknown candidate index 7");
+  });
+});
+
+describe("PATCH /audits/[auditId] outcome-capture posture (ticket 05)", () => {
+  class MemorySink implements CandidateOutcomeSink {
+    readonly rows: CandidateOutcomeRow[] = [];
+    append(row: CandidateOutcomeRow): void {
+      this.rows.push(row);
+    }
+  }
+
+  it("consent declined: promotion applies on the stored draft but no outcome row is written", async () => {
+    await seed();
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+    const res = await patchAudit(
+      req("PATCH", {
+        candidate_promotions: [{ index: 0, action: "accept" }],
+        consent: { declined: true },
+        auditor_pseudonym: "auditor-z9",
+      }),
+      params(),
+    );
+    expect(res.status).toBe(200);
+    const { audit } = (await res.json()) as { audit: AuditResult };
+    expect(audit.findings).toHaveLength(1);
+    expect(audit.candidate_findings).toHaveLength(1);
+    expect(sink.rows).toHaveLength(0);
+  });
+
+  it("consent granted: emitted rows carry the auditor pseudonym and consent_version", async () => {
+    await seed();
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+    const res = await patchAudit(
+      req("PATCH", {
+        candidate_promotions: [
+          {
+            index: 1,
+            action: "accept_with_edits",
+            edited_recommendation: "Extend the visibility splay before opening.",
+          },
+        ],
+        consent: { version: "1.0" },
+        auditor_pseudonym: "auditor-z9",
+      }),
+      params(),
+    );
+    expect(res.status).toBe(200);
+    expect(sink.rows).toHaveLength(1);
+    const [row] = sink.rows;
+    expect(row.auditor_pseudonym).toBe("auditor-z9");
+    expect(row.consent_version).toBe("1.0");
+    expect(row.action).toBe("accept_with_edits");
+    expect(row.edited_fields?.recommendation).toBe("Extend the visibility splay before opening.");
+  });
+
+  it("malformed consent posture is a loud 400, not a silent default", async () => {
+    await seed();
+    const res = await patchAudit(
+      req("PATCH", {
+        candidate_promotions: [{ index: 0, action: "accept" }],
+        consent: { nonsense: true },
+      }),
+      params(),
+    );
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { error: string }).error).toContain("invalid consent");
+  });
+
+  it("unstamped candidates fall back to run-level provenance derived from the live getters (ADR-0012)", async () => {
+    await seed();
+    const sink = new MemorySink();
+    setCandidateOutcomeSinkForTests(sink);
+    const res = await patchAudit(
+      req("PATCH", {
+        candidate_promotions: [{ index: 0, action: "accept" }],
+        consent: { version: "1.0" },
+      }),
+      params(),
+    );
+    expect(res.status).toBe(200);
+    expect(sink.rows).toHaveLength(1);
+    const [row] = sink.rows;
+    // Exactly what the route derives from PROMPT_VERSION/PROMPT_HASH and the
+    // adapter id getter — never invented, null when the seam is off.
+    expect(row.adapter_id).toBe(getAiAdapterId());
+    expect(row.prompt_version).toBe(PROMPT_VERSION);
+    expect(row.prompt_hash).toBe(PROMPT_HASH);
+    expect(row.fewshot_ids).toEqual([]);
   });
 });
 

@@ -17,7 +17,7 @@ import path from "node:path";
 import { runAudit } from "@/domain/engine";
 import { getPipeline } from "@/domain/pipeline/pipeline";
 import { extractJsonObject } from "@/lib/inference";
-import { getAiAdapter } from "@/lib/ai";
+import { PROMPT_HASH, PROMPT_VERSION, getAiAdapter } from "@/lib/ai";
 import { DIMENSIONS, THRESHOLDS, type FindingVerdict } from "@/lib/eval-gates";
 import {
   isScoredVerdict,
@@ -424,7 +424,15 @@ async function main() {
       subject: subject.kind,
       judge: NO_JUDGE
         ? { enabled: false }
-        : { model: JUDGE_MODEL, effort: JUDGE_EFFORT, gateway: ZEN_BASE, identity: "ox-alpha" },
+        : {
+            model: JUDGE_MODEL,
+            effort: JUDGE_EFFORT,
+            gateway: ZEN_BASE,
+            identity: "ox-alpha",
+            // ADR-0012: engine-side prompt identity in force for this run.
+            prompt_version: PROMPT_VERSION,
+            prompt_hash: PROMPT_HASH,
+          },
       thresholds: THRESHOLDS,
       findings_scored: verdicts.length,
       findings_unscored: unscored,

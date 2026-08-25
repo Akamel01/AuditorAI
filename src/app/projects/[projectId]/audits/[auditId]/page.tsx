@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { api } from "@/lib/client";
+import { api, getAuditorPseudonym, setAuditorPseudonym } from "@/lib/client";
 import { humanizeEnum } from "@/lib/format";
 import { renderReportMarkdown } from "@/lib/report";
 import { stageDisplay } from "@/app/_components/stage-label";
@@ -12,7 +12,9 @@ import {
   buildFindingUpdate,
   type ReviewerStatusAction,
 } from "@/domain/finding-review";
-import type { AuditIssue, AuditResult, Finding } from "@/domain/types";
+import type { CandidatePromotion, OutcomeConsent } from "@/domain/candidate-review";
+import { CONSENT_VERSION, DEFAULT_AUDITOR_PSEUDONYM } from "@/domain/outcome-contracts";
+import type { AuditIssue, AuditResult, CandidateFindingRecord, Finding } from "@/domain/types";
 import { AppShell } from "@/app/_components/ui/app-shell";
 import { ConfidenceMark, Eyebrow, KindChip, RevisionSeal } from "@/app/_components/ui/chips";
 import { Button } from "@/app/_components/ui/button";
@@ -157,6 +159,21 @@ export default function AuditPage() {
           <Seal size={18} className="mt-0.5 shrink-0 text-subtle" />
           <p className="formal max-w-[70ch] text-[15.5px] leading-[1.6] text-muted">{audit.disclaimer}</p>
         </div>
+
+        {/* AI candidates — adjudication capture (ADR-0006/0009) */}
+        {(audit.candidate_findings?.length ?? 0) > 0 && (
+          <section className="mt-10">
+            <Eyebrow code="CH 0+090">
+              AI candidates — {audit.candidate_findings!.length} awaiting disposition
+            </Eyebrow>
+            <CandidateAdjudication
+              candidates={audit.candidate_findings!}
+              projectId={id}
+              auditId={auditId}
+              onChanged={load}
+            />
+          </section>
+        )}
 
         {/* findings */}
         <section className="mt-10">
@@ -551,6 +568,345 @@ function FindingCard({
         </aside>
       </div>
     </Panel>
+  );
+}
+
+/* ————— AI candidate adjudication (ticket 05, ADR-0006/0009) ————— */
+
+const CHECKBOX_CLS =
+  "mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer appearance-none rounded-[3px] border border-edge bg-surface transition-colors checked:border-accent checked:bg-accent hover:border-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const INPUT_CLS =
+  "h-8 w-full rounded-md border border-edge bg-surface px-3 text-[12.5px] transition-colors placeholder:text-faint hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint";
+const TEXTAREA_CLS =
+  "w-full resize-y rounded-md border border-edge bg-surface px-3 py-2 text-[13px] leading-relaxed text-text transition-colors placeholder:text-faint hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint";
+const FIELD_LABEL_CLS = "mb-1 font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint";
+
+interface CapturePosture {
+  consent: OutcomeConsent;
+  auditor_pseudonym: string;
+}
+
+function CandidateAdjudication({
+  candidates,
+  projectId,
+  auditId,
+  onChanged,
+}: {
+  candidates: CandidateFindingRecord[];
+  projectId: string;
+  auditId: string;
+  onChanged: () => void;
+}) {
+  const [consentLogged, setConsentLogged] = useState(true);
+  const [pseudonym, setPseudonymState] = useState(DEFAULT_AUDITOR_PSEUDONYM);
+  useEffect(() => setPseudonymState(getAuditorPseudonym()), []);
+
+  function updatePseudonym(v: string) {
+    setPseudonymState(v);
+    setAuditorPseudonym(v);
+  }
+
+  const posture: CapturePosture = {
+    consent: consentLogged ? { version: CONSENT_VERSION } : { declined: true },
+    auditor_pseudonym: pseudonym.trim() || DEFAULT_AUDITOR_PSEUDONYM,
+  };
+
+  return (
+    <>
+      <div
+        className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-md border border-hairline bg-surface px-4 py-2.5"
+        data-testid="outcome-consent-bar"
+      >
+        <label className="flex cursor-pointer items-start gap-2.5 text-[12.5px] leading-snug text-muted">
+          <input
+            type="checkbox"
+            checked={consentLogged}
+            onChange={(e) => setConsentLogged(e.target.checked)}
+            data-testid="outcome-consent"
+            className={CHECKBOX_CLS}
+          />
+          Log my decision for system improvement (pseudonymous)
+        </label>
+        <input
+          value={pseudonym}
+          onChange={(e) => updatePseudonym(e.target.value)}
+          aria-label="Auditor pseudonym"
+          placeholder={DEFAULT_AUDITOR_PSEUDONYM}
+          data-testid="auditor-pseudonym"
+          className="ml-auto h-8 w-44 rounded-md border border-edge bg-surface px-3 font-mono text-[11.5px] transition-colors placeholder:text-faint hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint"
+        />
+      </div>
+      <div className="mt-3 space-y-3">
+        {candidates.map((c, i) => (
+          <CandidateCard
+            key={i}
+            index={i}
+            c={c}
+            projectId={projectId}
+            auditId={auditId}
+            posture={posture}
+            onChanged={onChanged}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function CandidateCard({
+  index,
+  c,
+  projectId,
+  auditId,
+  posture,
+  onChanged,
+}: {
+  index: number;
+  c: CandidateFindingRecord;
+  projectId: string;
+  auditId: string;
+  posture: CapturePosture;
+  onChanged: () => void;
+}) {
+  const [panel, setPanel] = useState<"none" | "edits" | "reject">("none");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [statementText, setStatementText] = useState(c.statement.text);
+  const [category, setCategory] = useState(c.category);
+  const [recommendation, setRecommendation] = useState(c.recommendation ?? "");
+  const [evidenceIds, setEvidenceIds] = useState(c.evidence.map((e) => e.evidence_id).join(", "));
+  const [note, setNote] = useState("");
+
+  function buildPromotion(action: "accept" | "accept_with_edits" | "reject"): CandidatePromotion {
+    const promo: CandidatePromotion = { index, action };
+    if (action === "reject" || action === "accept_with_edits") {
+      if (note.trim()) promo.reviewer_note = note.trim();
+    }
+    if (action === "accept_with_edits") {
+      // Only actual diffs travel: "" / unchanged values are non-edits, mirroring
+      // promoteCandidate's semantics server-side.
+      const stmt = statementText.trim();
+      if (stmt && stmt !== c.statement.text) promo.edited_statement = stmt;
+      const cat = category.trim();
+      if (cat && cat !== c.category) promo.edited_category = cat;
+      const rec = recommendation.trim();
+      if (rec && rec !== (c.recommendation ?? "").trim()) promo.edited_recommendation = rec;
+      const ids = evidenceIds
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (JSON.stringify(ids) !== JSON.stringify(c.evidence.map((e) => e.evidence_id))) {
+        promo.edited_evidence_ids = ids;
+      }
+    }
+    return promo;
+  }
+
+  async function submit(action: "accept" | "accept_with_edits" | "reject") {
+    setBusy(true);
+    setError(null);
+    try {
+      await api(`/api/projects/${projectId}/audits/${auditId}`, {
+        method: "PATCH",
+        json: {
+          candidate_promotions: [buildPromotion(action)],
+          consent: posture.consent,
+          auditor_pseudonym: posture.auditor_pseudonym,
+        },
+      });
+      onChanged();
+    } catch (e) {
+      setError(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Panel as="article" className="overflow-hidden" data-testid={`candidate-card-${index}`}>
+      {/* header */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-hairline px-4 py-2.5">
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-faint">
+          candidate #{index + 1}
+        </span>
+        <KindChip kind={c.kind} />
+        {c.validation && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-warn">
+            ⚠ auto-flagged: {c.validation.status}
+          </span>
+        )}
+        <span className="ml-auto font-mono text-[10px] text-faint">{c.producer}</span>
+      </div>
+
+      {/* body */}
+      <div className="p-4 lg:p-5">
+        <div className="mb-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-faint">
+          <span>{humanizeEnum(c.category)}</span>
+          {c.location && <span>{c.location}</span>}
+          {c.road_users.length > 0 && (
+            <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 normal-case tracking-normal">
+              {c.road_users.map((u) => (
+                <span key={u} className="inline-flex items-center gap-1.5" title={u}>
+                  <RoadUserGlyph user={u} size={14} className="text-muted" />
+                  {u}
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
+
+        <p className="max-w-[56ch] text-[15px] font-medium leading-[1.5] tracking-[-0.005em]">
+          {c.statement.text}
+        </p>
+        {c.rationale && (
+          <p className="mt-2 max-w-[60ch] border-l-2 border-hairline pl-3.5 text-[12.5px] italic leading-relaxed text-subtle">
+            {c.rationale}
+          </p>
+        )}
+        {c.evidence.length > 0 && (
+          <p className="mt-2 font-mono text-[10.5px] leading-relaxed text-faint">
+            cited · {c.evidence.map((e) => e.evidence_id).join(" · ")}
+          </p>
+        )}
+
+        {/* action bar */}
+        <div className="mt-4 flex flex-wrap items-center gap-2.5">
+          <Button size="sm" disabled={busy} onClick={() => submit("accept")} data-testid={`candidate-${index}-accept`}>
+            Accept
+          </Button>
+          <Button
+            size="sm"
+            variant={panel === "edits" ? "primary" : "secondary"}
+            disabled={busy}
+            onClick={() => setPanel(panel === "edits" ? "none" : "edits")}
+            data-testid={`candidate-${index}-edit`}
+          >
+            Accept with edits
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            disabled={busy}
+            onClick={() => setPanel(panel === "reject" ? "none" : "reject")}
+            data-testid={`candidate-${index}-reject`}
+          >
+            Reject
+          </Button>
+        </div>
+
+        {/* accept-with-edits panel: exactly the ADR-0009 edit whitelist */}
+        {panel === "edits" && (
+          <div className="mt-4 space-y-3 rounded-md border border-edge bg-sunken p-4" data-testid={`candidate-${index}-edit-panel`}>
+            <div>
+              <div className={FIELD_LABEL_CLS}>Statement</div>
+              <textarea
+                rows={2}
+                value={statementText}
+                onChange={(e) => setStatementText(e.target.value)}
+                className={TEXTAREA_CLS}
+              />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <div className={FIELD_LABEL_CLS}>Category</div>
+                {/* Pack vocabulary is not exposed client-side; free text is
+                    validated server-side by the outcome schema/policy. */}
+                <input value={category} onChange={(e) => setCategory(e.target.value)} className={INPUT_CLS} />
+              </div>
+              <div>
+                <div className={FIELD_LABEL_CLS}>Evidence ids (comma-separated)</div>
+                <input
+                  value={evidenceIds}
+                  onChange={(e) => setEvidenceIds(e.target.value)}
+                  placeholder="EV-UK-002, EV-UK-009"
+                  className={INPUT_CLS}
+                />
+              </div>
+            </div>
+            <div>
+              <div className={FIELD_LABEL_CLS}>Recommendation</div>
+              <textarea
+                rows={2}
+                value={recommendation}
+                onChange={(e) => setRecommendation(e.target.value)}
+                placeholder="Specific; 'consider'/'must' are rejected"
+                className={TEXTAREA_CLS}
+              />
+            </div>
+            <PanelActions
+              busy={busy}
+              note={note}
+              setNote={setNote}
+              submitLabel="Submit decision"
+              onSubmit={() => submit("accept_with_edits")}
+              onCancel={() => setPanel("none")}
+              testidBase={`candidate-${index}`}
+            />
+          </div>
+        )}
+
+        {/* reject panel: optional note */}
+        {panel === "reject" && (
+          <div className="mt-4 rounded-md border border-edge bg-sunken p-4" data-testid={`candidate-${index}-reject-panel`}>
+            <PanelActions
+              busy={busy}
+              note={note}
+              setNote={setNote}
+              submitLabel="Confirm reject"
+              onSubmit={() => submit("reject")}
+              onCancel={() => setPanel("none")}
+              testidBase={`candidate-${index}`}
+            />
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-3 max-w-[520px]" data-testid={`candidate-${index}-error`}>
+            <InlineNotice>{error}</InlineNotice>
+          </div>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function PanelActions({
+  busy,
+  note,
+  setNote,
+  submitLabel,
+  onSubmit,
+  onCancel,
+  testidBase,
+}: {
+  busy: boolean;
+  note: string;
+  setNote: (v: string) => void;
+  submitLabel: string;
+  onSubmit: () => void;
+  onCancel: () => void;
+  testidBase: string;
+}) {
+  return (
+    <>
+      <div>
+        <div className={FIELD_LABEL_CLS}>Note (optional)</div>
+        <input
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Reviewer note (optional)"
+          className={INPUT_CLS}
+        />
+      </div>
+      <div className="flex flex-wrap items-center gap-2.5">
+        <Button size="sm" variant="primary" loading={busy} onClick={onSubmit} data-testid={`${testidBase}-submit`}>
+          {submitLabel}
+        </Button>
+        <Button size="sm" variant="ghost" disabled={busy} onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </>
   );
 }
 

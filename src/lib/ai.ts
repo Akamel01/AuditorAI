@@ -1,8 +1,10 @@
 // AI seam (ADR-0001): provider-agnostic, OFF by default. Adapters may emit only
 // bounded candidate artifacts; nothing here can produce final determinations.
 import Ajv from "ajv/dist/2020.js";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { getEvidence } from "@/lib/evidence";
-import { BANNED_WORDS } from "@/domain/pipeline/wording";
 import {
   CircuitBreaker,
   FailoverEndpoint,
@@ -28,6 +30,9 @@ export interface CandidateVocabulary {
 
 export interface AiAdapter {
   readonly enabled: boolean;
+  /** Registry seam id for provenance stamping (ADR-0012); absent on ad-hoc
+   *  test fakes ⇒ callers record null rather than inventing an identity. */
+  readonly id?: string;
   /**
    * Generate bounded candidate findings for human adjudication. `images` are
    * data-URLs rendered as image blocks (vision path, M3); `contextNotes` carry
@@ -43,6 +48,7 @@ export interface AiAdapter {
 
 export class OffAiAdapter implements AiAdapter {
   readonly enabled = false;
+  readonly id = "off";
   async generateCandidates(): Promise<CandidateFinding[]> {
     return [];
   }
@@ -127,34 +133,83 @@ export const CANDIDATE_FIELDS = Object.keys(CANDIDATE_FIELD_SCHEMAS);
 
 const OPTIONAL_CANDIDATE_FIELDS = new Set(["location", "road_users", "scenario", "recommendation"]);
 
-function schemaSketch(schema: JsonSchemaish): string {
-  if (schema.enum) return schema.enum.map((v) => `"${v}"`).join("|");
-  if (Array.isArray(schema.type)) return schema.type.join("|");
-  if (schema.type === "array") {
-    const items = schemaSketch(schema.items ?? {});
-    return items.startsWith("{") ? `[${items}]` : `${items}[]`;
-  }
-  if (schema.type === "object") {
-    return `{${Object.entries(schema.properties ?? {})
-      .map(([k, v]) => `"${k}":${schemaSketch(v)}`)
-      .join(",")}}`;
-  }
-  return String(schema.type);
+// ---- System prompt artifact (ADR-0012) ---------------------------------------
+// All natural-language instruction text lives in prompts/system-prompt.md;
+// this module keeps only structure (message assembly, vocabulary injection).
+// Missing/unreadable artifact ⇒ adapters fail closed (enabled=false).
+
+export interface PromptArtifact {
+  version: number;
+  supersedes: number | null;
+  body: string;
+  hash: string;
 }
 
-const CANDIDATE_JSON_TEMPLATE = `{${CANDIDATE_FIELDS.map(
-  (f) => `"${f}":${schemaSketch(CANDIDATE_FIELD_SCHEMAS[f])}`,
-).join(",")}}`;
+const PROMPT_ARTIFACT_PATH = "prompts/system-prompt.md";
 
-const SYSTEM_PROMPT = [
-  "You assist a Road Safety Audit by proposing bounded candidate findings for human adjudication.",
-  "Doctrine you must follow:",
-  "- You never make final determinations; a qualified auditor disposes of every candidate.",
-  "- Compliance questions and safety concerns are categorically distinct; do not blur them.",
-  "- Every normative claim must cite an evidence_id given to you; invent nothing.",
-  `- Recommendations must be specific and actionable; the words ${BANNED_WORDS.map((w) => `'${w}'`).join(" and ")} are banned.`,
-  `Respond with ONLY a JSON array. Each item: ${CANDIDATE_JSON_TEMPLATE}.`,
-].join("\n");
+function sha256(text: string): string {
+  return createHash("sha256").update(text, "utf8").digest("hex");
+}
+
+/** Parse the canonical prompt artifact: front-matter carries version/
+ *  supersedes; the body is the exact instruction text up to the Changelog
+ *  heading (trailing newlines excluded so the hash covers exactly the text
+ *  sent as the system message). Throws on any malformation. */
+function parsePromptArtifact(raw: string): PromptArtifact {
+  const fm = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(raw);
+  if (!fm) throw new Error("missing front-matter block");
+  const fields = new Map<string, string>();
+  for (const line of fm[1].split(/\r?\n/)) {
+    const m = /^([A-Za-z_][A-Za-z0-9_-]*):(.*)$/.exec(line);
+    if (m) fields.set(m[1], m[2].trim());
+  }
+  const version = Number(fields.get("version"));
+  if (!Number.isInteger(version) || version < 1) {
+    throw new Error(`bad front-matter version '${fields.get("version") ?? "<missing>"}'`);
+  }
+  const supRaw = fields.get("supersedes") ?? "none";
+  const supersedes = supRaw === "none" ? null : Number(supRaw);
+  if (supersedes !== null && (!Number.isInteger(supersedes) || supersedes < 1)) {
+    throw new Error(`bad front-matter supersedes '${supRaw}'`);
+  }
+  const changelogAt = raw.indexOf("\n## Changelog");
+  const body = (
+    changelogAt === -1 ? raw.slice(fm[0].length) : raw.slice(fm[0].length, changelogAt)
+  ).replace(/\n+$/, "");
+  if (!body) throw new Error("empty prompt body");
+  return { version, supersedes, body, hash: sha256(body) };
+}
+
+/** Load + parse the prompt artifact; null (with a warn) when missing or
+ *  malformed — callers must treat that as fail-closed. Exported for tests and
+ *  tooling; module init below uses the repo-default path. */
+export function loadPromptArtifact(
+  filePath: string = path.join(process.cwd(), PROMPT_ARTIFACT_PATH),
+): PromptArtifact | null {
+  try {
+    return parsePromptArtifact(readFileSync(filePath, "utf8"));
+  } catch (e) {
+    console.warn(
+      `[ai] ${PROMPT_ARTIFACT_PATH} missing/unreadable (${e instanceof Error ? e.message : String(e)}); AI adapters fail closed (ADR-0012)`,
+    );
+    return null;
+  }
+}
+
+let activePrompt = loadPromptArtifact();
+
+/** ADR-0012 identity of the loaded prompt, stamped into outcome rows and eval
+ *  scorecards. Null only in the fail-closed state (artifact unavailable). */
+export let PROMPT_VERSION: number | null = activePrompt?.version ?? null;
+export let PROMPT_HASH: string | null = activePrompt?.hash ?? null;
+
+/** Test seam: reseat the module-level prompt artifact; null simulates the
+ *  fail-closed missing-file state for adapter gating assertions. */
+export function setPromptArtifactForTests(artifact: PromptArtifact | null): void {
+  activePrompt = artifact;
+  PROMPT_VERSION = artifact?.version ?? null;
+  PROMPT_HASH = artifact?.hash ?? null;
+}
 
 const REPAIR_INSTRUCTION =
   "Your previous output was rejected (malformed JSON or schema violation). Return ONLY the JSON array, no prose, no code fences.";
@@ -220,8 +275,14 @@ export function buildPromptMessages(
       ]
     : text;
 
+  if (!activePrompt) {
+    // Unreachable through the adapter gate (enabled=false fail-closed); guards
+    // direct callers from silently prompting with an empty system message.
+    throw new Error("system prompt artifact unavailable; candidate generation must fail closed (ADR-0012)");
+  }
+
   return [
-    { role: "system", content: SYSTEM_PROMPT },
+    { role: "system", content: activePrompt.body },
     { role: "user", content: userContent },
   ];
 }
@@ -269,7 +330,11 @@ function ajvErrors(errors: unknown): string {
 }
 
 export class ZenAiAdapter implements AiAdapter {
-  readonly enabled = true;
+  /** ADR-0012 fail-closed: no prompt artifact, no candidate generation. */
+  get enabled(): boolean {
+    return activePrompt !== null;
+  }
+  readonly id = "zen";
   private breaker: CircuitBreaker;
   private endpoints: FailoverEndpoint;
 
@@ -376,4 +441,15 @@ function resolveAdapter(name: string): AiAdapter {
   if (name === "off") return factory();
   if (!liveSingletons.has(name)) liveSingletons.set(name, factory());
   return liveSingletons.get(name)!;
+}
+
+/** ADR-0012 seam identity of the adapter getAiAdapter() resolves to, for
+ *  run-level outcome provenance (PATCH route). Null when unresolvable —
+ *  provenance is never invented. */
+export function getAiAdapterId(): string | null {
+  try {
+    return getAiAdapter().id ?? null;
+  } catch {
+    return null;
+  }
 }

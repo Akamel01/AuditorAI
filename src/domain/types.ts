@@ -137,6 +137,26 @@ export interface MissingInformationQuestion {
   evidence_ids: string[];
 }
 
+/** ADR-0012 generation-time identity stamped onto every live-path candidate
+ *  by generateCandidatesLive (adapters cannot self-label it): outcome rows
+ *  built later by PATCH promotion carry these values verbatim, so learning
+ *  data stays reproducible from (adapter, prompt version/hash, exemplars).
+ *  Additive optional; legacy unstamped candidates keep null/[] defaults. */
+export interface CandidateGenerationProvenance {
+  adapter_id: string | null;
+  prompt_version: number | null;
+  prompt_hash: string | null;
+  fewshot_ids: string[];
+}
+
+/** Audit-level fallback when a candidate predates generation-time stamping:
+ *  the route derives it from the live adapter/prompt getters at PATCH time. */
+export interface RunProvenance {
+  adapter_id: string | null;
+  prompt_version: number | null;
+  prompt_hash: string | null;
+}
+
 /** ADR-0006: an AI-proposed finding awaiting auditor review. Structurally a
  *  strict subset of Finding plus provenance; it is never itself a report
  *  member — promotion mints the Finding. */
@@ -156,6 +176,9 @@ export interface CandidateFindingRecord {
   source_attachment_ids?: string[];
   /** ADR-0010: present only when deterministic validation flagged this candidate. */
   validation?: ValidationAnnotation;
+  /** ADR-0012: generation-time identity; stamped after boundary projection by
+   *  generateCandidatesLive, never emitted by adapters. */
+  generation_provenance?: CandidateGenerationProvenance;
 }
 
 export interface AuditContext {
@@ -192,6 +215,9 @@ export interface CandidateOutcome {
   canonical_stage: CanonicalStage | null;
   adapter_id: string | null;
   prompt_hash: string | null;
+  /** ADR-0012: version of prompts/system-prompt.md in force at generation
+   *  time; additive optional so pre-existing rows remain schema-valid. */
+  prompt_version?: number | null;
   fewshot_ids: string[];
   /** Full snapshot as presented for adjudication, never the post-edit state. */
   candidate: CandidateFindingRecord;

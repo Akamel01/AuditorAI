@@ -1,6 +1,6 @@
 {
-  "schema_note": "T4.x readiness snapshot: judged fixtures x ODD cells x latest Tier-1 archive, plus ADR-0007 role census. Regenerate with: node scripts/readiness-report.mjs [runId]",
-  "generated": "2026-08-25T10:53:47.911Z",
+  "schema_note": "T4.x readiness snapshot: judged fixtures x ODD cells x latest Tier-1 archive, plus ADR-0007 role census. Regenerate with: npx tsx scripts/readiness-report.ts [runId]",
+  "generated": "2026-08-25T18:15:09.953Z",
   "declaration_version": "1.1.2",
   "latest_archive": "2026-08-25T07-34-03-343Z",
   "release_test_tier": {
@@ -491,6 +491,19 @@
       "usa": 3,
       "canada": 2
     },
-    "rubric_dimensions": "5-dim per src/lib/eval-gates.ts DIMENSIONS"
+    "rubric_dimensions": "5-dim per src/lib/eval-gates.ts DIMENSIONS",
+    "metrics": {
+      "outcomes_present": false,
+      "note": "no outcomes logged yet"
+    },
+    "per_cell_coverage": {
+      "source": "docs/architecture/per-cell-data-table.md machine-readable mirror",
+      "cell_total": 16,
+      "status_counts": {
+        "in": 5,
+        "mapped_unproven": 10,
+        "structurally_absent": 1
+      }
+    }
   }
 }

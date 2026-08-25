@@ -135,6 +135,9 @@ describe("inference contracts (A2)", () => {
       // added after the boundary by AG-HALLUCINATION-CHECK (this rogue
       // candidate cites category "x", outside the pack vocabulary).
       if (key === "validation") continue;
+      // 'generation_provenance' is likewise stamped after the boundary by
+      // generateCandidatesLive (ADR-0012) — adapters can never forge it.
+      if (key === "generation_provenance") continue;
       expect(CANDIDATE_FIELD_BOUND, `${key} is not a declared candidate field`).toContain(key);
     }
     expect(candidate.producer).toBe("safety-reasoning-agent"); // identity re-asserted

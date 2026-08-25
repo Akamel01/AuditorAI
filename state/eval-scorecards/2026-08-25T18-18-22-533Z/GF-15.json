@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T18-18-22-533Z",
+  "fixture_id": "GF-15",
+  "fixture_name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF15-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Permissive lefts across 3+ opposing lanes are a well-established multi-threat collision mechanism, and carrying the phasing question forward is substantive and proportionate at planning-stage scope.",
+        "evidence_grounding": "EV-CA-040 supplies a verbatim quote stating the exact recorded risk mechanism that anchors the concern, with EV-CA-003 providing network-safety context.",
+        "jurisdiction_correctness": "Framed purely as a safety concern with no compliance conflation, and the deferred-analysis framing correctly respects Stage 1 planning-stage semantics under CRSAG/Alberta instruments.",
+        "recommendation_quality": "Specific and actionable: names the countermeasure analysis (protected-left phasing need), the locations (accesses/intersections with 3+ opposing lanes), the timing (subsequent design stages), and required inputs; non-null and viable.",
+        "vru_coverage": "Pedestrians and cyclists are listed as affected road users, the scenario ties them to the shared conflict space, and the recommendation explicitly requires accounting for their exposure."
+      }
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian route continuity across a new junction on an upgraded corridor is a genuine planning-stage safety matter; leaving connections unconfirmed risks severed pedestrian access and informal road crossings.",
+        "evidence_grounding": "Pivotal claim is backed by verbatim quote 'Potentially discontinuous sidewalk at new 33 Street connection.' under EV-CA-041, corroborated by the recorded designer-response wording cited in the confidence basis.",
+        "jurisdiction_correctness": "Correctly framed as a compliance/continuity question reflecting the designer's deferral to future design stages, kept categorically distinct from an asserted hazard with no framework semantics misapplied.",
+        "recommendation_quality": "Specific and actionable — continuous sidewalk through the junction, resolving the recorded discontinuity and bounding further deferral; not null and viable within staged design delivery.",
+        "vru_coverage": "Pedestrian impacts are central to the finding, with affected users identified and continuity of their facility treated as the core issue."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T18:39:14.373Z"
+}

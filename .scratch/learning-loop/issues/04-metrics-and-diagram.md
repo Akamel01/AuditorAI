@@ -12,3 +12,5 @@ manual step reading readiness-report.json). Numeric thresholds deliberately unse
 
 ## Answer
 
+RESOLVED. computeMetrics + learning_layer.metrics + render script; honest nulls pre-data; diagram KPIs generated.
+

@@ -13,6 +13,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "eval": "tsx scripts/run-eval.ts",
+    "readiness": "tsx scripts/readiness-report.ts",
+    "render-learning-html": "tsx scripts/render-learning-html.ts",
     "vault": "node scripts/compile-evidence.mjs && node scripts/vault-export.mjs && node scripts/vault-import.mjs",
     "ci": "npm run lint && npm run typecheck && npm run test && npm run build"
   },

@@ -5,9 +5,11 @@
 // workspace key, dev-console surfaces via the admin key (localStorage names
 // are the single source here).
 import { useCallback, useEffect, useState } from "react";
+import { DEFAULT_AUDITOR_PSEUDONYM } from "@/domain/outcome-contracts";
 
 const KEY_ITEM = "auditorai.workspace_key";
 const ADMIN_KEY_ITEM = "auditorai.admin_key";
+const AUDITOR_PSEUDONYM_ITEM = "auditorai.auditor_pseudonym";
 
 export function getWorkspaceKey(): string | null {
   if (typeof window === "undefined") return null;
@@ -30,6 +32,19 @@ export function getAdminKey(): string {
 
 export function setAdminKey(key: string): void {
   localStorage.setItem(ADMIN_KEY_ITEM, key);
+}
+
+/** ADR-0009 §4: pseudonymous stable auditor id for outcome logging. Empty
+ *  input clears the override so the ADR default applies again. */
+export function getAuditorPseudonym(): string {
+  if (typeof window === "undefined") return DEFAULT_AUDITOR_PSEUDONYM;
+  return localStorage.getItem(AUDITOR_PSEUDONYM_ITEM) || DEFAULT_AUDITOR_PSEUDONYM;
+}
+
+export function setAuditorPseudonym(pseudonym: string): void {
+  const v = pseudonym.trim();
+  if (v) localStorage.setItem(AUDITOR_PSEUDONYM_ITEM, v);
+  else localStorage.removeItem(AUDITOR_PSEUDONYM_ITEM);
 }
 
 type ApiInit = RequestInit & { json?: unknown };
