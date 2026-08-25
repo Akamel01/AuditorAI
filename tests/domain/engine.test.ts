@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getPack, listJurisdictions } from "@/domain/packs";
-import {
-  DISCLAIMER,
-  StageNotEligibleError,
-  runAudit,
-  validateRecommendationWording,
-} from "@/domain/engine";
+import { validateRecommendationWording } from "@/domain/pipeline/wording";
+import { DISCLAIMER, StageNotEligibleError, runAudit } from "@/domain/engine";
 import type { Project } from "@/domain/types";
 
 const T0 = "2026-08-22T00:00:00.000Z";

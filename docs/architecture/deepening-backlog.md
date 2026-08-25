@@ -5,9 +5,9 @@ summary below so candidates survive session boundaries. Vocabulary: codebase-des
 
 | # | Candidate | Strength | Trigger to act |
 |---|---|---|---|
-| C1 | `run-eval.ts` god-script → deep `src/lib/eval-run.ts` module (gate math duplicated twice today) | **Strong** | Next eval-harness change — do it then |
-| C2 | Node topology in 4 homes (registry/graph-state/contracts/README) → registry as source of truth + codegen + CI byte-check | **Strong** | Before the next node lands (drift already on disk: AG-RULES reads, README table, report impl path) |
-| C3 | PATCH-route inline domain work → applyFindingUpdates/applyQuestionMarks modules | **Strong** | With any new review-surface work |
+| ~~C1~~ ✅ **DONE 2026-08-25** — `src/lib/eval-run.ts` deep module; run-eval.ts 524→203 lines; gate math single-sourced (`computeGateStats`); proven by archive `2026-08-25T19-54-07-248Z` | Strong | — |
+| ~~C2~~ ✅ **DONE 2026-08-25** — `scripts/gen-node-topology.ts` codegen; registry DESCRIPTORS single-source; validate-state byte-checks shadows; four drift instances healed | Strong | — |
+| ~~C3~~ ✅ **DONE 2026-08-25** — finding-review deepened; route 126→91 lines; table tests cover every lifted branch; engine barrel retargeted | Strong | — |
 | C4 | Provenance threading 16-field args → provider seam in outcomes.ts | Worth exploring | When a 2nd capture site or schema change lands |
 | C5 | Two edit kernels (adjudication vs candidate-review) → shared applyFindingEdit kernel (do NOT merge paths — ADR-0006) | Worth exploring | When edge semantics drift bites |
 

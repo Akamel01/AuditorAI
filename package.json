@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "eval": "tsx scripts/run-eval.ts",
+    "gen:nodes": "tsx scripts/gen-node-topology.ts",
     "readiness": "tsx scripts/readiness-report.ts",
     "render-learning-html": "tsx scripts/render-learning-html.ts",
     "vault": "node scripts/compile-evidence.mjs && node scripts/vault-export.mjs && node scripts/vault-import.mjs",

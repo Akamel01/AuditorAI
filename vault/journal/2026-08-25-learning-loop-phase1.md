@@ -40,3 +40,17 @@ fully scored at 100%**, prompt_version/hash stamped end-to-end.
 
 Suite 429 green. Outcome log empty by design (production flywheel starts now);
 metrics honestly report nulls until real adjudications occur.
+
+## Deepening wave (same day)
+
+Owner asked whether review findings + architecture candidates were fixed. Review
+findings were; candidates weren't → executed C1/C2/C3 (Strong) via parallel swarms:
+- **C1**: eval-run.ts deep module; gate math single-sourced; script −321 lines;
+  scorecards byte-compat (reviewer diffed against HEAD archives).
+- **C2**: registry = topology truth; gen-node-topology codegen w/ prose markers;
+  validate-state byte-checks shadows; healed AG-RULES/AG-AI reads, README rows,
+  AG-REPORT impl path.
+- **C3**: route domain work lifted to finding-review (126→91 ln); wording/risk/
+  consent branches under pure table tests.
+Proof: fresh Tier-1 2026-08-25T19-54-07-248Z — 11/11 fully scored 100% through the
+new module. Suite 475 green. C4/C5 remain trigger-gated in the backlog.

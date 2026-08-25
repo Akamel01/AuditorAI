@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import type { AuditResult, CandidateFindingRecord } from "@/domain/types";
 import {
   applyCandidatePromotions,
+  parseOutcomeConsent,
   promoteCandidate,
   unreviewedCandidateLimitation,
 } from "@/domain/candidate-review";
@@ -161,5 +162,43 @@ describe("unreviewedCandidateLimitation", () => {
   it("names the count and is honest about reflection", () => {
     expect(unreviewedCandidateLimitation(1)).toMatch(/^1 AI-generated candidate finding was not reviewed/);
     expect(unreviewedCandidateLimitation(3)).toMatch(/^3 AI-generated candidate findings were not reviewed/);
+  });
+});
+
+describe("parseOutcomeConsent", () => {
+  const grantedCases: {
+    name: string;
+    body: { consent?: unknown };
+    value: Record<string, unknown>;
+  }[] = [
+    { name: "{version} granted parses to that consent", body: { consent: { version: "1.0" } }, value: { version: "1.0" } },
+    { name: "{declined:true} parses to the decline posture", body: { consent: { declined: true } }, value: { declined: true } },
+  ];
+
+  for (const c of grantedCases) {
+    it(c.name, () => {
+      expect(parseOutcomeConsent(c.body)).toEqual({ ok: true, value: c.value });
+    });
+  }
+
+  it.each([
+    { name: "absent consent", body: {} },
+    { name: "explicit null behaves like absent", body: { consent: null } },
+  ])("$name parses ok with no value to forward", ({ body }) => {
+    expect(parseOutcomeConsent(body)).toEqual({ ok: true });
+  });
+
+  it.each([
+    { body: { consent: { declined: false } } },
+    { body: { consent: {} } },
+    { body: { consent: "logged" } },
+    { body: { consent: 7 } },
+    { body: { consent: [] } },
+    { body: { consent: { version: 3 } } },
+  ])("malformed posture %j is a loud contract failure, not a silent default", ({ body }) => {
+    expect(parseOutcomeConsent(body)).toEqual({
+      ok: false,
+      error: "invalid consent: expected {version} or {declined:true}",
+    });
   });
 });

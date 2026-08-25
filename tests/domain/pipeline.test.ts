@@ -3,13 +3,14 @@
 // and the step-mode persistence receipt.
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
+import fs from "node:fs";
 import path from "node:path";
 import graphState from "../../state/graph-state.json";
 import {
   DefaultAuditPipeline,
   mergeState,
 } from "@/domain/pipeline/pipeline";
-import { BATCH_NODES, NODE_FNS } from "@/domain/pipeline/registry";
+import { BATCH_NODES, DESCRIPTORS, NODE_FNS } from "@/domain/pipeline/registry";
 import { AG_NODE_IDS, PAYLOAD_KINDS } from "@/domain/pipeline/types";
 import { MemoryStore, Repository } from "@/lib/persistence";
 import { runAudit } from "@/domain/engine";
@@ -65,6 +66,30 @@ describe("pipeline describe()", () => {
     const graphIds = graphState.graphs.audit_graph.nodes.map((n) => n.id).sort();
     expect(descriptors.map((d) => d.id).sort()).toEqual(graphIds);
     expect(new Set(descriptors.map((d) => d.id)).size).toBe(AG_NODE_IDS.length);
+  });
+
+  it("DESCRIPTORS ids ↔ AG_NODE_IDS ↔ generated graph nodes all equal, in order", () => {
+    expect(DESCRIPTORS.map((d) => d.id)).toEqual([...AG_NODE_IDS]);
+    expect(graphState.graphs.audit_graph.nodes.map((n) => n.id)).toEqual([
+      ...AG_NODE_IDS,
+    ]);
+  });
+
+  it("graph-state shadow nodes mirror DESCRIPTORS field-for-field (C2 codegen)", () => {
+    for (const d of descriptors) {
+      const n = graphState.graphs.audit_graph.nodes.find((x) => x.id === d.id);
+      expect(n, `graph node ${d.id}`).toBeDefined();
+      expect(n!.impl).toBe(d.impl);
+      expect(n!.role).toBe(d.summary);
+      expect(n!.node_class).toBe(d.node_class);
+      expect(n!.producer).toBe(d.producer);
+      expect(n!.reads).toEqual(d.reads);
+      expect(n!.writes).toEqual(d.writes);
+      expect(n!.emits).toBe(d.emits);
+      expect(n!.depends_on).toEqual(d.depends_on);
+      expect(n!.executed_in_batch).toBe(d.executed_in_batch);
+      expect(fs.existsSync(path.join(process.cwd(), d.impl.split(" ")[0]))).toBe(true);
+    }
   });
 
   it("depends_on is a superset of every declarative graph edge", () => {

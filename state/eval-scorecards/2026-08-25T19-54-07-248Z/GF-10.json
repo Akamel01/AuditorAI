@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T19-54-07-248Z",
+  "fixture_id": "GF-10",
+  "fixture_name": "Express-collector corridor planning study — Canada TAC planning (Toronto context, PD-licensed portal)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "unlinked",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF10-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Transfer-lane decision load under simultaneous permission/signage changes on a 420,000 AADT corridor is a credible driver-workload mechanism producing erratic maneuvers and collision migration, substantive even if partly operational rather than pure geometric planning.",
+        "evidence_grounding": "Recorded corridor facts (AADT 420,000, three interchanges revised concurrently) anchor the factual claims and the pivotal staging logic rests on the verbatim EV-CA-003 quote about avoiding collisions elsewhere along the route.",
+        "jurisdiction_correctness": "Framed purely as kind=safety_concern with null normative_basis_note, correctly distinct from compliance questions, and the CRSAG objective quote is used as intended for safety impact beyond project limits; no framework semantics violated despite staging leaning toward later-stage detail.",
+        "recommendation_quality": "Specific and viable: quarterly single-interchange rollout plus defined before/after speed-differential monitoring gives an actionable schedule and measurable verification rather than a generic or null suggestion.",
+        "vru_coverage": "Not applicable since the express-collector mainline is controlled-access with no pedestrians or cyclists, and the finding explicitly acknowledges and scopes this exclusion as required."
+      }
+    },
+    {
+      "finding_id": "JB-GF10-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "A recorded ministry-vs-municipal conflict over express-collector transfer continuity genuinely blocks confirmation of the planning audit boundary, with a concrete completeness risk that redistributed interchange movements fall outside the RSA scope.",
+        "evidence_grounding": "Pivotal documentation-discipline claim is anchored in verbatim EV-CA-038 text on accept/conditional-accept/reject with documented reasons plus EV-CA-003 on consistent documentation, while the conflicting continuity facts are stated as recorded inputs with nothing invented.",
+        "jurisdiction_correctness": "Correctly raised as a compliance/process question (kind=compliance_question) kept categorically separate from any asserted collision mechanism, with the Stage 1 equivalency (EV-CA-006) and §5.6.2 response semantics accurately represented.",
+        "recommendation_quality": "Specific and actionable: identify both records and the responsible office, require documented resolution reasons under the §5.6.2 discipline, and record the resulting audit-boundary decision — all viable at planning stage.",
+        "vru_coverage": "Not directly applicable on the controlled-access mainline, but the finding appropriately acknowledges that continuity outcomes propagate to downstream arterials carrying VRUs while declining to assert unverified exposure."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T20:00:06.774Z"
+}

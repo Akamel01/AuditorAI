@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T19-54-07-248Z",
+  "fixture_id": "GF-15",
+  "fixture_name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF15-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Permissive lefts across 3+ opposing lanes at accesses/intersections are a recognized multi-conflict crash mechanism on a corridor upgrade, making this a substantive corridor-wide safety concern at Planning Stage.",
+        "evidence_grounding": "The pivotal claim is anchored by the verbatim EV-CA-040 quote ('Risk of collisions due to permissive left turns across 3+ opposing lanes...') with EV-CA-003 supplying network-safety context.",
+        "jurisdiction_correctness": "Correctly framed as a safety concern distinct from any compliance question, and appropriately scoped to be carried forward from Planning Stage into subsequent design rather than demanding an immediate resolution.",
+        "recommendation_quality": "Specific and actionable: identifies the treatment (protected-left phasing need), locations (accesses/intersections with 3+ opposing lanes), timing (subsequent design stages), and required VRU exposure analysis; viable at this audit stage.",
+        "vru_coverage": "Pedestrians and cyclists are named as affected users, the scenario describes their shared conflict space with turning vehicles, and the recommendation explicitly requires accounting for their exposure at conflict points."
+      }
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian network continuity at a new junction of an upgraded corridor is a core planning-stage RSA concern with direct fall-injury/conflict implications if left unresolved.",
+        "evidence_grounding": "The pivotal claim of a potentially discontinuous sidewalk is supported by the verbatim quoted entry EV-CA-041, corroborated by the confidence basis citing Table 5-1 and the designer response.",
+        "jurisdiction_correctness": "Framing is disciplined: risk fields are null, no specific-code violation is asserted, and the rationale keeps the compliance/continuity question categorically distinct from a claimed hazard.",
+        "recommendation_quality": "Specific and actionable — deliver continuous sidewalk through the 33 Street junction in future design stages with bounded resolution instead of indefinite deferral — and viable at planning stage.",
+        "vru_coverage": "Pedestrians are the explicit subject of the finding, with their exposure at the new junction directly analyzed rather than treated generically."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T20:04:38.051Z"
+}

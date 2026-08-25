@@ -1,17 +1,23 @@
 // GET/PATCH /api/projects/[projectId]/audits/[auditId]
-// PATCH updates reviewer statuses / notes / recommendations on findings and
-// promotes/rejects AI candidates (ADR-0006) — both post-pipeline on the
-// stored draft, mirroring the production review flow.
+// PATCH delegates post-pipeline review work to the domain modules (backlog
+// C3): finding edits and question marks (finding-review), candidate promotions
+// (candidate-review, ADR-0006) — both applied to the stored draft, mirroring
+// the production review flow. The handler only auths, parses, delegates,
+// persists; no domain conditionals live here.
 import { NextResponse } from "next/server";
 import { badRequest, notFound, requireWorkspace, serverError } from "@/lib/api";
-import { validateRecommendationWording } from "@/domain/engine";
 import {
   applyCandidatePromotions,
+  parseOutcomeConsent,
   type CandidatePromotion,
-  type OutcomeConsent,
 } from "@/domain/candidate-review";
+import {
+  applyFindingUpdates,
+  applyQuestionMarks,
+  type FindingUpdateEntry,
+  type QuestionMarkEntry,
+} from "@/domain/finding-review";
 import { PROMPT_HASH, PROMPT_VERSION, getAiAdapterId } from "@/lib/ai";
-import type { Finding } from "@/domain/types";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
 
@@ -33,63 +39,25 @@ export async function PATCH(req: Request, ctx: Ctx) {
     if (!audit) return notFound("audit not found");
 
     const body = (await req.json()) as {
-      finding_updates?: {
-        finding_id: string;
-        reviewer_status?: Finding["reviewer_status"];
-        recommendation?: string | null;
-        reviewer_note?: string | null;
-        location?: string | null;
-        severity?: string | null;
-        likelihood?: string | null;
-      }[];
-      question_marked?: { question_id: string; addressed: boolean }[];
+      finding_updates?: FindingUpdateEntry[];
+      question_marked?: QuestionMarkEntry[];
       candidate_promotions?: CandidatePromotion[];
-      /** Ticket 05 (ADR-0009 §4): capture posture for outcome logging.
-       *  Absent ⇒ logged under defaults (devtab/tests stable);
-       *  {declined:true} ⇒ promotion applies, no outcome row is written. */
-      consent?: OutcomeConsent;
+      consent?: unknown;
       auditor_pseudonym?: string;
     };
 
-    for (const u of body.finding_updates ?? []) {
-      const f = audit.findings.find((x) => x.finding_id === u.finding_id);
-      if (!f) return badRequest(`unknown finding ${u.finding_id}`);
-      if (u.reviewer_status) f.reviewer_status = u.reviewer_status;
-      if (u.recommendation !== undefined) {
-        if (u.recommendation) {
-          const check = validateRecommendationWording(u.recommendation);
-          if (!check.ok)
-            return badRequest(
-              `recommendation uses banned wording: ${check.violations.join(", ")}`,
-            );
-        }
-        f.recommendation = u.recommendation;
-      }
-      if (u.reviewer_note !== undefined) f.reviewer_note = u.reviewer_note;
-      if (u.location !== undefined) f.location = u.location;
-      if (u.severity !== undefined)
-        f.risk_components.severity = u.severity;
-      if (u.likelihood !== undefined)
-        f.risk_components.likelihood = u.likelihood;
-    }
+    let next = audit;
+    const updated = applyFindingUpdates(next, body.finding_updates ?? []);
+    if (!updated.ok) return badRequest(updated.error.message);
+    next = updated.value;
 
-    for (const q of body.question_marked ?? []) {
-      const item = audit.audit_questions.find((x) => x.question_id === q.question_id);
-      if (!item) return badRequest(`unknown question ${q.question_id}`);
-      item.addressed = q.addressed;
-    }
+    const marked = applyQuestionMarks(next, body.question_marked ?? []);
+    if (!marked.ok) return badRequest(marked.error.message);
+    next = marked.value;
 
     if (body.candidate_promotions?.length) {
-      const consent = body.consent;
-      if (
-        consent !== undefined &&
-        consent !== null &&
-        (typeof consent !== "object" ||
-          ("declined" in consent && consent.declined !== true) ||
-          (!("declined" in consent) && typeof (consent as { version?: unknown }).version !== "string"))
-      ) {
-        return badRequest("invalid consent: expected {version} or {declined:true}");
-      }
+      const parsedConsent = parseOutcomeConsent(body);
+      if (!parsedConsent.ok) return badRequest(parsedConsent.error);
       const pseudonym = body.auditor_pseudonym;
       if (pseudonym !== undefined && (typeof pseudonym !== "string" || pseudonym.trim() === "")) {
         return badRequest("invalid auditor_pseudonym: expected a non-empty string");
@@ -102,24 +70,21 @@ export async function PATCH(req: Request, ctx: Ctx) {
         prompt_version: PROMPT_VERSION,
         prompt_hash: PROMPT_HASH,
       };
-      const applied = applyCandidatePromotions(
-        audit,
+      const promoted = applyCandidatePromotions(
+        next,
         body.candidate_promotions,
         {
-          ...(consent !== undefined && consent !== null ? { consent } : {}),
+          ...(parsedConsent.value !== undefined ? { consent: parsedConsent.value } : {}),
           ...(pseudonym !== undefined ? { auditor_pseudonym: pseudonym.trim() } : {}),
           run_provenance,
         },
       );
-      if (!applied.ok) return badRequest(applied.error);
-      audit.findings = applied.value.findings;
-      if (applied.value.candidate_findings)
-        audit.candidate_findings = applied.value.candidate_findings;
-      else delete audit.candidate_findings;
+      if (!promoted.ok) return badRequest(promoted.error);
+      next = promoted.value;
     }
 
-    await auth.repo.saveAudit(auth.ws, audit);
-    return NextResponse.json({ audit });
+    await auth.repo.saveAudit(auth.ws, next);
+    return NextResponse.json({ audit: next });
   } catch (e) {
     return serverError(e);
   }

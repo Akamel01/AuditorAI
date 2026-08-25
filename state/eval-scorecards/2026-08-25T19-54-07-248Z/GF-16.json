@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T19-54-07-248Z",
+  "fixture_id": "GF-16",
+  "fixture_name": "Milltown Park toucan-crossing VRU conflicts — real Irish Stage 1 RSA incl. rejected recommendation (ABP 322160)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "judge-calibration",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF16-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Constrained shared space at a toucan crossing from pole/column obstructions creating cyclist-pedestrian collision potential is a genuine, scheme-specific safety issue appropriate to flag at preliminary design.",
+        "evidence_grounding": "EV-IN-025 supplies a verbatim quote directly recording the pivotal condition (narrow footpath plus signal-pole and lighting-column obstruction and resulting collision risk), exceeding registry-id citation alone.",
+        "jurisdiction_correctness": "Framed purely as a vulnerable-user safety concern under the PIARC-derived INT baseline with no compliance question asserted and no unqualified national-standard claims.",
+        "recommendation_quality": "Two concrete, location-specific design-stage actions (relocate the lighting column, provide single-set signal heads) that directly remove the recorded obstructions and are viable at preliminary design.",
+        "vru_coverage": "Pedestrians and cyclists are named road users whose shared-space conflict is the core of the finding, so vulnerable-road-user impact is fully addressed."
+      }
+    },
+    {
+      "finding_id": "JB-GF16-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 1,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian/cyclist conflict from inadequate shared-use width at an access approach is a genuine, recognised safety issue squarely relevant at preliminary design where geometry can still be adjusted.",
+        "evidence_grounding": "EV-IN-026 supplies a verbatim quote ('may not be sufficient to cater for both user groups and could lead to collisions') directly supporting the pivotal claim, satisfying the quote requirement for 2.",
+        "jurisdiction_correctness": "Correctly framed as a categorical safety_concern under the PIARC-derived qualified baseline with normative_basis_note null, avoiding any conflation with national compliance requirements.",
+        "recommendation_quality": "'Widen the shared-use area' is location-specific and actionable, but the finding's own scenario records tree/wall constraints yet offers no target dimension or alternative means of resolution, capping viability at 1.",
+        "vru_coverage": "Pedestrians and cyclists are the explicit subject of the concern, with their collision exposure directly addressed, earning full credit rather than mere acknowledgement."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T20:05:52.536Z"
+}

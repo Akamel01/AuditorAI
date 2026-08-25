@@ -43,6 +43,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-PROJECT",
     name: "Project Intake",
+    impl: "src/domain/pipeline/nodes/project.ts runProject",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: [],
     writes: ["project_input"],
@@ -54,6 +56,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-STAGE-SELECT",
     name: "Stage Resolution & Eligibility",
+    impl: "src/domain/pipeline/nodes/stage-select.ts runStageSelect",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["project_input"],
     writes: ["stage_context"],
@@ -65,6 +69,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-MANIFEST",
     name: "Input Manifest",
+    impl: "src/domain/pipeline/nodes/manifest.ts runManifest",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["stage_context", "project_input"],
     writes: ["input_manifest"],
@@ -76,6 +82,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-RULES",
     name: "Deterministic Rule Evaluation",
+    impl: "src/domain/pipeline/nodes/rules.ts runRules",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["stage_context", "input_manifest"],
     writes: ["rule_results"],
@@ -87,6 +95,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-FINDINGS",
     name: "Deterministic Findings Shaping",
+    impl: "src/domain/pipeline/nodes/findings.ts runFindings",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["rule_results"],
     writes: ["rule_results"],
@@ -98,6 +108,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-QUESTIONS",
     name: "Audit Question Selection",
+    impl: "src/domain/pipeline/nodes/questions.ts runQuestions",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["stage_context"],
     writes: ["audit_questions"],
@@ -109,6 +121,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-AI-CANDIDATES",
     name: "AI Candidate Generation",
+    impl: "src/domain/pipeline/nodes/ai-candidates.ts runAiCandidates/generateCandidatesLive",
+    producer: "safety-reasoning-agent",
     node_class: "ai-bounded",
     reads: ["stage_context", "input_manifest", "audit_questions", "rule_results", "project_input"],
     writes: ["candidate_findings"],
@@ -121,6 +135,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-HALLUCINATION-CHECK",
     name: "Hallucination Check",
+    impl: "src/domain/pipeline/nodes/hallucination-check.ts runHallucinationCheck",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["candidate_findings", "rule_results", "stage_context"],
     writes: ["candidate_findings", "rule_results", "validation_summary"],
@@ -133,6 +149,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-EVIDENCE-USE-AUDIT",
     name: "Evidence-Use Audit",
+    impl: "src/domain/pipeline/nodes/evidence-use-audit.ts runEvidenceUseAudit",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: ["candidate_findings", "rule_results"],
     writes: ["candidate_findings", "rule_results"],
@@ -145,6 +163,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-ADJUDICATION",
     name: "Human Adjudication",
+    impl: "src/domain/pipeline/nodes/adjudication.ts runAdjudication",
+    producer: "finding-adjudicator",
     node_class: "human",
     reads: ["rule_results"],
     writes: ["adjudication"],
@@ -157,6 +177,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-EVIDENCE-LINKS",
     name: "Evidence Linkset Validation",
+    impl: "src/domain/pipeline/nodes/evidence-links.ts runEvidenceLinks",
+    producer: "domain-engine",
     node_class: "deterministic",
     reads: [
       "input_manifest",
@@ -173,6 +195,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-REPORT",
     name: "Report Assembly",
+    impl: "src/domain/pipeline/nodes/report.ts runReport",
+    producer: "report-builder",
     node_class: "deterministic",
     reads: ["project_input", "stage_context", "input_manifest", "rule_results", "audit_questions", "adjudication"],
     writes: ["report_bundle"],
@@ -184,6 +208,8 @@ export const DESCRIPTORS: NodeDescriptor[] = [
   {
     id: "AG-PERSIST",
     name: "Persistence Receipt",
+    impl: "src/domain/pipeline/nodes/persist.ts persistRun",
+    producer: "repository",
     node_class: "deterministic",
     reads: ["report_bundle"],
     writes: ["persistence_ref"],

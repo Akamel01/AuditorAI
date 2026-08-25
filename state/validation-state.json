@@ -382,6 +382,15 @@
       "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
       "result": "PASSED — all sampled projects meet the corpus pass mark",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-038",
+      "date": "2026-08-25T20:05:52.538Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..16 (run 2026-08-25T19-54-07-248Z)",
+      "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "PASSED — all sampled projects meet the corpus pass mark",
+      "follow_ups": []
     }
   ]
 }

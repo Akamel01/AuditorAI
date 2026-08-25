@@ -2,6 +2,7 @@
 // Deterministic validation of shared-state registries.
 // Exit 0 = all registries well-formed; nonzero = CI failure.
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -111,6 +112,20 @@ try {
   }
 } catch (e) {
   failures.push(`contract/graph cross-check failed: ${e.message}`);
+}
+
+// Compile discipline (C2): the committed audit_graph section, contract
+// front-matter and README index must be byte-identical to what
+// scripts/gen-node-topology.ts regenerates from registry.ts DESCRIPTORS.
+// The generator runs via tsx (repo pattern) in pure --check mode.
+try {
+  execFileSync("npx", ["tsx", "scripts/gen-node-topology.ts", "--check"], {
+    cwd: ROOT,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+} catch (e) {
+  const out = [e.stdout?.toString(), e.stderr?.toString()].filter(Boolean).join("\n").trim();
+  failures.push(`node topology byte-check failed:\n${out}`);
 }
 
 if (failures.length) {

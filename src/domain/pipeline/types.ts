@@ -231,9 +231,18 @@ export type NodeFn = (state: SharedState, ctx: NodeRunCtx) => NodeResult;
 
 // ---- Introspection ----------------------------------------------------------------
 
+/**
+ * Single source of truth for node topology (C2): every shadow home
+ * (state/graph-state.json audit_graph, contracts/node-contracts/*,
+ * its README index) is GENERATED from DESCRIPTORS — never hand-edited.
+ */
 export interface NodeDescriptor {
   id: AgNodeId;
   name: string;
+  /** Real runtime entrypoint: "<file path> <exported fn>" (codegen-checked). */
+  impl: string;
+  /** Producer stamped onto this node's artifacts (PRODUCERS closed set). */
+  producer: ProducerId;
   node_class: NodeClass;
   reads: SliceName[];
   writes: SliceName[];

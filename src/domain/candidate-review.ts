@@ -41,6 +41,30 @@ export interface CandidatePromotion {
  *  an unconsented decision is never logged, not even as a tombstone. */
 export type OutcomeConsent = { version: string } | { declined: true };
 
+/** Ticket 05 (ADR-0009 §4): parse the PATCH body's consent posture. Valid ⇒
+ *  the consent to forward under ApplyPromotionsOptions.consent (value omitted
+ *  when none was meaningfully supplied — absent and explicit null both stay on
+ *  the logged-by-default path so devtab/tests are unaffected); invalid ⇒ a
+ *  loud error string for the caller to surface as a 400. The body field is
+ *  typed unknown because JSON arrives unvalidated; the checks below are the
+ *  whole contract. */
+export function parseOutcomeConsent(
+  body: { consent?: unknown },
+): { ok: true; value?: OutcomeConsent } | { ok: false; error: string } {
+  const raw = body.consent;
+  if (raw === undefined || raw === null) return { ok: true };
+  const consent = raw as OutcomeConsent;
+  if (
+    typeof raw !== "object" ||
+    ("declined" in consent && consent.declined !== true) ||
+    (!("declined" in consent) &&
+      typeof (consent as { version?: unknown }).version !== "string")
+  ) {
+    return { ok: false, error: "invalid consent: expected {version} or {declined:true}" };
+  }
+  return { ok: true, value: consent };
+}
+
 export interface ApplyPromotionsOptions {
   consent?: OutcomeConsent;
   /** Stable pseudonymous auditor id; defaults to DEFAULT_AUDITOR_PSEUDONYM. */

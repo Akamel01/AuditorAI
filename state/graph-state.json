@@ -1,60 +1,476 @@
 {
   "schema_version": "1.0.0",
-  "edge_types": ["CONTROL", "DATA", "CONTEXT", "CONTRACT", "DEPENDENCY", "EVIDENCE", "VALIDATION", "FEEDBACK", "ESCALATION", "SPAWN", "MERGE", "LOOP"],
+  "edge_types": [
+    "CONTROL",
+    "DATA",
+    "CONTEXT",
+    "CONTRACT",
+    "DEPENDENCY",
+    "EVIDENCE",
+    "VALIDATION",
+    "FEEDBACK",
+    "ESCALATION",
+    "SPAWN",
+    "MERGE",
+    "LOOP"
+  ],
   "graphs": {
     "development_graph": {
       "purpose": "Graph used by orchestrator + subagents to build the product",
       "nodes": [
-        { "id": "ORCH", "role": "Orchestrator/Principal Architect", "status": "active" },
-        { "id": "MAP", "artifact": "workflow/wayfinder/maps/mvp/MAP.md", "role": "Wayfinder map + frontier", "status": "active" },
-        { "id": "DEV-R1..R5", "role": "Jurisdiction researchers ×5", "status": "completed" },
-        { "id": "DEV-EV", "role": "Evidence Manager", "status": "completed", "artifact": "scripts/compile-evidence.mjs + state/evidence-registry.json (114)" },
-        { "id": "DEV-G2/G4", "role": "Stage model + finding model decisions", "status": "completed" },
-        { "id": "DEV-T1", "role": "App scaffold (ORCH direct execution after subagent fabrication)", "status": "completed" },
-        { "id": "DEV-IMPL", "role": "Domain engine, persistence seam, API routes, UI", "status": "completed" },
-        { "id": "DEV-VERIFY", "role": "CI quality job (lint/typecheck/test/build) + GitHub Actions", "status": "active" },
-        { "id": "DEV-DEPLOY", "role": "Vercel deployment node", "status": "pending" }
+        {
+          "id": "ORCH",
+          "role": "Orchestrator/Principal Architect",
+          "status": "active"
+        },
+        {
+          "id": "MAP",
+          "artifact": "workflow/wayfinder/maps/mvp/MAP.md",
+          "role": "Wayfinder map + frontier",
+          "status": "active"
+        },
+        {
+          "id": "DEV-R1..R5",
+          "role": "Jurisdiction researchers ×5",
+          "status": "completed"
+        },
+        {
+          "id": "DEV-EV",
+          "role": "Evidence Manager",
+          "status": "completed",
+          "artifact": "scripts/compile-evidence.mjs + state/evidence-registry.json (114)"
+        },
+        {
+          "id": "DEV-G2/G4",
+          "role": "Stage model + finding model decisions",
+          "status": "completed"
+        },
+        {
+          "id": "DEV-T1",
+          "role": "App scaffold (ORCH direct execution after subagent fabrication)",
+          "status": "completed"
+        },
+        {
+          "id": "DEV-IMPL",
+          "role": "Domain engine, persistence seam, API routes, UI",
+          "status": "completed"
+        },
+        {
+          "id": "DEV-VERIFY",
+          "role": "CI quality job (lint/typecheck/test/build) + GitHub Actions",
+          "status": "active"
+        },
+        {
+          "id": "DEV-DEPLOY",
+          "role": "Vercel deployment node",
+          "status": "pending"
+        }
       ],
       "edges": [
-        { "from": "MAP", "type": "CONTEXT", "to": "ORCH", "payload": "destination, fog, frontier" },
-        { "from": "DEV-R1..R5", "type": "EVIDENCE", "to": "DEV-EV", "payload": "research front-matter records" },
-        { "from": "DEV-EV", "type": "CONTEXT", "to": "DEV-G2/G4", "payload": "compiled evidence registry" },
-        { "from": "DEV-G2/G4", "type": "CONTRACT", "to": "DEV-IMPL", "payload": "ADR-0002/0003 + policy-pack schema" },
-        { "from": "DEV-IMPL", "type": "DATA", "to": "DEV-VERIFY", "payload": "commits; 43 tests incl. golden + e2e flow" },
-        { "from": "DEV-VERIFY", "type": "VALIDATION", "to": "ORCH", "payload": "green CI gate before deploy" },
-        { "from": "DEV-IMPL", "type": "DATA", "to": "DEV-DEPLOY", "payload": "build artifacts via Vercel integration" }
+        {
+          "from": "MAP",
+          "type": "CONTEXT",
+          "to": "ORCH",
+          "payload": "destination, fog, frontier"
+        },
+        {
+          "from": "DEV-R1..R5",
+          "type": "EVIDENCE",
+          "to": "DEV-EV",
+          "payload": "research front-matter records"
+        },
+        {
+          "from": "DEV-EV",
+          "type": "CONTEXT",
+          "to": "DEV-G2/G4",
+          "payload": "compiled evidence registry"
+        },
+        {
+          "from": "DEV-G2/G4",
+          "type": "CONTRACT",
+          "to": "DEV-IMPL",
+          "payload": "ADR-0002/0003 + policy-pack schema"
+        },
+        {
+          "from": "DEV-IMPL",
+          "type": "DATA",
+          "to": "DEV-VERIFY",
+          "payload": "commits; 43 tests incl. golden + e2e flow"
+        },
+        {
+          "from": "DEV-VERIFY",
+          "type": "VALIDATION",
+          "to": "ORCH",
+          "payload": "green CI gate before deploy"
+        },
+        {
+          "from": "DEV-IMPL",
+          "type": "DATA",
+          "to": "DEV-DEPLOY",
+          "payload": "build artifacts via Vercel integration"
+        }
       ]
     },
     "audit_graph": {
-      "purpose": "Bounded-context graph the product executes to run an actual audit (§19)",
+      "purpose": "Bounded-context graph the product executes to run an actual audit (§19); GENERATED from registry.ts DESCRIPTORS by scripts/gen-node-topology.ts.",
       "nodes": [
-        { "id": "AG-PROJECT", "impl": "src/domain/types.ts Project", "role": "Project record: metadata + stage_selection + input_values" },
-        { "id": "AG-STAGE-SELECT", "impl": "src/domain/packs.ts requireStage/getPack", "role": "Jurisdiction→Framework→NativeStage resolution with eligibility checks" },
-        { "id": "AG-MANIFEST", "impl": "engine.runAudit manifest stage", "role": "Input normalization to §14/§27 states" },
-        { "id": "AG-RULES", "impl": "engine.runAudit rules stage", "role": "Deterministic completeness/process/eligibility rules from pack" },
-        { "id": "AG-QUESTIONS", "impl": "engine.runAudit questions stage", "role": "Stage-relevant audit questions surfaced for human reasoning" },
-        { "id": "AG-FINDINGS", "impl": "engine.makeProcessFinding/makeEligibilityFinding", "role": "Candidate findings as compliance_question drafts (ADR-0003 kinds)" },
-        { "id": "AG-AI-CANDIDATES", "impl": "src/lib/ai.ts (OffAiAdapter default)", "role": "Bounded AI candidate findings — OFF in MVP, seam reserved" },
-        { "id": "AG-HALLUCINATION-CHECK", "impl": "src/domain/pipeline/nodes/hallucination-check.ts", "role": "Deterministic hallucination checks (ADR-0010): evidence-id existence, normalized quote match, pack-vocabulary membership; auto-flag, never drop" },
-        { "id": "AG-EVIDENCE-USE-AUDIT", "impl": "src/domain/pipeline/nodes/evidence-use-audit.ts", "role": "Deterministic evidence-use audit (ADR-0010): citation presence, producer/source_trace enforcement, use-direction consistency; auto-flag, never drop" },
-        { "id": "AG-ADJUDICATION", "impl": "PATCH /api/projects/[id]/audits/[auditId]", "role": "Human review: reviewer_status workflow + wording discipline enforcement" },
-        { "id": "AG-EVIDENCE-LINKS", "impl": "src/lib/evidence.ts", "role": "Every normative claim traceable to evidence registry ids" },
-        { "id": "AG-REPORT", "impl": "src/lib/report.ts renderReportMarkdown", "role": "Deterministic report rendering (MD/JSON/print-PDF)" },
-        { "id": "AG-PERSIST", "impl": "src/lib/persistence.ts Repository", "role": "Versioned storage behind DataStore seam" }
+        {
+          "id": "AG-PROJECT",
+          "impl": "src/domain/pipeline/nodes/project.ts runProject",
+          "name": "Project Intake",
+          "role": "Copies the stored Project record into the pipeline verbatim.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [],
+          "writes": [
+            "project_input"
+          ],
+          "emits": "project.record",
+          "depends_on": [],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-STAGE-SELECT",
+          "impl": "src/domain/pipeline/nodes/stage-select.ts runStageSelect",
+          "name": "Stage Resolution & Eligibility",
+          "role": "Jurisdiction→Framework→NativeStage resolution with eligibility checks.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "project_input"
+          ],
+          "writes": [
+            "stage_context"
+          ],
+          "emits": "context.snapshot",
+          "depends_on": [
+            "AG-PROJECT"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-MANIFEST",
+          "impl": "src/domain/pipeline/nodes/manifest.ts runManifest",
+          "name": "Input Manifest",
+          "role": "Input normalization to §14/§27 states for the selected native stage.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "stage_context",
+            "project_input"
+          ],
+          "writes": [
+            "input_manifest"
+          ],
+          "emits": "manifest.table",
+          "depends_on": [
+            "AG-STAGE-SELECT"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-RULES",
+          "impl": "src/domain/pipeline/nodes/rules.ts runRules",
+          "name": "Deterministic Rule Evaluation",
+          "role": "Completeness/process/eligibility rules from the policy pack; no scores.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "stage_context",
+            "input_manifest"
+          ],
+          "writes": [
+            "rule_results"
+          ],
+          "emits": "rules.results",
+          "depends_on": [
+            "AG-MANIFEST"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-FINDINGS",
+          "impl": "src/domain/pipeline/nodes/findings.ts runFindings",
+          "name": "Deterministic Findings Shaping",
+          "role": "Gates raw rule outcomes into schema-valid draft findings.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "rule_results"
+          ],
+          "writes": [
+            "rule_results"
+          ],
+          "emits": "findings.deterministic",
+          "depends_on": [
+            "AG-RULES"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-QUESTIONS",
+          "impl": "src/domain/pipeline/nodes/questions.ts runQuestions",
+          "name": "Audit Question Selection",
+          "role": "Stage-relevant audit questions surfaced for human reasoning.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "stage_context"
+          ],
+          "writes": [
+            "audit_questions"
+          ],
+          "emits": "questions.set",
+          "depends_on": [
+            "AG-STAGE-SELECT"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-AI-CANDIDATES",
+          "impl": "src/domain/pipeline/nodes/ai-candidates.ts runAiCandidates/generateCandidatesLive",
+          "name": "AI Candidate Generation",
+          "role": "Bounded AI candidate findings via the AiAdapter seam; OFF default emits null slice with zero provider calls.",
+          "node_class": "ai-bounded",
+          "producer": "safety-reasoning-agent",
+          "reads": [
+            "stage_context",
+            "input_manifest",
+            "audit_questions",
+            "rule_results",
+            "project_input"
+          ],
+          "writes": [
+            "candidate_findings"
+          ],
+          "emits": "candidates.ai",
+          "depends_on": [],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-HALLUCINATION-CHECK",
+          "impl": "src/domain/pipeline/nodes/hallucination-check.ts runHallucinationCheck",
+          "name": "Hallucination Check",
+          "role": "Evidence-id existence, normalized quote match and pack-vocabulary membership (ADR-0010); failures annotate auto-flagged, never drop.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "candidate_findings",
+            "rule_results",
+            "stage_context"
+          ],
+          "writes": [
+            "candidate_findings",
+            "rule_results",
+            "validation_summary"
+          ],
+          "emits": "validation.hallucination",
+          "depends_on": [
+            "AG-AI-CANDIDATES"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-EVIDENCE-USE-AUDIT",
+          "impl": "src/domain/pipeline/nodes/evidence-use-audit.ts runEvidenceUseAudit",
+          "name": "Evidence-Use Audit",
+          "role": "Citation presence, producer/source_trace enforcement and use-direction consistency (ADR-0010); failures annotate auto-flagged, never drop.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "candidate_findings",
+            "rule_results"
+          ],
+          "writes": [
+            "candidate_findings",
+            "rule_results"
+          ],
+          "emits": "audit.evidence-use",
+          "depends_on": [
+            "AG-HALLUCINATION-CHECK"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-ADJUDICATION",
+          "impl": "src/domain/pipeline/nodes/adjudication.ts runAdjudication",
+          "name": "Human Adjudication",
+          "role": "Human review workflow + wording discipline; batch mode carries drafts forward unverified; decisions on unknown finding ids are recorded under limitations.",
+          "node_class": "human",
+          "producer": "finding-adjudicator",
+          "reads": [
+            "rule_results"
+          ],
+          "writes": [
+            "adjudication"
+          ],
+          "emits": "adjudication.decisions",
+          "depends_on": [
+            "AG-FINDINGS",
+            "AG-AI-CANDIDATES",
+            "AG-EVIDENCE-USE-AUDIT",
+            "AG-QUESTIONS"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-EVIDENCE-LINKS",
+          "impl": "src/domain/pipeline/nodes/evidence-links.ts runEvidenceLinks",
+          "name": "Evidence Linkset Validation",
+          "role": "Every normative claim traceable to evidence-registry ids; unresolved ids fail loud.",
+          "node_class": "deterministic",
+          "producer": "domain-engine",
+          "reads": [
+            "input_manifest",
+            "rule_results",
+            "candidate_findings",
+            "adjudication"
+          ],
+          "writes": [
+            "evidence_linkset"
+          ],
+          "emits": "evidence.linkset",
+          "depends_on": [
+            "AG-RULES",
+            "AG-ADJUDICATION"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-REPORT",
+          "impl": "src/domain/pipeline/nodes/report.ts runReport",
+          "name": "Report Assembly",
+          "role": "Deterministic report assembly (JSON literal + Markdown rendering).",
+          "node_class": "deterministic",
+          "producer": "report-builder",
+          "reads": [
+            "project_input",
+            "stage_context",
+            "input_manifest",
+            "rule_results",
+            "audit_questions",
+            "adjudication"
+          ],
+          "writes": [
+            "report_bundle"
+          ],
+          "emits": "report.bundle",
+          "depends_on": [
+            "AG-ADJUDICATION"
+          ],
+          "executed_in_batch": true
+        },
+        {
+          "id": "AG-PERSIST",
+          "impl": "src/domain/pipeline/nodes/persist.ts persistRun",
+          "name": "Persistence Receipt",
+          "role": "Versioned storage behind the DataStore seam; step-mode only.",
+          "node_class": "deterministic",
+          "producer": "repository",
+          "reads": [
+            "report_bundle"
+          ],
+          "writes": [
+            "persistence_ref"
+          ],
+          "emits": "persistence.receipt",
+          "depends_on": [
+            "AG-REPORT"
+          ],
+          "executed_in_batch": false
+        }
       ],
       "edges": [
-        { "from": "AG-PROJECT", "type": "DATA", "to": "AG-STAGE-SELECT", "payload": "stage_selection" },
-        { "from": "AG-STAGE-SELECT", "type": "CONTRACT", "to": "AG-MANIFEST", "payload": "pack inputs ∩ native stage" },
-        { "from": "AG-MANIFEST", "type": "DATA", "to": "AG-RULES", "payload": "input states" },
-        { "from": "AG-RULES", "type": "DATA", "to": "AG-FINDINGS", "payload": "compliance_question drafts" },
-        { "from": "AG-RULES", "type": "EVIDENCE", "to": "AG-EVIDENCE-LINKS", "payload": "rule evidence_ids" },
-        { "from": "AG-QUESTIONS", "type": "CONTEXT", "to": "AG-ADJUDICATION", "payload": "questions for human reasoning" },
-        { "from": "AG-AI-CANDIDATES", "type": "FEEDBACK", "to": "AG-ADJUDICATION", "payload": "bounded candidates (disabled by default)" },
-        { "from": "AG-AI-CANDIDATES", "type": "VALIDATION", "to": "AG-HALLUCINATION-CHECK", "payload": "bounded candidates" },
-        { "from": "AG-HALLUCINATION-CHECK", "type": "DATA", "to": "AG-EVIDENCE-USE-AUDIT", "payload": "auto-flagged candidates + validation_summary" },
-        { "from": "AG-EVIDENCE-USE-AUDIT", "type": "FEEDBACK", "to": "AG-ADJUDICATION", "payload": "auto-flagged reasons rendered for the human gate" },
-        { "from": "AG-ADJUDICATION", "type": "CONTROL", "to": "AG-REPORT", "payload": "reviewed findings only" },
-        { "from": "AG-REPORT", "type": "DATA", "to": "AG-PERSIST", "payload": "AuditResult artifact" }
+        {
+          "from": "AG-PROJECT",
+          "type": "DATA",
+          "to": "AG-STAGE-SELECT",
+          "payload": "AG-PROJECT hands off project_input"
+        },
+        {
+          "from": "AG-STAGE-SELECT",
+          "type": "DATA",
+          "to": "AG-MANIFEST",
+          "payload": "AG-STAGE-SELECT hands off stage_context"
+        },
+        {
+          "from": "AG-MANIFEST",
+          "type": "DATA",
+          "to": "AG-RULES",
+          "payload": "AG-MANIFEST hands off input_manifest"
+        },
+        {
+          "from": "AG-RULES",
+          "type": "DATA",
+          "to": "AG-FINDINGS",
+          "payload": "AG-RULES hands off rule_results"
+        },
+        {
+          "from": "AG-STAGE-SELECT",
+          "type": "DATA",
+          "to": "AG-QUESTIONS",
+          "payload": "AG-STAGE-SELECT hands off stage_context"
+        },
+        {
+          "from": "AG-AI-CANDIDATES",
+          "type": "DATA",
+          "to": "AG-HALLUCINATION-CHECK",
+          "payload": "AG-AI-CANDIDATES hands off candidate_findings"
+        },
+        {
+          "from": "AG-HALLUCINATION-CHECK",
+          "type": "DATA",
+          "to": "AG-EVIDENCE-USE-AUDIT",
+          "payload": "AG-HALLUCINATION-CHECK hands off candidate_findings, rule_results"
+        },
+        {
+          "from": "AG-FINDINGS",
+          "type": "DATA",
+          "to": "AG-ADJUDICATION",
+          "payload": "AG-FINDINGS hands off rule_results"
+        },
+        {
+          "from": "AG-AI-CANDIDATES",
+          "type": "DEPENDENCY",
+          "to": "AG-ADJUDICATION",
+          "payload": "AG-ADJUDICATION orders after AG-AI-CANDIDATES (no direct slice handoff)"
+        },
+        {
+          "from": "AG-EVIDENCE-USE-AUDIT",
+          "type": "DATA",
+          "to": "AG-ADJUDICATION",
+          "payload": "AG-EVIDENCE-USE-AUDIT hands off rule_results"
+        },
+        {
+          "from": "AG-QUESTIONS",
+          "type": "DEPENDENCY",
+          "to": "AG-ADJUDICATION",
+          "payload": "AG-ADJUDICATION orders after AG-QUESTIONS (no direct slice handoff)"
+        },
+        {
+          "from": "AG-RULES",
+          "type": "DATA",
+          "to": "AG-EVIDENCE-LINKS",
+          "payload": "AG-RULES hands off rule_results"
+        },
+        {
+          "from": "AG-ADJUDICATION",
+          "type": "DATA",
+          "to": "AG-EVIDENCE-LINKS",
+          "payload": "AG-ADJUDICATION hands off adjudication"
+        },
+        {
+          "from": "AG-ADJUDICATION",
+          "type": "DATA",
+          "to": "AG-REPORT",
+          "payload": "AG-ADJUDICATION hands off adjudication"
+        },
+        {
+          "from": "AG-REPORT",
+          "type": "DATA",
+          "to": "AG-PERSIST",
+          "payload": "AG-REPORT hands off report_bundle"
+        }
       ]
     }
   },

@@ -11,7 +11,6 @@ import type { AuditResult, Project } from "./types";
 import { getPipeline } from "./pipeline";
 
 export { DISCLAIMER, StageNotEligibleError } from "./pipeline/constants";
-export { validateRecommendationWording } from "./pipeline/wording";
 
 export function runAudit(project: Project, ranAtIso: string): AuditResult {
   return getPipeline().runAll(project, ranAtIso);
