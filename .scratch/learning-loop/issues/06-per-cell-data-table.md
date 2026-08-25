@@ -1,6 +1,6 @@
 # 06 — Programmatic per-cell data table (replace hand-stated §02 rows)
 
-Type: research · Status: claimed · Blocked by: —
+Type: research · Status: resolved · Blocked by: —
 
 ## Question
 
@@ -11,6 +11,8 @@ feeds ticket 04's rendering. Flags fragile cells (e.g., USA-final single fixture
 No hand-maintained numbers may survive.
 
 ## Answer
+
+RESOLVED; 16 rows derived; usa×DETAILED flagged fragile.
 
 Deliverable written: `docs/architecture/per-cell-data-table.md` (markdown table + fragile-cell list + machine-readable JSON block for ticket 04).
 

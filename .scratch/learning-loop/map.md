@@ -35,6 +35,10 @@ with the Phase-4 fine-tune gate (ADR-0013) standing immutable over all of it.
   prompts/system-prompt.md + hash stamping (0012); continuous loop, mechanism-first
   triggers, immutable four-part Phase-4 gate (0013).
 
+- [01 CandidateOutcome](issues/01-candidate-outcome-logging.md): PATCH-path capture live; JSONL sink; 8-test suite.
+- [02 Validation nodes](issues/02-validation-nodes.md): two registered nodes, flag-and-show, AI-off parity, rate into AuditResult.
+- [06 Per-cell table](issues/06-per-cell-data-table.md): generated markdown+JSON for all 16 cells.
+
 ## Not yet specified
 
 - Numeric investigation thresholds for PromotionRate/HallucinationRate — deliberately

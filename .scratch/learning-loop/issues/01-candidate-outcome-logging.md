@@ -1,6 +1,6 @@
 # 01 — CandidateOutcome: type, capture, persistence
 
-Type: task · Status: claimed · Blocked by: —
+Type: task · Status: resolved · Blocked by: —
 
 ## Question
 
@@ -11,4 +11,6 @@ consent_version plumbing, retention TTL constant. Tests: schema validation, appe
 behavior, logging-failure-never-blocks, gitignore enforcement.
 
 ## Answer
+
+RESOLVED via builder→reviewer(BLOCK)→fixer swarm; production-path capture verified by integration test.
 

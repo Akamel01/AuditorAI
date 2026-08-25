@@ -1,6 +1,6 @@
 # 02 — AG-HALLUCINATION-CHECK + AG-EVIDENCE-USE-AUDIT nodes
 
-Type: task · Status: claimed · Blocked by: —
+Type: task · Status: resolved · Blocked by: —
 
 ## Question
 
@@ -12,4 +12,6 @@ on baseline findings. Register in registry.ts; stamp per-run hallucination rate 
 run artifacts. Tests incl. AI-off path and each failure mode.
 
 ## Answer
+
+RESOLVED; graph-state deviation justified (conformance gates); hallucination_rate persisted.
 
