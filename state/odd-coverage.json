@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "declaration_version": "1.1.2",
-  "generated": "1970-01-01T00:00:00.000Z",
+  "generated": "2026-08-26T21:38:49.092Z",
   "target_total": 500,
   "cells": [
     {
@@ -18,11 +18,11 @@
       ],
       "target": 13,
       "have_full_package": 0,
-      "have_total": 0,
-      "label": "MISSING",
-      "priority": 1,
+      "have_total": 1,
+      "label": "UNDER-COVERED",
+      "priority": 0.9231,
       "uncovered_reasons": [
-        "need 13 more packages (0/13)",
+        "need 12 more packages (1/13)",
         "no full-package yet"
       ]
     },
@@ -41,11 +41,11 @@
       ],
       "target": 13,
       "have_full_package": 0,
-      "have_total": 0,
-      "label": "MISSING",
-      "priority": 1,
+      "have_total": 1,
+      "label": "UNDER-COVERED",
+      "priority": 0.9231,
       "uncovered_reasons": [
-        "need 13 more packages (0/13)",
+        "need 12 more packages (1/13)",
         "no full-package yet"
       ]
     },
@@ -84,11 +84,11 @@
       ],
       "target": 13,
       "have_full_package": 0,
-      "have_total": 0,
-      "label": "MISSING",
-      "priority": 1,
+      "have_total": 1,
+      "label": "UNDER-COVERED",
+      "priority": 0.9231,
       "uncovered_reasons": [
-        "need 13 more packages (0/13)",
+        "need 12 more packages (1/13)",
         "no full-package yet"
       ]
     },
@@ -107,11 +107,11 @@
       ],
       "target": 13,
       "have_full_package": 0,
-      "have_total": 0,
-      "label": "MISSING",
-      "priority": 1,
+      "have_total": 1,
+      "label": "UNDER-COVERED",
+      "priority": 0.9231,
       "uncovered_reasons": [
-        "need 13 more packages (0/13)",
+        "need 12 more packages (1/13)",
         "no full-package yet"
       ]
     },
@@ -276,11 +276,11 @@
       "fixture_ids": [],
       "target": 41,
       "have_full_package": 0,
-      "have_total": 0,
-      "label": "MISSING",
-      "priority": 3,
+      "have_total": 1,
+      "label": "UNDER-COVERED",
+      "priority": 2.9268,
       "uncovered_reasons": [
-        "need 41 more packages (0/41)",
+        "need 40 more packages (1/41)",
         "no full-package yet"
       ]
     },
@@ -332,9 +332,9 @@
     "canada:DETAILED_DESIGN",
     "canada:PRELIMINARY_DESIGN",
     "international:DETAILED_DESIGN",
-    "international:FEASIBILITY_CONCEPT",
     "uk:DETAILED_DESIGN",
     "usa:FEASIBILITY_CONCEPT",
+    "international:FEASIBILITY_CONCEPT",
     "uk:PRELIMINARY_DESIGN",
     "usa:PRELIMINARY_DESIGN",
     "international:PRELIMINARY_DESIGN",
