@@ -76,7 +76,7 @@ class BraveSearchProvider implements DiscoveryProvider {
   }
 
   async fetch(url: string): Promise<FetchResult> {
-    return withHostBudget(new URL(url).host, async () => {
+    return withHostBudget(url, async () => {
       const res = await fetch(url);
       return { bytes: new Uint8Array(await res.arrayBuffer()), status: res.status, headers: res.headers };
     });

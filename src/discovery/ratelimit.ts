@@ -25,10 +25,14 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /**
  * Runs `fn` under the host budget: at most one start per second and two
- * concurrent requests per host. Returns fn's result; throws after `fn` runs.
+ * concurrent requests per host. Accepts either a full URL or a bare hostname.
  */
-export async function withHostBudget<T>(url: string, fn: () => Promise<T>): Promise<T> {
-  const host = new URL(url).host;
+export function hostOf(urlOrHost: string): string {
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(urlOrHost) ? new URL(urlOrHost).host : urlOrHost;
+}
+
+export async function withHostBudget<T>(urlOrHost: string, fn: () => Promise<T>): Promise<T> {
+  const host = hostOf(urlOrHost);
   const b = budgetFor(host);
 
   while (b.inflight >= MAX_CONCURRENT_PER_HOST) {

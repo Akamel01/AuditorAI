@@ -74,7 +74,7 @@ class GoogleCseProvider implements DiscoveryProvider {
   }
 
   async fetch(url: string, fetchImpl: typeof fetch = fetch): Promise<FetchResult> {
-    return withHostBudget(new URL(url).host, async () => {
+    return withHostBudget(url, async () => {
       const res = await fetchImpl(url);
       return { bytes: new Uint8Array(await res.arrayBuffer()), status: res.status, headers: res.headers };
     });
