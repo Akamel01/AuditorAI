@@ -38,6 +38,7 @@ class GoogleCseProvider implements DiscoveryProvider {
     const cx = resolveSecret(DISCOVERY_SECRETS.googleCseCx);
     if (!key || !cx) throw new Error("google-cse requires DISCOVERY_GOOGLE_CSE_KEY/CX env or Keychain auditorai/discovery-cse-key + auditorai/discovery-cse-cx");
     const hits: DiscoveryHit[] = [];
+    let lastError: string | null = null;
     for (const theme of query.themes.length ? query.themes : ["road safety audit"]) {
       const jurScope = query.jurisdictions.length === 1 ? JUR_LABEL[query.jurisdictions[0]] : "";
       const q = encodeURIComponent(`${theme} ${jurScope}`.trim());
@@ -69,6 +70,9 @@ class GoogleCseProvider implements DiscoveryProvider {
           jurisdiction_guess: query.jurisdictions[0] ?? null,
         });
       }
+    }
+    if (hits.length === 0 && lastError) {
+      throw new Error(`google-cse discovered nothing: ${lastError}`);
     }
     return hits;
   }

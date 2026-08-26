@@ -36,6 +36,7 @@ class BraveSearchProvider implements DiscoveryProvider {
     const token = resolveSecret(DISCOVERY_SECRETS.brave);
     if (!token) throw new Error("brave-search requires DISCOVERY_BRAVE_API_KEY (or Keychain auditorai/discovery-brave)");
     const hits: DiscoveryHit[] = [];
+    let lastError: string | null = null;
     for (const jur of query.jurisdictions) {
       const siteFilters = JUR_SITE_FILTER[jur].map((s) => `${s}`).join(" OR ");
       const q = encodeURIComponent(`"road safety audit" (${siteFilters})`);
@@ -52,7 +53,10 @@ class BraveSearchProvider implements DiscoveryProvider {
         if (wait) await new Promise((r) => setTimeout(r, Math.min(wait, 60_000)));
         continue;
       }
-      if (!res.ok) continue;
+      if (!res.ok) {
+        lastError = `HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`;
+        continue;
+      }
       const json = (await res.json()) as { web?: { results?: BraveWebResult[] } };
       const now = new Date().toISOString();
       for (const item of json.web?.results ?? []) {
@@ -71,6 +75,9 @@ class BraveSearchProvider implements DiscoveryProvider {
           jurisdiction_guess: jur,
         });
       }
+    }
+    if (hits.length === 0 && lastError) {
+      throw new Error(`brave-search discovered nothing: ${lastError}`);
     }
     return hits;
   }
