@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Acquisition Bundle",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "match_id",
+    "documents"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^ACQ-[A-Za-z0-9-]+$"
+    },
+    "match_id": {
+      "type": "string",
+      "pattern": "^MAT-[A-Za-z0-9-]+$"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/acquiredDocument"
+      }
+    }
+  },
+  "$defs": {
+    "acquiredDocument": {
+      "type": "object",
+      "required": [
+        "doc_id",
+        "url",
+        "sha256",
+        "bytes",
+        "mime",
+        "page_count",
+        "pages",
+        "extraction"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "doc_id": {
+          "type": "string",
+          "pattern": "^DOC-[A-Za-z0-9-]+$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mime": {
+          "enum": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ]
+        },
+        "page_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "page_no",
+              "png_sha256",
+              "ocr_sha256",
+              "ocr_conf"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "page_no": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "png_sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "ocr_sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "ocr_conf": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "extraction": {
+          "type": "object",
+          "required": [
+            "engine",
+            "text_sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "engine": {
+              "type": "string",
+              "minLength": 1
+            },
+            "text_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "title_hint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

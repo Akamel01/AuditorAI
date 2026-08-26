@@ -1,0 +1,2967 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "Append-only machine ledger for the discovery pipeline (D01..D10). One entry per node emission per run; entries are immutable. Compiled views (odd-coverage.json) are derived — regenerate with scripts/discovery-coverage.ts, never hand-edit.",
+  "created": "2026-08-25",
+  "entries": [
+    {
+      "seq": 1,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "discovery.hitset",
+      "data": [
+        {
+          "hit_id": "HIT-seed-portals-47405f449b52cb30",
+          "url": "https://national-infrastructure-consenting.planningregistry.co.uk/",
+          "source_type": "planning-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "nsip-ogl",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "ogl-v3",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "NSIP consenting portal — search 'road safety audit'",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-seed-portals-cac1067d1a651f4c",
+          "url": "https://www.standardsforhighways.co.uk/tses/search",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "standards-highways",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "ogl-v3",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Standards for Highways — DMRB/MCHW search",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "url": "https://www.dot.state.mn.us/planning/program/projdev.html",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "mndot-edocs",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "url": "https://rosap.ntl.bts.gov/gsearch?ref=rsa",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "rosap",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-7d50fcfb115066b0",
+          "url": "https://open.alberta.ca/opendatasets?q=road+safety+audit",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "alberta-open",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "ogl-v3",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Alberta Open Data — road safety audit",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-seed-portals-84d0a51400f55279",
+          "url": "https://www2.gov.bc.ca/gov/content/transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "bc-moti",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "ogl-v3",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "BC MoTI technical circulars",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "url": "https://web.archive.org/cdx/search/cdx?url=jawdah.qcc.abudhabi.ae*&output=text&filter=urlkey:.*isgl.*",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "jawdah-qcc-cdx",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-seed-portals-a1140ba50eb6024e",
+          "url": "https://www.pleanala.ie/publicaccess/",
+          "source_type": "planning-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "abp-eiar",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "An Bord Pleanála public access — EIAR/RSA attachments",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-seed-portals-b472972e56f3ccf9",
+          "url": "https://www.carecprogram.org/?s=road+safety+audit",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "carec",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "CAREC program — road safety audit publications",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-seed-portals-50df7623b7d8c705",
+          "url": "https://planning.welhat.gov.uk/Document/Download?module=PLA&recordNumber=107754&planId=2079274&imageId=5&isPlan=False&fileName=Stage%201%20Road%20Safety%20Report.pdf",
+          "source_type": "planning-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "welhat-planning",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report with designer response and audit reference plan drawings",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "hingham-ma",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-2562b791955a10d4",
+          "url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "alberta-open",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "ogl-v3",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Report on Planning Stage Road Safety Audit — North East Edmonton Ring Road functional planning",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-seed-portals-ab6b2d5f28e9e88c",
+          "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+          "source_type": "planning-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "abp-eiar",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Milltown Park Dublin — Stage 1 Road Safety Audit (preliminary design)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-b784065de5485300",
+          "url": "https://www.standardsforhighways.co.uk/tses/attachments/710d4c33-0032-4dfb-8303-17aff1ce804b",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Design Manual for Roads and Bridges General Principles and Scheme Governance",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-4450e260297fbbb6",
+          "url": "https://content.tfl.gov.uk/tfl-road-safety-audit-procedure-may-2014-sqa-0170.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Transport for London Surface Transport Uncontrolled when printed – may contain",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-d8be989ad68801c4",
+          "url": "https://www.standardsforhighways.co.uk/tses/attachments/69517ebd-ed8d-4558-b101-c1e80611000a",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Design Manual for Roads and Bridges General Principles & Scheme Governance",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-b17acd34eeade446",
+          "url": "https://www.dundeecity.gov.uk/sites/default/files/publications/road%20safety%20audit%20procedures.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Dundee City Council Road Safety Audit Procedures AUGUST 2005",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-cfdd46daf3dea7f2",
+          "url": "https://www.standardsforhighways.co.uk/tses/attachments/271568d7-c438-4f32-b3be-bda3f89c19d2",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audits",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-c03f229239262e2a",
+          "url": "https://www.hants.gov.uk/business/hampshireengineeringservices/whatwedo/surveystestingandaudits/roadsafetyaudit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road safety audit | Business and economy | Hampshire County Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-9463c4ffd4323688",
+          "url": "https://cmis.essex.gov.uk/essexcmis5/Document.ashx?czJKcaeAi5tUFL1DTL2UE4zNRBcoShgo=uRLig7zhGtKzRK7rn/Zz72OUalj57AF4zhtgsI9N4EM9wBwNTHQ9Gg%3D%3D&rUzwRPf+Z3zd4E7Ikn8Lyw=%3D%3DpwRE6AGJFLDNlh225F5QMaQWCtPHwdhUfCZ/LUQzgA2uL5jNRG4jdQ%3D%3D&mCTIbCubSFfXsDGW9IXnlg=%3D%3DhFflUdN3100%3D&kCx1AnS9/pWZQ40DXFvdEw=%3D%3DhFflUdN3100%3D&uJovDxwdjMPoYv+AJvYtyA=%3D%3DctNJFf55vVA%3D&FgPlIEJYlotS+YGoBi5olA=%3D%3DNHdURQburHA%3D&d9Qjj0ag1Pd993jsyOJqFvmyB7X0CSQK=ctNJFf55vVA%3D&WGewmoAfeNR9xqBux0r1Q8Za60lavYmz=ctNJFf55vVA%3D&WGewmoAfeNQ16B2MHuCpMRKZMwaG1PaO=ctNJFf55vVA%3D",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Highways Practice Note 039 Procedure for Road Safety Audit August 2017",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-725723516a316379",
+          "url": "https://www.westlothian.gov.uk/article/45096/Road-Safety-Audit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit - West Lothian Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-810f47cf77526b53",
+          "url": "https://www.buckinghamshire.gov.uk/parking-roads-and-transport/transport-policies-strategies-and-plans/highway-policies/network-safety-policy/road-safety-audits/",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road safety audits | Buckinghamshire Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-4d2138a0f932a09a",
+          "url": "https://api.warwickshire.gov.uk/documents/WCCC-1615347118-1523",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:49.413Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit Procedure",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "hit_id": "HIT-brave-search-85a8507dfe254dec",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audits-rsa",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audits (RSA) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-04687c4f48a39939",
+          "url": "https://highways.dot.gov/safety/proven-safety-countermeasures/road-safety-audit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-b84bf9f383bf9e50",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/30-overview-road-safety-audit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "3.0 Overview of Road Safety Audit Process | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-fb272da025f7dfa4",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/40-conducting-road-safety-audits",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "4.0 Conducting Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-bbfe3e81480f2830",
+          "url": "https://highways.dot.gov/safety/pedestrian-bicyclist/safety-tools/home-road-safety-audits-rsas",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Home: Road Safety Audits (RSAs) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-7d9abdc514d95ce5",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/model-road-safety-audit-policy",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "A MODEL Road Safety Audit Policy | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-ba6f77a423757549",
+          "url": "https://www.dot.state.mn.us/trafficeng/safety/rsa/",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audits - MnDOT",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-0ee50c9741c7d959",
+          "url": "https://highways.dot.gov/federal-lands/tribal/safety/road-safety-audits",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audits | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-2f73c59ad664a679",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsdp/rsdp-tools/fhwa-road-safety-audit-guidelines",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "FHWA Road Safety Audit Guidelines | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-d445f7a885a8d16e",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audit-toolkit-federal-land-management-agencies-and-0",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:50.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Introduction | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-161cd24a0cf57bd3",
+          "url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "ROAD SAFETY AUDIT GUIDELINES Apr. 1 /04 Page 1",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-0a59e853b5face71",
+          "url": "https://open.alberta.ca/dataset/c9e2f226-9518-45d2-806c-8558195d60c6/resource/fac2c710-26cc-47bb-a184-38d4ea2683e9/download/2004-rsa-guidelines-final-report.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Alberta Transportation road safety audit guidelines",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-52170fb9da59ea8d",
+          "url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "t02-04 Road Safety Audit (RSA) Policy",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-f735c0c514fb90c3",
+          "url": "https://open.alberta.ca/publications/alberta-transportation-road-safety-audit-guidelines",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Alberta Transportation road safety audit guidelines - Open Government",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-9ffd528ad7962d12",
+          "url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/driving/consequences/vision-zero/resource-kit-community-road-safety-toolkit-module3.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Module 3: Implementation Tools and Strategies B.C. Community ROAD SAFETY",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-6c01978cfdc94526",
+          "url": "https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/strategy/bc-community-road-safety-toolkit-clone-60607",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "B.C. Community Road Safety Toolkit and Vision Zero - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-342eabb82f4c65e2",
+          "url": "https://www.th.gov.bc.ca/forms/getFile.aspx?formId=1162",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Carrier Safety Guide NATIONAL SAFETY CODE",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-e1ba0128a7d16274",
+          "url": "https://www2.gov.bc.ca/gov/content/home",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Home - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-a622fa649bb06b80",
+          "url": "https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/strategy",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "BC Road Safety Strategy - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-9194bbea89933fdf",
+          "url": "https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/road-safety-rules-and-consequences",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:51.189Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road safety rules and consequences of unsafe driving - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "hit_id": "HIT-brave-search-f38bd450b6c657be",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "EMIRATE OF ABU DHABI ROAD SAFETY AUDIT MANUAL",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-b5e793785b451678",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/05-25/AD-Sustainability-Report-English.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Driving our vision. Delivering sustainably. SUSTAINABILITY REPORT 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-2beaf5566faf74db",
+          "url": "https://dmt.gov.ae/en/adm/Media-Centre/News/16Nov2023",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "The Abu Dhabi City Municipality paints the asphalt in seven locations red to warn of new speed limits for roads",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-4c69d290602d3726",
+          "url": "https://www.dmt.gov.ae/adm/-/media/Project/DMT/ADM/E-Library/Standard-Drawings-PART-2.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "06. CIVIL WORKS 07. STRUCTURES ST-09 ST-03 ST-10 ST-12 ST-06 ST-11",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-a8658416beee391b",
+          "url": "https://qcc.abudhabi.ae/en/Pages/Standards.aspx",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Standards",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-4122a965ef572810",
+          "url": "https://pages.dmt.gov.ae/ar/Urban-Planning/-/media/13F91E3DD2F94577B9298A260C0D9325.ashx",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Construction Rating - Site Audit Protocol",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-b2598b7dd8e9a9cf",
+          "url": "https://pages.dmt.gov.ae/en/Musaffah",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Musaffah",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-49f27211998600c6",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/01-25/Sahel-Public-Realm-Rating-System-Handbook.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "1 Sahel Public Realm Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-3777c77cbb952f9b",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/01-25/Sahel-Community-Rating-System-Handbook.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "1 Sahel Community Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-701a7ffbaab504c6",
+          "url": "https://www.dmt.gov.ae/en/adm/Media-Centre/News/28Apr2025",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:52.193Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Abu Dhabi City Municipality emphasizes the importance of meeting occupational health and safety standards at construction sites, ensuring the protection of workers and the surrounding project environment",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-00c241428966c331",
+          "url": "https://www.piarc.org/en/order-library/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Detail of a publication | Virtual Library of PIARC | Road safety audit guidelines for safety checks of new road projects",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-5ddd1da47c5e3b4d",
+          "url": "https://www.carecprogram.org/uploads/7-Introduction-to-RSA.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "An introduction to road safety audit",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-1a25c36318c44925",
+          "url": "https://proceedings-paris2007.piarc.org/ressources/files/5/SP20-Francesconi-E.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "1 MAKING ROAD SAFETY AUDITS A EUROPEWIDE TOOL S. FRANCESCONI Road Safety Unit",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-7a4ea70ad0f2d0e1",
+          "url": "https://roadsafety.piarc.org/en/planning-design-operation/risk-issue-identification/proactive-identification",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Proactive Identification | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-c5e3e668ea48db52",
+          "url": "https://www.carecprogram.org/uploads/2E_RSA-being-proactive-in-road-design-v2_EN.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Being proactive in road design – road safety audits",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-4f7083af7abb1c17",
+          "url": "https://roadsafety.piarc.org/en/planning-design-operation/infrastructure-management/management-tools",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Management tools | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-7debec874913ba41",
+          "url": "https://proceedings-durban2003.piarc.org/en/pdf/doc_pdf/communications/C13fp-Jordan-e.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "THE BENEFITS OF ROAD SAFETY AUDIT IN THE MOTORISING WORLD PHILLIP JORDAN",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-fe46cbfa1320d39c",
+          "url": "https://routesroadsmag.piarc.org/en/Routes-Roads-Magazine-Numero-383-26th-World-Road-Congress-PIARC-Prizes-2019/5971,Routes-Road-Mag-383-Efforts-in-Mexico-to-Implement-a-Road-Safety-Audit-System",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Efforts in Mexico to Implement a Road Safety Audit System",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-cb86f6ed0f16399b",
+          "url": "https://roadsafety.piarc.org/en/planning-design-operation/8-designing-road-users/ensuring-application",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Ensuring Application | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "hit_id": "HIT-brave-search-8fa4c4edbcfd7ad3",
+          "url": "https://www.carecprogram.org/uploads/CAREC-Manual-1_RSA_CaseStudy02.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-26T21:38:53.205Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "I. Road Safety Audit",
+          "jurisdiction_guess": "INT"
+        }
+      ]
+    },
+    {
+      "seq": 2,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "qualification.verdicts",
+      "data": [
+        {
+          "qualification_id": "QAL-20837dbc5651bab3",
+          "hit_id": "HIT-seed-portals-47405f449b52cb30",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "NSIP consenting portal — search 'road safety audit'",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-e47507ac041e3dea",
+          "hit_id": "HIT-seed-portals-cac1067d1a651f4c",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Standards for Highways — DMRB/MCHW search",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-c431d69ea54c3c55",
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-af8a08d7f1523dcf",
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-05cc7ca90fc67e4c",
+          "hit_id": "HIT-seed-portals-7d50fcfb115066b0",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Alberta Open Data — road safety audit",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-5efd1784bc6c600c",
+          "hit_id": "HIT-seed-portals-84d0a51400f55279",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "BC MoTI technical circulars",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-2b85a23df9363895",
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-01660cde3aba68a0",
+          "hit_id": "HIT-seed-portals-a1140ba50eb6024e",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "An Bord Pleanála public access — EIAR/RSA attachments",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-c0db2190d7ce5abf",
+          "hit_id": "HIT-seed-portals-b472972e56f3ccf9",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "CAREC program — road safety audit publications",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-8c8630ea28c9f166",
+          "hit_id": "HIT-seed-portals-50df7623b7d8c705",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report with designer response and audit reference plan drawings",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-0880be38010c77af",
+          "hit_id": "HIT-seed-portals-2562b791955a10d4",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Report on Planning Stage Road Safety Audit — North East Edmonton Ring Road functional planning",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-33f9eb28ff5d721f",
+          "hit_id": "HIT-seed-portals-ab6b2d5f28e9e88c",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Milltown Park Dublin — Stage 1 Road Safety Audit (preliminary design)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-beb2f1750c1e3637",
+          "hit_id": "HIT-brave-search-b784065de5485300",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Design Manual for Roads and Bridges General Principles and Scheme Governance",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-e0ec085fa050a424",
+          "hit_id": "HIT-brave-search-4450e260297fbbb6",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Transport for London Surface Transport Uncontrolled when printed – may contain",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-b41ff3be4c87af68",
+          "hit_id": "HIT-brave-search-d8be989ad68801c4",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Design Manual for Roads and Bridges General Principles & Scheme Governance",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-8c1005b8eaab8cbd",
+          "hit_id": "HIT-brave-search-b17acd34eeade446",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Dundee City Council Road Safety Audit Procedures AUGUST 2005",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-7dc1d0a7cf981b54",
+          "hit_id": "HIT-brave-search-cfdd46daf3dea7f2",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audits",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-327b288498b2164e",
+          "hit_id": "HIT-brave-search-c03f229239262e2a",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road safety audit | Business and economy | Hampshire County Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-028ba5e171cb5885",
+          "hit_id": "HIT-brave-search-9463c4ffd4323688",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Highways Practice Note 039 Procedure for Road Safety Audit August 2017",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-bcb4b19cc80dc840",
+          "hit_id": "HIT-brave-search-725723516a316379",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audit - West Lothian Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-7ce1b461e2b1530e",
+          "hit_id": "HIT-brave-search-810f47cf77526b53",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road safety audits | Buckinghamshire Council",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-2bce2ef164442f69",
+          "hit_id": "HIT-brave-search-4d2138a0f932a09a",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audit Procedure",
+          "jurisdiction_guess": "UK"
+        },
+        {
+          "qualification_id": "QAL-d5244e3f456990f1",
+          "hit_id": "HIT-brave-search-85a8507dfe254dec",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audits (RSA) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-9b25ac0a5ffe4b05",
+          "hit_id": "HIT-brave-search-04687c4f48a39939",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audit | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-1b3f190569b2673e",
+          "hit_id": "HIT-brave-search-b84bf9f383bf9e50",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "3.0 Overview of Road Safety Audit Process | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-d5c12b1d2e001237",
+          "hit_id": "HIT-brave-search-fb272da025f7dfa4",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "4.0 Conducting Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-471127d6a3e753df",
+          "hit_id": "HIT-brave-search-bbfe3e81480f2830",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Home: Road Safety Audits (RSAs) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-40c723d97f4e639e",
+          "hit_id": "HIT-brave-search-7d9abdc514d95ce5",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "A MODEL Road Safety Audit Policy | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-c18f14a3280ca11b",
+          "hit_id": "HIT-brave-search-ba6f77a423757549",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audits - MnDOT",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-774ac4837f3b3e17",
+          "hit_id": "HIT-brave-search-0ee50c9741c7d959",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audits | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-47458dd81afa08f5",
+          "hit_id": "HIT-brave-search-2f73c59ad664a679",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "FHWA Road Safety Audit Guidelines | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-42ab2ff5a29bd5c7",
+          "hit_id": "HIT-brave-search-d445f7a885a8d16e",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Introduction | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-793fb04d845e2653",
+          "hit_id": "HIT-brave-search-161cd24a0cf57bd3",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "ROAD SAFETY AUDIT GUIDELINES Apr. 1 /04 Page 1",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-e7846063fb1244fb",
+          "hit_id": "HIT-brave-search-0a59e853b5face71",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Alberta Transportation road safety audit guidelines",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-d602d7987dbce644",
+          "hit_id": "HIT-brave-search-52170fb9da59ea8d",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "t02-04 Road Safety Audit (RSA) Policy",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-e1f36680630ce0d3",
+          "hit_id": "HIT-brave-search-f735c0c514fb90c3",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Alberta Transportation road safety audit guidelines - Open Government",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-2e99520d7278c4aa",
+          "hit_id": "HIT-brave-search-9ffd528ad7962d12",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Module 3: Implementation Tools and Strategies B.C. Community ROAD SAFETY",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-42fe14e3b746f050",
+          "hit_id": "HIT-brave-search-6c01978cfdc94526",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "B.C. Community Road Safety Toolkit and Vision Zero - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-dd916121705094dc",
+          "hit_id": "HIT-brave-search-342eabb82f4c65e2",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Carrier Safety Guide NATIONAL SAFETY CODE",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-e88381452b7862e5",
+          "hit_id": "HIT-brave-search-e1ba0128a7d16274",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Home - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-eec4a115b09334b3",
+          "hit_id": "HIT-brave-search-a622fa649bb06b80",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "BC Road Safety Strategy - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-5d5ed76ca4eb25a4",
+          "hit_id": "HIT-brave-search-9194bbea89933fdf",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Road safety rules and consequences of unsafe driving - Province of British Columbia",
+          "jurisdiction_guess": "CA"
+        },
+        {
+          "qualification_id": "QAL-88f4f0700c4696cb",
+          "hit_id": "HIT-brave-search-f38bd450b6c657be",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "EMIRATE OF ABU DHABI ROAD SAFETY AUDIT MANUAL",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-ff4da1d64f2e92a5",
+          "hit_id": "HIT-brave-search-b5e793785b451678",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Driving our vision. Delivering sustainably. SUSTAINABILITY REPORT 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-b5e0bba1b8744afe",
+          "hit_id": "HIT-brave-search-2beaf5566faf74db",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "The Abu Dhabi City Municipality paints the asphalt in seven locations red to warn of new speed limits for roads",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-53493e35a661df2c",
+          "hit_id": "HIT-brave-search-4c69d290602d3726",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "06. CIVIL WORKS 07. STRUCTURES ST-09 ST-03 ST-10 ST-12 ST-06 ST-11",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-7212182448550572",
+          "hit_id": "HIT-brave-search-a8658416beee391b",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Standards",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-2e662c23df0f59ca",
+          "hit_id": "HIT-brave-search-4122a965ef572810",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Construction Rating - Site Audit Protocol",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-5c5d804993b0838f",
+          "hit_id": "HIT-brave-search-b2598b7dd8e9a9cf",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Musaffah",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-5a15dcc9d068e92d",
+          "hit_id": "HIT-brave-search-49f27211998600c6",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "1 Sahel Public Realm Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-3d16a067138ae41e",
+          "hit_id": "HIT-brave-search-3777c77cbb952f9b",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "1 Sahel Community Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-e2c4e2cf4348221d",
+          "hit_id": "HIT-brave-search-701a7ffbaab504c6",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Abu Dhabi City Municipality emphasizes the importance of meeting occupational health and safety standards at construction sites, ensuring the protection of workers and the surrounding project environment",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-08d448e69409480c",
+          "hit_id": "HIT-brave-search-00c241428966c331",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Detail of a publication | Virtual Library of PIARC | Road safety audit guidelines for safety checks of new road projects",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-1d85090fd472b683",
+          "hit_id": "HIT-brave-search-5ddd1da47c5e3b4d",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "An introduction to road safety audit",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-8db3d83c7efca8b0",
+          "hit_id": "HIT-brave-search-1a25c36318c44925",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "1 MAKING ROAD SAFETY AUDITS A EUROPEWIDE TOOL S. FRANCESCONI Road Safety Unit",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-6deab079549b6c77",
+          "hit_id": "HIT-brave-search-7a4ea70ad0f2d0e1",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Proactive Identification | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-e6ccec95c874b224",
+          "hit_id": "HIT-brave-search-c5e3e668ea48db52",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Being proactive in road design – road safety audits",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-1983b67e7700633b",
+          "hit_id": "HIT-brave-search-4f7083af7abb1c17",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Management tools | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-4239413efb00d681",
+          "hit_id": "HIT-brave-search-7debec874913ba41",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "THE BENEFITS OF ROAD SAFETY AUDIT IN THE MOTORISING WORLD PHILLIP JORDAN",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-a55d9a4d5218ad81",
+          "hit_id": "HIT-brave-search-fe46cbfa1320d39c",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Efforts in Mexico to Implement a Road Safety Audit System",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-59a89003827dd1cc",
+          "hit_id": "HIT-brave-search-cb86f6ed0f16399b",
+          "verdict": "reject",
+          "reasons": [
+            "non-document or portal-chrome URL pattern"
+          ],
+          "scheme_hint": "Ensuring Application | Road Safety Manual - PIARC (World Road Association)",
+          "jurisdiction_guess": "INT"
+        },
+        {
+          "qualification_id": "QAL-135eeb59f2f3beaa",
+          "hit_id": "HIT-brave-search-8fa4c4edbcfd7ad3",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "I. Road Safety Audit",
+          "jurisdiction_guess": "INT"
+        }
+      ]
+    },
+    {
+      "seq": 3,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "match.assignments",
+      "data": [
+        {
+          "match_id": "MAT-2b94ab78d6ba21c5",
+          "qualification_id": "QAL-8c8630ea28c9f166",
+          "jurisdiction": "UK",
+          "native_stage_id": "uk:S1",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN"
+          ],
+          "mapping_confidence": "authoritative",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        },
+        {
+          "match_id": "MAT-8807c101d43df381",
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "jurisdiction": "US",
+          "native_stage_id": "us-fhwa:preliminary-design",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN"
+          ],
+          "mapping_confidence": "interpreted",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        },
+        {
+          "match_id": "MAT-2393ba85593047c0",
+          "qualification_id": "QAL-0880be38010c77af",
+          "jurisdiction": "CA",
+          "native_stage_id": "ca-tac:planning",
+          "canonical_stages": [
+            "FEASIBILITY_CONCEPT"
+          ],
+          "mapping_confidence": "authoritative",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        },
+        {
+          "match_id": "MAT-3fbdbed942d0043c",
+          "qualification_id": "QAL-33f9eb28ff5d721f",
+          "jurisdiction": "INT",
+          "native_stage_id": "int:preliminary-design",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN"
+          ],
+          "mapping_confidence": "interpreted",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        },
+        {
+          "match_id": "MAT-a5c075cddd2afb1c",
+          "qualification_id": "QAL-88f4f0700c4696cb",
+          "jurisdiction": "AE",
+          "native_stage_id": "ae-ad:S1_2",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN",
+            "DETAILED_DESIGN"
+          ],
+          "mapping_confidence": "authoritative",
+          "odd_status": "mapped_unproven",
+          "matched_by": "keyword:2"
+        },
+        {
+          "match_id": "MAT-8d1cd7c75a906ed4",
+          "qualification_id": "QAL-8db3d83c7efca8b0",
+          "jurisdiction": "INT",
+          "native_stage_id": "int:feasibility-concept",
+          "canonical_stages": [
+            "FEASIBILITY_CONCEPT"
+          ],
+          "mapping_confidence": "interpreted",
+          "odd_status": "mapped_unproven",
+          "matched_by": "keyword:2"
+        }
+      ]
+    },
+    {
+      "seq": 4,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "acquisition.bundles",
+      "data": [
+        {
+          "bundle_id": "ACQ-01da71149c823baf",
+          "match_id": "MAT-2b94ab78d6ba21c5",
+          "documents": [
+            {
+              "doc_id": "DOC-eef64e0bca60cbe5",
+              "url": "https://planning.welhat.gov.uk/Document/Download?module=PLA&recordNumber=107754&planId=2079274&imageId=5&isPlan=False&fileName=Stage%201%20Road%20Safety%20Report.pdf",
+              "title_hint": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report with designer response and audit reference plan drawings",
+              "sha256": "b96a3ff503c72e9ef2f5c5d0acee8267039fc4649769fc1e167f5860ea982591",
+              "bytes": 944885,
+              "mime": "application/pdf",
+              "page_count": 12,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 11,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 12,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "4792c9616e93c389883662497d03c9798dc3c79058c4e7951ecbb3df5b381a41"
+              }
+            }
+          ]
+        },
+        {
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "match_id": "MAT-8807c101d43df381",
+          "documents": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+              "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded",
+              "bytes": 1691744,
+              "mime": "application/pdf",
+              "page_count": 34,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 11,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 12,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 13,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 14,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 15,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 16,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 17,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 18,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 19,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 20,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 21,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 22,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 23,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 24,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 25,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 26,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 27,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 28,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 29,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 30,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 31,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 32,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 33,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 34,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "98593cb0d02b8df0dc6e627bf6493c37dd1e7efea750c75b50df1a9d0c44b176"
+              }
+            }
+          ]
+        },
+        {
+          "bundle_id": "ACQ-240a7f2f5f5e2f05",
+          "match_id": "MAT-2393ba85593047c0",
+          "documents": [
+            {
+              "doc_id": "DOC-eaf360f7ad025203",
+              "url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+              "title_hint": "Report on Planning Stage Road Safety Audit — North East Edmonton Ring Road functional planning",
+              "sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95",
+              "bytes": 35444,
+              "mime": "application/pdf",
+              "page_count": 10,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "c45d53ecefc7825b9e05137eea75e41a457630bfc90dce2f4f5302e4b6712aef"
+              }
+            }
+          ]
+        },
+        {
+          "bundle_id": "ACQ-b179b118355d620f",
+          "match_id": "MAT-3fbdbed942d0043c",
+          "documents": [
+            {
+              "doc_id": "DOC-fc60789db92e7c68",
+              "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf",
+              "title_hint": "Milltown Park Dublin — Stage 1 Road Safety Audit (preliminary design)",
+              "sha256": "e26c6ac2763bb6b2be1eb7d14142396a33aeac15ccd347edcefee25b9f2455c8",
+              "bytes": 883112,
+              "mime": "application/pdf",
+              "page_count": 15,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 11,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 12,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 13,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 14,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 15,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "7b07b3cb260f6f51026474178b43d7cc6f0ad45378d756ff2f49bce851c240f2"
+              }
+            }
+          ]
+        },
+        {
+          "bundle_id": "ACQ-e6804a46cd887789",
+          "match_id": "MAT-a5c075cddd2afb1c",
+          "documents": []
+        },
+        {
+          "bundle_id": "ACQ-2bbfc39716cdec5c",
+          "match_id": "MAT-8d1cd7c75a906ed4",
+          "documents": [
+            {
+              "doc_id": "DOC-4277acf90ba73d73",
+              "url": "https://proceedings-paris2007.piarc.org/ressources/files/5/SP20-Francesconi-E.pdf",
+              "title_hint": "1 MAKING ROAD SAFETY AUDITS A EUROPEWIDE TOOL S. FRANCESCONI Road Safety Unit",
+              "sha256": "a7189889143ccd35b461292fab974c698ed2605c0ff06cc63cc0d3d042cca6eb",
+              "bytes": 28707,
+              "mime": "application/pdf",
+              "page_count": 6,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "7595350cd4d265a0996790a38d1062fd43ab0f3d526453b1bca71735a3ed87f6"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 5,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "classification.labelsets",
+      "data": [
+        {
+          "labelset_id": "LAB-e3b65f67aa0a376b",
+          "bundle_id": "ACQ-01da71149c823baf",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-eef64e0bca60cbe5"
+            ]
+          }
+        },
+        {
+          "labelset_id": "LAB-3ac76e6a7934f508",
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-7b7910b60c300c71"
+            ]
+          }
+        },
+        {
+          "labelset_id": "LAB-cf0dd71b33523112",
+          "bundle_id": "ACQ-240a7f2f5f5e2f05",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-eaf360f7ad025203"
+            ]
+          }
+        },
+        {
+          "labelset_id": "LAB-953309e6da203fad",
+          "bundle_id": "ACQ-b179b118355d620f",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-fc60789db92e7c68"
+            ]
+          }
+        },
+        {
+          "labelset_id": "LAB-6e764c242616a7e2",
+          "bundle_id": "ACQ-e6804a46cd887789",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": []
+          }
+        },
+        {
+          "labelset_id": "LAB-a73a3d0636c9b691",
+          "bundle_id": "ACQ-2bbfc39716cdec5c",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-4277acf90ba73d73"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "seq": 6,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "package.assemblies",
+      "data": [
+        {
+          "package_id": "PKG-74305e7b58c0dac1",
+          "match_id": "MAT-2b94ab78d6ba21c5",
+          "metadata": {
+            "title": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report with designer response and audit reference plan drawings",
+            "scheme_summary": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report with designer response and audit reference plan drawings",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://planning.welhat.gov.uk/Document/Download?module=PLA&recordNumber=107754&planId=2079274&imageId=5&isPlan=False&fileName=Stage%201%20Road%20Safety%20Report.pdf"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        },
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "match_id": "MAT-8807c101d43df381",
+          "metadata": {
+            "title": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "scheme_summary": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        },
+        {
+          "package_id": "PKG-b89367325dab0e1a",
+          "match_id": "MAT-2393ba85593047c0",
+          "metadata": {
+            "title": "Report on Planning Stage Road Safety Audit — North East Edmonton Ring Road functional planning",
+            "scheme_summary": "Report on Planning Stage Road Safety Audit — North East Edmonton Ring Road functional planning",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        },
+        {
+          "package_id": "PKG-1fa209fe14589165",
+          "match_id": "MAT-3fbdbed942d0043c",
+          "metadata": {
+            "title": "Milltown Park Dublin — Stage 1 Road Safety Audit (preliminary design)",
+            "scheme_summary": "Milltown Park Dublin — Stage 1 Road Safety Audit (preliminary design)",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        },
+        {
+          "package_id": "PKG-817059f7a95253ae",
+          "match_id": "MAT-8d1cd7c75a906ed4",
+          "metadata": {
+            "title": "1 MAKING ROAD SAFETY AUDITS A EUROPEWIDE TOOL S. FRANCESCONI Road Safety Unit",
+            "scheme_summary": "1 MAKING ROAD SAFETY AUDITS A EUROPEWIDE TOOL S. FRANCESCONI Road Safety Unit",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://proceedings-paris2007.piarc.org/ressources/files/5/SP20-Francesconi-E.pdf"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        }
+      ]
+    },
+    {
+      "seq": 7,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "provenance.records",
+      "data": [
+        {
+          "provenance_id": "PRV-e440c2c3efae8086",
+          "package_id": "PKG-74305e7b58c0dac1",
+          "source_urls": [
+            "https://planning.welhat.gov.uk/Document/Download?module=PLA&recordNumber=107754&planId=2079274&imageId=5&isPlan=False&fileName=Stage%201%20Road%20Safety%20Report.pdf"
+          ],
+          "retrieved_at": "2026-08-26T21:38:49.092Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-eef64e0bca60cbe5",
+              "sha256": "b96a3ff503c72e9ef2f5c5d0acee8267039fc4649769fc1e167f5860ea982591"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "UK",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        },
+        {
+          "provenance_id": "PRV-e95bbd501c94865e",
+          "package_id": "PKG-9d8ca283d364e831",
+          "source_urls": [
+            "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+          ],
+          "retrieved_at": "2026-08-26T21:38:49.092Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "US",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        },
+        {
+          "provenance_id": "PRV-ef926cee0d680a20",
+          "package_id": "PKG-b89367325dab0e1a",
+          "source_urls": [
+            "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+          ],
+          "retrieved_at": "2026-08-26T21:38:49.092Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-eaf360f7ad025203",
+              "sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "CA",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        },
+        {
+          "provenance_id": "PRV-92d02134ba8b2583",
+          "package_id": "PKG-1fa209fe14589165",
+          "source_urls": [
+            "https://www.pleanala.ie/publicaccess/EIAR-NIS/322160/Application%20Docs/DBFL%20Consulting%20Engineers/Reports/995%20DBFL%20Stage%201%20Road%20Safety%20Audit.pdf"
+          ],
+          "retrieved_at": "2026-08-26T21:38:49.092Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-fc60789db92e7c68",
+              "sha256": "e26c6ac2763bb6b2be1eb7d14142396a33aeac15ccd347edcefee25b9f2455c8"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "INT",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        },
+        {
+          "provenance_id": "PRV-8e41dc0822012a38",
+          "package_id": "PKG-817059f7a95253ae",
+          "source_urls": [
+            "https://proceedings-paris2007.piarc.org/ressources/files/5/SP20-Francesconi-E.pdf"
+          ],
+          "retrieved_at": "2026-08-26T21:38:49.092Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-4277acf90ba73d73",
+              "sha256": "a7189889143ccd35b461292fab974c698ed2605c0ff06cc63cc0d3d042cca6eb"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "INT",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven"
+          },
+          "firewall_tainted": false
+        }
+      ]
+    },
+    {
+      "seq": 8,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "quality.verdicts",
+      "data": [
+        {
+          "package_id": "PKG-74305e7b58c0dac1",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        },
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        },
+        {
+          "package_id": "PKG-b89367325dab0e1a",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        },
+        {
+          "package_id": "PKG-1fa209fe14589165",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        },
+        {
+          "package_id": "PKG-817059f7a95253ae",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "seq": 9,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "coverage.view",
+      "data": {
+        "schema_version": "1.0.0",
+        "declaration_version": "1.1.2",
+        "generated": "2026-08-26T21:38:49.092Z",
+        "target_total": 500,
+        "cells": [
+          {
+            "cell_key": "uk:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-6",
+              "GF-11"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-7",
+              "GF-12",
+              "GF-14"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:DETAILED_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:final-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-8"
+            ],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-9",
+              "GF-16"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-10",
+              "GF-13",
+              "GF-15"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S0",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S12-combined",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN",
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "UK",
+            "native_stage_id": null,
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "structurally_absent",
+            "fixture_ids": [],
+            "target": 0,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "EXCLUDED",
+            "priority": 0,
+            "uncovered_reasons": []
+          },
+          {
+            "cell_key": "canada:DETAILED_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:DETAILED_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:feasibility-concept",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 2.9268,
+            "uncovered_reasons": [
+              "need 40 more packages (1/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:DETAILED_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          }
+        ],
+        "gaps_ranked": [
+          "usa:DETAILED_DESIGN",
+          "uae:FEASIBILITY_CONCEPT",
+          "uae:PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN",
+          "canada:DETAILED_DESIGN",
+          "canada:PRELIMINARY_DESIGN",
+          "international:DETAILED_DESIGN",
+          "uk:DETAILED_DESIGN",
+          "usa:FEASIBILITY_CONCEPT",
+          "international:FEASIBILITY_CONCEPT",
+          "uk:PRELIMINARY_DESIGN",
+          "usa:PRELIMINARY_DESIGN",
+          "international:PRELIMINARY_DESIGN",
+          "canada:FEASIBILITY_CONCEPT"
+        ]
+      }
+    },
+    {
+      "seq": 10,
+      "at": "2026-08-26T21:38:49.092Z",
+      "payload_kind": "queue.items",
+      "data": [
+        {
+          "rank": 1,
+          "cell_key": "usa:DETAILED_DESIGN",
+          "jurisdiction_id": "US",
+          "query_theme": "FHWA road safety audit preliminary design report",
+          "reason": "need 40 more packages (0/40)"
+        },
+        {
+          "rank": 2,
+          "cell_key": "uae:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 3,
+          "cell_key": "uae:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 4,
+          "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 5,
+          "cell_key": "uae:DETAILED_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 6,
+          "cell_key": "canada:DETAILED_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "BC MoTI \"road safety audit\"",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 7,
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "Alberta \"road safety audit\" functional planning",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 8,
+          "cell_key": "international:DETAILED_DESIGN",
+          "jurisdiction_id": "INT",
+          "query_theme": "\"stage 2\" RSA detailed design Ireland ABP",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 9,
+          "cell_key": "uk:DETAILED_DESIGN",
+          "jurisdiction_id": "UK",
+          "query_theme": "\"road safety audit\" \"stage 1\"",
+          "reason": "need 40 more packages (0/40)"
+        },
+        {
+          "rank": 10,
+          "cell_key": "usa:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "US",
+          "query_theme": "site:dot.state.mn.us \"road safety audit\"",
+          "reason": "need 40 more packages (0/40)"
+        }
+      ]
+    }
+  ]
+}

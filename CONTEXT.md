@@ -179,6 +179,38 @@ one trunk-road scheme) should not straddle it even where individually permitted.
 **Reserve Corpus** — Audit Samples outside every current ODD cell (e.g., in-service /
 existing-road inspections), held untouched for future domain expansion rather than assigned.
 
+## Discovery & corpus growth
+
+The acquisition pipeline that grows the Sample corpus toward representativeness.
+Vocabulary here governs `src/discovery/**` and `state/discovery-ledger.json`; it composes
+with §Sample corpus (a Project Package becomes an Audit Sample only at catalog time).
+
+**Discovery Hit** — a single discovered document URL with its source type, provider,
+licence hint, and retrieval metadata. A Hit is *not* evidence of scope or quality; those
+are later, separate determinations.
+
+**Project Package** — the fundamental acquisition unit: one real scheme's paired inputs
+and outputs assembled as a unit (metadata; drawings and supporting documents; RSA report,
+checklist, designer response) plus full provenance. Packages establish
+*real project inputs → real RSA audit outputs*; isolated reports do not.
+
+**Package Completeness** — the same closed vocabulary as sample completeness
+(full-package / outputs-only / inputs-only / excerpt), derived from which package members
+were actually acquired. Never inferred beyond what was retrieved.
+
+**ODD Coverage Score** — the representativeness measure over collected packages against
+the ODD matrix: per-cell targets weighted by gap and risk (mapped-unproven and fragile
+single-fixture cells rank higher; structurally absent cells are excluded by construction).
+Yields COVERED / UNDER-COVERED / MISSING / OVER-REPRESENTED labels and drives discovery
+priorities. The goal is representative coverage, not raw count.
+
+**Discovery Queue** — the ranked list of next discovery themes produced from the ODD
+Coverage Score. Purely derived; recomputed, never hand-edited.
+
+**Tier-1 Licensed Source** — a paywalled or restricted source obtainable only via owner
+purchase. Case-by-case approval is required before its material may leave reserve;
+approval is recorded, never assumed.
+
 ## System contracts
 
 **Audit Context** — the assembled bundle an audit runs against: project inputs, selected

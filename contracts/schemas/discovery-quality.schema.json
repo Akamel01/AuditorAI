@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Quality Verdict",
+  "type": "object",
+  "required": ["package_id", "completeness", "dedupe_status", "quality_score", "human_required"],
+  "additionalProperties": false,
+  "properties": {
+    "package_id": { "type": "string", "pattern": "^PKG-[A-Za-z0-9-]+$" },
+    "completeness": {
+      "enum": ["full-package", "outputs-only", "inputs-only", "excerpt", "unassigned"]
+    },
+    "dedupe_status": { "enum": ["unique", "duplicate", "near_dup"] },
+    "canonical_package_id": { "type": ["string", "null"], "pattern": "^PKG-[A-Za-z0-9-]+$" },
+    "quality_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "human_required": { "type": "boolean" },
+    "reasons": { "type": "array", "items": { "type": "string" } }
+  }
+}

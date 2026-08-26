@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dedupe Index",
+  "type": "object",
+  "required": ["schema_version", "sha256", "text_hash", "clusters"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "near_dup_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+    "sha256": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "doc sha256 -> canonical package_id"
+    },
+    "text_hash": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "normalized-text hash -> canonical package_id"
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["canonical_id", "members"],
+        "additionalProperties": false,
+        "properties": {
+          "canonical_id": { "type": "string", "pattern": "^PKG-[A-Za-z0-9-]+$" },
+          "members": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^PKG-[A-Za-z0-9-]+$" } },
+          "kind": { "enum": ["exact", "near_dup"] }
+        }
+      }
+    }
+  }
+}

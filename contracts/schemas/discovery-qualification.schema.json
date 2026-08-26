@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Qualification",
+  "type": "object",
+  "required": ["qualification_id", "hit_id", "verdict", "reasons"],
+  "additionalProperties": false,
+  "properties": {
+    "qualification_id": { "type": "string", "pattern": "^QAL-[A-Za-z0-9-]+$" },
+    "hit_id": { "type": "string", "pattern": "^HIT-[A-Za-z0-9-]+$" },
+    "verdict": { "enum": ["in_scope", "reserve", "reject"] },
+    "reasons": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "scheme_hint": { "type": ["string", "null"] },
+    "jurisdiction_guess": { "enum": ["INT", "UK", "US", "CA", "AE", null] }
+  }
+}

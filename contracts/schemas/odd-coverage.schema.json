@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ODD Coverage (derived view)",
+  "type": "object",
+  "required": ["schema_version", "declaration_version", "generated", "target_total", "cells", "gaps_ranked"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "declaration_version": { "type": "string", "minLength": 1 },
+    "generated": { "type": "string", "format": "date-time" },
+    "target_total": { "type": "integer", "minimum": 1 },
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cell_key", "jurisdiction_id", "canonical_stage", "status",
+          "target", "have_full_package", "have_total", "label", "priority"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "cell_key": { "type": "string", "minLength": 1 },
+          "jurisdiction_id": { "enum": ["INT", "UK", "US", "CA", "AE"] },
+          "native_stage_id": { "type": ["string", "null"] },
+          "canonical_stage": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"] }
+          },
+          "status": { "enum": ["in", "mapped_unproven", "structurally_absent"] },
+          "fixture_ids": { "type": "array", "items": { "type": "string" } },
+          "target": { "type": "integer", "minimum": 0 },
+          "have_full_package": { "type": "integer", "minimum": 0 },
+          "have_total": { "type": "integer", "minimum": 0 },
+          "label": { "enum": ["COVERED", "UNDER-COVERED", "MISSING", "OVER-REPRESENTED", "EXCLUDED"] },
+          "priority": { "type": "number", "minimum": 0 },
+          "uncovered_reasons": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "gaps_ranked": { "type": "array", "items": { "type": "string" } }
+  }
+}

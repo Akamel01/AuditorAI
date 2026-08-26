@@ -1,0 +1,64 @@
+name: discovery harvest
+
+on:
+  schedule:
+    - cron: "17 * * * *" # hourly, offset to avoid top-of-hour thundering herd
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Run live providers (requires secrets)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discovery-harvest
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: run discovery harvest
+        env:
+          DISCOVERY_BRAVE_API_KEY: ${{ secrets.DISCOVERY_BRAVE_API_KEY }}
+          DISCOVERY_GOOGLE_CSE_KEY: ${{ secrets.DISCOVERY_GOOGLE_CSE_KEY }}
+          DISCOVERY_GOOGLE_CSE_CX: ${{ secrets.DISCOVERY_GOOGLE_CSE_CX }}
+        run: |
+          set -euo pipefail
+          if [ -n "${DISCOVERY_BRAVE_API_KEY:-}" ]; then
+            echo "live harvest (Brave + seeds)"
+            npx tsx scripts/discovery-run.ts --live --write
+          else
+            echo "no live secrets — dry-run (seeds only, no ledger write)"
+            npx tsx scripts/discovery-run.ts
+          fi
+          node scripts/validate-state.mjs || true
+          npx tsx scripts/discovery-coverage.ts || true
+
+      - name: commit ledger if changed
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- state/discovery-ledger.json state/dedupe-index.json state/odd-coverage.json 2>/dev/null; then
+            echo "no ledger changes"
+            exit 0
+          fi
+          git config user.name "auditorai-bot"
+          git config user.email "bot@auditorai.local"
+          git add state/discovery-ledger.json state/dedupe-index.json state/odd-coverage.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "data(discovery): harvest $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+          git push

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery Match Assignment",
+  "type": "object",
+  "required": ["match_id", "qualification_id", "jurisdiction", "native_stage_id", "canonical_stages", "mapping_confidence", "odd_status"],
+  "additionalProperties": false,
+  "properties": {
+    "match_id": { "type": "string", "pattern": "^MAT-[A-Za-z0-9-]+$" },
+    "qualification_id": { "type": "string", "pattern": "^QAL-[A-Za-z0-9-]+$" },
+    "jurisdiction": { "enum": ["INT", "UK", "US", "CA", "AE"] },
+    "native_stage_id": { "type": ["string", "null"], "minLength": 1 },
+    "canonical_stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN"] }
+    },
+    "mapping_confidence": { "enum": ["authoritative", "interpreted", "inferred"] },
+    "odd_status": { "enum": ["in", "mapped_unproven"] },
+    "matched_by": { "type": "string", "minLength": 1 }
+  }
+}
