@@ -97,6 +97,7 @@ function doc(url: string, textSha: string | null): AcquiredDocument {
     page_count: 1,
     pages: [{ page_no: 1, png_sha256: null, ocr_sha256: null, ocr_conf: null }],
     extraction: { engine: "unpdf", text_sha256: textSha },
+    title_hint: null,
   };
 }
 

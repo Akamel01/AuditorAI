@@ -34,12 +34,18 @@ export function qualifyHits(hits: DiscoveryHit[]): Qualification[] {
     let verdict: Qualification["verdict"];
     const reasons: string[] = [];
 
+    const looksLikeDoc = /\.pdf(\?|$)/i.test(hit.url) || /\b(View|Download|DocumentCenter|open\.alberta)\b/i.test(hit.url);
     if (REJECT_PATTERNS.some((p) => p.test(text))) {
       verdict = "reject";
       reasons.push("non-document or portal-chrome URL pattern");
     } else if (IN_SCOPE_PATTERNS.some((p) => p.test(text)) && !RESERVE_PATTERNS.some((p) => p.test(text))) {
-      verdict = "in_scope";
-      reasons.push("matches road-safety-audit document patterns; no in-service markers");
+      if (!looksLikeDoc) {
+        verdict = "reserve";
+        reasons.push("RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl");
+      } else {
+        verdict = "in_scope";
+        reasons.push("matches road-safety-audit document patterns; no in-service markers");
+      }
     } else if (RESERVE_PATTERNS.some((p) => p.test(text))) {
       verdict = "reserve";
       reasons.push("in-service / inspection-class material (R1 analogue)");

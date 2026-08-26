@@ -127,7 +127,37 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
   const bundles: AcquisitionBundle[] = [];
   let seq = 0;
   for (const match of state.matched ?? []) {
-    const docs = (await ctx.acquireDocs?.(match)) ?? [];
+    let docs: RawDocument[];
+    if (ctx.acquireDocs) {
+      docs = await ctx.acquireDocs(match);
+    } else {
+      // Live fallback: fetch the originating hit URL (single PDF per hit for now)
+      const qual = (state.qualified ?? []).find((q) => q.qualification_id === match.qualification_id);
+      const hit = qual ? (state.discovery_hits ?? []).find((h) => h.hit_id === qual.hit_id) : undefined;
+      if (!hit) {
+        docs = [];
+      } else {
+        const { withHostBudget } = await import("@/discovery/ratelimit");
+        try {
+          const fetched = await withHostBudget(hit.url, async () => {
+            const res = await fetch(hit.url, { headers: { Accept: "application/pdf,*/*" } });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const buf = new Uint8Array(await res.arrayBuffer());
+            const ct = res.headers.get("content-type") ?? "";
+            // Validate %PDF magic
+            const head = new TextDecoder().decode(buf.slice(0, 5));
+            if (!head.startsWith("%PDF") && !ct.includes("pdf")) {
+              throw new Error(`not a PDF (content-type ${ct}, head ${head.slice(0, 20)})`);
+            }
+            return buf;
+          });
+          docs = [{ url: hit.url, bytes: fetched, mime: "application/pdf" }];
+        } catch (e) {
+          console.warn(`[d04] fetch failed for ${hit.url}: ${e instanceof Error ? e.message : String(e)}`);
+          docs = [];
+        }
+      }
+    }
     const processor = getDrawingProcessor();
     const acquiredDocs = [] as AcquisitionBundle["documents"];
     for (const doc of docs) {
@@ -145,9 +175,16 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
         page_count = 1;
         engine = "raw-bytes";
       }
+      // Propagate the originating hit title for classification (URL alone loses audit keywords after encoding)
+      const hitTitle = (() => {
+        const qualForMatch = (state.qualified ?? []).find((q) => q.qualification_id === match.qualification_id);
+        const hitForQual = qualForMatch ? (state.discovery_hits ?? []).find((h) => h.hit_id === qualForMatch.hit_id) : undefined;
+        return hitForQual?.title_hint ?? null;
+      })();
       acquiredDocs.push({
         doc_id: `DOC-${sha256Hex(`${match.match_id}|${doc.url}`).slice(0, 16)}`,
         url: doc.url,
+        title_hint: hitTitle,
         sha256: sha256Hex(doc.bytes),
         bytes: doc.bytes.byteLength,
         mime: doc.mime,
@@ -190,6 +227,7 @@ function d06Package(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResult 
     const bundle = bundleByMatch.get(match.match_id);
     const labels = bundle ? labelsetByBundle.get(bundle.bundle_id) : undefined;
     if (!qual || !bundle || !labels) continue;
+    if (bundle.documents.length === 0) continue; // nothing fetched — don't emit an empty package
     const pkg = assemblePackage(match, qual, labels);
     const urls = new Set<string>();
     const hit = hitById.get(qual.hit_id);

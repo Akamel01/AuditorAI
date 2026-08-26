@@ -53,7 +53,10 @@ export function classifyBundle(bundle: AcquisitionBundle): LabelSet {
 function classifyDocument(doc: AcquiredDocument): DocLabel {
   // Signals: URL filename + extracted-text head. Text hash participates in
   // dedupe later, so compute it here once and reuse via extraction field.
-  const urlLower = doc.url.toLowerCase().replace(/[-_]+/g, " ");
+  let decoded: string;
+  try { decoded = decodeURIComponent(doc.url); } catch { decoded = doc.url; }
+  const titleLower = ((doc as any).title_hint ?? "").toString().toLowerCase().replace(/[-_]+/g, " ");
+  const urlLower = (decoded.toLowerCase().replace(/[-_]+/g, " ") + " " + titleLower).trim();
   let best: { role: DocRole; score: number } = { role: "supporting_document", score: 0 };
   for (const rule of RULES) {
     let score = 0;

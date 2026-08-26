@@ -88,6 +88,7 @@ export interface AcquiredDocument {
   page_count: number;
   pages: AcquiredPage[];
   extraction: { engine: string; text_sha256: string | null };
+  title_hint: string | null;
 }
 
 export interface AcquisitionBundle {
