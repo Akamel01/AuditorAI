@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
   <key>Label</key><string>com.auditorai.discovery</string>
-  <key>Program</key><string>/Users/akamel/Documents/AuditorAI/scripts/discovery-daemon.sh</string>
+  <key>Program</key><string>/Users/akamel/.local/bin/auditorai-discovery-daemon.sh</string>
   <key>WorkingDirectory</key><string>/Users/akamel/Documents/AuditorAI</string>
   <key>StartInterval</key><integer>3600</integer>
   <key>RunAtLoad</key><true/>
