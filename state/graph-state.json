@@ -476,29 +476,124 @@
     "discovery_graph": {
       "purpose": "Scalable RSA data discovery: portal fan-out to 500 representative full project-packages across 16 ODD cells; drawings preserved page-by-page (multimodal first-class). Owner decisions 2026-08-25: polite 1 rps/2-concurrent per host, Bing+CSE behind one provider seam, low-conf classify auto-reserves, licensed sources case-by-case, targets weighted by gap+risk.",
       "nodes": [
-        { "id": "D01-DISCOVER", "impl": "src/discovery/providers/* via src/discovery/pipeline.ts d01Discover", "role": "Portal/search fan-out through DiscoveryProvider seam (seed-portals offline; brave-search + google-cse secrets OFF default (env first, then Keychain auditorai/*))" },
-        { "id": "D02-QUALIFY", "impl": "src/discovery/qualifier.ts qualifyHits", "role": "Deterministic in_scope/reserve/reject over hits (R1-R4 analogue); tier-1 licensed stays reserve pending owner approval" },
-        { "id": "D03-MATCH", "impl": "src/discovery/matcher.ts matchQualified (reuses getPack + resolveOdd)", "role": "Jurisdiction/framework/native-stage assignment; structurally_absent refused; odd_status stamped" },
-        { "id": "D04-ACQUIRE", "impl": "src/discovery/drawing.ts getDrawingProcessor + ctx.acquireDocs", "role": "PDF bytes + unpdf text/page extraction; pages recorded even when raster/OCR pending (nulls, never dropped)" },
-        { "id": "D05-CLASSIFY", "impl": "src/discovery/classifier.ts classifyBundle", "role": "Keyword-ruleset doc roles; confidence <0.7 auto-reserve (owner decision), auto_reserved_doc_ids traced" },
-        { "id": "D06-PACKAGE", "impl": "src/discovery/packager.ts assemblePackage", "role": "Assemble project-package record (inputs/drawings + outputs) with completeness vocabulary" },
-        { "id": "D07-PROVENANCE", "impl": "src/discovery/provenance.ts writeProvenance", "role": "Byte-stable provenance.json chain: URLs -> sha256 -> extraction -> classifier version -> ODD cell" },
-        { "id": "D08-QUALITY", "impl": "src/discovery/dedupe.ts checkDuplicate/claimFingerprints", "role": "Completeness + exact/near-dup verdicts against dedupe index; full-package+unknown licence flags owner review" },
-        { "id": "D09-COVERAGE", "impl": "src/discovery/coverage.ts computeCoverage", "role": "ODD Coverage Score: 16-cell targets weighted by gap+risk vs TARGET_TOTAL=500; labels COVERED/UNDER/MISSING/OVER/EXCLUDED" },
-        { "id": "D10-QUEUE", "impl": "src/discovery/coverage.ts buildQueue", "role": "Ranked discovery queue (gap_share x risk) feeding next D01 cycle — LOOP edge" }
+        {
+          "id": "D01-DISCOVER",
+          "impl": "src/discovery/providers/* via src/discovery/pipeline.ts d01Discover",
+          "role": "Portal/search fan-out through DiscoveryProvider seam (seed-portals offline; brave-search + google-cse secrets OFF default (env first, then Keychain auditorai/*))"
+        },
+        {
+          "id": "D02-QUALIFY",
+          "impl": "src/discovery/qualifier.ts qualifyHits",
+          "role": "Deterministic in_scope/reserve/reject over hits (R1-R4 analogue); tier-1 licensed stays reserve pending owner approval"
+        },
+        {
+          "id": "D03-MATCH",
+          "impl": "src/discovery/matcher.ts matchQualified (reuses getPack + resolveOdd)",
+          "role": "Jurisdiction/framework/native-stage assignment; structurally_absent refused; odd_status stamped"
+        },
+        {
+          "id": "D04-ACQUIRE",
+          "impl": "src/discovery/drawing.ts getDrawingProcessor + ctx.acquireDocs",
+          "role": "PDF bytes + unpdf text/page extraction; pages recorded even when raster/OCR pending (nulls, never dropped)"
+        },
+        {
+          "id": "D05-CLASSIFY",
+          "impl": "src/discovery/classifier.ts classifyBundle",
+          "role": "Keyword-ruleset doc roles; confidence <0.7 auto-reserve (owner decision), auto_reserved_doc_ids traced"
+        },
+        {
+          "id": "D06-PACKAGE",
+          "impl": "src/discovery/packager.ts assemblePackage",
+          "role": "Assemble project-package record (inputs/drawings + outputs) with completeness vocabulary"
+        },
+        {
+          "id": "D07-PROVENANCE",
+          "impl": "src/discovery/provenance.ts writeProvenance",
+          "role": "Byte-stable provenance.json chain: URLs -> sha256 -> extraction -> classifier version -> ODD cell"
+        },
+        {
+          "id": "D08-QUALITY",
+          "impl": "src/discovery/dedupe.ts checkDuplicate/claimFingerprints",
+          "role": "Completeness + exact/near-dup verdicts against dedupe index; full-package+unknown licence flags owner review"
+        },
+        {
+          "id": "D09-COVERAGE",
+          "impl": "src/discovery/coverage.ts computeCoverage",
+          "role": "ODD Coverage Score: 16-cell targets weighted by gap+risk vs TARGET_TOTAL=500; labels COVERED/UNDER/MISSING/OVER/EXCLUDED"
+        },
+        {
+          "id": "D10-QUEUE",
+          "impl": "src/discovery/coverage.ts buildQueue",
+          "role": "Ranked discovery queue (gap_share x risk) feeding next D01 cycle — LOOP edge"
+        }
       ],
       "edges": [
-        { "from": "D01-DISCOVER", "type": "DATA", "to": "D02-QUALIFY", "payload": "DiscoveryHit[]" },
-        { "from": "D02-QUALIFY", "type": "DATA", "to": "D03-MATCH", "payload": "Qualification[in_scope]" },
-        { "from": "D03-MATCH", "type": "CONTRACT", "to": "D04-ACQUIRE", "payload": "MatchAssignment (+ pack stage vocabulary)" },
-        { "from": "D04-ACQUIRE", "type": "DATA", "to": "D05-CLASSIFY", "payload": "AcquisitionBundle[] (pdf+pages+text hashes)" },
-        { "from": "D05-CLASSIFY", "type": "DATA", "to": "D06-PACKAGE", "payload": "LabelSet[]" },
-        { "from": "D06-PACKAGE", "type": "DATA", "to": "D07-PROVENANCE", "payload": "ProjectPackageAssembly[]" },
-        { "from": "D07-PROVENANCE", "type": "EVIDENCE", "to": "D08-QUALITY", "payload": "ProvenanceRecord[]" },
-        { "from": "D08-QUALITY", "type": "VALIDATION", "to": "D09-COVERAGE", "payload": "QualityVerdictRecord[]" },
-        { "from": "D09-COVERAGE", "type": "CONTEXT", "to": "D10-QUEUE", "payload": "OddCoverageView" },
-        { "from": "D10-QUEUE", "type": "LOOP", "to": "D01-DISCOVER", "payload": "QueueItem[] ranked queries" },
-        { "from": "D08-QUALITY", "type": "ESCALATION", "to": "owner", "payload": "full-package + unknown-licence review queue; cell-flip remains Tier-1 trigger (eval-gates §2 path 5)" }
+        {
+          "from": "D01-DISCOVER",
+          "type": "DATA",
+          "to": "D02-QUALIFY",
+          "payload": "DiscoveryHit[]"
+        },
+        {
+          "from": "D02-QUALIFY",
+          "type": "DATA",
+          "to": "D03-MATCH",
+          "payload": "Qualification[in_scope]"
+        },
+        {
+          "from": "D03-MATCH",
+          "type": "CONTRACT",
+          "to": "D04-ACQUIRE",
+          "payload": "MatchAssignment (+ pack stage vocabulary)"
+        },
+        {
+          "from": "D04-ACQUIRE",
+          "type": "DATA",
+          "to": "D05-CLASSIFY",
+          "payload": "AcquisitionBundle[] (pdf+pages+text hashes)"
+        },
+        {
+          "from": "D05-CLASSIFY",
+          "type": "DATA",
+          "to": "D06-PACKAGE",
+          "payload": "LabelSet[]"
+        },
+        {
+          "from": "D06-PACKAGE",
+          "type": "DATA",
+          "to": "D07-PROVENANCE",
+          "payload": "ProjectPackageAssembly[]"
+        },
+        {
+          "from": "D07-PROVENANCE",
+          "type": "EVIDENCE",
+          "to": "D08-QUALITY",
+          "payload": "ProvenanceRecord[]"
+        },
+        {
+          "from": "D08-QUALITY",
+          "type": "VALIDATION",
+          "to": "D09-COVERAGE",
+          "payload": "QualityVerdictRecord[]"
+        },
+        {
+          "from": "D09-COVERAGE",
+          "type": "CONTEXT",
+          "to": "D10-QUEUE",
+          "payload": "OddCoverageView"
+        },
+        {
+          "from": "D10-QUEUE",
+          "type": "LOOP",
+          "to": "D01-DISCOVER",
+          "payload": "QueueItem[] ranked queries"
+        },
+        {
+          "from": "D08-QUALITY",
+          "type": "ESCALATION",
+          "to": "owner",
+          "payload": "full-package + unknown-licence review queue; cell-flip remains Tier-1 trigger (eval-gates §2 path 5)"
+        }
       ]
     }
   },
