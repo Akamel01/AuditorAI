@@ -35,45 +35,48 @@ class BraveSearchProvider implements DiscoveryProvider {
   async discover(query: DiscoverQuery): Promise<DiscoveryHit[]> {
     const token = resolveSecret(DISCOVERY_SECRETS.brave);
     if (!token) throw new Error("brave-search requires DISCOVERY_BRAVE_API_KEY (or Keychain auditorai/discovery-brave)");
+    const themes = query.themes.length ? query.themes : ['"road safety audit"'];
     const hits: DiscoveryHit[] = [];
     let lastError: string | null = null;
     for (const jur of query.jurisdictions) {
-      const siteFilters = JUR_SITE_FILTER[jur].map((s) => `${s}`).join(" OR ");
-      const q = encodeURIComponent(`"road safety audit" (${siteFilters})`);
-      const res = await withHostBudget("api.search.brave.com", () =>
-        fetch(`https://api.search.brave.com/res/v1/web/search?q=${q}&count=${Math.min(query.limit ?? 10, 20)}&result_filter=web`, {
-          headers: {
-            "X-Subscription-Token": token,
-            Accept: "application/json",
-          },
-        }),
-      );
-      if (res.status === 429) {
-        const wait = retryAfterMs(res.headers);
-        if (wait) await new Promise((r) => setTimeout(r, Math.min(wait, 60_000)));
-        continue;
-      }
-      if (!res.ok) {
-        lastError = `HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`;
-        continue;
-      }
-      const json = (await res.json()) as { web?: { results?: BraveWebResult[] } };
-      const now = new Date().toISOString();
-      for (const item of json.web?.results ?? []) {
-        if (!item.url) continue;
-        hits.push({
-          hit_id: hitId(this.id, item.url),
-          url: item.url,
-          source_type: this.source_type,
-          provider_id: this.id,
-          portal_id: null,
-          discovered_at: now,
-          licence_hint: "unknown",
-          http_status: res.status,
-          sha256_hint: null,
-          title_hint: item.title ?? null,
-          jurisdiction_guess: jur,
-        });
+      for (const theme of themes) {
+        const siteFilters = JUR_SITE_FILTER[jur].map((s) => `${s}`).join(" OR ");
+        const q = encodeURIComponent(`${theme} (${siteFilters})`);
+        const res = await withHostBudget("api.search.brave.com", () =>
+          fetch(`https://api.search.brave.com/res/v1/web/search?q=${q}&count=${Math.min(query.limit ?? 10, 20)}&result_filter=web`, {
+            headers: {
+              "X-Subscription-Token": token,
+              Accept: "application/json",
+            },
+          }),
+        );
+        if (res.status === 429) {
+          const wait = retryAfterMs(res.headers);
+          if (wait) await new Promise((r) => setTimeout(r, Math.min(wait, 60_000)));
+          continue;
+        }
+        if (!res.ok) {
+          lastError = `HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`;
+          continue;
+        }
+        const json = (await res.json()) as { web?: { results?: BraveWebResult[] } };
+        const now = new Date().toISOString();
+        for (const item of json.web?.results ?? []) {
+          if (!item.url) continue;
+          hits.push({
+            hit_id: hitId(this.id, item.url),
+            url: item.url,
+            source_type: this.source_type,
+            provider_id: this.id,
+            portal_id: null,
+            discovered_at: now,
+            licence_hint: "unknown",
+            http_status: res.status,
+            sha256_hint: null,
+            title_hint: item.title ?? null,
+            jurisdiction_guess: jur,
+          });
+        }
       }
     }
     if (hits.length === 0 && lastError) {

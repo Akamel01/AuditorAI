@@ -53,6 +53,36 @@ const providerIds =
 
   const ranAtIso = LIVE ? new Date().toISOString() : new Date(0).toISOString();
 
+  // Gap-aware live themes: read the last coverage view and target its top gaps.
+  // Keeps harvest representative instead of re-harvesting easy cells.
+  let gapThemes: string[] | null = null;
+  let gapJurs: ("UK" | "US" | "CA" | "AE" | "INT")[] | null = null;
+  if (LIVE) {
+    try {
+      const cov = JSON.parse(readFileSync(join(ROOT, "state", "odd-coverage.json"), "utf8")) as {
+        gaps_ranked: string[];
+      };
+      const top = (cov.gaps_ranked as string[]).slice(0, 3);
+      if (top.length) {
+        const jurMap: Record<string, "UK" | "US" | "CA" | "AE" | "INT"> = {
+          uk: "UK",
+          usa: "US",
+          canada: "CA",
+          international: "INT",
+          ae: "AE",
+          uae: "AE",
+        };
+        gapJurs = [...new Set(top.map((k) => jurMap[k.split(":")[0].toLowerCase()] ?? "INT"))] as ("UK" | "US" | "CA" | "AE" | "INT")[];
+        const themeFor = (key: string): string => {
+          if (key.includes("DETAILED_DESIGN")) return "final design road safety audit";
+          if (key.includes("FEASIBILITY_CONCEPT")) return "feasibility concept road safety audit";
+          return "preliminary design road safety audit";
+        };
+        gapThemes = top.map(themeFor);
+      }
+    } catch {}
+  }
+
   // Deterministic fixture documents so the offline run is fully deterministic
   // and byte-stable (no network). Live runs fetch the originating hit URL.
   function fixtureDocsFor(match: MatchAssignment): RawDocument[] {
@@ -73,8 +103,8 @@ const providerIds =
   const ctx: DiscoveryCtx = {
     ranAtIso,
     query: {
-      jurisdictions: ["UK", "US", "CA", "AE", "INT"],
-      themes: ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
+      jurisdictions: (gapJurs ?? (["UK", "US", "CA", "AE", "INT"] as const)) as any,
+      themes: gapThemes ?? ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
     },
     providers,
     // Live: pipeline fetches the originating hit URL directly (polite per-host).
