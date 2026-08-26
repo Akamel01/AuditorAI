@@ -51,16 +51,21 @@ export function classifyBundle(bundle: AcquisitionBundle): LabelSet {
 }
 
 function classifyDocument(doc: AcquiredDocument): DocLabel {
-  // Signals: URL filename + extracted-text head. Text hash participates in
-  // dedupe later, so compute it here once and reuse via extraction field.
   let decoded: string;
   try { decoded = decodeURIComponent(doc.url); } catch { decoded = doc.url; }
   const titleLower = ((doc as any).title_hint ?? "").toString().toLowerCase().replace(/[-_]+/g, " ");
-  const urlLower = (decoded.toLowerCase().replace(/[-_]+/g, " ") + " " + titleLower).trim();
+  const urlLower = decoded.toLowerCase().replace(/[-_]+/g, " ");
+  // Score URL and title separately — title is shared across bundle docs and
+  // would otherwise bleed report keywords into every drawing.
   let best: { role: DocRole; score: number } = { role: "supporting_document", score: 0 };
   for (const rule of RULES) {
-    let score = 0;
-    for (const p of rule.patterns) if (p.test(urlLower)) score += rule.weight * 2;
+    let urlScore = 0;
+    let titleScore = 0;
+    for (const pat of rule.patterns) {
+      if (pat.test(urlLower)) urlScore += rule.weight * 2;
+      if (titleLower && pat.test(titleLower)) titleScore += rule.weight;
+    }
+    const score = urlScore * 1.5 + titleScore * 0.5;
     if (score > best.score) best = { role: rule.role, score };
   }
   const confidence = Math.max(0, Math.min(1, best.score / 6));

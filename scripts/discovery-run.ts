@@ -51,10 +51,10 @@ const providerIds =
     .map((id) => resolveProvider(id))
     .filter((p): p is NonNullable<typeof p> => p !== null);
 
-  const ranAtIso = new Date(0).toISOString(); // deterministic stamp for dry-run
+  const ranAtIso = LIVE ? new Date().toISOString() : new Date(0).toISOString();
 
-  // Deterministic fixture documents keyed by match jurisdiction+stage so the
-  // offline run produces one full-package (UK S1) + one outputs-only (US prelim).
+  // Deterministic fixture documents so the offline run is fully deterministic
+  // and byte-stable (no network). Live runs fetch the originating hit URL.
   function fixtureDocsFor(match: MatchAssignment): RawDocument[] {
     const mk = (name: string, text: string): Uint8Array =>
       new TextEncoder().encode(`%PDF-1.4 fixture ${match.jurisdiction} ${match.native_stage_id} ${name}\n${text}`);
@@ -70,13 +70,6 @@ const providerIds =
     ];
   }
 
-  async function acquireLive(match: MatchAssignment): Promise<RawDocument[]> {
-    const provider = providers.find((p) => typeof p.fetch === "function");
-    if (!provider) throw new Error("--live requires at least one fetching provider");
-    const res = await provider.fetch(`https://example.invalid/placeholder-for-${match.match_id}`);
-    return [{ url: `https://example.invalid/${match.match_id}`, bytes: res.bytes, mime: "application/pdf" }];
-  }
-
   const ctx: DiscoveryCtx = {
     ranAtIso,
     query: {
@@ -84,7 +77,9 @@ const providerIds =
       themes: ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
     },
     providers,
-    acquireDocs: LIVE ? acquireLive : (match) => Promise.resolve(fixtureDocsFor(match)),
+    // Live: pipeline fetches the originating hit URL directly (polite per-host).
+    // Dry-run: deterministic fixtures so the run is offline and reproducible.
+    ...(LIVE ? {} : { acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match)) }),
   };
 
   const outcome = await runDiscoveryPipeline(ctx);
@@ -95,6 +90,7 @@ const providerIds =
   if (outcome.refusals.length) console.log("refusals:", outcome.refusals.length);
   for (const r of outcome.refusals) console.log("  -", r);
   console.log("packages:", (outcome.state.package ?? []).map((p) => `${p.package_id}:${p.completeness}`).join(", ") || "(none)");
+
   for (const q of outcome.state.quality ?? []) {
     console.log("quality:", q.package_id, q.dedupe_status, q.completeness, q.human_required ? "[owner-review]" : "");
   }
