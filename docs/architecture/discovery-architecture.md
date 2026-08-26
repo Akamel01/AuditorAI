@@ -29,7 +29,7 @@ D10 QUEUE     ranked themes feeding next D01 cycle (LOOP edge)
 | Decision | Where |
 |---|---|
 | Licensed sources case-by-case | `qualifier.ts` keeps `licensed-tier1-pending` in reserve; approval recorded by owner, never inferred |
-| Two engines behind one seam | Google CSE (`providers/google-cse.ts`) + Brave Search (`providers/brave-search.ts`); OFF without secrets. Bing deviation: Microsoft retired Bing Search v7 on 2025-08-11 (HTTP 410, signups closed) before first live use — swapped to Brave as closest drop-in; owner veto welcome |
+| Two engines behind one seam | Google CSE (`providers/google-cse.ts`) + Brave Search (`providers/brave-search.ts`); OFF without secrets. Bing deviation: Microsoft retired Bing Search v7 on 2025-08-11 (HTTP 410, signups closed) before first live use — swapped to Brave as closest drop-in; owner veto welcome. **Update 2026-08-25 (live):** Google Custom Search JSON API is closed to new customers (official overview) and flaps 200/403 on our new-project key — google-cse kept behind explicit `--providers` only; Brave carries search-engine recall |
 | Polite crawl: 1 req/s, 2 concurrent per host | `ratelimit.ts withHostBudget`; Retry-After honored |
 | Low-conf classify auto-reserves (no human queue) | `classifier.ts AUTO_RESERVE_BELOW=0.7`, `auto_reserved_doc_ids` traced for audit |
 | Targets weighted by gap + risk | `coverage.ts RISK_WEIGHT {in:1, mapped_unproven:3}` + fragile bonus for single-fixture IN cells |

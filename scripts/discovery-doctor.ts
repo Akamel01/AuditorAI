@@ -29,9 +29,11 @@ for (const [name, ref] of Object.entries(DISCOVERY_SECRETS)) {
 }
 
 console.log("\n== Provider registration ==");
+const DEPRECATED = new Set(["google-cse"]);
 for (const id of ["seed-portals", "brave-search", "google-cse"]) {
   const registered = listProviderIds().includes(id);
-  console.log(`  ${id.padEnd(14)} registered=${registered} enabled=${providerEnabled(id)}`);
+  const note = DEPRECATED.has(id) ? "  [deprecated: Custom Search JSON API closed to new customers]" : "";
+  console.log(`  ${id.padEnd(14)} registered=${registered} enabled=${providerEnabled(id)}${note}`);
 }
 
 if (!LIVE) {

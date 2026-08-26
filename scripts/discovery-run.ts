@@ -40,7 +40,13 @@ async function main(): Promise<void> {
     return (process.argv[flagIdx + 1] ?? "").split(",").filter(Boolean);
   })();
 
-  const providerIds = requestedProviders ?? ["seed-portals", ...(LIVE ? listProviderIds().filter((p) => p !== "seed-portals" && providerEnabled(p)) : [])];
+  // google-cse is deprecated for us: Custom Search JSON API is closed to new
+// customers (developers.google.com/custom-search/v1/overview, 2026-02) and
+// live calls flap 200/403 across frontends. Explicit --providers still allows it.
+const DEPRECATED_PROVIDERS = new Set(["google-cse"]);
+const providerIds =
+  requestedProviders ??
+  (["seed-portals", ...(LIVE ? listProviderIds().filter((p) => p !== "seed-portals" && providerEnabled(p) && !DEPRECATED_PROVIDERS.has(p)) : [])] as string[]);
   const providers = providerIds
     .map((id) => resolveProvider(id))
     .filter((p): p is NonNullable<typeof p> => p !== null);
