@@ -38,7 +38,7 @@ class GoogleCseProvider implements DiscoveryProvider {
     const cx = resolveSecret(DISCOVERY_SECRETS.googleCseCx);
     if (!key || !cx) throw new Error("google-cse requires DISCOVERY_GOOGLE_CSE_KEY/CX env or Keychain auditorai/discovery-cse-key + auditorai/discovery-cse-cx");
     const hits: DiscoveryHit[] = [];
-    let lastError: string | null = null;
+    const lastError: string | null = null;
     for (const theme of query.themes.length ? query.themes : ["road safety audit"]) {
       const jurScope = query.jurisdictions.length === 1 ? JUR_LABEL[query.jurisdictions[0]] : "";
       const q = encodeURIComponent(`${theme} ${jurScope}`.trim());

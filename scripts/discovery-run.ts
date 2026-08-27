@@ -17,6 +17,7 @@ import { listProviderIds, providerEnabled, resolveProvider } from "../src/discov
 import "./../src/discovery/providers/index.js"; // bootstrap built-ins
 import { runDiscoveryPipeline, type DiscoveryCtx, type RawDocument } from "../src/discovery/pipeline";
 import type { MatchAssignment } from "../src/discovery/types";
+import type { JurisdictionId } from "../src/domain/types";
 
 async function main(): Promise<void> {
 
@@ -103,7 +104,7 @@ const providerIds =
   const ctx: DiscoveryCtx = {
     ranAtIso,
     query: {
-      jurisdictions: (gapJurs ?? (["UK", "US", "CA", "AE", "INT"] as const)) as any,
+      jurisdictions: (gapJurs ?? (["UK", "US", "CA", "AE", "INT"] as JurisdictionId[])),
       themes: gapThemes ?? ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
     },
     providers,
