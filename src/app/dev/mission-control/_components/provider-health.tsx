@@ -29,7 +29,7 @@ type HealthResult = {
 
 const EXPECTED: Array<{ id: string; label: string; note: string }> = [
   { id: "seed-portals", label: "seed-portals", note: "offline backbone — always-on" },
-  { id: "brave-search", label: "brave-search", note: "enabled via Keychain (auditorai/discovery-brave)" },
+  { id: "brave-search", label: "brave-search", note: "Keychain auditorai/discovery-brave · env DISCOVERY_BRAVE_API_KEY" },
   { id: "google-cse", label: "google-cse", note: "deprecated — allowlist only" },
 ];
 
@@ -39,9 +39,9 @@ function findProvider(providers: ProviderHealthProps["providers"], id: string) {
 
 function BraveBadge({ enabled }: { enabled: boolean }) {
   return enabled ? (
-    <StateChip state="provided" label="enabled · Keychain" />
+    <StateChip state="provided" label="enabled" />
   ) : (
-    <StateChip state="unknown" label="disabled (no Keychain)" />
+    <StateChip state="unknown" label="disabled (no Keychain/env)" />
   );
 }
 
