@@ -53,7 +53,7 @@ export function classifyBundle(bundle: AcquisitionBundle): LabelSet {
 function classifyDocument(doc: AcquiredDocument): DocLabel {
   let decoded: string;
   try { decoded = decodeURIComponent(doc.url); } catch { decoded = doc.url; }
-  const titleLower = ((doc as any).title_hint ?? "").toString().toLowerCase().replace(/[-_]+/g, " ");
+  const titleLower = (doc.title_hint ?? "").toString().toLowerCase().replace(/[-_]+/g, " ");
   const urlLower = decoded.toLowerCase().replace(/[-_]+/g, " ");
   // Score URL and title separately — title is shared across bundle docs and
   // would otherwise bleed report keywords into every drawing.

@@ -93,3 +93,23 @@ export function useResetWorkspace() {
     location.reload();
   }, []);
 }
+
+// Mission Control admin-gated client helpers (thin wrappers over adminApi)
+export function fetchOdd<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/odd");
+}
+export function fetchCoverage<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/coverage");
+}
+export function fetchDiscovery<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/discovery");
+}
+export function runDiscovery<T = unknown>(body: { live?: boolean; cellKey?: string }): Promise<T> {
+  return adminApi<T>("/api/dev/discovery/run", { method: "POST", json: body });
+}
+export function fetchReadiness<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/readiness");
+}
+export function fetchHealth<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/health");
+}
