@@ -52,7 +52,8 @@ function genId(): string {
 
 function isKv(): boolean {
   try {
-    return getDataStore().kind === "kv";
+    const k = getDataStore().kind;
+    return k === "kv";
   } catch {
     return false;
   }
