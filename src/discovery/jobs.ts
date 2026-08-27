@@ -5,7 +5,7 @@
 // is per-function and not shared). Keys owned here only.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { getDataStore } from "@/lib/persistence";
+import { getDataStore, type DataStore } from "@/lib/persistence";
 
 export type DiscoveryJobStatus = "queued" | "running" | "done" | "error";
 
@@ -59,6 +59,8 @@ function isKv(): boolean {
   }
 }
 
+
+
 function jobsFilePath(): string {
   return path.join(process.cwd(), "state", "discovery-jobs.json");
 }
@@ -89,11 +91,19 @@ function writeJobsFile(data: JobsFile): void {
   } catch {}
 }
 
-async function loadIndex(): Promise<string[]> {
+async function loadIndex(store?: DataStore): Promise<string[]> {
+  if (store) {
+    try {
+      const idx = await store.get<string[]>(INDEX_KEY);
+      return Array.isArray(idx) ? idx : [];
+    } catch {
+      return [];
+    }
+  }
   if (isKv()) {
     try {
-      const store = getDataStore();
-      const idx = await store.get<string[]>(INDEX_KEY);
+      const s = getDataStore();
+      const idx = await s.get<string[]>(INDEX_KEY);
       return Array.isArray(idx) ? idx : [];
     } catch {
       return [];
@@ -102,7 +112,13 @@ async function loadIndex(): Promise<string[]> {
   return readJobsFile().index;
 }
 
-async function saveIndex(ids: string[]): Promise<void> {
+async function saveIndex(ids: string[], store?: DataStore): Promise<void> {
+  if (store) {
+    try {
+      await store.put(INDEX_KEY, ids);
+    } catch {}
+    return;
+  }
   if (isKv()) {
     try {
       await getDataStore().put(INDEX_KEY, ids);
@@ -114,11 +130,14 @@ async function saveIndex(ids: string[]): Promise<void> {
   writeJobsFile(data);
 }
 
-export async function createJob(input: {
-  live: boolean;
-  cellKey: string | null;
-  providers: string[];
-}): Promise<DiscoveryJob> {
+export async function createJob(
+  input: {
+    live: boolean;
+    cellKey: string | null;
+    providers: string[];
+  },
+  store?: DataStore,
+): Promise<DiscoveryJob> {
   const now = new Date().toISOString();
   const job: DiscoveryJob = {
     id: genId(),
@@ -132,9 +151,25 @@ export async function createJob(input: {
     currentNode: null,
     error: null,
   };
-  if (isKv()) {
-    const store = getDataStore();
+  if (store) {
     await store.put(key(job.id), job);
+    const idx = await loadIndex(store);
+    if (!idx.includes(job.id)) {
+      idx.unshift(job.id);
+      const trimmed = idx.slice(0, 20);
+      await saveIndex(trimmed, store);
+      const toPrune = idx.slice(20);
+      for (const old of toPrune) {
+        try {
+          await store.del(key(old));
+        } catch {}
+      }
+    }
+    return job;
+  }
+  if (isKv()) {
+    const s = getDataStore();
+    await s.put(key(job.id), job);
     const idx = await loadIndex();
     if (!idx.includes(job.id)) {
       idx.unshift(job.id);
@@ -143,7 +178,7 @@ export async function createJob(input: {
       const toPrune = idx.slice(20);
       for (const old of toPrune) {
         try {
-          await store.del(key(old));
+          await s.del(key(old));
         } catch {}
       }
     }
@@ -161,7 +196,14 @@ export async function createJob(input: {
   return job;
 }
 
-export async function getJob(id: string): Promise<DiscoveryJob | null> {
+export async function getJob(id: string, store?: DataStore): Promise<DiscoveryJob | null> {
+  if (store) {
+    try {
+      return await store.get<DiscoveryJob>(key(id));
+    } catch {
+      return null;
+    }
+  }
   if (isKv()) {
     try {
       return await getDataStore().get<DiscoveryJob>(key(id));
@@ -172,14 +214,22 @@ export async function getJob(id: string): Promise<DiscoveryJob | null> {
   return readJobsFile().jobs[id] ?? null;
 }
 
-export async function listJobs(limit = 10): Promise<DiscoveryJob[]> {
-  const ids = await loadIndex();
+export async function listJobs(limit = 10, store?: DataStore): Promise<DiscoveryJob[]> {
+  const ids = await loadIndex(store);
   const slice = ids.slice(0, limit);
   if (slice.length === 0) return [];
+  if (store) {
+    try {
+      const jobs = await store.getMany<DiscoveryJob>(slice.map(key));
+      return jobs.filter((j): j is DiscoveryJob => j !== null);
+    } catch {
+      return [];
+    }
+  }
   if (isKv()) {
     try {
-      const store = getDataStore();
-      const jobs = await store.getMany<DiscoveryJob>(slice.map(key));
+      const s = getDataStore();
+      const jobs = await s.getMany<DiscoveryJob>(slice.map(key));
       return jobs.filter((j): j is DiscoveryJob => j !== null);
     } catch {
       return [];
@@ -189,9 +239,12 @@ export async function listJobs(limit = 10): Promise<DiscoveryJob[]> {
   return slice.map((id) => data.jobs[id]).filter((j): j is DiscoveryJob => !!j);
 }
 
-export async function updateJob(id: string, patch: Partial<DiscoveryJob> & { updatedAt?: string }): Promise<DiscoveryJob | null> {
-  if (isKv()) {
-    const store = getDataStore();
+export async function updateJob(
+  id: string,
+  patch: Partial<DiscoveryJob> & { updatedAt?: string },
+  store?: DataStore,
+): Promise<DiscoveryJob | null> {
+  if (store) {
     const cur = await store.get<DiscoveryJob>(key(id));
     if (!cur) return null;
     const next: DiscoveryJob = {
@@ -201,6 +254,19 @@ export async function updateJob(id: string, patch: Partial<DiscoveryJob> & { upd
       logs: patch.logs ?? cur.logs,
     };
     await store.put(key(id), next);
+    return next;
+  }
+  if (isKv()) {
+    const s = getDataStore();
+    const cur = await s.get<DiscoveryJob>(key(id));
+    if (!cur) return null;
+    const next: DiscoveryJob = {
+      ...cur,
+      ...patch,
+      updatedAt: patch.updatedAt ?? new Date().toISOString(),
+      logs: patch.logs ?? cur.logs,
+    };
+    await s.put(key(id), next);
     return next;
   }
   const data = readJobsFile();
@@ -217,9 +283,8 @@ export async function updateJob(id: string, patch: Partial<DiscoveryJob> & { upd
   return next;
 }
 
-export async function appendLog(id: string, entry: DiscoveryJobLog): Promise<void> {
-  if (isKv()) {
-    const store = getDataStore();
+export async function appendLog(id: string, entry: DiscoveryJobLog, store?: DataStore): Promise<void> {
+  if (store) {
     const cur = await store.get<DiscoveryJob>(key(id));
     if (!cur) return;
     const logs = [...cur.logs, entry];
@@ -233,6 +298,21 @@ export async function appendLog(id: string, entry: DiscoveryJobLog): Promise<voi
     await store.put(key(id), next);
     return;
   }
+  if (isKv()) {
+    const s = getDataStore();
+    const cur = await s.get<DiscoveryJob>(key(id));
+    if (!cur) return;
+    const logs = [...cur.logs, entry];
+    const trimmed = logs.length > 200 ? logs.slice(-200) : logs;
+    const next: DiscoveryJob = {
+      ...cur,
+      logs: trimmed,
+      currentNode: entry.node,
+      updatedAt: new Date().toISOString(),
+    };
+    await s.put(key(id), next);
+    return;
+  }
   const data = readJobsFile();
   const cur = data.jobs[id];
   if (!cur) return;
@@ -242,14 +322,14 @@ export async function appendLog(id: string, entry: DiscoveryJobLog): Promise<voi
   writeJobsFile(data);
 }
 
-export async function setJobRunning(id: string, node: string | null = null): Promise<void> {
-  await updateJob(id, { status: "running", currentNode: node });
+export async function setJobRunning(id: string, node: string | null = null, store?: DataStore): Promise<void> {
+  await updateJob(id, { status: "running", currentNode: node }, store);
 }
 
-export async function setJobDone(id: string, result: NonNullable<DiscoveryJob["result"]>): Promise<void> {
-  await updateJob(id, { status: "done", result, currentNode: null, error: null });
+export async function setJobDone(id: string, result: NonNullable<DiscoveryJob["result"]>, store?: DataStore): Promise<void> {
+  await updateJob(id, { status: "done", result, currentNode: null, error: null }, store);
 }
 
-export async function setJobError(id: string, error: string): Promise<void> {
-  await updateJob(id, { status: "error", error, currentNode: null });
+export async function setJobError(id: string, error: string, store?: DataStore): Promise<void> {
+  await updateJob(id, { status: "error", error, currentNode: null }, store);
 }
