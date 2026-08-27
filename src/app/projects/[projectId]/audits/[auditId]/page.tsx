@@ -1,5 +1,9 @@
 "use client";
 // Audit review: findings adjudication, questions, missing information, report.
+// C7 deepened: fetch/PATCH orchestration lifted to domain/audit-workspace;
+// this page + CandidateAdjudication are now pure render, delegating via
+// the injected api adapter (lib/client api) to preserve buildFindingUpdate
+// and promoteCandidate contracts verbatim.
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -7,13 +11,18 @@ import { api, getAuditorPseudonym, setAuditorPseudonym } from "@/lib/client";
 import { humanizeEnum } from "@/lib/format";
 import { renderReportMarkdown } from "@/lib/report";
 import { stageDisplay } from "@/app/_components/stage-label";
+import { REVIEWER_STATUS_ACTIONS, type ReviewerStatusAction } from "@/domain/finding-review";
+import { DEFAULT_AUDITOR_PSEUDONYM } from "@/domain/outcome-contracts";
 import {
-  REVIEWER_STATUS_ACTIONS,
-  buildFindingUpdate,
-  type ReviewerStatusAction,
-} from "@/domain/finding-review";
-import type { CandidatePromotion, OutcomeConsent } from "@/domain/candidate-review";
-import { CONSENT_VERSION, DEFAULT_AUDITOR_PSEUDONYM } from "@/domain/outcome-contracts";
+  buildPosture,
+  buildPromotion as buildWorkspacePromotion,
+  issue as issueWorkspace,
+  load as loadWorkspace,
+  promoteOne,
+  saveFinding,
+  setQuestionAddressed,
+  type CapturePosture,
+} from "@/domain/audit-workspace";
 import type { AuditIssue, AuditResult, CandidateFindingRecord, Finding } from "@/domain/types";
 import { AppShell } from "@/app/_components/ui/app-shell";
 import { ConfidenceMark, Eyebrow, KindChip, RevisionSeal } from "@/app/_components/ui/chips";
@@ -54,12 +63,9 @@ export default function AuditPage() {
 
   const load = useCallback(async () => {
     try {
-      const d = await api<{ audit: AuditResult }>(`/api/projects/${id}/audits/${auditId}`);
-      const i = await api<{ issues: AuditIssue[] }>(
-        `/api/projects/${id}/audits/${auditId}/issues`,
-      );
-      setAudit(d.audit);
-      setIssues(i.issues);
+      const { audit: d, issues: i } = await loadWorkspace(id, auditId, api);
+      setAudit(d);
+      setIssues(i);
     } catch (e) {
       setError(String((e as Error).message));
     }
@@ -71,7 +77,7 @@ export default function AuditPage() {
   async function issueReport() {
     setIssueBusy(true);
     try {
-      await api(`/api/projects/${id}/audits/${auditId}/issues`, { method: "POST" });
+      await issueWorkspace(id, auditId, api);
       setConfirmOpen(false);
       await load();
     } catch (e) {
@@ -227,14 +233,10 @@ export default function AuditPage() {
                     type="checkbox"
                     checked={q.addressed}
                     onChange={async (e) => {
-                      await api(`/api/projects/${id}/audits/${auditId}`, {
-                        method: "PATCH",
-                        json: {
-                          question_marked: [
-                            { question_id: q.question_id, addressed: e.target.checked },
-                          ],
-                        },
-                      });
+                      await setQuestionAddressed(
+                        { projectId: id, auditId, questionId: q.question_id, addressed: e.target.checked },
+                        api,
+                      );
                       load();
                     }}
                     className="mt-1 h-3.5 w-3.5 shrink-0 cursor-pointer appearance-none rounded-[3px] border border-edge bg-surface transition-colors checked:border-accent checked:bg-accent hover:border-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -361,7 +363,7 @@ function TitleCell({ k, v }: { k: string; v: React.ReactNode }) {
   );
 }
 
-/* ————— finding card ————— */
+/* ————— finding card ————— — pure render + workspace delegation */
 
 function FindingCard({
   f,
@@ -383,19 +385,17 @@ function FindingCard({
     setBusy(true);
     setError(null);
     try {
-      await api(`/api/projects/${projectId}/audits/${auditId}`, {
-        method: "PATCH",
-        json: {
-          finding_updates: [
-            buildFindingUpdate({
-              finding_id: f.finding_id,
-              reviewer_status: status,
-              recommendation: rec,
-              reviewer_note: note,
-            }),
-          ],
+      await saveFinding(
+        {
+          projectId,
+          auditId,
+          findingId: f.finding_id,
+          recommendation: rec,
+          reviewerNote: note,
+          ...(status ? { reviewerStatus: status } : {}),
         },
-      });
+        api,
+      );
       onChanged();
     } catch (e) {
       setError(String((e as Error).message));
@@ -571,7 +571,7 @@ function FindingCard({
   );
 }
 
-/* ————— AI candidate adjudication (ticket 05, ADR-0006/0009) ————— */
+/* ————— AI candidate adjudication (ticket 05, ADR-0006/0009) — pure render — */
 
 const CHECKBOX_CLS =
   "mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer appearance-none rounded-[3px] border border-edge bg-surface transition-colors checked:border-accent checked:bg-accent hover:border-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -580,11 +580,6 @@ const INPUT_CLS =
 const TEXTAREA_CLS =
   "w-full resize-y rounded-md border border-edge bg-surface px-3 py-2 text-[13px] leading-relaxed text-text transition-colors placeholder:text-faint hover:border-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-tint";
 const FIELD_LABEL_CLS = "mb-1 font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint";
-
-interface CapturePosture {
-  consent: OutcomeConsent;
-  auditor_pseudonym: string;
-}
 
 function CandidateAdjudication({
   candidates,
@@ -606,10 +601,7 @@ function CandidateAdjudication({
     setAuditorPseudonym(v);
   }
 
-  const posture: CapturePosture = {
-    consent: consentLogged ? { version: CONSENT_VERSION } : { declined: true },
-    auditor_pseudonym: pseudonym.trim() || DEFAULT_AUDITOR_PSEUDONYM,
-  };
+  const posture: CapturePosture = buildPosture(consentLogged, pseudonym);
 
   return (
     <>
@@ -677,43 +669,18 @@ function CandidateCard({
   const [evidenceIds, setEvidenceIds] = useState(c.evidence.map((e) => e.evidence_id).join(", "));
   const [note, setNote] = useState("");
 
-  function buildPromotion(action: "accept" | "accept_with_edits" | "reject"): CandidatePromotion {
-    const promo: CandidatePromotion = { index, action };
-    if (action === "reject" || action === "accept_with_edits") {
-      if (note.trim()) promo.reviewer_note = note.trim();
-    }
-    if (action === "accept_with_edits") {
-      // Only actual diffs travel: "" / unchanged values are non-edits, mirroring
-      // promoteCandidate's semantics server-side.
-      const stmt = statementText.trim();
-      if (stmt && stmt !== c.statement.text) promo.edited_statement = stmt;
-      const cat = category.trim();
-      if (cat && cat !== c.category) promo.edited_category = cat;
-      const rec = recommendation.trim();
-      if (rec && rec !== (c.recommendation ?? "").trim()) promo.edited_recommendation = rec;
-      const ids = evidenceIds
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      if (JSON.stringify(ids) !== JSON.stringify(c.evidence.map((e) => e.evidence_id))) {
-        promo.edited_evidence_ids = ids;
-      }
-    }
-    return promo;
-  }
-
   async function submit(action: "accept" | "accept_with_edits" | "reject") {
     setBusy(true);
     setError(null);
     try {
-      await api(`/api/projects/${projectId}/audits/${auditId}`, {
-        method: "PATCH",
-        json: {
-          candidate_promotions: [buildPromotion(action)],
-          consent: posture.consent,
-          auditor_pseudonym: posture.auditor_pseudonym,
-        },
+      const promo = buildWorkspacePromotion(index, action, c, {
+        statementText,
+        category,
+        recommendation,
+        evidenceIdsText: evidenceIds,
+        note,
       });
+      await promoteOne(projectId, auditId, promo, posture, api);
       onChanged();
     } catch (e) {
       setError(String((e as Error).message));
