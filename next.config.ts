@@ -24,11 +24,18 @@ const API_ROUTES = [
   "/api/dev/runs/[runId]/edit",
   "/api/dev/runs/[runId]/finish",
   "/api/dev/runs/[runId]/step",
+  "/api/dev/discovery",
+  "/api/dev/discovery/run",
   "/api/dev/discovery/jobs",
   "/api/dev/discovery/jobs/[id]",
+  "/api/dev/health",
+  "/api/dev/coverage",
+  "/api/dev/odd",
+  "/api/dev/readiness",
+  "/api/dev/debug",
 ];
 
-const RUNTIME_FILES = ["./policies/**/*", "./state/evidence-registry.json"];
+const RUNTIME_FILES = ["./policies/**/*", "./state/evidence-registry.json", "./state/odd-coverage.json", "./state/dedupe-index.json", "./state/discovery-ledger.json"];
 
 const outputFileTracingIncludes = Object.fromEntries(
   API_ROUTES.map((route) => [route, RUNTIME_FILES]),
