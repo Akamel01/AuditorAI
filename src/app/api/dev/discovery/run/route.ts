@@ -185,27 +185,15 @@ export async function POST(req: Request) {
       },
       providers,
       dedupeIndex,
-      ...(LIVE ? {} : { acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match)) }),
+      // For UI harvest keep D04 fast — use fixture docs even for live (Brave hits still live, PDFs not fetched)
+      acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match).slice(0, 1)),
     };
 
     const job = await createJob({ live: LIVE, cellKey, providers: providerIds });
     await appendLog(job.id, { at: new Date().toISOString(), node: "D00-QUEUED", message: `job ${job.id} queued live=${LIVE} cellKey=${cellKey ?? "gap-aware"}` });
 
-    const runPromise = executeJob(job.id, ctx, providerIds, ranAtIso);
-
-    // Try Vercel/Next after() to keep running after response; fallback to detached promise
-    let usedAfter = false;
-    try {
-      const mod = await import("next/server");
-      const after = (mod as unknown as { after?: (fn: () => Promise<void>) => void }).after;
-      if (typeof after === "function") {
-        after(() => runPromise);
-        usedAfter = true;
-      }
-    } catch {}
-    if (!usedAfter) {
-      void runPromise;
-    }
+    // Fire-and-forget — return 202 immediately; polling via GET /jobs/[id] survives refresh
+    void executeJob(job.id, ctx, providerIds, ranAtIso);
 
     return NextResponse.json(
       {

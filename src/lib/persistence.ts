@@ -77,15 +77,20 @@ export class KvRestStore implements DataStore {
    *  commands, never a pipelined body. */
   private async call(command: unknown[]): Promise<{ result?: unknown }> {
     let res: Response;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 5000);
     try {
       res = await fetch(this.baseUrl, {
         method: "POST",
         headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json" },
         body: JSON.stringify(command),
         cache: "no-store",
+        signal: ctrl.signal,
       });
     } catch (e) {
       throw new StoreUnavailableError(e instanceof Error ? e.message : String(e));
+    } finally {
+      clearTimeout(timer);
     }
     if (!res.ok) throw new StoreUnavailableError(`REST ${res.status}`);
     let json: { result?: unknown; error?: unknown };
