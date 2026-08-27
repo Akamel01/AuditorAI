@@ -13,6 +13,7 @@ import { ProviderHealth } from "./_components/provider-health";
 import { QueueTicker } from "./_components/queue-ticker";
 import { HarvestLog, type LedgerEntry } from "./_components/harvest-log";
 import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness } from "@/lib/client";
+import { getAdminKey, setAdminKey } from "@/lib/client";
 import type { OddCoverageView } from "@/discovery/types";
 import type { OddDeclaration } from "@/domain/odd";
 import type { LearningMetrics } from "@/lib/learning-metrics";
@@ -61,40 +62,44 @@ export default function MissionControlPage() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [adminKeyInput, setAdminKeyInput] = useState("");
+  const [adminKeySaved, setAdminKeySaved] = useState(false);
 
   useEffect(() => {
     setEntered(true);
+    setAdminKeyInput(getAdminKey());
   }, []);
 
-  useEffect(() => {
+  const reload = async () => {
     let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const [odd, cov, disc, red] = await Promise.all([
-          fetchOdd<OddDeclaration>(),
-          fetchCoverage<OddCoverageView>(),
-          fetchDiscovery<DiscoveryData>(),
-          fetchReadiness<ReadinessPayload>(),
-        ]);
-        if (cancelled) return;
-        setDeclaration(odd);
-        setCoverage(cov);
-        setDiscovery(disc);
-        const rep = (red as ReadinessPayload).readiness ?? (red as ReadinessPayload).report ?? null;
-        if (rep) setReadiness(rep as ReadinessReport);
-        setLearning(normalizeLearning((red as ReadinessPayload).learning ?? (red as ReadinessPayload).metrics));
-      } catch (e) {
-        if (!cancelled) setError((e as Error).message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+    setLoading(true);
+    setError(null);
+    try {
+      const [odd, cov, disc, red] = await Promise.all([
+        fetchOdd<OddDeclaration>(),
+        fetchCoverage<OddCoverageView>(),
+        fetchDiscovery<DiscoveryData>(),
+        fetchReadiness<ReadinessPayload>(),
+      ]);
+      if (cancelled) return;
+      setDeclaration(odd);
+      setCoverage(cov);
+      setDiscovery(disc);
+      const rep = (red as ReadinessPayload).readiness ?? (red as ReadinessPayload).report ?? null;
+      if (rep) setReadiness(rep as ReadinessReport);
+      setLearning(normalizeLearning((red as ReadinessPayload).learning ?? (red as ReadinessPayload).metrics));
+    } catch (e) {
+      if (!cancelled) setError((e as Error).message);
+    } finally {
+      if (!cancelled) setLoading(false);
     }
-    load();
     return () => {
       cancelled = true;
     };
+  };
+
+  useEffect(() => {
+    reload();
   }, []);
 
   const ready = declaration && coverage && readiness;
@@ -116,7 +121,45 @@ export default function MissionControlPage() {
 
         {error && (
           <div className="mt-5">
-            <InlineNotice>{error} — set auditorai.admin_key in localStorage or check /api/dev/* admin gate.</InlineNotice>
+            {error.toLowerCase().includes("unauthorized") ? (
+              <Panel className="border-accent/20 bg-accent/[0.04] px-5 py-5">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-8 w-8 place-items-center rounded-full bg-accent text-[color:var(--accent-contrast)]">⌖</div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-text">Admin key required</h3>
+                    <p className="mt-1 font-mono text-[11px] leading-snug text-muted">
+                      Mission Control is developer-only and gated by <span className="text-text">x-admin-key</span> (server env <span className="text-text">ADMIN_KEY</span>). Paste the key below — it stays in your browser (localStorage <span className="text-text">auditorai.admin_key</span>) and is sent as a header. For local dev the test key is <span className="rounded bg-sunken px-1 py-0.5 font-mono text-[10px]">test-admin-key-0123456789abcdef</span> if your server was started with it.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <input
+                        value={adminKeyInput}
+                        onChange={(e) => setAdminKeyInput(e.target.value)}
+                        placeholder="paste admin key"
+                        className="min-w-[260px] flex-1 rounded-md border border-hairline bg-surface px-3 py-1.5 font-mono text-[12px] text-text placeholder:text-faint focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAdminKey(adminKeyInput.trim());
+                          setAdminKeySaved(true);
+                          setTimeout(() => setAdminKeySaved(false), 2000);
+                          reload();
+                        }}
+                        className="inline-flex items-center rounded-md bg-accent px-4 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong active:scale-[0.98]"
+                      >
+                        Save & reload
+                      </button>
+                    </div>
+                    {adminKeySaved && <p className="mt-2 font-mono text-[11px] text-ok">Saved to localStorage. Retrying…</p>}
+                    <p className="mt-2 font-mono text-[10.5px] text-faint">Key never leaves your browser except as <span className="text-subtle">x-admin-key</span> header. Rotate via Vercel env <span className="text-subtle">ADMIN_KEY</span> + re-paste here.</p>
+                  </div>
+                </div>
+              </Panel>
+            ) : (
+              <InlineNotice>{error}</InlineNotice>
+            )}
           </div>
         )}
 
