@@ -24,6 +24,8 @@ const API_ROUTES = [
   "/api/dev/runs/[runId]/edit",
   "/api/dev/runs/[runId]/finish",
   "/api/dev/runs/[runId]/step",
+  "/api/dev/discovery/jobs",
+  "/api/dev/discovery/jobs/[id]",
 ];
 
 const RUNTIME_FILES = ["./policies/**/*", "./state/evidence-registry.json"];

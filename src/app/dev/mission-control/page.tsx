@@ -70,8 +70,7 @@ export default function MissionControlPage() {
     setAdminKeyInput(getAdminKey());
   }, []);
 
-  const reload = async () => {
-    let cancelled = false;
+  const reload = async (): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
@@ -81,7 +80,6 @@ export default function MissionControlPage() {
         fetchDiscovery<DiscoveryData>(),
         fetchReadiness<ReadinessPayload>(),
       ]);
-      if (cancelled) return;
       setDeclaration(odd);
       setCoverage(cov);
       setDiscovery(disc);
@@ -89,13 +87,10 @@ export default function MissionControlPage() {
       if (rep) setReadiness(rep as ReadinessReport);
       setLearning(normalizeLearning((red as ReadinessPayload).learning ?? (red as ReadinessPayload).metrics));
     } catch (e) {
-      if (!cancelled) setError((e as Error).message);
+      setError((e as Error).message);
     } finally {
-      if (!cancelled) setLoading(false);
+      setLoading(false);
     }
-    return () => {
-      cancelled = true;
-    };
   };
 
   useEffect(() => {
@@ -201,7 +196,7 @@ export default function MissionControlPage() {
 
             {segment === "discovery" && (
               <>
-                <ProviderHealth providers={discovery?.providers ?? []} />
+                <ProviderHealth providers={discovery?.providers ?? []} onRun={reload} />
                 <QueueTicker coverage={coverage} onSelectCell={setSelectedKey} limit={3} />
                 <HarvestLog ledgerTail={discovery?.ledgerTail ?? []} />
               </>
