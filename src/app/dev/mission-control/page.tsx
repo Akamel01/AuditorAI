@@ -18,6 +18,12 @@ import type { OddCoverageView } from "@/discovery/types";
 import type { OddDeclaration } from "@/domain/odd";
 import type { LearningMetrics } from "@/lib/learning-metrics";
 
+type LatestJob = {
+  id: string;
+  status: string;
+  result?: { coverage?: unknown; packages?: unknown[]; hits?: unknown[]; queue?: unknown[] };
+} | null;
+
 type Segment = "overview" | "discovery" | "odd" | "readiness";
 
 const SEGMENTS: { value: Segment; label: string }[] = [
@@ -64,6 +70,7 @@ export default function MissionControlPage() {
   const [loading, setLoading] = useState(true);
   const [adminKeyInput, setAdminKeyInput] = useState("");
   const [adminKeySaved, setAdminKeySaved] = useState(false);
+  const [latestJob, setLatestJob] = useState<LatestJob>(null);
 
   useEffect(() => {
     setEntered(true);
@@ -98,6 +105,8 @@ export default function MissionControlPage() {
   }, []);
 
   const ready = declaration && coverage && readiness;
+  const displayCoverage = (latestJob?.result?.coverage as OddCoverageView | undefined) ?? coverage;
+  const isLiveCoverage = !!latestJob?.result?.coverage;
 
   return (
     <AppShell wide>
@@ -196,9 +205,16 @@ export default function MissionControlPage() {
 
             {segment === "discovery" && (
               <>
-                <ProviderHealth providers={discovery?.providers ?? []} onRun={reload} />
-                <QueueTicker coverage={coverage} onSelectCell={setSelectedKey} limit={3} />
-                <HarvestLog ledgerTail={discovery?.ledgerTail ?? []} />
+                <ProviderHealth providers={discovery?.providers ?? []} onRun={reload} onJob={(j) => setLatestJob(j as unknown as LatestJob)} />
+                <QueueTicker coverage={(displayCoverage as OddCoverageView) ?? coverage!} onSelectCell={setSelectedKey} limit={3} />
+                {isLiveCoverage && latestJob && (
+                  <Panel className="border-accent-line/20 bg-accent-tint px-3 py-2">
+                    <p className="font-mono text-[10.5px] leading-snug text-subtle">
+                      Live queue from <span className="text-text">job {latestJob.id.slice(0, 8)} · {latestJob.status}</span> — file `state/odd-coverage.json` updates only when harvest is persisted. This ticker reflects the live `coverage.view` from the last run.
+                    </p>
+                  </Panel>
+                )}
+                <HarvestLog ledgerTail={discovery?.ledgerTail ?? []} job={latestJob} />
               </>
             )}
 

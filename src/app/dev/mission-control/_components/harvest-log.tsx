@@ -1,9 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Panel } from "@/app/_components/ui/panel";
 import { Eyebrow, StateChip } from "@/app/_components/ui/chips";
-import { adminApi } from "@/lib/client";
 
 export interface LedgerEntry {
   seq: number;
@@ -15,8 +14,8 @@ export interface LedgerEntry {
 export interface HarvestLogProps {
   /** last 20 ledger entries from GET /api/dev/discovery — array of LedgerEntry */
   ledgerTail: LedgerEntry[];
-  /** optional run handler; defaults to POST /api/dev/discovery/run { live: true } */
-  onRun?: () => Promise<void>;
+  /** optional live job for synthetic display when file ledger empty */
+  job?: { id: string; status: string; result?: { packages?: unknown[]; hits?: unknown[] } } | null;
 }
 
 type Group = {
@@ -67,11 +66,7 @@ function payloadChip(kind: string) {
   );
 }
 
-export function HarvestLog({ ledgerTail, onRun }: HarvestLogProps) {
-  const [runLoading, setRunLoading] = useState(false);
-  const [runError, setRunError] = useState<string | null>(null);
-  const [runOk, setRunOk] = useState<string | null>(null);
-
+export function HarvestLog({ ledgerTail, job }: HarvestLogProps) {
   const groups: Group[] = useMemo(() => {
     const byAt = new Map<string, LedgerEntry[]>();
     for (const e of ledgerTail) {
@@ -80,52 +75,38 @@ export function HarvestLog({ ledgerTail, onRun }: HarvestLogProps) {
       if (arr) arr.push(e);
       else byAt.set(key, [e]);
     }
-    // sort by at descending (most recent first); parse ISO
     const sortedKeys = [...byAt.keys()].sort((a, b) => Date.parse(b) - Date.parse(a));
     return sortedKeys.map((at) => ({ at, entries: byAt.get(at)! }));
   }, [ledgerTail]);
 
-  async function handleRun() {
-    setRunLoading(true);
-    setRunError(null);
-    setRunOk(null);
-    try {
-      if (onRun) {
-        await onRun();
-        setRunOk("run triggered");
-      } else {
-        await adminApi("/api/dev/discovery/run", { method: "POST", json: { live: true } });
-        setRunOk("run triggered");
-      }
-    } catch (e) {
-      setRunError((e as Error).message);
-    } finally {
-      setRunLoading(false);
-    }
-  }
+  const isJobActive = job && (job.status === "queued" || job.status === "running");
+  const jobHasResult = job?.result && Array.isArray(job.result.packages) && (job.result.packages as unknown[]).length > 0;
 
   return (
     <div className="rounded-[1.5rem] bg-sunken/80 p-1.5 ring-1 ring-hairline">
       <Panel className="!rounded-[1.25rem] border-hairline bg-surface px-4 py-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.75)]">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <Eyebrow code="CH 0+430">Harvest log · last {ledgerTail.length}</Eyebrow>
-          <button
-            type="button"
-            onClick={handleRun}
-            disabled={runLoading}
-            className="inline-flex cursor-pointer items-center rounded-md bg-accent px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong disabled:opacity-50"
-            aria-label="Run one live harvest batch — POST /api/dev/discovery/run"
-          >
-            {runLoading ? "Running…" : "Run live harvest"}
-          </button>
+          {job && (
+            <span className={`inline-flex items-center rounded-full border px-2.5 py-[3px] font-mono text-[10px] leading-none tracking-[0.04em] ${isJobActive ? "border-accent-line bg-accent-tint text-accent" : jobHasResult ? "border-hairline bg-sunken text-subtle" : "border-hairline bg-surface text-faint"}`}>
+              job {job.id.slice(0, 8)} · {job.status}
+              {jobHasResult ? ` · ${(job.result!.packages as unknown[]).length} pkgs` : ""}
+            </span>
+          )}
         </div>
 
-        {(runError || runOk) && (
-          <div className={`mt-2 font-mono text-[11px] ${runError ? "text-concern" : "text-ok"}`}>{runError ?? runOk}</div>
-        )}
-
         {groups.length === 0 ? (
-          <p className="mt-3 font-mono text-[11px] text-faint">No ledger entries — run a batch to populate state/discovery-ledger.json.</p>
+          <div className="mt-3 rounded-md border border-dashed border-hairline bg-sunken px-3 py-3">
+            <p className="font-mono text-[11px] text-faint">No ledger entries — run a batch to populate state/discovery-ledger.json.</p>
+            {jobHasResult && (
+              <p className="mt-1.5 font-mono text-[10.5px] leading-snug text-subtle">
+                Live job <span className="text-text">{job!.id.slice(0, 8)} · {job!.status}</span> produced{" "}
+                <span className="text-text">{(job!.result!.packages as unknown[]).length} packages</span> ·{" "}
+                <span className="text-text">{(job!.result!.hits as unknown[]).length} hits</span> — see Provider health log above for D01..D10 steps. File ledger updates only when harvest is persisted to state; job result is the live source.
+              </p>
+            )}
+            {isJobActive && <p className="mt-1.5 font-mono text-[10.5px] text-accent">Job running — check Provider health progress log.</p>}
+          </div>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[640px] border-collapse">

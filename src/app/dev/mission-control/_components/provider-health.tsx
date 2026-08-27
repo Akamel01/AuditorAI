@@ -8,6 +8,7 @@ import { adminApi, fetchHealth } from "@/lib/client";
 export interface ProviderHealthProps {
   providers: Array<{ id: string; enabled: boolean }>;
   onRun?: () => Promise<void>;
+  onJob?: (job: DiscoveryJob | null) => void;
   lastLatencyMs?: number | null;
 }
 
@@ -75,7 +76,7 @@ function DeprecatedBadge() {
   return <StateChip state="not_applicable" label="deprecated" />;
 }
 
-export function ProviderHealth({ providers, onRun, lastLatencyMs = null }: ProviderHealthProps) {
+export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }: ProviderHealthProps) {
   const [doctorLoading, setDoctorLoading] = useState(false);
   const [doctorError, setDoctorError] = useState<string | null>(null);
   const [health, setHealth] = useState<HealthResult | null>(null);
@@ -119,6 +120,7 @@ export function ProviderHealth({ providers, onRun, lastLatencyMs = null }: Provi
       const j = await fetchJobById(id);
       if (!j) return;
       setJob(j);
+      onJob?.(j);
       if (j.status === "done") {
         if (pollRef.current) clearInterval(pollRef.current);
         pollRef.current = null;
@@ -159,6 +161,7 @@ export function ProviderHealth({ providers, onRun, lastLatencyMs = null }: Provi
         return;
       }
       setJob(j);
+      onJob?.(j);
       if (j.status === "queued" || j.status === "running") {
         startPolling(j.id);
       } else if (j.status === "done") {
@@ -218,7 +221,7 @@ export function ProviderHealth({ providers, onRun, lastLatencyMs = null }: Provi
       if (!id) throw new Error("no jobId returned");
       localStorage.setItem(JOB_STORAGE_KEY, id);
       setJobId(id);
-      setJob({
+      const queued: DiscoveryJob = {
         id,
         status: "queued",
         live: true,
@@ -229,7 +232,9 @@ export function ProviderHealth({ providers, onRun, lastLatencyMs = null }: Provi
         logs: [{ at: new Date().toISOString(), node: "D00-QUEUED", message: "queued" }],
         currentNode: "D01-DISCOVER",
         error: null,
-      });
+      };
+      setJob(queued);
+      onJob?.(queued);
       startPolling(id);
     } catch (e) {
       setRunError((e as Error).message);
