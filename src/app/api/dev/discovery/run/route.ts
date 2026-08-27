@@ -4,7 +4,7 @@
 // that survives refresh/tab switch. Poll GET /api/dev/discovery/jobs/:id.
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { requireAdmin, serverError } from "@/lib/api";
 import { listProviderIds, providerEnabled, resolveProvider } from "@/discovery/providers";
 import "@/discovery/providers";
@@ -192,8 +192,8 @@ export async function POST(req: Request) {
     const job = await createJob({ live: LIVE, cellKey, providers: providerIds });
     await appendLog(job.id, { at: new Date().toISOString(), node: "D00-QUEUED", message: `job ${job.id} queued live=${LIVE} cellKey=${cellKey ?? "gap-aware"}` });
 
-    // Fire-and-forget — return 202 immediately; polling via GET /jobs/[id] survives refresh
-    void executeJob(job.id, ctx, providerIds, ranAtIso);
+    // Run after response — survives refresh/tab switch, Vercel after() keeps func alive
+    after(() => executeJob(job.id, ctx, providerIds, ranAtIso));
 
     return NextResponse.json(
       {
