@@ -15264,6 +15264,1793 @@
           "reason": "need 40 more packages (0/40)"
         }
       ]
+    },
+    {
+      "seq": 81,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "discovery.hitset",
+      "data": [
+        {
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "url": "https://www.dot.state.mn.us/planning/program/projdev.html",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "mndot-edocs",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "url": "https://rosap.ntl.bts.gov/gsearch?ref=rsa",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "rosap",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "url": "https://web.archive.org/cdx/search/cdx?url=jawdah.qcc.abudhabi.ae*&output=text&filter=urlkey:.*isgl.*",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "jawdah-qcc-cdx",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "hingham-ma",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-8992f3168e2c6e84",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "FHWA Road Safety Audit Guidelines | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-b84bf9f383bf9e50",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/30-overview-road-safety-audit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "3.0 Overview of Road Safety Audit Process | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-cb768e73ba378165",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/post-construction-phase-prompt",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Post-construction Phase: Prompt List 6 – Existing Road Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-04687c4f48a39939",
+          "url": "https://highways.dot.gov/safety/proven-safety-countermeasures/road-safety-audit",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-fb272da025f7dfa4",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/40-conducting-road-safety-audits",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "4.0 Conducting Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-ca3d3a38729e0dca",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/construction-phase-prompt-list-4",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Construction Phase: Prompt List 4 – Work Zone Traffic Control Plan Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-a19ef6becfdaf4dc",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audit-case-studies-using-three-dimensional-design-2",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Chapter 1 | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-68fb3c3e6cfdc07d",
+          "url": "https://rosap.ntl.bts.gov/view/dot/42592/dot_42592_DS1.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "ROAD SAFETY AUDITS: CASE STUDIES",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-2d58a456f513c6af",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/50-pre-construction-road-safety",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "5.0 Pre-construction Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-7d28dc0802c9bb3d",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/pre-construction-phase-prompt-1",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:07.515Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Pre-construction Phase: Prompt List 1 – Planning Stage Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-85a8507dfe254dec",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audits-rsa",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audits (RSA) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-e62ee96084aa97c1",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/20-implementation-road-safety",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "2.0 Implementation of Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-3174df66a24d97e9",
+          "url": "https://highways.dot.gov/safety/local-rural/improving-safety-rural-local-and-tribal-roads-safety-toolkit/step-4-diagnose",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Step 4. Diagnose Site Crash Conditions and Identify Countermeasures | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-bbfe3e81480f2830",
+          "url": "https://highways.dot.gov/safety/pedestrian-bicyclist/safety-tools/home-road-safety-audits-rsas",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Home: Road Safety Audits (RSAs) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-7d9abdc514d95ce5",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/model-road-safety-audit-policy",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "A MODEL Road Safety Audit Policy | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-d445f7a885a8d16e",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/road-safety-audit-toolkit-federal-land-management-agencies-and-0",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:08.405Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Introduction | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-150f4a2d0c657081",
+          "url": "https://highways.dot.gov/safety/data-analysis-tools/rsa/fhwa-road-safety-audit-guidelines/60-construction-road-safety-audits",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:09.366Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "6.0 Construction Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-brave-search-f38bd450b6c657be",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-540.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "EMIRATE OF ABU DHABI ROAD SAFETY AUDIT MANUAL",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-1f547bfb7bf16a13",
+          "url": "https://www.dmt.gov.ae/adm/-/media/Project/DMT/ADM/E-Library/0001-Jan-2022-Doc/ADM-BIM-005Code-of-Practice.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Department of Municipalities and Transport Municipality of Abu Dhabi City",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-4c69d290602d3726",
+          "url": "https://www.dmt.gov.ae/adm/-/media/Project/DMT/ADM/E-Library/Standard-Drawings-PART-2.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "06. CIVIL WORKS 07. STRUCTURES ST-09 ST-03 ST-10 ST-12 ST-06 ST-11",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-a8658416beee391b",
+          "url": "https://qcc.abudhabi.ae/en/Pages/Standards.aspx",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Standards",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-b5e793785b451678",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/05-25/AD-Sustainability-Report-English.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Driving our vision. Delivering sustainably. SUSTAINABILITY REPORT 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-49f27211998600c6",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/01-25/Sahel-Public-Realm-Rating-System-Handbook.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "1 Sahel Public Realm Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-0aaa8daacdbf3c9c",
+          "url": "https://www.dmt.gov.ae/en/aam/about-al-ain-municipality/about-us",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Welcome to Al Ain Municipality",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-2ed7b7b6525ec041",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-506-4.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "SIGNAGE STANDARD AND PRACTITIONER'S USER GUIDE",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-0418ea7361202388",
+          "url": "https://pages.dmt.gov.ae/en/engineers?category=31226&mainspecialty=&specialty=&domain=&activity=1088",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Licensed Engineers",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-4a45c5a1f4498fc0",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-513.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:10.336Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Abu Dhabi DoT Pavement Design Manual",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-2beaf5566faf74db",
+          "url": "https://dmt.gov.ae/en/adm/Media-Centre/News/16Nov2023",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:11.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "The Abu Dhabi City Municipality paints the asphalt in seven locations red to warn of new speed limits for roads",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-b2598b7dd8e9a9cf",
+          "url": "https://pages.dmt.gov.ae/en/Musaffah",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:11.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Musaffah",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-4122a965ef572810",
+          "url": "https://pages.dmt.gov.ae/ar/Urban-Planning/-/media/13F91E3DD2F94577B9298A260C0D9325.ashx",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:11.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Construction Rating - Site Audit Protocol",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-721707309c26fa2a",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/ISGL-LIST/TR-523.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:11.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "TECHNICAL GUIDANCE DOCUMENT FOR ENVIRONMENTAL AUDIT REPORTS TR-523",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-62f6c0926b8d0c82",
+          "url": "https://www.dmt.gov.ae/en/adm/Media-Centre/News/20Jun2024",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:11.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Abu Dhabi City Municipality wins the Ostar International Award in the Best Projects category for 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-7b4b7a842e96a740",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ISGL/Ch.05.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Conformity and Standards Sector Standards Services Department",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-bb20a6e3cb4b1cf1",
+          "url": "https://www.dmt.gov.ae/adm/-/media/Project/DMT/ADM/E-Library/Abu-Dhabi-Emirate-Guideline-for-Infrastructure-Services-Standards.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "الدليل االرشادي لمواصفات البنية التحتية للخدمات إلمارة أبوظبي",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-b40c787a01a8cd25",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/STD/ADG/ADG-039-2024-En.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Abu Dhabi Guideline دليـل أبوظب ي اإلرشـادي ADG 39/ 2024 د أ ر 39 / 2024",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-96db3b1958417d4e",
+          "url": "https://www.dmt.gov.ae/adm/-/media/Project/DMT/ADM/E-Library/0001-Jan-2022-Doc/ADM-BIM-002Documentation-Guidelines-for-Infrastructure-projects.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Department of Municipalities and Transport Municipality of Abu Dhabi City",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-74b08b891f37ddf5",
+          "url": "https://jawdah.qcc.abudhabi.ae/en/Registration/QCCServices/Services/ProductCS/ASP/7.3-%20Abu%20Dhabi%20Certification%20Scheme%20for%20Exterior%20LED%20Luminaires%20QCC-PCS-ASP006_03%20_v2.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "Abu Dhabi Quality and Conformity Council (QCC) Specific ...",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-brave-search-f2ab1dd5eed8a19e",
+          "url": "https://www.dmt.gov.ae/-/media/Project/DMT/DMT/E-Library/07-08-2026/CMP-Masterplan-Submission-Guidelines--Requirements20260806.pdf",
+          "source_type": "search-engine",
+          "provider_id": "brave-search",
+          "portal_id": null,
+          "discovered_at": "2026-08-28T18:48:12.276Z",
+          "licence_hint": "unknown",
+          "http_status": 200,
+          "sha256_hint": null,
+          "title_hint": "+971 (2) 677 7755 ص ب3، أبوظبـي، اإلمارات العربيــة المتحدة هـــاتف 800850",
+          "jurisdiction_guess": "AE"
+        }
+      ]
+    },
+    {
+      "seq": 82,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "qualification.verdicts",
+      "data": [
+        {
+          "qualification_id": "QAL-c431d69ea54c3c55",
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-af8a08d7f1523dcf",
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-2b85a23df9363895",
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-bd0a3c60326c47b0",
+          "hit_id": "HIT-brave-search-8992f3168e2c6e84",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "FHWA Road Safety Audit Guidelines | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-1b3f190569b2673e",
+          "hit_id": "HIT-brave-search-b84bf9f383bf9e50",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "3.0 Overview of Road Safety Audit Process | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-64ddfcef26d46ea7",
+          "hit_id": "HIT-brave-search-cb768e73ba378165",
+          "verdict": "reserve",
+          "reasons": [
+            "in-service / inspection-class material (R1 analogue)"
+          ],
+          "scheme_hint": "Post-construction Phase: Prompt List 6 – Existing Road Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-9b25ac0a5ffe4b05",
+          "hit_id": "HIT-brave-search-04687c4f48a39939",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audit | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-d5c12b1d2e001237",
+          "hit_id": "HIT-brave-search-fb272da025f7dfa4",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "4.0 Conducting Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-d80c392296386b80",
+          "hit_id": "HIT-brave-search-ca3d3a38729e0dca",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Construction Phase: Prompt List 4 – Work Zone Traffic Control Plan Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-03ca836e75305ef0",
+          "hit_id": "HIT-brave-search-a19ef6becfdaf4dc",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Chapter 1 | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-99501e60368eb1c1",
+          "hit_id": "HIT-brave-search-68fb3c3e6cfdc07d",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "ROAD SAFETY AUDITS: CASE STUDIES",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-5aa5280ad64f7ecd",
+          "hit_id": "HIT-brave-search-2d58a456f513c6af",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "5.0 Pre-construction Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-4716ba17189358b6",
+          "hit_id": "HIT-brave-search-7d28dc0802c9bb3d",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Pre-construction Phase: Prompt List 1 – Planning Stage Audit | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-d5244e3f456990f1",
+          "hit_id": "HIT-brave-search-85a8507dfe254dec",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Road Safety Audits (RSA) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-2223252eae6940a8",
+          "hit_id": "HIT-brave-search-e62ee96084aa97c1",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "2.0 Implementation of Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-f7ae9ff55290dec8",
+          "hit_id": "HIT-brave-search-3174df66a24d97e9",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Step 4. Diagnose Site Crash Conditions and Identify Countermeasures | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-471127d6a3e753df",
+          "hit_id": "HIT-brave-search-bbfe3e81480f2830",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Home: Road Safety Audits (RSAs) | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-40c723d97f4e639e",
+          "hit_id": "HIT-brave-search-7d9abdc514d95ce5",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "A MODEL Road Safety Audit Policy | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-42ab2ff5a29bd5c7",
+          "hit_id": "HIT-brave-search-d445f7a885a8d16e",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "Introduction | FHWA - Department of Transportation",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-822be7d720a8511d",
+          "hit_id": "HIT-brave-search-150f4a2d0c657081",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "6.0 Construction Road Safety Audits | FHWA",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-88f4f0700c4696cb",
+          "hit_id": "HIT-brave-search-f38bd450b6c657be",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "EMIRATE OF ABU DHABI ROAD SAFETY AUDIT MANUAL",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-72a88ce12b3ea746",
+          "hit_id": "HIT-brave-search-1f547bfb7bf16a13",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Department of Municipalities and Transport Municipality of Abu Dhabi City",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-53493e35a661df2c",
+          "hit_id": "HIT-brave-search-4c69d290602d3726",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "06. CIVIL WORKS 07. STRUCTURES ST-09 ST-03 ST-10 ST-12 ST-06 ST-11",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-7212182448550572",
+          "hit_id": "HIT-brave-search-a8658416beee391b",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Standards",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-ff4da1d64f2e92a5",
+          "hit_id": "HIT-brave-search-b5e793785b451678",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Driving our vision. Delivering sustainably. SUSTAINABILITY REPORT 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-5a15dcc9d068e92d",
+          "hit_id": "HIT-brave-search-49f27211998600c6",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "1 Sahel Public Realm Rating System Handbook Design, Construction and Operation",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-5951562f232ea273",
+          "hit_id": "HIT-brave-search-0aaa8daacdbf3c9c",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Welcome to Al Ain Municipality",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-9efc2a8a67201b2d",
+          "hit_id": "HIT-brave-search-2ed7b7b6525ec041",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "SIGNAGE STANDARD AND PRACTITIONER'S USER GUIDE",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-4285e59cc2fc7440",
+          "hit_id": "HIT-brave-search-0418ea7361202388",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Licensed Engineers",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-3bd2f2ed8e15234c",
+          "hit_id": "HIT-brave-search-4a45c5a1f4498fc0",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Abu Dhabi DoT Pavement Design Manual",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-b5e0bba1b8744afe",
+          "hit_id": "HIT-brave-search-2beaf5566faf74db",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "The Abu Dhabi City Municipality paints the asphalt in seven locations red to warn of new speed limits for roads",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-5c5d804993b0838f",
+          "hit_id": "HIT-brave-search-b2598b7dd8e9a9cf",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Musaffah",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-2e662c23df0f59ca",
+          "hit_id": "HIT-brave-search-4122a965ef572810",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Construction Rating - Site Audit Protocol",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-69d24ef78f1f06aa",
+          "hit_id": "HIT-brave-search-721707309c26fa2a",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "TECHNICAL GUIDANCE DOCUMENT FOR ENVIRONMENTAL AUDIT REPORTS TR-523",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-21c53e4eb25e288d",
+          "hit_id": "HIT-brave-search-62f6c0926b8d0c82",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Abu Dhabi City Municipality wins the Ostar International Award in the Best Projects category for 2023",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-f457572dbff10ad7",
+          "hit_id": "HIT-brave-search-7b4b7a842e96a740",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Conformity and Standards Sector Standards Services Department",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-c19499d04a5fe704",
+          "hit_id": "HIT-brave-search-bb20a6e3cb4b1cf1",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "الدليل االرشادي لمواصفات البنية التحتية للخدمات إلمارة أبوظبي",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-a00c9908d96fdd82",
+          "hit_id": "HIT-brave-search-b40c787a01a8cd25",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Abu Dhabi Guideline دليـل أبوظب ي اإلرشـادي ADG 39/ 2024 د أ ر 39 / 2024",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-3c4a8e1000680c40",
+          "hit_id": "HIT-brave-search-96db3b1958417d4e",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Department of Municipalities and Transport Municipality of Abu Dhabi City",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-45a17a652bdbc1f4",
+          "hit_id": "HIT-brave-search-74b08b891f37ddf5",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Abu Dhabi Quality and Conformity Council (QCC) Specific ...",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-60a6664dd024da66",
+          "hit_id": "HIT-brave-search-f2ab1dd5eed8a19e",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "+971 (2) 677 7755 ص ب3، أبوظبـي، اإلمارات العربيــة المتحدة هـــاتف 800850",
+          "jurisdiction_guess": "AE"
+        }
+      ]
+    },
+    {
+      "seq": 83,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "match.assignments",
+      "data": [
+        {
+          "match_id": "MAT-8807c101d43df381",
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "jurisdiction": "US",
+          "native_stage_id": "us-fhwa:preliminary-design",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN"
+          ],
+          "mapping_confidence": "interpreted",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        },
+        {
+          "match_id": "MAT-a5c075cddd2afb1c",
+          "qualification_id": "QAL-88f4f0700c4696cb",
+          "jurisdiction": "AE",
+          "native_stage_id": "ae-ad:S1_2",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN",
+            "DETAILED_DESIGN"
+          ],
+          "mapping_confidence": "authoritative",
+          "odd_status": "mapped_unproven",
+          "matched_by": "keyword:2"
+        }
+      ]
+    },
+    {
+      "seq": 84,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "acquisition.bundles",
+      "data": [
+        {
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "match_id": "MAT-8807c101d43df381",
+          "documents": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+              "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded",
+              "bytes": 1691744,
+              "mime": "application/pdf",
+              "page_count": 34,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 11,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 12,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 13,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 14,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 15,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 16,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 17,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 18,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 19,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 20,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 21,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 22,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 23,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 24,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 25,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 26,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 27,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 28,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 29,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 30,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 31,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 32,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 33,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 34,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "98593cb0d02b8df0dc6e627bf6493c37dd1e7efea750c75b50df1a9d0c44b176"
+              }
+            }
+          ]
+        },
+        {
+          "bundle_id": "ACQ-e6804a46cd887789",
+          "match_id": "MAT-a5c075cddd2afb1c",
+          "documents": []
+        }
+      ]
+    },
+    {
+      "seq": 85,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "classification.labelsets",
+      "data": [
+        {
+          "labelset_id": "LAB-3ac76e6a7934f508",
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-7b7910b60c300c71"
+            ]
+          }
+        },
+        {
+          "labelset_id": "LAB-6e764c242616a7e2",
+          "bundle_id": "ACQ-e6804a46cd887789",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "seq": 86,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "package.assemblies",
+      "data": [
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "match_id": "MAT-8807c101d43df381",
+          "metadata": {
+            "title": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "scheme_summary": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        }
+      ]
+    },
+    {
+      "seq": 87,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "provenance.records",
+      "data": [
+        {
+          "provenance_id": "PRV-e95bbd501c94865e",
+          "package_id": "PKG-9d8ca283d364e831",
+          "source_urls": [
+            "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+          ],
+          "retrieved_at": "2026-08-28T18:48:06.879Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "US",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        }
+      ]
+    },
+    {
+      "seq": 88,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "quality.verdicts",
+      "data": [
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "seq": 89,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "coverage.view",
+      "data": {
+        "schema_version": "1.0.0",
+        "declaration_version": "1.1.2",
+        "generated": "2026-08-28T18:48:06.879Z",
+        "target_total": 500,
+        "cells": [
+          {
+            "cell_key": "uk:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-6",
+              "GF-11"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-7",
+              "GF-12",
+              "GF-14"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:DETAILED_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:final-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-8"
+            ],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-9",
+              "GF-16"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-10",
+              "GF-13",
+              "GF-15"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S0",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S12-combined",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN",
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "UK",
+            "native_stage_id": null,
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "structurally_absent",
+            "fixture_ids": [],
+            "target": 0,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "EXCLUDED",
+            "priority": 0,
+            "uncovered_reasons": []
+          },
+          {
+            "cell_key": "canada:DETAILED_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:DETAILED_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:feasibility-concept",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:DETAILED_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          }
+        ],
+        "gaps_ranked": [
+          "usa:DETAILED_DESIGN",
+          "uae:FEASIBILITY_CONCEPT",
+          "uae:PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN",
+          "canada:DETAILED_DESIGN",
+          "canada:PRELIMINARY_DESIGN",
+          "international:DETAILED_DESIGN",
+          "international:FEASIBILITY_CONCEPT",
+          "uk:DETAILED_DESIGN",
+          "usa:FEASIBILITY_CONCEPT",
+          "uk:PRELIMINARY_DESIGN",
+          "international:PRELIMINARY_DESIGN",
+          "canada:FEASIBILITY_CONCEPT",
+          "usa:PRELIMINARY_DESIGN"
+        ]
+      }
+    },
+    {
+      "seq": 90,
+      "at": "2026-08-28T18:48:06.879Z",
+      "payload_kind": "queue.items",
+      "data": [
+        {
+          "rank": 1,
+          "cell_key": "usa:DETAILED_DESIGN",
+          "jurisdiction_id": "US",
+          "query_theme": "FHWA road safety audit preliminary design report",
+          "reason": "need 40 more packages (0/40)"
+        },
+        {
+          "rank": 2,
+          "cell_key": "uae:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 3,
+          "cell_key": "uae:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 4,
+          "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 5,
+          "cell_key": "uae:DETAILED_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 6,
+          "cell_key": "canada:DETAILED_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "BC MoTI \"road safety audit\"",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 7,
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "Alberta \"road safety audit\" functional planning",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 8,
+          "cell_key": "international:DETAILED_DESIGN",
+          "jurisdiction_id": "INT",
+          "query_theme": "\"stage 2\" RSA detailed design Ireland ABP",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 9,
+          "cell_key": "international:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "INT",
+          "query_theme": "CAREC road safety audit worked example",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 10,
+          "cell_key": "uk:DETAILED_DESIGN",
+          "jurisdiction_id": "UK",
+          "query_theme": "NSIP \"road safety audit\" preliminary design",
+          "reason": "need 40 more packages (0/40)"
+        }
+      ]
     }
   ]
 }
