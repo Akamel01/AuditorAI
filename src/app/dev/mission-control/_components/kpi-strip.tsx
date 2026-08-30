@@ -39,6 +39,8 @@ export interface KpiStripProps {
   /** optional ledger totals when fetched separately via GET /api/dev/discovery */
   ledgerTotal?: number;
   ledgerLastAt?: string | null;
+  /** Live indicator for the coverage source. When true, this KpiStrip reflects live harvest coverage. */
+  isLive?: boolean;
 }
 
 function StatBezel({
@@ -67,7 +69,7 @@ function StatBezel({
   );
 }
 
-export function KpiStrip({ coverage, readiness, ledgerTotal, ledgerLastAt }: KpiStripProps) {
+export function KpiStrip({ coverage, readiness, ledgerTotal, ledgerLastAt, isLive = false }: KpiStripProps) {
   // ODD counts — prefer per_cell_coverage status_counts if present, else derive from coverage cells
   const statusCounts = readiness.learning_layer.per_cell_coverage?.status_counts;
   const inCount = statusCounts?.in ?? coverage.cells.filter((c) => c.status === "in").length;
@@ -102,6 +104,13 @@ export function KpiStrip({ coverage, readiness, ledgerTotal, ledgerLastAt }: Kpi
 
   return (
     <section aria-label="Mission Control KPIs" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {isLive && (
+        <div className="col-span-full flex justify-end">
+          <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+            LIVE
+          </span>
+        </div>
+      )}
       <StatBezel
         eyebrowCode="CH 0+010"
         eyebrowLabel="ODD · declaration"

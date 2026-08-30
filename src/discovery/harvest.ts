@@ -133,6 +133,10 @@ export async function executeJob(
       discovery_hits?: unknown[];
       matched?: unknown[];
       quality?: unknown[];
+      qualified?: unknown[];
+      acquired?: unknown[];
+      classified?: unknown[];
+      provenance?: unknown[];
     };
 
     await setJobDone(jobId, {
@@ -145,11 +149,79 @@ export async function executeJob(
       refusals,
       quality: (s.quality as unknown[]) ?? [],
     }, store);
+
+    // Persist so ledgerTotal / odd-coverage counts grow (A1+B1).
+    // ponytail: skip filesystem persist in tests to keep suite hermetic
+    if (process.env.VITEST !== "true" && process.env.NODE_ENV !== "test") {
+      let persistedEntries: import("./ledger").LedgerEntry[] = [];
+      try {
+        persistedEntries = await persistDiscoveryState(s, ranAtIso);
+      } catch (e) {
+        await appendLog(jobId, { at: nowIso(), node: "PERSIST-WARN", message: `persist skipped: ${e instanceof Error ? e.message.slice(0, 200) : String(e).slice(0, 200)}` }, store);
+      }
+      // KV mirror best-effort (survives Vercel lambda)
+      if (persistedEntries.length > 0) {
+        try {
+          const { appendLedgerKV } = await import("./ledger");
+          await appendLedgerKV(persistedEntries, store);
+        } catch {}
+      }
+      // Dedupe claim-and-merge (B1)
+      try {
+        const { persistDedupeFromResult } = await import("./dedupe-persist");
+        const pkgs = (s.package as unknown as import("./types").ProjectPackageAssembly[]) ?? [];
+        const bundles = (s.acquired as unknown as import("./types").AcquisitionBundle[]) ?? [];
+        const quals = (s.quality as unknown as import("./types").QualityVerdictRecord[]) ?? [];
+        await persistDedupeFromResult(pkgs, bundles, quals, store);
+      } catch {}
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     await appendLog(jobId, { at: nowIso(), node: "ERROR", message: msg.slice(0, 500) }, store);
     await setJobError(jobId, msg.slice(0, 2000), store);
   }
+}
+
+async function persistDiscoveryState(
+  state: Record<string, unknown>,
+  ranAtIso: string,
+): Promise<import("./ledger").LedgerEntry[]> {
+  const { readFileSync, writeFileSync, existsSync, mkdirSync } = await import("node:fs");
+  const cwd = process.cwd();
+  const ledgerPath = path.join(cwd, "state", "discovery-ledger.json");
+  const covPath = path.join(cwd, "state", "odd-coverage.json");
+  const raw = readFileSync(ledgerPath, "utf8");
+  const ledger = JSON.parse(raw) as { entries: import("./ledger").LedgerEntry[] };
+  let seq = ledger.entries.length;
+  const kinds: [string, string][] = [
+    ["discovery_hits", "discovery.hitset"],
+    ["qualified", "qualification.verdicts"],
+    ["matched", "match.assignments"],
+    ["acquired", "acquisition.bundles"],
+    ["classified", "classification.labelsets"],
+    ["package", "package.assemblies"],
+    ["provenance", "provenance.records"],
+    ["quality", "quality.verdicts"],
+    ["coverage", "coverage.view"],
+    ["queue", "queue.items"],
+  ];
+  const appended: import("./ledger").LedgerEntry[] = [];
+  for (const [slice, kind] of kinds) {
+    const value = state[slice];
+    if (value == null || (Array.isArray(value) && value.length === 0)) continue;
+    if (kind === "coverage.view" && typeof value === "object" && !Array.isArray(value) && Object.keys(value as object).length === 0) continue;
+    seq += 1;
+    const entry: import("./ledger").LedgerEntry = { seq, at: ranAtIso, payload_kind: kind, data: value as unknown };
+    ledger.entries.push(entry);
+    appended.push(entry);
+  }
+  const dir = path.dirname(ledgerPath);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2) + "\n", "utf8");
+  if (state.coverage && typeof state.coverage === "object") {
+    writeFileSync(covPath, JSON.stringify(state.coverage, null, 2) + "\n", "utf8");
+  }
+  return appended;
 }
 
 export async function harvest(input: HarvestInput, deps?: HarvestDeps): Promise<HarvestResult> {
@@ -226,7 +298,9 @@ export async function harvest(input: HarvestInput, deps?: HarvestDeps): Promise<
     },
     providers,
     dedupeIndex,
-    acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match).slice(0, 1)),
+    // C1: live → real PDF fetch via pipeline (hit.url + withHostBudget + %PDF guard)
+    // dry-run → deterministic fixtures
+    ...(LIVE ? {} : { acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match).slice(0, 1)) }),
   };
 
   const store = deps?.store;

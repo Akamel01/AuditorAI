@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AppShell } from "@/app/_components/ui/app-shell";
 import { Eyebrow } from "@/app/_components/ui/chips";
 import { Segmented } from "@/app/_components/ui/segmented";
@@ -11,6 +11,8 @@ import { OddMatrix } from "./_components/odd-matrix";
 import { ReadinessMeters } from "./_components/readiness-meters";
 import { ProviderHealth } from "./_components/provider-health";
 import { QueueTicker } from "./_components/queue-ticker";
+import { DiscoveryStatus } from "./_components/discovery-status";
+import { adminApi } from "@/lib/client";
 import { HarvestLog, type LedgerEntry } from "./_components/harvest-log";
 import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness } from "@/lib/client";
 import { getAdminKey, setAdminKey } from "@/lib/client";
@@ -71,6 +73,53 @@ export default function MissionControlPage() {
   const [adminKeyInput, setAdminKeyInput] = useState("");
   const [adminKeySaved, setAdminKeySaved] = useState(false);
   const [latestJob, setLatestJob] = useState<LatestJob>(null);
+  const [gapRunError, setGapRunError] = useState<string | null>(null);
+  const [_gapRun, setGapRun] = useState<{ id: string; status: string; cellKey: string | null } | null>(null);
+  const gapPollRef = useRef<number | null>(null);
+
+  async function handleRunGap(cellKey: string) {
+    setGapRunError(null);
+    try {
+      const data = await adminApi<{ jobId: string; status: string }>(`/api/dev/discovery/run`, {
+        method: "POST",
+        json: { live: true, cellKey },
+      });
+      const id = (data as { jobId: string }).jobId;
+      if (!id) throw new Error("no jobId returned");
+      setGapRun({ id, status: (data as { jobId: string; status: string }).status ?? "queued", cellKey });
+
+      // start polling every 1.5s
+      if (gapPollRef.current) window.clearInterval(gapPollRef.current);
+      gapPollRef.current = window.setInterval(async () => {
+        try {
+          const j = await adminApi<{ status: string; error?: string }>(`/api/dev/discovery/jobs/${encodeURIComponent(id)}`);
+          const status = (j as { status: string })?.status ?? null;
+          if (!status) return;
+          setGapRun((g) => (g?.id === id ? { ...g, status } : g));
+          if (status === "done") {
+            if (gapPollRef.current) clearInterval(gapPollRef.current);
+            gapPollRef.current = null;
+            setGapRun(null);
+            await reload();
+          } else if (status === "error") {
+            if (gapPollRef.current) clearInterval(gapPollRef.current);
+            gapPollRef.current = null;
+            setGapRun(null);
+            setGapRunError((j as { error?: string })?.error ?? "harvest failed");
+          }
+        } catch (e) {
+          if (gapPollRef.current) clearInterval(gapPollRef.current);
+          gapPollRef.current = null;
+          setGapRun(null);
+          setGapRunError((e as Error).message);
+        }
+      }, 1500);
+    } catch (e) {
+      setGapRunError((e as Error).message);
+    }
+  }
+
+  // ensure React namespace is available for type usage
 
   useEffect(() => {
     setEntered(true);
@@ -185,10 +234,11 @@ export default function MissionControlPage() {
             {segment === "overview" && (
               <>
                 <KpiStrip
-                  coverage={coverage}
+                  coverage={displayCoverage as unknown as OddCoverageView}
                   readiness={readiness}
                   ledgerTotal={discovery?.ledgerTotal}
                   ledgerLastAt={discovery?.lastAt ?? null}
+                  isLive={isLiveCoverage}
                 />
                 <Panel className="px-4 py-4">
                   <Eyebrow code="CH 0+180">Health · quick look</Eyebrow>
@@ -206,7 +256,18 @@ export default function MissionControlPage() {
             {segment === "discovery" && (
               <>
                 <ProviderHealth providers={discovery?.providers ?? []} onRun={reload} onJob={(j) => setLatestJob(j as unknown as LatestJob)} />
-                <QueueTicker coverage={(displayCoverage as OddCoverageView) ?? coverage!} onSelectCell={setSelectedKey} limit={3} />
+                <DiscoveryStatus
+                  ledgerTotal={discovery?.ledgerTotal ?? null}
+                  lastAt={discovery?.lastAt ?? null}
+                  dedupe={discovery?.dedupe as { sha256Entries?: number; clusters?: number } | null}
+                  isLive={isLiveCoverage}
+                />
+                <QueueTicker coverage={(displayCoverage as OddCoverageView) ?? coverage!} onSelectCell={setSelectedKey} onRunCell={handleRunGap} limit={3} />
+                {gapRunError && (
+                  <Panel className="mt-2 border-accent-line/20 bg-accent-tint px-3 py-2">
+                    <p className="font-mono text-[10.5px] leading-snug text-concern">{gapRunError}</p>
+                  </Panel>
+                )}
                 {isLiveCoverage && latestJob && (
                   <Panel className="border-accent-line/20 bg-accent-tint px-3 py-2">
                     <p className="font-mono text-[10.5px] leading-snug text-subtle">

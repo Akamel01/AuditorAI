@@ -10,6 +10,8 @@ export interface QueueTickerProps {
   coverage: OddCoverageView;
   /** optional override for theme mapping; defaults to internal QUERY_THEMES */
   onSelectCell?: (cellKey: string) => void;
+  /** Run a specific gap by its cellKey using a live run (default live) */
+  onRunCell?: (cellKey: string) => void;
   /** restricts to top N gaps (default 3) */
   limit?: number;
 }
@@ -40,7 +42,7 @@ function PriorityHeat({ priority }: { priority: number }) {
   );
 }
 
-export function QueueTicker({ coverage, onSelectCell, limit = 3 }: QueueTickerProps) {
+export function QueueTicker({ coverage, onSelectCell, onRunCell, limit = 3 }: QueueTickerProps) {
   const gaps = coverage.gaps_ranked.slice(0, limit);
   const byKey = new Map<string, CoverageCellView>();
   for (const c of coverage.cells) byKey.set(c.cell_key, c);
@@ -138,6 +140,21 @@ export function QueueTicker({ coverage, onSelectCell, limit = 3 }: QueueTickerPr
                   </span>
                   <PriorityHeat priority={priority} />
                 </div>
+                {/* Run this gap button (Live) – lazy, only shown if consumer provides handler */}
+                {onRunCell && (
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRunCell(key);
+                      }}
+                      className="inline-flex items-center rounded-md bg-accent px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong"
+                    >
+                      Run this gap (Live)
+                    </button>
+                  </div>
+                )}
               </Panel>
             );
           })}

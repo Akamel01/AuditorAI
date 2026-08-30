@@ -46,3 +46,5 @@ export const artifactSeqOf = (key: string): number => {
   const n = Number.parseInt(key.slice(key.lastIndexOf(":") + 1), 10);
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
 };
+
+export const DISCOVERY_DEDUPE_INDEX_KEY = "discovery:dedupe-index";

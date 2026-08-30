@@ -102,8 +102,9 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
 
   const ledgerAgeHuman = health?.ledger?.ageHuman ?? health?.ledgerAge?.ageHuman ?? null;
 
-  const isRunning = job?.status === "queued" || job?.status === "running";
-  const runLoading = isRunning;
+  const [paused, setPaused] = useState(false);
+  const isRunning = (job?.status === "queued" || job?.status === "running") && !paused;
+  const runLoading = job?.status === "queued" || job?.status === "running";
 
   async function fetchJobById(id: string): Promise<DiscoveryJob | null> {
     try {
@@ -116,6 +117,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
 
   function startPolling(id: string) {
     if (pollRef.current) clearInterval(pollRef.current);
+    setPaused(false);
     pollRef.current = setInterval(async () => {
       const j = await fetchJobById(id);
       if (!j) return;
@@ -128,6 +130,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
         const hitsCount = (j.result?.hits as unknown[])?.length ?? 0;
         setRunOk(`done · ${pkgCount} packages · ${hitsCount} hits · ${j.id.slice(0, 8)}`);
         setRunError(null);
+        setPaused(false);
         if (onRun) {
           try {
             await onRun();
@@ -138,6 +141,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
         pollRef.current = null;
         setRunError(j.error ?? "harvest failed");
         setRunOk(null);
+        setPaused(false);
       }
     }, 1500);
   }
@@ -147,6 +151,20 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
       clearInterval(pollRef.current);
       pollRef.current = null;
     }
+  }
+
+  function handleStop() {
+    stopPolling();
+    setPaused(true);
+    setRunOk((prev) => prev ?? `paused · ${job?.id.slice(0, 8) ?? ""} — job continues`);
+  }
+
+  function handleResume() {
+    if (!jobId || !job) return;
+    setPaused(false);
+    setRunOk(null);
+    setRunError(null);
+    startPolling(jobId);
   }
 
   // Restore persisted job on mount — survives refresh/tab switch
@@ -331,6 +349,29 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
           >
             {runLoading ? `Running… ${job?.currentNode ?? ""}` : "Run live harvest"}
           </button>
+          {isRunning && (
+            <button
+              type="button"
+              onClick={handleStop}
+              className="inline-flex cursor-pointer items-center rounded-md border border-hairline bg-surface px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-text hover:bg-sunken"
+              aria-label="Stop polling — job continues server-side"
+            >
+              Stop
+            </button>
+          )}
+          {paused && !isRunning && job && (job.status === "queued" || job.status === "running") && (
+            <button
+              type="button"
+              onClick={handleResume}
+              className="inline-flex cursor-pointer items-center rounded-md border border-accent bg-accent-tint px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-accent hover:bg-accent/10"
+              aria-label="Resume polling"
+            >
+              Resume
+            </button>
+          )}
+          {paused && (
+            <span className="inline-flex items-center rounded-full border border-hairline bg-sunken px-2 py-[2px] font-mono text-[10px] tracking-[0.04em] text-subtle">paused — job continues</span>
+          )}
           {(doctorError || runError || runOk) && (
             <span className={`font-mono text-[11px] ${runError || doctorError ? "text-concern" : "text-ok"}`}>
               {doctorError ?? runError ?? runOk}
@@ -346,8 +387,8 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
                 job {job.id.slice(0, 8)} · {job.status}
                 {job.cellKey ? ` · ${job.cellKey}` : ""} · {job.live ? "live" : "dry"} · {job.providers.join(", ") || "—"}
               </span>
-              <span className={`font-mono text-[10px] ${job.status === "done" ? "text-ok" : job.status === "error" ? "text-concern" : "text-faint"}`}>
-                {job.status === "running" || job.status === "queued" ? "polling 1.5s" : job.updatedAt.slice(11, 19)}
+              <span className={`font-mono text-[10px] ${paused ? "text-warn" : job.status === "done" ? "text-ok" : job.status === "error" ? "text-concern" : "text-faint"}`}>
+                {paused ? "paused" : job.status === "running" || job.status === "queued" ? "polling 1.5s" : job.updatedAt.slice(11, 19)}
               </span>
             </div>
             {isRunning && runningLabel && (
