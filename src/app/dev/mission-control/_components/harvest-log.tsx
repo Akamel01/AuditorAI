@@ -75,9 +75,21 @@ export function HarvestLog({ ledgerTail, job }: HarvestLogProps) {
       if (arr) arr.push(e);
       else byAt.set(key, [e]);
     }
+    // live merge: if job done has packages not yet in ledgerTail, prepend synthetic group
+    const liveAt = (job as { result?: { ranAtIso?: string } } | null)?.result?.ranAtIso as string | undefined;
+    const jobHasLive = job?.status === "done" && job?.result && Array.isArray((job.result as { packages?: unknown[] }).packages) && ((job.result as { packages: unknown[] }).packages.length > 0);
+    if (jobHasLive && liveAt && !byAt.has(liveAt)) {
+      const maxSeq = ledgerTail.length ? Math.max(...ledgerTail.map((e) => e.seq)) : 0;
+      const synthetic: LedgerEntry[] = [];
+      const pkgs = (job!.result as { packages: unknown[] }).packages;
+      const quals = (job!.result as { quality: unknown[] }).quality ?? [];
+      if (pkgs.length) synthetic.push({ seq: maxSeq + 1, at: liveAt, payload_kind: "package.assemblies", data: pkgs });
+      if (quals.length) synthetic.push({ seq: maxSeq + 2, at: liveAt, payload_kind: "quality.verdicts", data: quals });
+      byAt.set(liveAt, synthetic);
+    }
     const sortedKeys = [...byAt.keys()].sort((a, b) => Date.parse(b) - Date.parse(a));
     return sortedKeys.map((at) => ({ at, entries: byAt.get(at)! }));
-  }, [ledgerTail]);
+  }, [ledgerTail, job]);
 
   const isJobActive = job && (job.status === "queued" || job.status === "running");
   const jobHasResult = job?.result && Array.isArray(job.result.packages) && (job.result.packages as unknown[]).length > 0;
