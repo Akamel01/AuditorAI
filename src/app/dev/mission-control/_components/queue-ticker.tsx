@@ -16,6 +16,8 @@ export interface QueueTickerProps {
   limit?: number;
   /** currently selected cell for detail view */
   selectedKey?: string | null;
+  /** cellKey currently being harvested (shows Running state) */
+  activeCellKey?: string | null;
 }
 
 // Mirrors src/discovery/coverage.ts QUERY_THEMES but kept client-safe (no fs import).
@@ -44,7 +46,7 @@ function PriorityHeat({ priority }: { priority: number }) {
   );
 }
 
-export function QueueTicker({ coverage, onSelectCell, onRunCell, limit = 3, selectedKey }: QueueTickerProps) {
+export function QueueTicker({ coverage, onSelectCell, onRunCell, limit = 3, selectedKey, activeCellKey }: QueueTickerProps) {
   const gaps = coverage.gaps_ranked.slice(0, limit);
   const byKey = new Map<string, CoverageCellView>();
   for (const c of coverage.cells) byKey.set(c.cell_key, c);
@@ -157,11 +159,16 @@ export function QueueTicker({ coverage, onSelectCell, onRunCell, limit = 3, sele
                     <button
                       type="button"
                       onClick={() => onRunCell(key)}
-                      className="pointer-events-auto relative z-10 inline-flex cursor-pointer items-center rounded-md bg-accent px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong active:scale-[0.98]"
+                      disabled={activeCellKey === key}
+                      className={`pointer-events-auto relative z-10 inline-flex cursor-pointer items-center rounded-md px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] ${
+                        activeCellKey === key
+                          ? "bg-accent/60 text-[color:var(--accent-contrast)] cursor-wait"
+                          : "bg-accent text-[color:var(--accent-contrast)] hover:bg-accent-strong"
+                      } disabled:opacity-60`}
                       data-testid={`run-gap-${key}`}
                       aria-label={`Run gap ${key} live`}
                     >
-                      Run this gap (Live)
+                      {activeCellKey === key ? "Running…" : "Run this gap (Live)"}
                     </button>
                   </div>
                 )}

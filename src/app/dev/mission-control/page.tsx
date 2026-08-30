@@ -74,7 +74,7 @@ export default function MissionControlPage() {
   const [adminKeySaved, setAdminKeySaved] = useState(false);
   const [latestJob, setLatestJob] = useState<LatestJob>(null);
   const [gapRunError, setGapRunError] = useState<string | null>(null);
-  const [_gapRun, setGapRun] = useState<{ id: string; status: string; cellKey: string | null } | null>(null);
+  const [gapRun, setGapRun] = useState<{ id: string; status: string; cellKey: string | null } | null>(null);
   const gapPollRef = useRef<number | null>(null);
 
   async function handleRunGap(cellKey: string) {
@@ -86,16 +86,22 @@ export default function MissionControlPage() {
       });
       const id = (data as { jobId: string }).jobId;
       if (!id) throw new Error("no jobId returned");
-      setGapRun({ id, status: (data as { jobId: string; status: string }).status ?? "queued", cellKey });
+      const queued = { id, status: (data as { jobId: string; status: string }).status ?? "queued", cellKey };
+      setGapRun(queued);
+      // visual confirmation: also seed latestJob so HarvestLog & coverage reflect live gap run immediately
+      setLatestJob({ id, status: queued.status, result: undefined } as unknown as LatestJob);
 
       // start polling every 1.5s
       if (gapPollRef.current) window.clearInterval(gapPollRef.current);
       gapPollRef.current = window.setInterval(async () => {
         try {
-          const j = await adminApi<{ status: string; error?: string }>(`/api/dev/discovery/jobs/${encodeURIComponent(id)}`);
-          const status = (j as { status: string })?.status ?? null;
+          const j = await adminApi<{ job: LatestJob & { error?: string } }>(`/api/dev/discovery/jobs/${encodeURIComponent(id)}`);
+          const job = (j as { job: LatestJob & { error?: string } })?.job ?? (j as unknown as LatestJob);
+          const status = (job as { status: string })?.status ?? null;
           if (!status) return;
           setGapRun((g) => (g?.id === id ? { ...g, status } : g));
+          // keep Mission Control live preview in sync
+          if (job) setLatestJob(job as unknown as LatestJob);
           if (status === "done") {
             if (gapPollRef.current) clearInterval(gapPollRef.current);
             gapPollRef.current = null;
@@ -105,7 +111,7 @@ export default function MissionControlPage() {
             if (gapPollRef.current) clearInterval(gapPollRef.current);
             gapPollRef.current = null;
             setGapRun(null);
-            setGapRunError((j as { error?: string })?.error ?? "harvest failed");
+            setGapRunError((job as { error?: string })?.error ?? "harvest failed");
           }
         } catch (e) {
           if (gapPollRef.current) clearInterval(gapPollRef.current);
@@ -118,6 +124,12 @@ export default function MissionControlPage() {
       setGapRunError((e as Error).message);
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (gapPollRef.current) window.clearInterval(gapPollRef.current);
+    };
+  }, []);
 
   // ensure React namespace is available for type usage
 
@@ -267,8 +279,27 @@ export default function MissionControlPage() {
                   onSelectCell={setSelectedKey}
                   onRunCell={handleRunGap}
                   selectedKey={selectedKey}
+                  activeCellKey={gapRun?.cellKey ?? null}
                   limit={3}
                 />
+                {gapRun && (
+                  <Panel className="border-accent/30 bg-accent/[0.04] px-4 py-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[11px] font-medium text-text">
+                        Triggered <span className="text-accent">{gapRun.cellKey}</span> · job {gapRun.id.slice(0, 8)} · {gapRun.status}
+                      </span>
+                      <span className="font-mono text-[10px] text-faint">{gapRun.status === "queued" || gapRun.status === "running" ? "polling 1.5s" : gapRun.status}</span>
+                    </div>
+                    {(gapRun.status === "queued" || gapRun.status === "running") && (
+                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
+                        <div className="h-full w-[45%] animate-[shimmer_1.2s_ease-in-out_infinite] bg-accent/70" />
+                      </div>
+                    )}
+                    <p className="mt-1.5 font-mono text-[10.5px] leading-snug text-muted">
+                      Live harvesting <span className="text-text">{gapRun.cellKey}</span> — check Provider health log for D01..D10 progress. Updates survive refresh.
+                    </p>
+                  </Panel>
+                )}
                 {selectedKey &&
                   (() => {
                     const cell = (displayCoverage as OddCoverageView | null)?.cells.find((c) => c.cell_key === selectedKey) ?? null;
