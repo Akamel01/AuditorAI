@@ -262,7 +262,52 @@ export default function MissionControlPage() {
                   dedupe={discovery?.dedupe as { sha256Entries?: number; clusters?: number } | null}
                   isLive={isLiveCoverage}
                 />
-                <QueueTicker coverage={(displayCoverage as OddCoverageView) ?? coverage!} onSelectCell={setSelectedKey} onRunCell={handleRunGap} limit={3} />
+                <QueueTicker
+                  coverage={(displayCoverage as OddCoverageView) ?? coverage!}
+                  onSelectCell={setSelectedKey}
+                  onRunCell={handleRunGap}
+                  selectedKey={selectedKey}
+                  limit={3}
+                />
+                {selectedKey &&
+                  (() => {
+                    const cell = (displayCoverage as OddCoverageView | null)?.cells.find((c) => c.cell_key === selectedKey) ?? null;
+                    if (!cell) return null;
+                    const pct = cell.target > 0 ? Math.round((cell.have_total / cell.target) * 1000) / 10 : 0;
+                    return (
+                      <Panel className="border-hairline bg-surface px-4 py-3">
+                        <Eyebrow code="CH 0+421">Gap detail · {selectedKey}</Eyebrow>
+                        <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                          <div>
+                            <div className="font-mono text-[11px] font-medium text-text">
+                              {cell.have_total} / {cell.target} · {cell.label}
+                            </div>
+                            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
+                              <div className="h-full bg-accent" style={{ width: `${Math.min(100, pct)}%` }} />
+                            </div>
+                            <div className="mt-1 font-mono text-[10px] text-faint">
+                              {pct}% · priority {cell.priority.toFixed(2)} · full-package {cell.have_full_package}
+                            </div>
+                          </div>
+                          <div className="font-mono text-[10.5px] leading-snug text-muted">
+                            <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Uncovered</div>
+                            <ul className="mt-1 list-disc pl-4">
+                              {cell.uncovered_reasons.length ? cell.uncovered_reasons.map((r) => <li key={r}>{r}</li>) : <li className="text-faint">Covered</li>}
+                            </ul>
+                          </div>
+                          <div className="font-mono text-[10.5px] leading-snug text-muted">
+                            <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Provenance</div>
+                            <div className="mt-1">
+                              status <span className="text-text">{cell.status}</span> · stage <span className="text-text">{cell.native_stage_id ?? "—"}</span>
+                            </div>
+                            <div className="mt-0.5">fixtures {cell.fixture_ids.join(", ") || "—"}</div>
+                            <div className="mt-0.5">have {cell.have_total} · target {cell.target}</div>
+                          </div>
+                        </div>
+                        <p className="mt-2 font-mono text-[10px] text-faint">Card click shows this progress; use “Run this gap (Live)” button on the card to harvest.</p>
+                      </Panel>
+                    );
+                  })()}
                 {gapRunError && (
                   <Panel className="mt-2 border-accent-line/20 bg-accent-tint px-3 py-2">
                     <p className="font-mono text-[10.5px] leading-snug text-concern">{gapRunError}</p>
