@@ -1,7 +1,41 @@
 {
   "schema_version": "1.0.0",
   "near_dup_threshold": 0.92,
-  "sha256": {},
+  "sha256": {
+    "79234651d914fa08d305265a33492a924ee3ca23bd86bf19dbe83df8beb3f7b6": "PKG-74305e7b58c0dac1",
+    "9da217a3d7bfee533170848daf79ba2dca8540e2e927748356470b3aa9771d28": "PKG-9d8ca283d364e831",
+    "f8d957b41e0b314edb51087011f9b8fab3adf4bc57c4bdba918d86e2b9931880": "PKG-b89367325dab0e1a",
+    "ac0bbc04395f5afcf227ca2dbe29748d661c11a2ba086189cb7fea33c1bff71c": "PKG-1fa209fe14589165"
+  },
   "text_hash": {},
-  "clusters": []
+  "clusters": [
+    {
+      "canonical_id": "PKG-74305e7b58c0dac1",
+      "members": [
+        "PKG-74305e7b58c0dac1"
+      ],
+      "kind": "exact"
+    },
+    {
+      "canonical_id": "PKG-9d8ca283d364e831",
+      "members": [
+        "PKG-9d8ca283d364e831"
+      ],
+      "kind": "exact"
+    },
+    {
+      "canonical_id": "PKG-b89367325dab0e1a",
+      "members": [
+        "PKG-b89367325dab0e1a"
+      ],
+      "kind": "exact"
+    },
+    {
+      "canonical_id": "PKG-1fa209fe14589165",
+      "members": [
+        "PKG-1fa209fe14589165"
+      ],
+      "kind": "exact"
+    }
+  ]
 }

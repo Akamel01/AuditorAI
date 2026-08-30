@@ -85,6 +85,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
   const [jobId, setJobId] = useState<string | null>(null);
   const [job, setJob] = useState<DiscoveryJob | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastOnRunJobId = useRef<string | null>(null);
 
   const healthProviders = health?.providers ?? null;
 
@@ -131,10 +132,16 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
         setRunOk(`done · ${pkgCount} packages · ${hitsCount} hits · ${j.id.slice(0, 8)}`);
         setRunError(null);
         setPaused(false);
+        // Gate onRun to avoid duplicate invocations for the same job across
+        // polling and visibility-triggered reloads. Kick off the run guard early
+        // by marking the last seen job before awaiting.
         if (onRun) {
-          try {
-            await onRun();
-          } catch {}
+          if (lastOnRunJobId.current !== j.id) {
+            lastOnRunJobId.current = j.id;
+            try {
+              await onRun();
+            } catch {}
+          }
         }
       } else if (j.status === "error") {
         if (pollRef.current) clearInterval(pollRef.current);
@@ -192,13 +199,33 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
     return () => stopPolling();
   }, []);
 
-  // Resume polling on tab visible
+  // Resume polling on tab visibility/focus and refresh parent when possible
+  // Reset the last-onRun gate when a new job is selected
   useEffect(() => {
+    lastOnRunJobId.current = null;
+  }, [jobId]);
+  useEffect(() => {
+    // Visibility-driven refresh: trigger parent reload when the job
+    // finishes or errors, regardless of the current running state.
     function onVis() {
-      if (document.visibilityState === "visible" && jobId && isRunning) {
-        void fetchJobById(jobId).then((j) => {
-          if (j) setJob(j);
-        });
+      if (document.visibilityState === "visible" && jobId) {
+        (async () => {
+          const j = await fetchJobById(jobId);
+          if (j) {
+            setJob(j);
+            // If the parent exposes a reload callback, trigger it when the
+            // job completed or errored. Guard against repeated calls for the
+            // same job.
+        if (onRun && (j.status === "done" || j.status === "error")) {
+          if (lastOnRunJobId.current !== j.id) {
+            lastOnRunJobId.current = j.id;
+            try {
+              await onRun();
+            } catch {}
+          }
+        }
+          }
+        })();
       }
     }
     document.addEventListener("visibilitychange", onVis);
@@ -207,7 +234,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("focus", onVis);
     };
-  }, [jobId, isRunning]);
+  }, [jobId]);
 
   async function handleDoctor() {
     setDoctorLoading(true);
@@ -349,6 +376,15 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
           >
             {runLoading ? `Running… ${job?.currentNode ?? ""}` : "Run live harvest"}
           </button>
+          {/*
+            Important UX note:
+            The Refresh control at the bottom of this panel is a deliberate user action.
+            It fetches the latest persisted job state and, unlike the automatic polling
+            paths, does not participate in the onRun callback gate. In other words,
+            refreshing is an explicit inspection step and should not affect the server-side
+            job correctness or scheduling. This keeps the manual refresh lightweight and
+            predictable for operators.
+          */}
           {isRunning && (
             <button
               type="button"

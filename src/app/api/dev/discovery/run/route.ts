@@ -30,7 +30,20 @@ export async function POST(req: Request) {
       throw e;
     }
 
-    after(() => executeJob(result.jobId, result.ctx, result.providerIds, result.ranAtIso));
+    // Run the worker in a fire-and-forget manner but guard against uncaught
+    // rejections from a busy in-process lock. Catch and log non-fatal errors to
+    // avoid surfacing a crash or leaving the job in an inconsistent state.
+    after(async () => {
+      try {
+        await executeJob(result.jobId, result.ctx, result.providerIds, result.ranAtIso);
+      } catch (err) {
+        // Best-effort handling: a busy harvest should not crash the API route.
+        // Without a per-call job id available here (beyond result.jobId), we
+        // simply log for observability and swallow.
+        // eslint-disable-next-line no-console
+        console.error("harvest executeJob busy or failed:", (err as Error)?.message ?? err);
+      }
+    });
 
     return NextResponse.json(
       {

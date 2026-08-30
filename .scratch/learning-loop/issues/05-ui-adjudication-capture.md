@@ -1,6 +1,6 @@
 # 05 — UI wiring: adjudication capture → CandidateOutcome POST
 
-Type: task · Status: open · Blocked by: 01
+Type: task · Status: resolved · Blocked by: 01
 
 ## Question
 

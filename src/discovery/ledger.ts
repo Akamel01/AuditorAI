@@ -10,7 +10,17 @@ export async function appendLedgerKV(entries: LedgerEntry[], store?: DataStore):
   const s = store ?? getDataStore();
   let index: number[] = [];
   try { const cur = await s.get<number[]>(INDEX_KEY); if (Array.isArray(cur)) index = cur; } catch {}
-  for (const e of entries) { try { await s.put(entryKey(e.seq), e); } catch {} if (!index.includes(e.seq)) index.push(e.seq); }
+  for (const e of entries) {
+    let wrote = false;
+    try {
+      await s.put(entryKey(e.seq), e);
+      wrote = true;
+    } catch {
+      // swallow per-entry write errors to preserve durability behavior
+      wrote = false;
+    }
+    if (wrote && !index.includes(e.seq)) index.push(e.seq);
+  }
   index.sort((a,b)=>a-b);
   const trimmed = index.slice(-500);
   try { await s.put(INDEX_KEY, trimmed); } catch {}

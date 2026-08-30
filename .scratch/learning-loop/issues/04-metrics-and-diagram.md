@@ -1,6 +1,6 @@
 # 04 — PromotionRate/HallucinationRate metrics + generated diagram numbers
 
-Type: task · Status: open · Blocked by: 01, 02
+Type: task · Status: resolved · Blocked by: 01, 02
 
 ## Question
 

@@ -11,6 +11,8 @@ import { DISCOVERY_NODE_IDS } from "@/discovery/types";
 import { runDiscoveryNode, type DiscoveryCtx, type RawDocument } from "@/discovery/pipeline";
 import type { MatchAssignment } from "@/discovery/types";
 import { appendLog, createJob, setJobDone, setJobError, setJobRunning, updateJob } from "@/discovery/jobs";
+import { getLedgerTailKV } from "./ledger";
+import type { LedgerEntry } from "./ledger";
 import type { DataStore } from "@/lib/persistence";
 
 export const DEPRECATED_PROVIDERS = new Set(["google-cse"]);
@@ -92,6 +94,15 @@ function resolveRead(deps?: HarvestDeps): (p: string, enc: string) => string {
   return deps?.readFileSync ?? ((p: string, enc: string) => readFileSync(p, enc as BufferEncoding) as unknown as string);
 }
 
+// Removed: best-effort git metadata helper (no longer used)
+
+// Simple, process-wide harvest lock to avoid concurrent writes/ledger races.
+// Note: This lock is intentionally process-local only. It cannot prevent
+// cross-instance (e.g., multi-process or serverless) races. The documentation
+// and upgrade path live in source comments and artifacts below the hatrack.
+// See also the notes in MAPs/evidence for KV/CAS upgrade guidance.
+let HARVEST_LOCK = false;
+
 export async function executeJob(
   jobId: string,
   ctx: DiscoveryCtx,
@@ -99,9 +110,33 @@ export async function executeJob(
   ranAtIso: string,
   deps?: HarvestDeps,
 ): Promise<void> {
+  // Guard against concurrent harvest invocations within the same process.
+  // If the lock is already held, we currently throw to surface a clear
+  // busy-state. Callers may catch this on fire-and-forget paths and surface
+  // a best-effort notification. Note: this does not protect across multiple
+  // processes or serverless instances.
+  // If a harvest is already in progress, mark the queued job as a terminal error
+  // and return early to avoid unhandled rejections downstream. This is a best-effort
+  // path and does not attempt to release locks (there is no acquired lock in this
+  // branch).
+  if (HARVEST_LOCK) {
+    try {
+      // best-effort: record the failure without relying on a global hook
+      await setJobError(jobId, "harvest is already running", deps?.store);
+    } catch {
+      // swallow any errors from the best-effort path to avoid masking the original state
+    }
+    return;
+  }
+  HARVEST_LOCK = true;
+  // Capture common dependencies in outer scope so both the main path and
+  // error-handling catch blocks can reference them.
   const store = deps?.store;
-  const nowIso = deps?.nowIso ?? (() => new Date().toISOString());
+  // nowIso is a function returning ISO string; default to Date.now() string if not provided
+  const nowIso = (deps?.nowIso ?? (() => new Date().toISOString())) as () => string;
   try {
+    // Remove the unnecessary inner try. Do the work directly and rely on the
+    // outer catch/finally to handle errors and release the lock.
     await setJobRunning(jobId, "D01-DISCOVER", store);
     await appendLog(jobId, { at: nowIso(), node: "D00-QUEUED", message: `providers ${providerIds.join(",")} query jurs=${ctx.query.jurisdictions.join(",")} themes=${ctx.query.themes.slice(0, 2).join(" | ")}` }, store);
 
@@ -139,7 +174,32 @@ export async function executeJob(
       provenance?: unknown[];
     };
 
-    await setJobDone(jobId, {
+    // Persist ledger and dedupe before marking the job done to avoid
+    // race conditions with visibility-triggered reloads.
+  let persistedEntries: import("./ledger").LedgerEntry[] = [];
+  if (process.env.VITEST !== "true" && process.env.NODE_ENV !== "test") {
+    try {
+      persistedEntries = await persistDiscoveryState(s, ranAtIso, store);
+    } catch (e) {
+      await appendLog(jobId, { at: nowIso(), node: "PERSIST-WARN", message: `persist skipped: ${e instanceof Error ? e.message.slice(0, 200) : String(e).slice(0, 200)}` }, store);
+    }
+  }
+  // KV mirror best-effort (survives Vercel lambda) – always attempt with
+  // whatever entries we derived, even if FS writes failed
+  try {
+    const { appendLedgerKV } = await import("./ledger");
+    await appendLedgerKV(persistedEntries, store);
+  } catch {}
+    // Dedupe claim-and-merge (B1)
+    try {
+      const { persistDedupeFromResult } = await import("./dedupe-persist");
+      const pkgs = (s.package as unknown as import("./types").ProjectPackageAssembly[]) ?? [];
+      const bundles = (s.acquired as unknown as import("./types").AcquisitionBundle[]) ?? [];
+      const quals = (s.quality as unknown as import("./types").QualityVerdictRecord[]) ?? [];
+      await persistDedupeFromResult(pkgs, bundles, quals, store);
+    } catch {}
+
+  await setJobDone(jobId, {
       ranAtIso,
       coverage: (s.coverage as unknown) ?? null,
       queue: (s.queue as unknown[]) ?? [],
@@ -148,51 +208,51 @@ export async function executeJob(
       matched: (s.matched as unknown[]) ?? [],
       refusals,
       quality: (s.quality as unknown[]) ?? [],
-    }, store);
-
-    // Persist so ledgerTotal / odd-coverage counts grow (A1+B1).
-    // ponytail: skip filesystem persist in tests to keep suite hermetic
-    if (process.env.VITEST !== "true" && process.env.NODE_ENV !== "test") {
-      let persistedEntries: import("./ledger").LedgerEntry[] = [];
-      try {
-        persistedEntries = await persistDiscoveryState(s, ranAtIso);
-      } catch (e) {
-        await appendLog(jobId, { at: nowIso(), node: "PERSIST-WARN", message: `persist skipped: ${e instanceof Error ? e.message.slice(0, 200) : String(e).slice(0, 200)}` }, store);
-      }
-      // KV mirror best-effort (survives Vercel lambda)
-      if (persistedEntries.length > 0) {
-        try {
-          const { appendLedgerKV } = await import("./ledger");
-          await appendLedgerKV(persistedEntries, store);
-        } catch {}
-      }
-      // Dedupe claim-and-merge (B1)
-      try {
-        const { persistDedupeFromResult } = await import("./dedupe-persist");
-        const pkgs = (s.package as unknown as import("./types").ProjectPackageAssembly[]) ?? [];
-        const bundles = (s.acquired as unknown as import("./types").AcquisitionBundle[]) ?? [];
-        const quals = (s.quality as unknown as import("./types").QualityVerdictRecord[]) ?? [];
-        await persistDedupeFromResult(pkgs, bundles, quals, store);
-      } catch {}
-    }
+    } as any, store);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     await appendLog(jobId, { at: nowIso(), node: "ERROR", message: msg.slice(0, 500) }, store);
     await setJobError(jobId, msg.slice(0, 2000), store);
+  } finally {
+    // Release the in-progress lock regardless of success or failure
+    HARVEST_LOCK = false;
   }
 }
 
 async function persistDiscoveryState(
   state: Record<string, unknown>,
   ranAtIso: string,
+  store?: DataStore,
 ): Promise<import("./ledger").LedgerEntry[]> {
+  // Derive new ledger entries from in-memory state and persist in a
+  // best-effort way. If the filesystem is read-only, swallow write errors
+  // and still return the derived entries so downstream KV path can proceed.
   const { readFileSync, writeFileSync, existsSync, mkdirSync } = await import("node:fs");
   const cwd = process.cwd();
   const ledgerPath = path.join(cwd, "state", "discovery-ledger.json");
   const covPath = path.join(cwd, "state", "odd-coverage.json");
-  const raw = readFileSync(ledgerPath, "utf8");
-  const ledger = JSON.parse(raw) as { entries: import("./ledger").LedgerEntry[] };
-  let seq = ledger.entries.length;
+  // Load existing ledger if possible; otherwise start fresh.
+  let ledgerEntries: LedgerEntry[] = [];
+  try {
+    const raw = readFileSync(ledgerPath, "utf8");
+    const parsed = JSON.parse(raw) as { entries: LedgerEntry[] };
+    ledgerEntries = parsed.entries ?? [];
+  } catch {
+    ledgerEntries = [];
+  }
+
+  // Determine a safe starting sequence using the existing ledger tail via KV.
+  let lastSeq = ledgerEntries.length > 0 ? ledgerEntries[ledgerEntries.length - 1].seq : 0;
+  try {
+    const tail = await getLedgerTailKV(50, store);
+    if (tail.total > 0 && tail.entries.length > 0) {
+      const tailLast = tail.entries[tail.entries.length - 1].seq;
+      if (typeof tailLast === "number" && tailLast > lastSeq) lastSeq = tailLast;
+    }
+  } catch {
+    // ignore tail lookup failures
+  }
+  let nextSeq = lastSeq;
   const kinds: [string, string][] = [
     ["discovery_hits", "discovery.hitset"],
     ["qualified", "qualification.verdicts"],
@@ -205,21 +265,34 @@ async function persistDiscoveryState(
     ["coverage", "coverage.view"],
     ["queue", "queue.items"],
   ];
-  const appended: import("./ledger").LedgerEntry[] = [];
+  const appended: LedgerEntry[] = [];
   for (const [slice, kind] of kinds) {
     const value = state[slice];
     if (value == null || (Array.isArray(value) && value.length === 0)) continue;
     if (kind === "coverage.view" && typeof value === "object" && !Array.isArray(value) && Object.keys(value as object).length === 0) continue;
-    seq += 1;
-    const entry: import("./ledger").LedgerEntry = { seq, at: ranAtIso, payload_kind: kind, data: value as unknown };
-    ledger.entries.push(entry);
+    nextSeq += 1;
+    const entry: LedgerEntry = { seq: nextSeq, at: ranAtIso, payload_kind: kind, data: value as unknown };
+    ledgerEntries.push(entry);
     appended.push(entry);
   }
-  const dir = path.dirname(ledgerPath);
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2) + "\n", "utf8");
-  if (state.coverage && typeof state.coverage === "object") {
-    writeFileSync(covPath, JSON.stringify(state.coverage, null, 2) + "\n", "utf8");
+  // Best-effort writes
+  try {
+    const dir = path.dirname(ledgerPath);
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    // Keep the file mirror in sync when possible
+    const ledgerObj = { entries: ledgerEntries };
+    writeFileSync(ledgerPath, JSON.stringify(ledgerObj, null, 2) + "\n", "utf8");
+  } catch {
+    // swallow FS errors to preserve operation in read-only environments
+  }
+  try {
+    if (state.coverage && typeof state.coverage === "object") {
+      const covDir = path.dirname(covPath);
+      if (!existsSync(covDir)) mkdirSync(covDir, { recursive: true });
+      writeFileSync(covPath, JSON.stringify(state.coverage, null, 2) + "\n", "utf8");
+    }
+  } catch {
+    // swallow
   }
   return appended;
 }

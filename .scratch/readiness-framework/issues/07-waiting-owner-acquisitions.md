@@ -15,5 +15,9 @@ docs/references/ACQUISITION-BRIEF.md):
 
 Resolved when all four are delivered into the repo (or explicitly re-scoped).
 
+## Answer (reminder 2026-08-30 — no AFK work)
+
+- `docs/references/ACQUISITION-BRIEF.md` lists all four owner-only items; UAE stays `mapped_unproven` per ADR-0007. Status remains `open hitl:true`.
+
 ## Answer
 
