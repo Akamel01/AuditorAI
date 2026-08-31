@@ -53469,6 +53469,891 @@
           "reason": "need 40 more packages (0/40)"
         }
       ]
+    },
+    {
+      "seq": 301,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "discovery.hitset",
+      "data": [
+        {
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "url": "https://www.dot.state.mn.us/planning/program/projdev.html",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "mndot-edocs",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "url": "https://rosap.ntl.bts.gov/gsearch?ref=rsa",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "rosap",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "url": "https://web.archive.org/cdx/search/cdx?url=jawdah.qcc.abudhabi.ae*&output=text&filter=urlkey:.*isgl.*",
+          "source_type": "institutional-repo",
+          "provider_id": "seed-portals",
+          "portal_id": "jawdah-qcc-cdx",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "unknown",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+          "source_type": "dot-portal",
+          "provider_id": "seed-portals",
+          "portal_id": "hingham-ma",
+          "discovered_at": "1970-01-01T00:00:00.000Z",
+          "licence_hint": "public-domain",
+          "http_status": null,
+          "sha256_hint": null,
+          "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        }
+      ]
+    },
+    {
+      "seq": 302,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "qualification.verdicts",
+      "data": [
+        {
+          "qualification_id": "QAL-c431d69ea54c3c55",
+          "hit_id": "HIT-seed-portals-5ac3165715e09882",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "MnDOT project development documents",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-af8a08d7f1523dcf",
+          "hit_id": "HIT-seed-portals-b1e055396a5670d6",
+          "verdict": "reserve",
+          "reasons": [
+            "RSA title signal but URL lacks document pattern (no .pdf/View/Download) — treat as portal index for later crawl"
+          ],
+          "scheme_hint": "ROSA-P repository — road safety audits",
+          "jurisdiction_guess": "US"
+        },
+        {
+          "qualification_id": "QAL-2b85a23df9363895",
+          "hit_id": "HIT-seed-portals-1c0e679d3cd5e7ae",
+          "verdict": "reserve",
+          "reasons": [
+            "no RSA document signal in title/url"
+          ],
+          "scheme_hint": "Jawdah/QCC ISGL list — Wayback CDX",
+          "jurisdiction_guess": "AE"
+        },
+        {
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "hit_id": "HIT-seed-portals-f6e5e175f7a91dc1",
+          "verdict": "in_scope",
+          "reasons": [
+            "matches road-safety-audit document patterns; no in-service markers"
+          ],
+          "scheme_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+          "jurisdiction_guess": "US"
+        }
+      ]
+    },
+    {
+      "seq": 303,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "match.assignments",
+      "data": [
+        {
+          "match_id": "MAT-8807c101d43df381",
+          "qualification_id": "QAL-cd2fd36810532c38",
+          "jurisdiction": "US",
+          "native_stage_id": "us-fhwa:preliminary-design",
+          "canonical_stages": [
+            "PRELIMINARY_DESIGN"
+          ],
+          "mapping_confidence": "interpreted",
+          "odd_status": "in",
+          "matched_by": "keyword:4"
+        }
+      ]
+    },
+    {
+      "seq": 304,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "acquisition.bundles",
+      "data": [
+        {
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "match_id": "MAT-8807c101d43df381",
+          "documents": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "url": "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF",
+              "title_hint": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded",
+              "bytes": 1691744,
+              "mime": "application/pdf",
+              "page_count": 34,
+              "pages": [
+                {
+                  "page_no": 1,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 2,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 3,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 4,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 5,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 6,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 7,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 8,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 9,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 10,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 11,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 12,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 13,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 14,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 15,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 16,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 17,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 18,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 19,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 20,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 21,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 22,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 23,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 24,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 25,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 26,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 27,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 28,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 29,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 30,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 31,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 32,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 33,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                },
+                {
+                  "page_no": 34,
+                  "png_sha256": null,
+                  "ocr_sha256": null,
+                  "ocr_conf": null
+                }
+              ],
+              "extraction": {
+                "engine": "unpdf",
+                "text_sha256": "98593cb0d02b8df0dc6e627bf6493c37dd1e7efea750c75b50df1a9d0c44b176"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 305,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "classification.labelsets",
+      "data": [
+        {
+          "labelset_id": "LAB-3ac76e6a7934f508",
+          "bundle_id": "ACQ-3948da41a3e4357a",
+          "labels": [],
+          "classifier_trace": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0",
+            "auto_reserved_doc_ids": [
+              "DOC-7b7910b60c300c71"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "seq": 306,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "package.assemblies",
+      "data": [
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "match_id": "MAT-8807c101d43df381",
+          "metadata": {
+            "title": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "scheme_summary": "Road Safety Audit — preliminary design phase, Derby Street at Route 3 Ramps",
+            "authority_hint": null,
+            "location_hint": null,
+            "source_urls": [
+              "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+            ]
+          },
+          "inputs": {
+            "drawing_doc_ids": [],
+            "other_doc_ids": []
+          },
+          "outputs": {
+            "rsa_report_doc_ids": [],
+            "checklist_doc_ids": [],
+            "designer_response_doc_ids": []
+          },
+          "completeness": "excerpt"
+        }
+      ]
+    },
+    {
+      "seq": 307,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "provenance.records",
+      "data": [
+        {
+          "provenance_id": "PRV-e95bbd501c94865e",
+          "package_id": "PKG-9d8ca283d364e831",
+          "source_urls": [
+            "https://www.hingham-ma.gov/DocumentCenter/View/2818/Derby-Street-Road-Safety-Audit-Derby-Street-at-Route-3-Ramps-PDF"
+          ],
+          "retrieved_at": "2026-08-31T23:54:27.178Z",
+          "sha256_chain": [
+            {
+              "doc_id": "DOC-7b7910b60c300c71",
+              "sha256": "7cf99d980c89940dd579b8c3eab3cf03da06a40aaaf6272be8a5bdb495619ded"
+            }
+          ],
+          "extraction": {
+            "pdf_engine": "unpdf",
+            "ocr_engine": null
+          },
+          "classification": {
+            "classifier_id": "keyword-ruleset",
+            "ruleset_version": "kw-1.0.0"
+          },
+          "licence": "unknown",
+          "odd_cell": {
+            "jurisdiction_id": "US",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in"
+          },
+          "firewall_tainted": false
+        }
+      ]
+    },
+    {
+      "seq": 308,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "quality.verdicts",
+      "data": [
+        {
+          "package_id": "PKG-9d8ca283d364e831",
+          "completeness": "excerpt",
+          "dedupe_status": "unique",
+          "canonical_package_id": null,
+          "quality_score": 1,
+          "human_required": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "seq": 309,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "coverage.view",
+      "data": {
+        "schema_version": "1.0.0",
+        "declaration_version": "1.1.2",
+        "generated": "2026-08-31T23:54:27.178Z",
+        "target_total": 500,
+        "cells": [
+          {
+            "cell_key": "uk:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-6",
+              "GF-11"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-7",
+              "GF-12",
+              "GF-14"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 1,
+            "label": "UNDER-COVERED",
+            "priority": 0.9231,
+            "uncovered_reasons": [
+              "need 12 more packages (1/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:DETAILED_DESIGN",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:final-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-8"
+            ],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-9",
+              "GF-16"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "in",
+            "fixture_ids": [
+              "GF-10",
+              "GF-13",
+              "GF-15"
+            ],
+            "target": 13,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 1,
+            "uncovered_reasons": [
+              "need 13 more packages (0/13)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S0",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S1",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S12-combined",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN",
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uae:DETAILED_DESIGN",
+            "jurisdiction_id": "AE",
+            "native_stage_id": "ae-ad:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "UK",
+            "native_stage_id": null,
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "structurally_absent",
+            "fixture_ids": [],
+            "target": 0,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "EXCLUDED",
+            "priority": 0,
+            "uncovered_reasons": []
+          },
+          {
+            "cell_key": "canada:DETAILED_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "jurisdiction_id": "CA",
+            "native_stage_id": "ca-tac:preliminary-design",
+            "canonical_stage": [
+              "PRELIMINARY_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:DETAILED_DESIGN",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:detailed-design",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "international:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "INT",
+            "native_stage_id": "int:feasibility-concept",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 41,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 41 more packages (0/41)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "uk:DETAILED_DESIGN",
+            "jurisdiction_id": "UK",
+            "native_stage_id": "uk:S2",
+            "canonical_stage": [
+              "DETAILED_DESIGN"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          },
+          {
+            "cell_key": "usa:FEASIBILITY_CONCEPT",
+            "jurisdiction_id": "US",
+            "native_stage_id": "us-fhwa:planning",
+            "canonical_stage": [
+              "FEASIBILITY_CONCEPT"
+            ],
+            "status": "mapped_unproven",
+            "fixture_ids": [],
+            "target": 40,
+            "have_full_package": 0,
+            "have_total": 0,
+            "label": "MISSING",
+            "priority": 3,
+            "uncovered_reasons": [
+              "need 40 more packages (0/40)",
+              "no full-package yet"
+            ]
+          }
+        ],
+        "gaps_ranked": [
+          "usa:DETAILED_DESIGN",
+          "uae:FEASIBILITY_CONCEPT",
+          "uae:PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "uae:DETAILED_DESIGN",
+          "canada:DETAILED_DESIGN",
+          "canada:PRELIMINARY_DESIGN",
+          "international:DETAILED_DESIGN",
+          "international:FEASIBILITY_CONCEPT",
+          "uk:DETAILED_DESIGN",
+          "usa:FEASIBILITY_CONCEPT",
+          "uk:PRELIMINARY_DESIGN",
+          "international:PRELIMINARY_DESIGN",
+          "canada:FEASIBILITY_CONCEPT",
+          "usa:PRELIMINARY_DESIGN"
+        ]
+      }
+    },
+    {
+      "seq": 310,
+      "at": "2026-08-31T23:54:27.178Z",
+      "payload_kind": "queue.items",
+      "data": [
+        {
+          "rank": 1,
+          "cell_key": "usa:DETAILED_DESIGN",
+          "jurisdiction_id": "US",
+          "query_theme": "FHWA road safety audit preliminary design report",
+          "reason": "need 40 more packages (0/40)"
+        },
+        {
+          "rank": 2,
+          "cell_key": "uae:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 3,
+          "cell_key": "uae:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 4,
+          "cell_key": "uae:DETAILED_DESIGN+PRELIMINARY_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "jawdah qcc ISGL audit",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 5,
+          "cell_key": "uae:DETAILED_DESIGN",
+          "jurisdiction_id": "AE",
+          "query_theme": "Abu Dhabi road safety audit stage 0",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 6,
+          "cell_key": "canada:DETAILED_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "BC MoTI \"road safety audit\"",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 7,
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "jurisdiction_id": "CA",
+          "query_theme": "Alberta \"road safety audit\" functional planning",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 8,
+          "cell_key": "international:DETAILED_DESIGN",
+          "jurisdiction_id": "INT",
+          "query_theme": "\"stage 2\" RSA detailed design Ireland ABP",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 9,
+          "cell_key": "international:FEASIBILITY_CONCEPT",
+          "jurisdiction_id": "INT",
+          "query_theme": "CAREC road safety audit worked example",
+          "reason": "need 41 more packages (0/41)"
+        },
+        {
+          "rank": 10,
+          "cell_key": "uk:DETAILED_DESIGN",
+          "jurisdiction_id": "UK",
+          "query_theme": "NSIP \"road safety audit\" preliminary design",
+          "reason": "need 40 more packages (0/40)"
+        }
+      ]
     }
   ]
 }
