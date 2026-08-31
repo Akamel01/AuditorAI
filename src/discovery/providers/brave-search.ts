@@ -57,6 +57,8 @@ class BraveSearchProvider implements DiscoveryProvider {
         }
         if (!res.ok) {
           lastError = `HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`;
+          // 402 = quota exceeded — don't loop forever, treat as terminal for this jur/theme
+          if (res.status === 402) continue;
           continue;
         }
         const json = (await res.json()) as { web?: { results?: BraveWebResult[] } };
@@ -80,6 +82,8 @@ class BraveSearchProvider implements DiscoveryProvider {
       }
     }
     if (hits.length === 0 && lastError) {
+      // Quota exceeded (402) is terminal but non-fatal — return empty so pipeline can continue with seeds
+      if (lastError.includes("402") || lastError.includes("USAGE_LIMIT_EXCEEDED")) return hits;
       throw new Error(`brave-search discovered nothing: ${lastError}`);
     }
     return hits;

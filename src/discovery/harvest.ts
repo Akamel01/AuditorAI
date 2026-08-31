@@ -200,15 +200,16 @@ export async function executeJob(
     } catch {}
 
   await setJobDone(jobId, {
-      ranAtIso,
-      coverage: (s.coverage as unknown) ?? null,
-      queue: (s.queue as unknown[]) ?? [],
-      packages: (s.package as unknown[]) ?? [],
-      hits: (s.discovery_hits as unknown[]) ?? [],
-      matched: (s.matched as unknown[]) ?? [],
-      refusals,
-      quality: (s.quality as unknown[]) ?? [],
-    } as any, store);
+       ranAtIso,
+       coverage: (s.coverage as unknown) ?? null,
+       queue: (s.queue as unknown[]) ?? [],
+       packages: (s.package as unknown[]) ?? [],
+       hits: (s.discovery_hits as unknown[]) ?? [],
+       matched: (s.matched as unknown[]) ?? [],
+       refusals,
+       quality: (s.quality as unknown[]) ?? [],
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     } as any, store);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     await appendLog(jobId, { at: nowIso(), node: "ERROR", message: msg.slice(0, 500) }, store);
