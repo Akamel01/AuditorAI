@@ -21,6 +21,8 @@ Loop 2 close-out leaves durable harvesting on `main` (`dce8f08`); Vercel auto-de
 - [Loop 2 close-out merged to main (dce8f08)](workflow/wayfinder/maps/ops-seamless-verify/tickets/T2-operation-loop-proof.md): durable live harvest + UI debouncing; evidence copies reconciled and byte-identical; T2 marked `blocked` until production KV/daemon proof is supplied. Tickets in this map record the follow-up work.
 - [Accept process-local harvest lock as ceiling](workflow/wayfinder/maps/ops-residual/tickets/R1-cross-instance-harvest-lock.md): Vercel has at most one concurrent in-process lock holder per lambda; this is acceptable for current Spot ordering and may be insufficient under burst scale. Track upgrade via `R1`.
 - [Ledger append indexes only successful puts](workflow/wayfinder/maps/ops-residual/tickets/R2-ledger-improve-indexing.md): Fix landed; further hardening (`R2`) tracks KV tail trim policy and orphan-key recovery.
+- [Deploy + CI green at 70a519c](https://github.com/Akamel01/AuditorAI/actions/runs/33431156838): lint fix + brave 402 graceful fallback; `HEAD==origin/main`, `vault-sync --check` pass, `cmp` evidence identical, 5 CI jobs green.
+- [Triage residual 2026-08-31](workflow/wayfinder/maps/ops-residual/tickets/R16-brave-quota-degradation.md): harvest degraded (quota 5.0/5.0) but no longer hard-fails; `R16` tracks monitoring/fallback, `R17` tracks evidence HEAD anchoring staleness (`61c7475` vs `70a519c`).
 
 ## Not yet specified
 
@@ -51,3 +53,5 @@ Loop 2 close-out leaves durable harvesting on `main` (`dce8f08`); Vercel auto-de
 - `R13` — Eval gate §2 freshness automation: timestamp check
 - `R14` — Tier-1 archive: keep helper script, de-skill its drift
 - `R15` — README + CONTRIBUTING: refresh Production deploy section
+- `R16` — Brave quota 402 graceful degradation + monitoring (triaged 2026-08-31)
+- `R17` — Evidence bundle reconciliation + HEAD anchoring automation (triaged 2026-08-31)
