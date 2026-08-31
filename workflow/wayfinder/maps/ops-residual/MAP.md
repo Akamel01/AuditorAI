@@ -55,3 +55,4 @@ Loop 2 close-out leaves durable harvesting on `main` (`dce8f08`); Vercel auto-de
 - `R15` — README + CONTRIBUTING: refresh Production deploy section
 - `R16` — Brave quota 402 graceful degradation + monitoring (triaged 2026-08-31)
 - `R17` — Evidence bundle reconciliation + HEAD anchoring automation (triaged 2026-08-31)
+- `R18` — Bento components merge verification — safety/conflicts/functional (triaged 2026-08-31, duplicates cleaned)

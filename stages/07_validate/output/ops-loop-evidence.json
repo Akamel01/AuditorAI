@@ -1,0 +1,121 @@
+{
+  "generatedAt": "2026-08-31T22:05:26Z",
+  "commit": "056b75fd20acb209de080a29bd3386364ded3a9e",
+  "vercelDeployment": "33295351517",
+  "t1": {
+    "pagePrompt": "src/app/dev/mission-control/page.tsx:177-212 Panel with setAdminKey + reload() without page reload",
+    "clientSeam": "src/lib/client.ts:getAdminKey/setAdminKey localStorage auditorai.admin_key -> x-admin-key",
+    "vercelEnv": "ADMIN_KEY Hidden Secret Production + Hidden Secret Preview + Config Development (vercel env ls 2026-08-30T05:52)",
+    "vercelEnvHidden": true,
+    "keychain": "security find-generic-password auditorai/admin-key present (31 chars)",
+    "health": {
+      "url": "https://auditorai-gamma.vercel.app/api/dev/health",
+      "status": 200,
+      "providers": [
+        "seed-portals enabled:true ping ok 0ms",
+        "brave-search enabled:true ping ok 98ms 1 hit",
+        "google-cse enabled:true"
+      ],
+      "ledger": {
+        "entries": 150,
+        "lastAt": "2026-08-30T00:24:57.523Z",
+        "ageHuman": "5h 27m"
+      },
+      "topology": {
+        "drift": false,
+        "details": [],
+        "auditGraphNodes": 13,
+        "discoveryGraphNodes": 10
+      }
+    },
+    "build": "npm run build OK after rm -rf .next \u2014 /dev/mission-control 13.9kB 124kB First Load"
+  },
+  "t2": {
+    "phase1": {
+      "providerHealthPersistedFlag": "src/app/dev/mission-control/_components/provider-health.tsx JOB_STORAGE_KEY auditorai.discovery.jobId + 1.5s poll + onRun reload",
+      "pageWiring": "src/app/dev/mission-control/page.tsx:258 onRun={reload} onJob + handleRunGap 1.5s poll D01..D10"
+    },
+    "phase2": {
+      "jobsStore": "src/discovery/jobs.ts createJob/updateJob/getJob via getDataStore() KV seam",
+      "runRoute": "src/app/api/dev/discovery/run/route.ts:33 after(()=>executeJob) maxDuration 60 returns 202 {jobId}",
+      "liveRun": {
+        "post": {
+          "url": "https://auditorai-gamma.vercel.app/api/dev/discovery/run",
+          "status": 202,
+          "jobId": "job_mtfe7dsk_z9sej8",
+          "live": true
+        },
+        "poll": {
+          "intervalMs": 1500,
+          "logsFinal": 23,
+          "status": "done",
+          "currentNode": "PERSIST-WARN",
+          "resultPackages": 1,
+          "progression": [
+            "D00-QUEUED queued",
+            "D01-DISCOVER start",
+            "D04-ACQUIRE done 11177ms 1 artifact",
+            "D05-CLASSIFY done",
+            "D10-QUEUE done",
+            "PERSIST-WARN EROFS read-only state/discovery-ledger.json"
+          ]
+        },
+        "persistNote": "PERSIST-WARN expected on Vercel FS, KV fallback holds \u2014 job done via KV"
+      },
+      "doctorLive": {
+        "brave": "OK 3 hits 258ms",
+        "google": "OK 0 hits 229ms"
+      },
+      "gaps": [
+        "usa:DETAILED_DESIGN",
+        "uae:FEASIBILITY_CONCEPT",
+        "uae:PRELIMINARY_DESIGN"
+      ],
+      "launchctl": {
+        "label": "gui/501/com.auditorai.discovery",
+        "activeCount": 0,
+        "state": "not running",
+        "path": "/Users/akamel/Library/LaunchAgents/com.auditorai.discovery.plist"
+      },
+      "discoveryLogTail": "wrote: state/discovery-ledger.json + state/odd-coverage.json [2026-08-30T05:40:32Z] discovery: ok",
+      "ghRuns": [
+        {
+          "conclusion": "success",
+          "workflow": "discovery harvest",
+          "branch": "main",
+          "event": "schedule",
+          "id": 33434529345,
+          "duration": "34s",
+          "at": "2026-08-31T20:10:01Z"
+        },
+        {
+          "conclusion": "success",
+          "workflow": "discovery harvest",
+          "branch": "main",
+          "event": "schedule",
+          "id": 33431414386,
+          "duration": "1m44s",
+          "at": "2026-08-31T19:35:33Z"
+        }
+      ]
+    }
+  },
+  "vaultCheck": "node scripts/vault-sync.mjs --check exit 0",
+  "typecheck": "npm run typecheck exit 0",
+  "build": "npm run build exit 0 after rm -rf .next",
+  "ledgerGrowth": {
+    "verified": false,
+    "reason": "no authoritative before/after in current environment"
+  },
+  "productionDeploymentVerified": false,
+  "daemonVerified": false,
+  "historicalProbe": {
+    "notes": "historical probe preserved; source evidence kept for audit",
+    "source": {
+      "generatedAt": "2026-08-30T05:52:52Z",
+      "commit": "61c7475e04a490d0adf0749bba57b9d229164472"
+    },
+    "anchoredTo": "056b75fd20acb209de080a29bd3386364ded3a9e",
+    "anchoredAt": "2026-08-31T22:05:26Z"
+  }
+}
