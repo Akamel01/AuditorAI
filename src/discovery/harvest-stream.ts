@@ -143,6 +143,15 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     },
     providers,
     dedupeIndex: stream.dedupeIndex,
+    ...(live
+      ? {}
+      : {
+          acquireDocs: async (match: { jurisdiction: string; native_stage_id: string }) => {
+            const { fixtureDocsFor } = await import("@/discovery/harvest");
+            // fixtureDocsFor expects MatchAssignment, but we can call it with a minimal stub
+            return fixtureDocsFor({ jurisdiction: match.jurisdiction, native_stage_id: match.native_stage_id } as any).slice(0, 1);
+          },
+        }),
   };
 
   try {
