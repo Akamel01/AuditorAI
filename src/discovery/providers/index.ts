@@ -8,6 +8,7 @@
 import "./seed-portals";
 import "./brave-search";
 import "./google-cse";
+import "./ai-search";
 
 export {
   listProviderIds,
