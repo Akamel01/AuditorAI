@@ -122,3 +122,12 @@ export function fetchJob<T = unknown>(id: string): Promise<T> {
 export function listJobs<T = unknown>(limit = 10): Promise<T> {
   return adminApi<T>(`/api/dev/discovery/jobs?limit=${limit}`);
 }
+export function fetchHarvestStreams<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/harvest-stream");
+}
+export function fetchHarvestStream<T = unknown>(id: string): Promise<T> {
+  return adminApi<T>(`/api/dev/harvest-stream/${encodeURIComponent(id)}`);
+}
+export function startHarvestStream<T = unknown>(body: { live?: boolean; cellKey?: string | null }): Promise<T> {
+  return adminApi<T>("/api/dev/harvest-stream", { method: "POST", json: body });
+}

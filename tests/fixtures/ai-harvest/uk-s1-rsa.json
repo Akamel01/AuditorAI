@@ -1,0 +1,30 @@
+{
+  "hits": [
+    {
+      "hit_id": "HIT-ai-search-test1",
+      "url": "https://planning.welhat.gov.uk/Document/Download?module=PLA&recordNumber=107754&planId=2079274&imageId=5&isPlan=False&fileName=Stage%201%20Road%20Safety%20Report.pdf",
+      "source_type": "search-engine",
+      "provider_id": "ai-search",
+      "portal_id": null,
+      "discovered_at": "2026-09-02T00:00:00.000Z",
+      "licence_hint": "public-domain",
+      "http_status": 200,
+      "sha256_hint": null,
+      "title_hint": "Heathfield Lodge Great North Road — Stage 1 Road Safety Audit report",
+      "jurisdiction_guess": "UK"
+    },
+    {
+      "hit_id": "HIT-ai-search-test2",
+      "url": "https://example.com/not-a-doc.html",
+      "source_type": "search-engine",
+      "provider_id": "ai-search",
+      "portal_id": null,
+      "discovered_at": "2026-09-02T00:00:00.000Z",
+      "licence_hint": "unknown",
+      "http_status": 200,
+      "sha256_hint": null,
+      "title_hint": "Some blog about roads",
+      "jurisdiction_guess": "UK"
+    }
+  ]
+}

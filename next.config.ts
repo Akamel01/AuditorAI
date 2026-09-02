@@ -35,6 +35,11 @@ const API_ROUTES = [
   "/api/dev/readiness",
   "/api/dev/debug",
   "/api/dev/tickets",
+  "/api/dev/harvest-stream",
+  "/api/dev/harvest-stream/[id]",
+  "/api/dev/harvest-stream/[id]/pause",
+  "/api/dev/harvest-stream/[id]/resume",
+  "/api/dev/harvest-stream/[id]/stop",
 ];
 
 const RUNTIME_FILES = ["./policies/**/*", "./state/evidence-registry.json", "./state/odd-coverage.json", "./state/dedupe-index.json", "./state/discovery-ledger.json", "./workflow/wayfinder/**/*"];
