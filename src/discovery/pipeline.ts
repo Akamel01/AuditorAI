@@ -141,7 +141,12 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
         const { withHostBudget } = await import("@/discovery/ratelimit");
         try {
           const fetched = await withHostBudget(hit.url, async () => {
-            const res = await fetch(hit.url, { headers: { Accept: "application/pdf,*/*" } });
+            const res = await fetch(hit.url, {
+              headers: {
+                Accept: "application/pdf,*/*",
+                "User-Agent": "AuditorAI/1.0 (+https://auditorai-gamma.vercel.app)",
+              },
+            });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const buf = new Uint8Array(await res.arrayBuffer());
             const ct = res.headers.get("content-type") ?? "";
