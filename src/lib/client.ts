@@ -113,6 +113,9 @@ export function fetchReadiness<T = unknown>(): Promise<T> {
 export function fetchHealth<T = unknown>(): Promise<T> {
   return adminApi<T>("/api/dev/health");
 }
+export function fetchTickets<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/tickets");
+}
 export function fetchJob<T = unknown>(id: string): Promise<T> {
   return adminApi<T>(`/api/dev/discovery/jobs/${encodeURIComponent(id)}`);
 }

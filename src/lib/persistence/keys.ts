@@ -48,3 +48,8 @@ export const artifactSeqOf = (key: string): number => {
 };
 
 export const DISCOVERY_DEDUPE_INDEX_KEY = "discovery:dedupe-index";
+// R10: Deduplication index file seed path and helper key creator
+export const DEDUPE_INDEX_PATH = "state/dedupe-index.json";
+export function dedupeKvKey(name: string): string {
+  return `dedupe:${name}`;
+}

@@ -11,6 +11,11 @@ the frontier from these files alone.
   (labels `wayfinder:*`, `ready-for-agent`, `blocked`, `hitl`). Local `tickets/*.md` mirror each issue
   via an `issue:` front-matter line; resolutions are posted as issue comments AND appended locally.
 
+- **ops-residual / ops-seamless-verify maps**: local-markdown only.
+- **Index**: `src/wayfinder/tickets.ts` compiles every `tickets/*.md` for Mission Control
+  (`/dev/mission-control` → Tickets) and `npm run tickets`. Markdown remains canonical;
+  claim/resolve still happens by editing front-matter.
+
 ## Layout
 
 ```text

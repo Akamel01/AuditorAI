@@ -1,3 +1,4 @@
+// wave A: parallel_safe = true; locks = []
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -14,7 +15,9 @@ import { QueueTicker } from "./_components/queue-ticker";
 import { DiscoveryStatus } from "./_components/discovery-status";
 import { adminApi } from "@/lib/client";
 import { HarvestLog, type LedgerEntry } from "./_components/harvest-log";
-import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness } from "@/lib/client";
+import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness, fetchTickets } from "@/lib/client";
+import { TicketBoard } from "./_components/ticket-board";
+import type { TicketIndex } from "@/wayfinder/ticket-types";
 import { getAdminKey, setAdminKey } from "@/lib/client";
 import type { OddCoverageView } from "@/discovery/types";
 import type { OddDeclaration } from "@/domain/odd";
@@ -26,13 +29,14 @@ type LatestJob = {
   result?: { coverage?: unknown; packages?: unknown[]; hits?: unknown[]; queue?: unknown[] };
 } | null;
 
-type Segment = "overview" | "discovery" | "odd" | "readiness";
+type Segment = "overview" | "discovery" | "odd" | "readiness" | "tickets";
 
 const SEGMENTS: { value: Segment; label: string }[] = [
   { value: "overview", label: "Overview" },
   { value: "discovery", label: "Discovery" },
   { value: "odd", label: "ODD Matrix" },
   { value: "readiness", label: "Readiness" },
+  { value: "tickets", label: "Tickets" },
 ];
 
 type DiscoveryData = {
@@ -72,6 +76,7 @@ export default function MissionControlPage() {
   const [loading, setLoading] = useState(true);
   const [adminKeyInput, setAdminKeyInput] = useState("");
   const [adminKeySaved, setAdminKeySaved] = useState(false);
+  const [tickets, setTickets] = useState<TicketIndex | null>(null);
   const [latestJob, setLatestJob] = useState<LatestJob>(null);
   const [gapRunError, setGapRunError] = useState<string | null>(null);
   const [gapRun, setGapRun] = useState<{ id: string; status: string; cellKey: string | null } | null>(null);
@@ -142,15 +147,17 @@ export default function MissionControlPage() {
     setLoading(true);
     setError(null);
     try {
-      const [odd, cov, disc, red] = await Promise.all([
+      const [odd, cov, disc, red, tix] = await Promise.all([
         fetchOdd<OddDeclaration>(),
         fetchCoverage<OddCoverageView>(),
         fetchDiscovery<DiscoveryData>(),
         fetchReadiness<ReadinessPayload>(),
+        fetchTickets<TicketIndex>(),
       ]);
       setDeclaration(odd);
       setCoverage(cov);
       setDiscovery(disc);
+      setTickets(tix);
       const rep = (red as ReadinessPayload).readiness ?? (red as ReadinessPayload).report ?? null;
       if (rep) setReadiness(rep as ReadinessReport);
       setLearning(normalizeLearning((red as ReadinessPayload).learning ?? (red as ReadinessPayload).metrics));
@@ -358,6 +365,8 @@ export default function MissionControlPage() {
             {segment === "odd" && <OddMatrix declaration={declaration} coverage={coverage} onCellClick={setSelectedKey} selectedKey={selectedKey} />}
 
             {segment === "readiness" && <ReadinessMeters readiness={readiness} learning={learning} coverage={coverage} />}
+
+            {segment === "tickets" && tickets && <TicketBoard index={tickets} />}
           </div>
         )}
 

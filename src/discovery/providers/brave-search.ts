@@ -14,6 +14,7 @@ import {
   type DiscoveryProvider,
   type FetchResult,
 } from "./provider-types";
+import { setProviderDegraded } from "@/discovery/health-state";
 
 const JUR_SITE_FILTER: Record<JurisdictionId, string[]> = {
   UK: ["site:standardsforhighways.co.uk", "site:national-infrastructure-consenting.planningregistry.co.uk", "site:gov.uk"],
@@ -81,9 +82,21 @@ class BraveSearchProvider implements DiscoveryProvider {
         }
       }
     }
+    // Update health state based on discovery outcome (persisted across runs via health-state module)
+    // Import and use a lightweight counter to detect two consecutive zero-hits across runs.
+    // We only degrade after two consecutive zero-hit runs for the same provider.
+    // Degradation decision is handled in health-state.ts.
+    const { recordZeroHitOutcome } = await import("@/discovery/health-state");
+    recordZeroHitOutcome(this.id, hits.length === 0);
     if (hits.length === 0 && lastError) {
       // Quota exceeded (402) is terminal but non-fatal — return empty so pipeline can continue with seeds
-      if (lastError.includes("402") || lastError.includes("USAGE_LIMIT_EXCEEDED")) return hits;
+      if (lastError.includes("402") || lastError.includes("USAGE_LIMIT_EXCEEDED")) {
+        // Propagate a lightweight warning in logs for observability
+        console.warn(`[brave-search] quota reached: ${lastError}`);
+        // Still mark degraded to help monitoring (best-effort per task contract)
+        setProviderDegraded(this.id, true);
+        return hits;
+      }
       throw new Error(`brave-search discovered nothing: ${lastError}`);
     }
     return hits;

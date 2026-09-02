@@ -1,4 +1,5 @@
 // Discovery pipeline driver (D01..D10). Mirrors src/domain/pipeline discipline:
+// R16: Brave-search graceful degradation wiring implemented in BraveSearchProvider.
 // pure node functions, slices replaced whole, write-scope enforced, artifacts
 // carry provenance. No conversational memory is authoritative state.
 import type { CanonicalStage } from "@/domain/types";
