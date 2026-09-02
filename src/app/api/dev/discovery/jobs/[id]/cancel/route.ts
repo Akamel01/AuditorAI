@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import { getJob, updateJob } from "@/discovery/jobs";
 import { requireAdmin, serverError } from "@/lib/api";
 
-export async function POST(req: Request, ctx: { params: Promise<{ jobId: string }> }) {
+export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
   try {
-    const { jobId } = await ctx.params;
+    const { id: jobId } = await ctx.params;
     if (!jobId) return NextResponse.json({ error: "missing jobId" }, { status: 400 });
     // Load current job to ensure it exists; if not, 404
     const cur = await getJob(jobId);
