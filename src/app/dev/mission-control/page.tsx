@@ -18,6 +18,8 @@ import { HarvestLog, type LedgerEntry } from "./_components/harvest-log";
 import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness, fetchTickets } from "@/lib/client";
 import { TicketBoard } from "./_components/ticket-board";
 import type { TicketIndex } from "@/wayfinder/ticket-types";
+import { AiHarvestControl } from "./_components/ai-harvest-control";
+import { AiHarvestViz } from "./_components/ai-harvest-viz";
 import { getAdminKey, setAdminKey } from "@/lib/client";
 import type { OddCoverageView } from "@/discovery/types";
 import type { OddDeclaration } from "@/domain/odd";
@@ -29,7 +31,7 @@ type LatestJob = {
   result?: { coverage?: unknown; packages?: unknown[]; hits?: unknown[]; queue?: unknown[] };
 } | null;
 
-type Segment = "overview" | "discovery" | "odd" | "readiness" | "tickets";
+type Segment = "overview" | "discovery" | "odd" | "readiness" | "tickets" | "ai-harvest";
 
 const SEGMENTS: { value: Segment; label: string }[] = [
   { value: "overview", label: "Overview" },
@@ -37,6 +39,7 @@ const SEGMENTS: { value: Segment; label: string }[] = [
   { value: "odd", label: "ODD Matrix" },
   { value: "readiness", label: "Readiness" },
   { value: "tickets", label: "Tickets" },
+  { value: "ai-harvest", label: "AI Harvest" },
 ];
 
 type DiscoveryData = {
@@ -367,6 +370,19 @@ export default function MissionControlPage() {
             {segment === "readiness" && <ReadinessMeters readiness={readiness} learning={learning} coverage={coverage} />}
 
             {segment === "tickets" && tickets && <TicketBoard index={tickets} />}
+
+            {segment === "ai-harvest" && (
+              <div className="space-y-4">
+                <AiHarvestControl />
+                <AiHarvestViz stream={null} />
+                <Panel className="px-4 py-3">
+                  <Eyebrow code="CH AI">AI Stream · gpt-5-nano</Eyebrow>
+                  <p className="mt-1 font-mono text-[11px] leading-snug text-muted">
+                    Continuous AI harvesting via <span className="text-text">opencode/gpt-5-nano</span> web search. Structured workflow never stops till verified — control via Start/Pause/Resume/Stop, monitor via 2s poll, visualize hits → packages → quality. Fixtures & samples prove obtaining/finding.
+                  </p>
+                </Panel>
+              </div>
+            )}
           </div>
         )}
 
