@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it, beforeEach } from "vitest";
-import { createStream, saveStream, loadStream, tickStream, verifyStream } from "@/discovery/harvest-stream";
+import { createStream, saveStream, tickStream, verifyStream } from "@/discovery/harvest-stream";
 import { MemoryStore } from "@/lib/persistence/store";
 
 describe("harvest-stream continuous AI harvest", () => {
