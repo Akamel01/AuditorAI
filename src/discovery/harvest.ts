@@ -19,6 +19,7 @@ export const DEPRECATED_PROVIDERS = new Set(["google-cse"]);
 
 export const JUR_MAP: Record<string, "UK" | "US" | "CA" | "AE" | "INT"> = {
   uk: "UK",
+  us: "US",
   usa: "US",
   canada: "CA",
   international: "INT",

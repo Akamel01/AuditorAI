@@ -18,7 +18,7 @@ import { HarvestLog, type LedgerEntry } from "./_components/harvest-log";
 import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness, fetchTickets } from "@/lib/client";
 import { TicketBoard } from "./_components/ticket-board";
 import type { TicketIndex } from "@/wayfinder/ticket-types";
-import { AiHarvestControl } from "./_components/ai-harvest-control";
+import { AiHarvestControl, type Stream as HarvestStream } from "./_components/ai-harvest-control";
 import { AiHarvestViz } from "./_components/ai-harvest-viz";
 import { getAdminKey, setAdminKey } from "@/lib/client";
 import type { OddCoverageView } from "@/discovery/types";
@@ -64,6 +64,16 @@ function normalizeLearning(raw: unknown): LearningMetrics | null {
     return r as unknown as LearningMetrics;
   }
   return null;
+}
+
+function AiHarvestTab() {
+  const [harvestStream, setHarvestStream] = useState<HarvestStream | null>(null);
+  return (
+    <div className="space-y-4">
+      <AiHarvestControl onStream={setHarvestStream} />
+      <AiHarvestViz stream={harvestStream} />
+    </div>
+  );
 }
 
 export default function MissionControlPage() {
@@ -371,18 +381,7 @@ export default function MissionControlPage() {
 
             {segment === "tickets" && tickets && <TicketBoard index={tickets} />}
 
-            {segment === "ai-harvest" && (
-              <div className="space-y-4">
-                <AiHarvestControl />
-                <AiHarvestViz stream={null} />
-                <Panel className="px-4 py-3">
-                  <Eyebrow code="CH AI">AI Stream · gpt-5-nano</Eyebrow>
-                  <p className="mt-1 font-mono text-[11px] leading-snug text-muted">
-                    Continuous AI harvesting via <span className="text-text">opencode/gpt-5-nano</span> web search. Structured workflow never stops till verified — control via Start/Pause/Resume/Stop, monitor via 2s poll, visualize hits → packages → quality. Fixtures & samples prove obtaining/finding.
-                  </p>
-                </Panel>
-              </div>
-            )}
+            {segment === "ai-harvest" && <AiHarvestTab />}
           </div>
         )}
 

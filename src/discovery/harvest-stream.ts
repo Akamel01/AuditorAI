@@ -5,7 +5,8 @@ import type { DataStore } from "@/lib/persistence";
 import { getDataStore } from "@/lib/persistence/store";
 import { runDiscoveryPipeline, type DiscoveryCtx } from "@/discovery/pipeline";
 import { emptyDedupeIndex, type DedupeIndexDoc } from "@/discovery/dedupe";
-import { listProviderIds, resolveProvider } from "@/discovery/providers";
+import { listProviderIds, providerEnabled, resolveProvider } from "@/discovery/providers";
+import { DEPRECATED_PROVIDERS, JUR_MAP, themeFor } from "@/discovery/harvest";
 
 export type HarvestStreamStatus = "IDLE" | "RUNNING" | "PAUSED" | "VERIFYING" | "DONE" | "FAILED";
 
@@ -127,19 +128,20 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
   stream.currentNode = "D01-DISCOVER";
   appendLog(stream, "STREAM", `iteration ${stream.iteration} start`);
 
-  // Build DiscoveryCtx for this iteration
+  // Build DiscoveryCtx — reuse harvest.ts derivation (JUR_MAP + themeFor + provider resolution)
   const live = stream.live;
   const cellKey = stream.cellKey;
-  // minimal query derivation — reuse harvest.ts logic via providers
-  const providerIds = live ? listProviderIds().filter((p) => p !== "google-cse") : ["seed-portals"];
+  const providerIds = live
+    ? (["seed-portals", ...listProviderIds().filter((p) => p !== "seed-portals" && providerEnabled(p) && !DEPRECATED_PROVIDERS.has(p))] as string[])
+    : (["seed-portals"] as string[]);
   const providers = providerIds.map((pid) => resolveProvider(pid)).filter(Boolean) as NonNullable<ReturnType<typeof resolveProvider>>[];
 
   const ctx: DiscoveryCtx = {
     ranAtIso: nowIso(),
     query: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jurisdictions: (cellKey ? [cellKey.split(":")[0].toUpperCase()] : ["UK", "US", "CA", "AE", "INT"]) as any,
-      themes: cellKey ? [`${cellKey} road safety audit`] : ['"road safety audit"'],
+      jurisdictions: (cellKey ? [JUR_MAP[cellKey.split(":")[0].toLowerCase()] ?? "INT"] : (["UK", "US", "CA", "AE", "INT"] as const)) as any,
+      themes: cellKey ? [themeFor(cellKey)] : ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
     },
     providers,
     dedupeIndex: stream.dedupeIndex,
@@ -158,17 +160,13 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
 
   try {
     const { state } = await runDiscoveryPipeline(ctx);
-    // Update stream with pipeline results
+    // Update stream with pipeline results — also persist dedupe for next iteration
     stream.packages = (state.package as unknown[]) ?? [];
     stream.quality = (state.quality as unknown[]) ?? [];
     stream.coverage = (state.coverage as unknown) ?? null;
-    // claim dedupe
-    if (stream.quality.length > 0) {
-      for (const q of stream.quality as Array<{ dedupe_status: string }>) {
-        if (q.dedupe_status === "unique") {
-          // dedupeIndex already updated via pipeline's D08, but keep stream's copy
-        }
-      }
+    // pipeline returns dedupe via ctx.dedupeIndex when available (otherwise keep current)
+    if ((state as { dedupe?: DedupeIndexDoc }).dedupe) {
+      stream.dedupeIndex = (state as { dedupe: DedupeIndexDoc }).dedupe;
     }
     stream.currentNode = null;
     stream.status = "VERIFYING";

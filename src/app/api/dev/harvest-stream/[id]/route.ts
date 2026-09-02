@@ -11,9 +11,12 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
     const stream = await loadStream(id);
     if (!stream) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-    // auto-tick if RUNNING and iteration < max and not recently ticked (simple poll-driven)
-    // The UI polls every 2s, so we tick on GET when RUNNING
+    // auto-tick on poll — guard against double-tick if two polls race (1s debounce)
     if (stream.status === "RUNNING") {
+      const age = Date.now() - new Date(stream.updatedAt).getTime();
+      if (age < 1000 && stream.iteration > 0) {
+        return NextResponse.json({ stream });
+      }
       const ticked = await tickStream(id);
       return NextResponse.json({ stream: ticked });
     }
