@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it } from "vitest";
 import { runDiscoveryPipeline, type DiscoveryCtx } from "@/discovery/pipeline";
 import type { DiscoveryHit } from "@/discovery/types";
@@ -62,7 +63,8 @@ describe("ai-harvest obtaining/finding documents", () => {
     expect(matched[0].native_stage_id).toBe("uk:S1");
 
     // Run full pipeline with mocked acquireDocs
-    const { state } = await runDiscoveryPipeline(ctx);
+    const { state: _state } = await runDiscoveryPipeline(ctx);
+    void _state;
     // Since we used empty providers, D01 will produce 0 hits, so we need to test via direct pipeline with injected state
     // Instead, test the full pipeline via runDiscoveryPipeline with a custom provider that returns mockHits
     const mockProvider = {
@@ -76,7 +78,7 @@ describe("ai-harvest obtaining/finding documents", () => {
       query: { jurisdictions: ["UK"], themes: ['"road safety audit"'], limit: 2 },
       providers: [mockProvider as any],
       dedupeIndex: emptyDedupeIndex(),
-      acquireDocs: async (match) => [{ url: mockHits[0].url, bytes: new Uint8Array([37, 80, 68, 70, 45]), mime: "application/pdf" }],
+      acquireDocs: async (_match) => [{ url: mockHits[0].url, bytes: new Uint8Array([37, 80, 68, 70, 45]), mime: "application/pdf" }],
     };
     const outcome = await runDiscoveryPipeline(ctx2);
     expect(outcome.state.discovery_hits?.length).toBe(2);

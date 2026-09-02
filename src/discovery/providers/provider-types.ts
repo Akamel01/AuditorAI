@@ -53,6 +53,12 @@ export function providerEnabled(id: string): boolean {
       );
     case "seed-portals":
       return true; // offline curated seeds — always available
+    case "ai-search": {
+      const flag = process.env.DISCOVERY_AI_ENABLED === "true" || resolveSecret({ envVar: "DISCOVERY_AI_ENABLED", service: "auditorai/discovery-ai" }) === "true";
+      const key = resolveSecret({ envVar: "OPENCODE_API_KEY", service: "auditorai/opencode" }) !== null || !!process.env.OPENCODE_API_KEY;
+      // ponytail: gated off by default, no cost when disabled
+      return flag && key;
+    }
     default:
       return false;
   }

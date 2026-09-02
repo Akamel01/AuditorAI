@@ -4,8 +4,7 @@
 import type { DataStore } from "@/lib/persistence";
 import { getDataStore } from "@/lib/persistence/store";
 import { runDiscoveryPipeline, type DiscoveryCtx } from "@/discovery/pipeline";
-import { computeCoverage } from "@/discovery/coverage";
-import { checkDuplicate, emptyDedupeIndex, type DedupeIndexDoc } from "@/discovery/dedupe";
+import { emptyDedupeIndex, type DedupeIndexDoc } from "@/discovery/dedupe";
 import { listProviderIds, resolveProvider } from "@/discovery/providers";
 
 export type HarvestStreamStatus = "IDLE" | "RUNNING" | "PAUSED" | "VERIFYING" | "DONE" | "FAILED";
@@ -138,7 +137,8 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
   const ctx: DiscoveryCtx = {
     ranAtIso: nowIso(),
     query: {
-      jurisdictions: cellKey ? [cellKey.split(":")[0].toUpperCase() as any] : (["UK", "US", "CA", "AE", "INT"] as any),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jurisdictions: (cellKey ? [cellKey.split(":")[0].toUpperCase()] : ["UK", "US", "CA", "AE", "INT"]) as any,
       themes: cellKey ? [`${cellKey} road safety audit`] : ['"road safety audit"'],
     },
     providers,
@@ -146,7 +146,7 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
   };
 
   try {
-    const { state, artifacts } = await runDiscoveryPipeline(ctx);
+    const { state } = await runDiscoveryPipeline(ctx);
     // Update stream with pipeline results
     stream.packages = (state.package as unknown[]) ?? [];
     stream.quality = (state.quality as unknown[]) ?? [];

@@ -4,7 +4,7 @@
 // DISCOVERY_AI_ENABLED (off by default, like AI_ENABLED). Web search is via
 // the model's browsing capability, not Brave API.
 import { hitId } from "@/discovery/ids";
-import { resolveSecret, DISCOVERY_SECRETS } from "@/discovery/keychain";
+import { resolveSecret } from "@/discovery/keychain";
 import { withHostBudget } from "@/discovery/ratelimit";
 import type { DiscoveryHit } from "@/discovery/types";
 import type { DiscoveryProvider, DiscoverQuery, FetchResult } from "./provider-types";
