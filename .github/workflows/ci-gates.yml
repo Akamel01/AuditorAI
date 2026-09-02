@@ -1,0 +1,23 @@
+name: Gate: R13 eval freshness & R17 evidence HEAD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  gate-r13-r17:
+    name: R13/R17 Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Run R13 eval gate freshness check
+        run: node scripts/check-eval-gate-freshness.mjs
+      - name: Run R17 evidence HEAD anchoring check
+        run: node scripts/check-evidence-head.mjs

@@ -1,0 +1,66 @@
+{
+  "loop": 4,
+  "phase": "plan",
+  "status": "planning-complete; execution-gated",
+  "source": ".autoforge/discovery/tracker-index.md",
+  "tracker_count": 28,
+  "model_budget": "80k tok inherit muse-spark-1.2 1M*0.30 capped",
+  "reconciliation": {
+    "ops_T1": "closed",
+    "ops_T2": "closed_trace_blocked_by_R4",
+    "counting_proof": "19R + 1T2 + 8M = 28",
+    "r19_note": "R19 Wayfinder plumbing traceability triaged 2026-09-01 MAP:58-59",
+    "source_label_note": "tracker v2/v3 label lag; R1-R19 canonical ops-residual MAP.md:41-59"
+  },
+  "modules": [
+    {"id": "R1", "title": "Cross-instance harvest lock via Vercel KV atomic SET NX", "status": "BLOCKED", "touches": ["src/lib/persistence/store.ts", "src/discovery/harvest-lock.ts", "src/discovery/harvest.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "R2", "title": "Ledger KV ordering + orphan-key recovery", "status": "BLOCKED", "touches": ["src/discovery/ledger.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "R3", "title": "Regression tests for lock + dedup", "status": "BLOCKED", "touches": ["tests/discovery/regression-lock-dedup.test.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "F", "parallel_safe": true},
+    {"id": "R4", "title": "Production harvest proof bundle", "status": "BLOCKED", "touches": [".autoforge/validation/ops-loop-evidence-live.json", "stages/07_validate/output/ops-loop-evidence-live.json", ".autoforge/validation/report.md"], "hazard_touches": ["state/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "R5", "title": "Stop/Cancel server endpoint", "status": "OPEN", "touches": ["src/app/api/dev/discovery/jobs/[jobId]/cancel/route.ts", "src/discovery/jobs.ts", "src/discovery/harvest.ts", "src/app/dev/mission-control/_components/provider-health.tsx"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer", "page-workspace-single-writer"], "wave": "B", "parallel_safe": false},
+    {"id": "R6", "title": "Pagination cursor stability", "status": "OPEN", "touches": ["src/discovery/jobs.ts", "src/app/api/dev/discovery/jobs/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "B", "parallel_safe": false},
+    {"id": "R7", "title": "Refresh parity tooltip", "status": "OPEN", "touches": ["src/app/dev/mission-control/_components/provider-health.tsx"], "hazard_touches": ["src/app/dev/mission-control/_components/provider-health.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "C", "parallel_safe": false},
+    {"id": "R8", "title": "Health route harvestHealth", "status": "OPEN", "touches": ["src/discovery/health-aggregate.ts", "src/app/api/dev/health/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "B", "parallel_safe": false},
+    {"id": "R9", "title": "Discovery doctor JSON contract", "status": "OPEN", "touches": ["scripts/discovery-doctor.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
+    {"id": "R10", "title": "state/dedupe-index.json KV-truth", "status": "OPEN", "touches": ["src/discovery/dedupe-persist.ts", "src/lib/persistence/keys.ts"], "hazard_touches": ["src/lib/persistence/**", "state/**"], "blocked_by": [], "locks": ["persistence-single-writer", "vault-state-single-writer"], "wave": "B", "parallel_safe": false},
+    {"id": "R11", "title": "Drop speculative source comments", "status": "OPEN", "touches": ["src/discovery/harvest.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
+    {"id": "R12", "title": "AutoForge staging policy", "status": "OPEN", "touches": [".gitignore", ".autoforge/AGENTS.md"], "hazard_touches": ["vault/**", "state/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "D", "parallel_safe": false},
+    {"id": "R13", "title": "Eval gate freshness automation", "status": "OPEN", "touches": ["scripts/check-eval-gate-freshness.mjs", ".github/workflows/ci.yml"], "hazard_touches": ["state/**"], "blocked_by": [], "locks": ["eval-canonical-report", "vault-state-single-writer"], "wave": "D", "parallel_safe": false},
+    {"id": "R14", "title": "Tier-1 archive helper drift", "status": "OPEN", "touches": ["scripts/tier1-archive.mjs"], "hazard_touches": [], "blocked_by": [], "locks": ["eval-canonical-report"], "wave": "A", "parallel_safe": true},
+    {"id": "R15", "title": "README/CONTRIBUTING deploy refresh", "status": "OPEN", "touches": ["README.md", "CONTRIBUTING.md", "docs/ops/deploy.md"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
+    {"id": "R16", "title": "Brave 402 graceful degradation + monitoring", "status": "FOG", "touches": ["src/discovery/providers/brave-search.ts", "src/discovery/pipeline.ts", "src/app/api/dev/health/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": [], "wave": "E", "parallel_safe": true},
+    {"id": "R17", "title": "Evidence HEAD anchoring automation", "status": "FOG", "touches": ["scripts/check-evidence-head.mjs", ".github/workflows/ci.yml"], "hazard_touches": ["state/**", ".autoforge/validation/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "D", "parallel_safe": false},
+    {"id": "R18", "title": "Bento merge verification", "status": "FOG", "touches": [], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "E", "parallel_safe": true},
+    {"id": "R19", "title": "Wayfinder plumbing traceability", "status": "OPEN", "touches": ["workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md", "workflow/wayfinder/maps/ops-residual/MAP.md", "src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts", "src/app/dev/mission-control/page.tsx"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
+    {"id": "T2", "title": "Ops-seamless-verify", "status": "CLOSED", "touches": [], "hazard_touches": [], "blocked_by": ["R4"], "locks": [], "wave": "E", "parallel_safe": true},
+    {"id": "M1", "title": "Quote-bearing GF-6..10 baseline upgrade", "status": "BLOCKED", "touches": ["state/eval-scorecards/**", "vault/journal/**"], "hazard_touches": ["state/**", "vault/**"], "blocked_by": [], "locks": ["vault-state-single-writer", "eval-canonical-report"], "wave": "F", "parallel_safe": false},
+    {"id": "M2", "title": "Conditional blob-storage escape hatch", "status": "BLOCKED", "touches": ["src/domain/types.ts", "src/lib/persistence/project-store.ts", "src/lib/persistence/attachments/**"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "M3", "title": "Vault sync-conflict UX", "status": "BLOCKED", "touches": ["scripts/vault-sync.mjs", "scripts/vault-import.mjs"], "hazard_touches": ["vault/**", "state/vault-notes.json"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "M4", "title": "Report and recommendation drafting assists", "status": "BLOCKED", "touches": ["src/lib/ai.ts", "src/lib/inference.ts", "src/domain/candidate-review.ts"], "hazard_touches": ["state/eval-scorecards/**"], "blocked_by": ["M1"], "locks": ["eval-canonical-report"], "wave": "F", "parallel_safe": false},
+    {"id": "M5", "title": "Candidate-findings review UX", "status": "BLOCKED", "touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx", "src/domain/audit-workspace.ts"], "hazard_touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "M6", "title": "Audit-history retention policy", "status": "BLOCKED", "touches": ["src/lib/persistence/issue-ledger.ts", "src/lib/persistence/artifact-trail.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "M7", "title": "RSC initial Repository snapshot", "status": "BLOCKED", "touches": ["src/app/projects/[projectId]/page.tsx", "src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "hazard_touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "F", "parallel_safe": false},
+    {"id": "M8", "title": "Postgres third DataStore adapter", "status": "BLOCKED", "touches": ["src/lib/persistence/store.ts", "src/lib/persistence/keys.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false}
+  ],
+  "edges": [{"from": "M1", "to": "M4", "reason": "quality gate precedes AI assists — only true DAG edge"}, {"from": "R4", "to": "T2", "reason": "T2 CLOSED traceability; R4 owns ledgerGrowth/production/daemon"}],
+  "resource_locks": {
+    "vault-state-single-writer": {"modules": ["M1", "M3", "R4", "R10", "R12", "R13", "R17"], "mode": "sequential"},
+    "persistence-single-writer": {"modules": ["M2", "M6", "M8", "R1", "R2", "R5", "R6", "R8", "R10"], "mode": "sequential-ready-order"},
+    "page-workspace-single-writer": {"modules": ["M5", "M7", "R5", "R7", "R19"], "mode": "sequential-ready-order"},
+    "eval-canonical-report": {"modules": ["M1", "M4", "R13", "R14"], "mode": "sequential"}
+  },
+  "waves": [
+    {"id": "wave-A-docs-safe", "wave": "A", "parallel": true, "members": ["R9", "R11", "R15", "R14", "R19"]},
+    {"id": "wave-B-persistence-serial", "wave": "B", "parallel": false, "members": ["R5", "R6", "R8", "R10"]},
+    {"id": "wave-C-page-workspace-serial", "wave": "C", "parallel": false, "members": ["R7", "R5"]},
+    {"id": "wave-D-vault-state-serial", "wave": "D", "parallel": false, "members": ["R12", "R13", "R17"]},
+    {"id": "wave-E-fog-verify", "wave": "E", "parallel": true, "members": ["R16", "R18", "T2"]},
+    {"id": "wave-F-blocked", "wave": "F", "parallel": false, "members": ["R1", "R2", "R3", "R4", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"]}
+  ],
+  "global_guardrails": {
+    "vault_determinism": "node scripts/vault-sync.mjs --check",
+    "evidence_byte_identity": "cmp -s .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json",
+    "staging_hygiene": "git add <paths> only",
+    "ponytail": "reuse DataStore seam, stdlib, smallest diff, no new deps"
+  }
+}

@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getDataStore, type DataStore } from "@/lib/persistence";
 
-export type DiscoveryJobStatus = "queued" | "running" | "done" | "error";
+export type DiscoveryJobStatus = "queued" | "running" | "done" | "error" | "cancelled";
 
 export interface DiscoveryJobLog {
   at: string;
@@ -214,29 +214,63 @@ export async function getJob(id: string, store?: DataStore): Promise<DiscoveryJo
   return readJobsFile().jobs[id] ?? null;
 }
 
-export async function listJobs(limit = 10, store?: DataStore): Promise<DiscoveryJob[]> {
+// List a page of jobs using a stable cursor strategy.
+// - If cursor is provided and exists in the index, return the next page after the cursor.
+// - If cursor is provided but not found (trimmed/past), return the latest page (0..limit).
+// - If no cursor is provided, return the latest page (0..limit).
+// Always return an object with { jobs, nextCursor } where nextCursor is the id of the
+// last item in the returned page (or null if the page is empty).
+export async function listJobs(
+  limit = 10,
+  cursor?: string,
+  store?: DataStore
+): Promise<{ jobs: DiscoveryJob[]; nextCursor: string | null; total: number }> {
   const ids = await loadIndex(store);
-  const slice = ids.slice(0, limit);
-  if (slice.length === 0) return [];
+  const total = ids.length;
+  // determine the ids that should be in this page
+  let pageIds: string[];
+  if (cursor) {
+    const idx = ids.indexOf(cursor);
+    if (idx >= 0) {
+      pageIds = ids.slice(idx + 1, idx + 1 + limit);
+      // if cursor exists but there are no items after it, fall back to latest page
+      if (pageIds.length === 0) {
+        pageIds = ids.slice(0, limit);
+      }
+    } else {
+      // cursor not found (trimmed past), return latest page
+      pageIds = ids.slice(0, limit);
+    }
+  } else {
+    pageIds = ids.slice(0, limit);
+  }
+  if (pageIds.length === 0) {
+    return { jobs: [], nextCursor: null, total };
+  }
+  // fetch the actual job objects from the chosen storage
+  let jobs: DiscoveryJob[] = [];
   if (store) {
     try {
-      const jobs = await store.getMany<DiscoveryJob>(slice.map(key));
-      return jobs.filter((j): j is DiscoveryJob => j !== null);
+      const found = await store.getMany<DiscoveryJob>(pageIds.map((id) => key(id)));
+      jobs = found.filter((j): j is DiscoveryJob => j !== null);
     } catch {
-      return [];
+      jobs = [];
     }
-  }
-  if (isKv()) {
+  } else if (isKv()) {
     try {
       const s = getDataStore();
-      const jobs = await s.getMany<DiscoveryJob>(slice.map(key));
-      return jobs.filter((j): j is DiscoveryJob => j !== null);
+      const found = await s.getMany<DiscoveryJob>(pageIds.map((id) => key(id)));
+      jobs = found.filter((j): j is DiscoveryJob => j !== null);
     } catch {
-      return [];
+      jobs = [];
     }
+  } else {
+    const data = readJobsFile();
+    jobs = pageIds.map((id) => data.jobs[id]).filter((j): j is DiscoveryJob => !!j);
   }
-  const data = readJobsFile();
-  return slice.map((id) => data.jobs[id]).filter((j): j is DiscoveryJob => !!j);
+  // compute nextCursor as the last id returned, or null if none
+  const nextCursor = pageIds[pageIds.length - 1] ?? null;
+  return { jobs, nextCursor, total };
 }
 
 export async function updateJob(

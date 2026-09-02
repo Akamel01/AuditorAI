@@ -27,7 +27,7 @@ type HealthResult = {
 
 type DiscoveryJob = {
   id: string;
-  status: "queued" | "running" | "done" | "error";
+  status: "queued" | "running" | "done" | "error" | "cancelled";
   live: boolean;
   cellKey: string | null;
   providers: string[];
@@ -164,6 +164,10 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
     stopPolling();
     setPaused(true);
     setRunOk((prev) => prev ?? `paused · ${job?.id.slice(0, 8) ?? ""} — job continues`);
+    // server cancel — fire-and-forget, ponytail: reuse fetch, no new dep
+    if (jobId) {
+      void fetch(`/api/dev/discovery/jobs/${jobId}/cancel`, { method: "POST" }).catch(() => {});
+    }
   }
 
   function handleResume() {
@@ -416,7 +420,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
         </div>
 
         {/* persisted progress — survives refresh/tab switch */}
-        {job && (
+          {job && (
           <div className="mt-3 rounded-md border border-hairline bg-sunken px-3 py-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-subtle">
@@ -475,6 +479,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
                   if (onRun) await onRun();
                 }}
                 className="inline-flex cursor-pointer items-center rounded border border-hairline bg-surface px-2.5 py-1 font-mono text-[10px] tracking-[0.04em] text-text hover:bg-sunken"
+                title="Refresh bypasses onRun dedup — deliberate manual inspection, no scheduling side-effect"
               >
                 Refresh
               </button>

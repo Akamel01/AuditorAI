@@ -7,6 +7,10 @@ import { listProviderIds, providerEnabled, resolveProvider } from "@/discovery/p
 import "@/discovery/providers";
 import { DESCRIPTORS } from "@/domain/pipeline/registry";
 import { DISCOVERY_NODE_IDS } from "@/discovery/types";
+import { aggregateHarvestHealth } from "@/discovery/health-aggregate";
+import { isAnyProviderDegraded } from "@/discovery/health-state";
+import { withPersistenceSingleWriter } from "@/lib/persistence/single-writer";
+import type { LedgerEntry } from "@/discovery/ledger";
 
 export async function GET(req: Request) {
   const auth = await requireAdmin(req);
@@ -128,13 +132,37 @@ export async function GET(req: Request) {
         discoveryGraphNodes: DISCOVERY_NODE_IDS.length,
       };
     }
+    // Harvest health snapshot (pure function) derived from the discovery ledger.
+    let harvestHealth: ReturnType<typeof aggregateHarvestHealth> = {
+      lastRunAt: null,
+      lastSuccessAt: null,
+      lastHits: null,
+      degraded: false,
+    };
+    try {
+      harvestHealth = await withPersistenceSingleWriter(async () => {
+        try {
+          const raw = readFileSync(path.join(root, "state", "discovery-ledger.json"), "utf8");
+          const doc = JSON.parse(raw) as { entries?: LedgerEntry[] };
+          const entries = Array.isArray(doc.entries) ? (doc.entries as LedgerEntry[]) : [];
+          return aggregateHarvestHealth(entries);
+        } catch {
+          return { lastRunAt: null, lastSuccessAt: null, lastHits: null, degraded: false } as ReturnType<typeof aggregateHarvestHealth>;
+        }
+      });
+    } catch {
+      harvestHealth = { lastRunAt: null, lastSuccessAt: null, lastHits: null, degraded: false } as ReturnType<typeof aggregateHarvestHealth>;
+    }
 
+    const healthDegraded = isAnyProviderDegraded();
     return NextResponse.json({
       providers: providerResults,
       ledger: ledgerAge,
       ledgerAge,
       topology,
       topologyDrift: topology,
+      harvestHealth,
+      health_degraded: healthDegraded,
     });
   } catch (e) {
     return serverError(e);

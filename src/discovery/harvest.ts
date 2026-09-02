@@ -10,7 +10,7 @@ import "@/discovery/providers";
 import { DISCOVERY_NODE_IDS } from "@/discovery/types";
 import { runDiscoveryNode, type DiscoveryCtx, type RawDocument } from "@/discovery/pipeline";
 import type { MatchAssignment } from "@/discovery/types";
-import { appendLog, createJob, setJobDone, setJobError, setJobRunning, updateJob } from "@/discovery/jobs";
+import { appendLog, createJob, setJobDone, setJobError, setJobRunning, updateJob, getJob } from "@/discovery/jobs";
 import { getLedgerTailKV } from "./ledger";
 import type { LedgerEntry } from "./ledger";
 import type { DataStore } from "@/lib/persistence";
@@ -94,7 +94,6 @@ function resolveRead(deps?: HarvestDeps): (p: string, enc: string) => string {
   return deps?.readFileSync ?? ((p: string, enc: string) => readFileSync(p, enc as BufferEncoding) as unknown as string);
 }
 
-// Removed: best-effort git metadata helper (no longer used)
 
 // Simple, process-wide harvest lock to avoid concurrent writes/ledger races.
 // Note: This lock is intentionally process-local only. It cannot prevent
@@ -110,6 +109,24 @@ export async function executeJob(
   ranAtIso: string,
   deps?: HarvestDeps,
 ): Promise<void> {
+  // Early cancellation check: if the job has already been cancelled server-side,
+  // bail out before acquiring the process-wide lock. This ensures idempotent
+  // cancellation semantics and prevents wasted work.
+  const storeForCheck = deps?.store;
+  try {
+    const cur = await getJob(jobId, storeForCheck);
+    if (cur && cur.status === "cancelled") {
+      // Best-effort log, but do not proceed with harvesting.
+      try {
+        await appendLog(jobId, { at: new Date().toISOString(), node: "D00-CANCELLED", message: "harvest cancelled (server)" }, storeForCheck);
+      } catch {
+        // ignore log failure
+      }
+      return;
+    }
+  } catch {
+    // ignore cancellation check failures; proceed defensively
+  }
   // Guard against concurrent harvest invocations within the same process.
   // If the lock is already held, we currently throw to surface a clear
   // busy-state. Callers may catch this on fire-and-forget paths and surface
@@ -145,6 +162,14 @@ export async function executeJob(
     let refusals: string[] = [];
 
     for (const nodeId of DISCOVERY_NODE_IDS) {
+      // per-node cancellation poll — ponytail: one guard in shared function, smallest diff
+      try {
+        const cur2 = await getJob(jobId, store);
+        if (cur2 && cur2.status === "cancelled") {
+          await appendLog(jobId, { at: nowIso(), node: "D00-CANCELLED", message: `harvest cancelled before ${nodeId}` }, store);
+          return;
+        }
+      } catch {}
       await updateJob(jobId, { currentNode: nodeId }, store);
       await appendLog(jobId, { at: nowIso(), node: nodeId, message: `start ${nodeId}` }, store);
       const t0 = Date.now();
