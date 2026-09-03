@@ -1,156 +1,152 @@
-# Plan Critique — 28-entry Frontier (R1–R19 + T2 + M1–M8) — Executable DAG
+# Plan Critique — Vault Memory Update (vault-state determinism + 2 gotcha settlements)
 
-**Reviewer:** autoforge-reviewer (independent, read-only, ponytail, grill-with-docs)  
-**Date:** 2026-09-01  
-**Scope:** `.autoforge/plans/plan.md` (394 lines verbatim) + `.autoforge/execution/work-order.json` (66 lines verbatim) vs `.autoforge/discovery/tracker-index.md` (28 entries, 140 lines) + `.autoforge/requirements/grilling.md` (519 lines patched) + `.autoforge/architecture/report.md` (346 lines) + `decisions.md` (124 lines) + `workflow/wayfinder/maps/ops-residual/MAP.md:41-59` + `src/lib/persistence/store.ts:16-181` + `scripts/vault-sync.mjs:16-44`  
-**Mode:** planning-only critique; no product code dispatched; 80k tok cap inherited (muse-spark-1.2 1M → 80k) respected — inputs sized to cap verbatim  
-**Skills:** `code-review` (standards + spec two-axis), `ponytail` (ladder), `lean-build` smallest-diff
+**Reviewer:** autoforge-reviewer (independent, read-only, ponytail, least-privilege)  
+**Date:** 2026-09-02  
+**Scope:** `.autoforge/plans/plan.md` (237 lines verbatim) + `.autoforge/execution/work-order.json` (140 lines verbatim) vs `.autoforge/discovery/tracker-index.md` (2 lines verbatim) + `.autoforge/discovery/report.md` (14 lines) + `.autoforge/requirements/grilling.md` (60 lines, Q1–Q10 R1–R6) + `.autoforge/architecture/report.md` (270 lines §1–§9) + `decisions.md` (112 lines AD-01–AD-10) + `vault/CHARTER.md:18-20,64-71` + `scripts/vault-sync.mjs:16-44` + `state/vault-notes.json:4,7-35`  
+**Mode:** planning-only; no dispatch; read-only; 80k tok cap inherit `opencode/muse-spark-1.2-contributor-free 1M*0.30` respected  
+**Skills:** `code-review` (two-axis), `ponytail` (ladder), `lean-build` smallest-diff, `codebase-design` seams
 
 ## Verdict
 
 **APPROVED_WITH_NOTES**
 
-Plan is complete, architecturally consistent, and safe to hold as planning-only. All 28 tracker entries are enumerated once with correct `touches`/`locks`/`wave`/`acceptance`, DAG is minimal (`M1→M4` + `R4→T2` traceability only), R19 gap resolved, vault determinism & evidence byte-identity invariants preserved, ponytail enforced. Three file-level lock/hazard normalizations remain before any parallel scheduler dispatch — not exploitable today (overlapping writers are gated BLOCKED/FOG or serialized by wave order) but must be normalized so a scheduler honoring only `locks` cannot race. No irreversible, ambiguous, or doctrine-violating defect found.
+Plan is complete, architecturally consistent, and safe to hold as planning-only. Enumeration covers both frontier tickets once, DAG is minimal and acyclic (`VG-01,VG-02 → VG-SYNC`), vault determinism guard (`scripts/vault-sync.mjs:16-44` HEAD worktree) is correctly isolated to VG-SYNC, staging hygiene and front-matter contract enforced, ponytail ceilings explicit. One hazard-normalization note (file-level disjoint guard) and one staging/documentation polish remain before parallel scheduler dispatch — neither blocks planning approval, neither is exploitable today (VG-01/VG-02 are the only prose writers, VG-SYNC is sole state writer, Phase 0 `vault-sync --check` currently green). No frozen-doctrine, irreversible, or speculative defect.
 
 ---
 
-## 1. Completeness — PASS
+## 1. Enumeration completeness — PASS
 
-- **28 entries enumerated exactly once:** `plan.md:11-42` table lists 19×R + 1×T2 + 8×M = 28; `.autoforge/discovery/tracker-index.md:1-140` same 28 verbatim; `work-order.json:15-43` modules 28 × `id`. Counting proof `plan.md:44` `19R+1T2+8M=28` and `work-order.json:11` `19R + 1T2 + 8M = 28` match. Prior 27-entry omission of R19 is explicitly fixed at `plan.md:44` and `work-order.json:12` `r19_note`.
-- **R19 added correctly:** `tracker-index.md:93-95` `R19 Wayfinder plumbing traceability — OPEN` triaged 2026-09-01; canonical `MAP.md:58-59` (read 59 lines) lists R19 last; `plan.md:33` R19 row `OPEN — markdown canonical via tickets.ts` + `plan.md:235-243` module with `touches` 5 files, `read_for_gate`, `blocked_by:[]`, `Lock: none — Wave: A`; `work-order.json:34` R19 entry matches; `architecture/report.md:187-203` + `decisions.md:63-71` AD-09 cover seam (`tickets.ts:30-42` `parseTicketFrontMatter`/`classifyTickets`). No omission, no invention.
-- **Source label lag reconciled:** `tracker-index.md:2` still `v2/v3 Not-yet-specified` stale label per `plan.md:13-42` `Tracker Source` column; canonical pinned to `MAP.md:41-59` for R1–R19 and Loop-3 `plan.md:66-196` for M1–M8 — correct per `grilling.md:3` and `architecture/report.md:4`.
-- **Every module declares `touches`, `lock`, `wave`, `acceptance`:** Verified in `plan.md:66-325` §3 (28 modules) each has `touches: [...]`, `blocked_by`, `Lock`/`Locks`, `Wave`, `Acceptance: [ ]` checkboxes (including verify-only R18 `touches: []` + read_for_gate, T2 `touches: []`). `work-order.json:15-43` mirrors per-module `touches`/`locks`/`wave`. Acceptance boxes are concrete and testable (see §5).
+- **Counting proof holds:** `tracker-index.md:1-2` `wc -l`=2 verified; `state/vault-notes.json:4` `note_count:25` with `notes[0] vault/gotchas/journal-deletions-and-tz.md status:"open" :12` and `notes[1] vault/gotchas/opencode-api-key-invocation.md status:"open" :26` (verified via `python3 -c` at review time). `discovery/report.md:7` confirms 2 open gotchas at `state/vault-notes.json:7-13,22-28`. `architecture/report.md:§1` counts same 2.
+- **Plan enumerates 2 frontier modules + 1 infra closure:** `plan.md:20-23` table rows VG-01, VG-02 map 1:1 to tracker lines `tracker-index.md:1` and `:2` with verbatim citations; `plan.md:25` `2 frontier tickets = 2 frontier modules (VG-01, VG-02) + 1 infra closure module (VG-SYNC)` and `work-order.json:13` `tracker_count:2` + `work-order.json:19-73` modules `[VG-01,VG-02,VG-SYNC]` match. Notation `VG-SYNC — infra closure — not a frontier ticket` at `plan.md:107` and `work-order.json:58-60` correctly distinguishes machine-canonical compilation from frontier prose.
+- **No merge, no omission, no invention:** Distinct operational domains cited — filesystem/append-only+TZ forensics (VG-01) vs keychain/eval invocation (VG-02) at `plan.md:25`; quoting front-matter vs journal bodies differ; dedup would fail. First-item-only failure mode explicitly called out at `plan.md:25` `First-item-only would be VG-01 alone → failure`.
+- **Shared-state note correct:** `plan.md:27` `note_count:25` → single `state/vault-notes.json` serialized under `vault-state-single-writer` (AD-09) + tracker-index downstream mirror must co-commit (grilling Q4–Q5 `grilling.md:19-21`, arch `report.md:§6` hazard table). VG-SYNC is that co-committer.
 
-## 2. Dependency ordering — PASS
+## 2. Dependency ordering (DAG) — PASS
 
-- **Semantic DAG edges only where data/HITL requires it:** `plan.md:46` `Only true DAG edges: M1→M4 and R4→T2` + `plan.md:328-337` diagram (M1→M4, R4→T2) + `work-order.json:45` `edges: [{M1→M4},{R4→T2}]`. All other `blocked_by:[]` (26 modules) per `plan.md:73,83,93,101,112...` and `work-order.json:16-43`. Matches `grilling.md:14-15` hazard-only + prior plan `393-395` + `architecture/report.md:16` `Single-writer locks … blocked_by stays semantic only (M1→M4)`. Graph acyclic; no false `M2→M6→M8` chain.
-- **Hazard vs DAG separated correctly:** Resource overlaps (`persistence`, `page-workspace`, `vault-state`, `eval-canonical`) are serialized by `locks` not `blocked_by` — `plan.md:339-346` locks table + `architecture/report.md:255-264` + `decisions.md:88-94` AD-11. Correct per lean-build: smallest diff without speculative ordering.
-- **External HITL/owner gates enumerated:** `work-order.json:13` `source_label_note` + `plan.md:60-61` `External gates 5 R HITL + 8 M owner gates — held = not dispatched` matching `decisions.md:14-18` `AD-10` gates (`OWNER_GF_SOURCE`, `BLOB_LIMIT_TRIGGER`, `VAULT_CONFLICT_TRIGGER`, `FLAG_1/2`, `PHASE_3`, `HITL_PRODUCTION_DAEMON_PROOF`, `FOG_BRAVE_QUOTA_REPLENISHMENT_HITL`). No dispatch before gate.
+- **DAG minimal and acyclic:** `plan.md:134-140` diagram `VG-01 ──┐ ├──► VG-SYNC / VG-02 ──┘` + `plan.md:142-143` edges `VG-01→VG-SYNC`, `VG-02→VG-SYNC`; `work-order.json:75-78` edges with reason `prose must be in HEAD before HEAD worktree compile can reflect settled (vault-sync.mjs:17 worktree from HEAD)`; `work-order.json:79-84` `DAG.nodes [VG-01,VG-02,VG-SYNC] edges [[VG-01,VG-SYNC],[VG-02,VG-SYNC]] topological_order [[VG-01,VG-02],[VG-SYNC]]`. No edge `VG-01→VG-02` (`plan.md:144`, `work-order.json:83`).
+- **Hazard vs semantic separation correct:** `plan.md:145` `No other DAG edges. All other overlaps are resource hazards serialized by vault-state-single-writer, not semantic DAG. blocked_by:[] for VG-01/VG-02 means hazard-only per grilling.md:14-15`. Matches `architecture/report.md:§6` sequencing `discovery→grilling→architect→settlement PRs→vault-sync→CI` where only data dependency is prose→HEAD→compile. No false `VG-01→VG-02` chain.
+- **Phase gating correct:** `plan.md:47-52` Phase 0 baseline `--check` green else `vault-sync, commit, push`; Phase 1 P prose parallel, Phase 2 S determinism closure blocked by 1, Phase 3 proof gates `--check` + `git diff --exit-code` + `typecheck`. Verified at review time `node scripts/vault-sync.mjs --check` → `committed vault state matches HEAD compilation` exit 0, `git diff --exit-code -- vault/views state/vault-notes.json` exit 0 — gate satisfied, no pre-dispatch refresh needed before plan hold.
 
 ## 3. Architecture consistency — PASS
 
-- **Seams reuse, not invention:** R1 `DataStore.setIfAbsent` via `KvRestStore.call()` at `store.ts:68` (`plan.md:69` `["SET",k,v,"NX","EX",ttl]` + `MemoryStore` atomic) reuses `store.ts:16-26,68`; R2 ledger `appendLedgerKV`/`getLedgerTailKV` at `ledger.ts:8-39` hardening; R8 `health-aggregate.ts` pure fn; R10 KV-first `dedupe-persist.ts:16-72` + `keys.ts:50`; R16 402 `return []` observable; R19 `tickets.ts:30-42` compile. All match `architecture/report.md §2-3` seam inventory + `decisions.md AD-01..AD-09`. No `DistLockService`, ORM, AI framework.
-- **Locks sourced from architecture:** `plan.md:339-346` lock table vs `architecture/report.md:259-264` + `decisions.md:88-94` — `vault-state-single-writer` 7 members, `persistence-single-writer` 10 members (+R16 hazard parenthetical), `page-workspace-single-writer` 5 members, `eval-canonical-report` 4 members. Policy sequential/ready-order correct.
-- **Frozen doctrine preserved:** `plan.md:59` `Thresholds, judge prompts, E5, ODD frozen` + `work-order.json:60-64` `global_guardrails` citing `docs/validation/eval-gates.md:8-12`; R13 threshold sourced from file not hardcoded `plan.md:181`; M1 no threshold mutation. Verified `eval-gates.md:13-18` trigger paths unchanged.
-- **Vault & evidence as structural invariants:** `plan.md:52-55` guardrails + `plan.md:363` `Global proof before handoff` (`vault-sync --check` + `cmp -s` + `typecheck`) + `architecture/report.md §5` + `decisions.md AD-12`. At review time verified: `vault-sync --check` pass (`scripts/vault-sync.mjs:16-44` HEAD worktree compiler) and `cmp -s .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json` identical (`plan.md:394` anchors `056b75f`/`61c7475`/`a715ee8` consistent with current `HEAD a715ee8`).
+- **Three zones locked:** `plan.md:9-10` cites `vault/CHARTER.md:18-20` zones + front-matter contract `scripts/lib/frontmatter.mjs:78-109` + `vault-sync.mjs:16-44` determinism + `CHARTER.md:82-85` amendment — matches `architecture/report.md:§1` and `decisions.md:AD-01` (Prose/Views/Registries), `AD-02` (HEAD worktree ONLY), `AD-03` (append-only per-session), `AD-04` (gotcha `open→settled` + journal), `AD-05` (wholesale `rmSync`), `AD-07` (front-matter seam).
+- **Seams reuse, not invention:** `plan.md:39` ponytail `Reuse frontmatter.mjs + paths.mjs + yaml already installed; stdlib (fs,path,crypto,child_process); no new deps, no new generic facade, no ORM, wholesale regen O(n) n=161 stays` matches `architecture/report.md:§2` seam inventory (front-matter parser `frontmatter.mjs:3-133`, vault-import `vault-import.mjs:14-90` sorted `path.localeCompare :79`, vault-export `vault-export.mjs:45-96` `sha :14-16` + `rmSync :46`, vault-sync `vault-sync.mjs:14-52` worktree+symlink+Buffer.equals `:31`). No `DistLockService`, no incremental patch, no `compileTrackerIndex()` — deferred per `decisions.md:AD-08` until n>10/1k.
+- **Determinism invariant pinned:** `plan.md:34-35` guardrail `Never node scripts/vault-import.mjs / vault-export.mjs bare before commit. Only node scripts/vault-sync.mjs (sync) or --check` cites `scripts/vault-sync.mjs:2-6` `AGENTS.md:15-18` `decisions.md:AD-02`; `plan.md:35` byte-identical `sorted by path.localeCompare at vault-import.mjs:79, JSON stringify+"\n" at :88; views source_hash: sha(stateJSON).slice(0,12) at vault-export.mjs:14-16; CI git diff --exit-code -- vault/views state/vault-notes.json` matches `vault-sync.mjs:28-31` `Buffer.equals` and `ci.yml:50`. Verified `vault-sync.mjs:17` `git worktree add --detach ${tmp} HEAD`, `:19` symlink `node_modules`, `:21-22` compile-in-tmp, `:28-31` --check compare, `:42` sync `fs.writeFileSync(live,compiled)`, `:45-52` finally cleanup.
+- **Least-privilege & ownership:** `plan.md:232` mapping human owns `vault/decisions|research-notes|gotchas` bodies (`CHARTER.md:66-67` agents propose, owner applies — but `owner:agent` here so agent may settle with journal proof at `plan.md:90`), agent may append journal only (`:18,64`), machines own `vault/views/**` + `state/*.json` — matches `decisions.md:AD-09` locks. Wayfinder deferred at `plan.md:61` `wayfinder only if frontier >10 (not now; kept hand-edited per AD-08)` — correct per `architecture/report.md:§8` Speculative tracker-index.
 
-## 4. Assumptions — explicit and justified
+## 4. Touches overlap guard — PASS_WITH_NOTE
 
-- R1 TTL 3600 >> maxDuration 60s (`plan.md:74` `ponytail: 3600s TTL ceiling`) — justified at `store.ts:130-181` fallback discussion + `architecture/report.md:45`.
-- Ledger 500-trim bound (`plan.md:84` `ponytail: 500-trim bound`) — `ledger.ts:25` cited, bounded for `KEYS` latency.
-- `getDataStore()` silent fallback split-brain flagged as accepted ceiling until M8 (`plan.md:384` + `architecture/report.md:310` + `store.ts:130-181`) — not silently fixed, honest `store?` injection retained.
-- Evidence `generatedAt` ±24h HEAD author date (`plan.md:219`) — explicit via `check-evidence-head.mjs`.
+- **VG-01 vs VG-02 disjoint prose:** `plan.md:72` `touches: [vault/gotchas/journal-deletions-and-tz.md, vault/journal/*.md]` vs `plan.md:92` `touches: [vault/gotchas/opencode-api-key-invocation.md, vault/journal/*.md]` — distinct gotcha files, no shared file. `work-order.json:25` vs `:43` mirror. Good.
+- **Journal directory overlap is file-level disjoint by convention:** Both `hazard_touches: [vault/journal/**]` at `plan.md:73,93` and `work-order.json:26,44` intersect at directory level. Plan marks `parallel_safe: true` with `parallel_notes: disjoint touches ... distinct journal filename` at `work-order.json:31,49` and `plan.md:76` `Wave: P — parallel_safe: true ... intersecting vault/journal/** only at directory level, not file level — guard is filename` plus `plan.md:85` `ponytail: global file-per-session ceiling; per-file lock deferred` and `architecture/report.md:§6` `per-session file level; no lock if naming holds`. Guard `plan.md:158` `disjoint touches (distinct gotcha file + distinct journal filename); no shared lock; may dispatch same turn as two Task calls` relies on scheduler enforcing distinct filenames (`vault/journal/YYYY-MM-DD-journal-deletions-settled.md` at `plan.md:79` vs `vault/journal/YYYY-MM-DD-opencode-key-settled.md` at `plan.md:91`).
+- **VG-SYNC is sole state/views writer:** `plan.md:112` `touches: [state/vault-notes.json, vault/views/**, vault/views/evidence/**, .autoforge/discovery/tracker-index.md]` + `hazard_touches: [state/**, vault/views/**, .autoforge/discovery/tracker-index.md]` `blocked_by: [VG-01, VG-02]` `Wave: S — parallel_safe: false` + `work-order.json:61-72` locks `vault-state-single-writer modules [VG-SYNC] mode sequential` — correct. No concurrent `state/**` writer. Overlap with VG-01/VG-02 is read-only at compile time (worktree reads HEAD), not write-write — serialized by DAG, not lock.
+- **Note N1 (non-blocking):** A strict `hazard_touches` glob scheduler would see `vault/journal/** ∩ vault/journal/**` and serialize VG-01↔VG-02 despite `parallel_safe:true`. Plan's escape is the filename guard. Before dispatch, normalize either (a) narrow `hazard_touches` to file-specific globs (`vault/journal/*-journal-deletions-*` vs `vault/journal/*-opencode-*`) or (b) keep directory glob but add explicit scheduler annotation `parallel_safe true iff journal filenames differ — enforce distinct slugs`. Current working-tree `work-order.json:113-116` shared_state_guard already documents file-level disjoint, so this is a normalization polish, not a blocking defect. No CHANGES_REQUIRED, but reviewer requires the note to be honored at dispatch.
 
-## 5. Testability / Acceptance — PASS
+## 5. Testability via `vault-sync --check` — PASS
 
-Every module has checkbox acceptance with `vitest`/`typecheck`/`build`/`lint`/`rg`/`cmp` concrete checks, no new harness:
+Each module defines machine gates, not prose-only checkmarks:
 
-- R1 `plan.md:74` concurrent MemoryStore 1 true/1 false + release + WARN fallback
-- R2 `plan.md:84` 50-entry concurrent append + orphan heal writeback
-- R3 `plan.md:93` busy-harvest + `lastOnRunJobId` dedup at `provider-health.tsx:138` + spy `appendLedgerKV` before `setJobDone` at `harvest.ts:188-211`
-- R5 `plan.md:113` cancel flip `running→cancelled` + next iteration bails
-- R6 `plan.md:122` cursor present/missing/trimmed-past 3-case
-- R7 `plan.md:130` DOM title `bypasses.*dedup`
-- R8 `plan.md:140` `GET /health` additive shape nullable
-- R9 `plan.md:148` `--live --json` valid JSON
-- R11 `plan.md:166` `rg getGitHead` 0 hits + typecheck green — lean
-- R13 `plan.md:186` fresh→pass stale→fail + `run tier1 --topup` msg
-- R16 `plan.md:213` mock 402 → `[]` + refusal + WARN
-- R17 `plan.md:223` exit 0 when `commit==HEAD` else actionable msg + `cmp -s` identical
-- R18 `plan.md:232` `git ls-files --others | grep -E "\.jsx|\.js$"` 0 shadow + build 13.9kB + lint 0 + `git diff main...feat/mission-control -- ui/` empty — verify-only
-- R19 `plan.md:242` `npm run tickets` prints R19 OPEN + Mission Control Tickets tab lists R19 + `tracker-index.md:93-95` matches `MAP.md:58-59`
+- **Per-module dry check (VG-01/VG-02):** `plan.md:83,100` `parseFrontMatter` at `frontmatter.mjs:15-27` + `validateNoteFrontMatter` at `:78-109` must not throw; `plan.md:82,102` `rg -n "status: open"` →0; `plan.md:81` `No state/vault-notes.json or vault/views/** edited` (VG-SYNC owns it). Verified at review time both gotchas `status:open` parse correctly via `node --input-type=module` import — will flip to `settled` and remain valid per `frontmatter.mjs:99-106` `status:open|settled|superseded` required for `type:gotcha`.
+- **VG-SYNC determinism gate (authoritative):** `plan.md:118-123` `node scripts/vault-sync.mjs --check → committed matches HEAD compilation at vault-sync.mjs:38` (exit 0) / `node scripts/vault-sync.mjs → refreshed` at `:42` + `git diff --exit-code -- vault/views state/vault-notes.json` green + CI `vault compile determinism (V2) at ci.yml:35-50 would pass` + `jq '.notes[] | select(.path=="vault/gotchas/...") | .status' → "settled"` + `jq '.note_count' = 25 + journals added` + `notes sorted localeCompare at vault-import.mjs:79` + `tracker-index drift 0` (`rg "journal-deletions-and-tz|opencode-api-key" tracker-index.md →0`) + `vault/views/graph-overview.md source_hash sha(gs).slice(0,12) at vault-export.mjs:85` + `evidence-index source_hash at :63` + `evidence/EV-*.md count 161`. All concrete, runnable with `jq`, `rg`, `git diff`.
+- **Global proof before handoff:** `plan.md:174` `vault-sync --check pass + git diff --exit-code -- vault/views state/vault-notes.json pass + jq open-set empty + tracker alignment` — must be in every module's DoD. Currently both gates pass on working tree (verified exit 0).
+- **Frozen doctrine not violated by gates:** Thresholds/judge prompts `docs/validation/eval-gates.md` frozen (`plan.md:41`, `AGENTS.md:eval gates`) — no CTR/quality change in this lane.
 
-## 6. Rollback / Hazard handling — PASS
+## 6. Parallel safety — PASS_WITH_NOTE
 
-Hazards distinguished from `touches` via `hazard_touches` globs + `locks` serialization (`plan.md:72,82,111...` + `work-order.json: hazard_touches`). R2 heal idempotent best-effort; R4 live bundle additive no schema break; M1 prior baseline restore, M6/M8 owner backup/restore noted at `architecture/report.md §3 M gates`. No destructive migration without restore point. Global proof `vault-sync --check` + `cmp -s` before handoff prevents poison.
+- **Waves correct:** `plan.md:155-160` `Wave P — prose parallel [VG-01,VG-02] parallel safe — may be dispatched same turn as two Task calls — disjoint touches + no state write` and `Wave S — state serial [VG-SYNC] sequential — holds vault-state-single-writer; blocked_by [VG-01,VG-02]`. `work-order.json:108-116` `parallel_safe_groups [[VG-01,VG-02]] sequential_groups [[VG-01,VG-02],[VG-SYNC]]` matches. Scheduler guidance `plan.md:162-164` `VG-SYNC blocked until both P members committed to HEAD (worktree reads HEAD at vault-sync.mjs:17). VG-SYNC never parallel with any other state/views writer`.
+- **Resource locks minimal:** `work-order.json:85-106` `vault-state-single-writer modules [VG-SYNC] mode sequential`, `evidence-registry-single-writer [] read-only at vault-import.mjs:30-39`, `graph-state-single-writer [] subsumed at vault-export.mjs:78-95` — correct per `decisions.md:AD-09`. No over-locking; prose journals per-file append require no lock if names disjoint (`decisions.md:AD-09` hazard table).
+- **Recommended schedule respects HEAD worktree:** `plan.md:168-172` `Baseline: --check → Turn P: dispatch VG-01+VG-02 parallel → Commit P: git add vault/gotchas/*.md vault/journal/*.md → Turn S: dispatch VG-SYNC single worker: node scripts/vault-sync.mjs → git diff → git add state/vault-notes.json vault/views .autoforge/discovery/tracker-index.md → verify jq settled + tracker drift 0 → commit` — correct ordering; VG-SYNC reads HEAD, so P must be committed first.
+- **Staging poison guard:** `plan.md:41,148` `Explicit git add <paths> only; never git add -A` at `AGENTS.md:21-23` + VG-SYNC acceptance `plan.md:124` explicit `git add vault/gotchas/... vault/journal/... state/vault-notes.json vault/views .autoforge/discovery/tracker-index.md` — prevents foreign lane journal leak (discovery-ledger hazard seen in prior ops loop). Verified `git status --porcelain` currently clean for vault views/state.
+- **Note N1 carries to parallelism:** See §4 N1 — scheduler must honor file-level disjoint, not directory glob, for P-wave parallelism. Wave P is safe today (distinct gotcha files + distinct journal slugs), but a lock-only scheduler honoring only `locks`+`hazard_touches` directory globs would incorrectly serialize P. Annotate before dispatch; no code change required.
 
-## 7. Modularity — PASS
+## 7. Ponytail ladder — PASS
 
-One module per tracker entry (28), smallest diff per frontier, no bundling (Postgres+Blob, report+assists, vault UX+compiler kept separate per `decisions.md AD-13`). Touches scoped ≤4 files per R, ≤5 per M; reads via `read_for_gate`. Conditional `touches` (M2/M3/M5/M6/M7/M8) remain BLOCKED so no speculative write. Ponytail ceilings tagged per module (`ponytail:` at `plan.md:74,84,113,122,140,242`).
+Ladder enforced per `plan.md:3` `Ponytail ladder enforced` and `plan.md:39,61,85,105,128` ceilings:
 
-## 8. Parallelism — APPROVED_WITH_NOTES (3 fixable normalizations before dispatch)
+- **Rung 2 (reuse codebase):** `frontmatter.mjs` + `paths.mjs` + `yaml` already installed (`frontmatter.mjs:1` `parseYaml`) — cited at `plan.md:39` and `architecture/report.md:§2,§8` seams. No new helper invented.
+- **Rung 3/4 (stdlib/native):** `fs,path,crypto,child_process` (`vault-sync.mjs:7-10`), `yaml` reuse — no new dep. `work-order.json:123` confirms.
+- **Rung 6 (one line):** VG-01/VG-02 `one-line status edit + one journal file` at `plan.md:85,105` + `work-order.json:36,54`.
+- **Rung 7 (minimum code):** Wholesale `rmSync` at `vault-export.mjs:46` `O(n) n=161` kept (`plan.md:85,128` `ponytail: wholesale regen O(n) n=161 ceiling until n>1k measurable`); tracker-index stays hand-edited while n=2 (`plan.md:128` `ponytail: ... compileTrackerIndex() deferred until frontier >10 per arch §8`); worktree+symlink `worktree+symlink ceiling; per-journal lock deferred` at `plan.md:85`.
+- **What was skipped, when to add:** explicitly per module — FS immutable flag / pre-commit hook / new watcher code deferred until second deletion incident (`plan.md:85`), keychain helper / tsx wrapper deferred until latency >60s or rotation automation (`plan.md:105`), incremental view patch + `compileTrackerIndex()` deferred until n>10/1k (`plan.md:128`, `work-order.json:72`). Ceilings tagged with `ponytail:` comment pattern at `plan.md:85,105,128`.
+- **Boundaries respected:** No abstraction with one implementation, no factory, no config for constant, no scaffolding for later — honest `plain paragraph` prose diff only.
 
-Waves A/B/C/D/E/F per `plan.md:348-357` + `work-order.json:52-58` correctly distinguish semantic DAG from resource hazards. Claim "A (`R9,R11,R15,R14,R19`) parallel safe — disjoint touches/locks" holds for current OPEN set but has three file-level / lock-membership gaps that a lock-only scheduler could mis-execute:
+## 8. Rollback / Failure handling — PASS
 
-**Finding P1 — R11 shares `src/discovery/harvest.ts` without hazard/lock**
-- `plan.md:161-167` `R11 — Drop speculative source comments — touches: [src/discovery/harvest.ts] — Lock: none — Wave: A — parallel_safe:true`
-- `work-order.json:26` `R11 touches [src/discovery/harvest.ts] hazard_touches [] locks [] wave A`
-- Overlaps `plan.md:70` R1 touches `[store.ts, harvest-lock.ts, harvest.ts]` and `plan.md:110` R5 touches `[cancel/route, jobs.ts, harvest.ts, provider-health.tsx]` both `persistence-single-writer`. R11 is a writer on same file (comment-only but writer). Today safe because R1 BLOCKED and R5 is Wave B (recommended order A before B at `plan.md:361`), but scheduler honoring only `locks` could run R11 ∥ R5.
-- **Required fix before dispatch:** set `work-order.json R11 hazard_touches: ["src/discovery/harvest.ts"]` (or `["src/lib/persistence/**"]`) and document `schedule: R11 before any harvest.ts writer; never parallel with R1/R5` OR give R11 `persistence-single-writer` hazard. Lean note: `plan.md:359` guard should add "R11 touches harvest.ts — serialize A with B when both ready."
+- **Vault poison rollback:** `plan.md:211` parallel journal poison → enforce `vault-sync.mjs:16-44` path, CI `--check` `:27-37`, `git diff` fails loud. Recovery is `node scripts/vault-sync.mjs` then commit — idempotent, no destructive migration.
+- **Journal deletion bypass:** `plan.md:211` `rm` still possible → recovery runbook `stat`+`shasum` vs `git show HEAD:<path>` then `git restore` + deterrent `watch-vault-journal.sh` at `:40-44` logged outside repo (`plan.md:90` + `gotcha:journal-deletions-and-tz.md:40-44`). No FS immutable flag — deferred ceiling.
+- **Orphan worktree/tmp:** `plan.md:215` `finally at vault-sync.mjs:45-52 best-effort worktree remove --force + rmSync(tmp)` WARN on catch (follow-on) — `ponytail: best-effort worktree cleanup ceiling` at `plan.md:128`.
+- **Evidence_ids unresolvable:** fail-fast `vault-import.mjs:52-54` throws; pre-check `state/evidence-registry.json` exists at `:35` — `plan.md:213`.
+- **Tracker drift:** `plan.md:215` `VG-SYNC co-commits state/vault-notes.json + tracker-index.md atomically; drift check jq … select(.status=="open") vs rg` — mitigates `plan.md:27,41` `tracker-index drift` risk.
+- **Secret leak:** `plan.md:216` VG-02 body contains only `security find-generic-password` retrieval command, never key value; validator `rg -i "OPENCODE_API_KEY.*=[A-Za-z0-9]{20,}" vault/ →0` at `plan.md:125` — correct per `AGENTS.md:Secrets`.
+- **No irreversible migration:** settlement is reversible: flip `status: settled → open` + add corrective journal; wholesale views `rmSync` is discard-by-design but regeneratable via `vault-export.mjs`.
 
-**Finding P2 — R16 touches health route same as R8 but not in persistence lock**
-- `plan.md:205-214` `R16 — touches: [brave-search.ts, pipeline.ts, health/route.ts] — hazard_touches: [src/lib/persistence/**] — Lock: none — Wave: E`
-- `plan.md:135-140` R8 `touches: [health-aggregate.ts, health/route.ts]` `Lock: persistence-single-writer — Wave: B`
-- `work-order.json:31` R16 `touches` includes `health/route.ts` `locks:[]` `hazard_touches:[persistence/**]` vs `work-order.json:48` `persistence-single-writer modules [M2,M6,M8,R1,R2,R5,R6,R8,R10]` omits R16 (parenthetical hazard only at `plan.md:344`).
-- R16 is a writer (not just read hazard) and its hazard implies serialization, yet lock membership excludes it. Wave E∥B could race on `health/route.ts`.
-- **Required fix:** add `R16` to `resource_locks.persistence-single-writer.modules` (and serialize health writers) OR narrow R16 `touches` to exclude `health/route.ts` until dispatch (keep as `read_for_gate`). Recommended former — minimal, aligns with `plan.md:344` parenthetical.
+## 9. Risks & mitigations — PASS
 
-**Finding P3 — R14 and R13 share `eval-canonical-report` but sit in different waves both marked parallel-safe/serial**
-- `work-order.json:50` `eval-canonical-report modules [M1,M4,R13,R14]`
-- `work-order.json:53` Wave A `members [R9,R11,R15,R14,R19] parallel:true` vs `work-order.json:56` Wave D `members [R12,R13,R17] parallel:false`
-- `plan.md:346` same lock table + `plan.md:352` Wave A vs `plan.md:355` Wave D.
-- Text `plan.md:359` says "Waves A and E may run in parallel (disjoint locks)" but A contains R14 sharing lock with D's R13 — not disjoint. Scheduler must serialize A∩D via that lock.
-- **Required fix:** annotate `Wave A reason: R14 shares eval-canonical-report with R13 — serialize A∩D when both ready` and/or move R14 to Wave D, or set `R14 parallel_safe:false` when `eval-canonical-report` contended. `plan.md:359` guard should state this.
+All `grilling.md:Q1–Q10` + `architecture/report.md:§7` risks carried into `plan.md:208-218`:
 
-**Finding P4 — R19 lock membership vs per-module locks (informational, not a defect)**
-- `work-order.json:34` R19 `locks:[]` `parallel_safe:true` but `work-order.json:49` `page-workspace-single-writer modules [M5,M7,R5,R7,R19]` includes R19. `plan.md:345` same + `plan.md:354` note "R19(board polling hazard) serializes under same lock if editing but dispatched in A". This is hazard-only read — correct by design, but keep annotation so scheduler knows R19 ticket-file edits serialize with `page-workspace` writers (R5,R7,M5,M7).
+| Risk | Plan mitigation | Cite |
+|---|---|---|
+| Parallel journal poison | `vault-sync.mjs:16-44` + `--check` `:27-37` + `AGENTS.md:15-17` + `git diff` | `plan.md:210` |
+| Journal deletion | `git restore` runbook + `watch-vault-journal.sh` deterrent | `plan.md:211` `gotcha:journal-deletions-and-tz.md:19` |
+| TZ confusion | `date -u`, `TZ=... date` at `:35-36`; VG-SYNC logs UTC | `plan.md:212` |
+| Evidence_ids unresolvable | fail-fast at `:53-54` + registry exists `:35` | `plan.md:213` |
+| Hand-edit views lost | charter `68-71` + `rmSync` `:46` + `generated:true` + CI diff `:50` | `plan.md:214` |
+| Tracker-index drift | co-commit + `jq` vs `rg` drift check | `plan.md:215` |
+| Staging poison | explicit `git add <paths>` only | `plan.md:216` |
+| Orphan tmp | `finally` best-effort + WARN | `plan.md:217` |
+| Key paste | retrieve-only command, never value | `plan.md:218` |
 
-Parallel safety otherwise sound: persistence writers (R1,R2,R5,R6,R8,R10,M2,M6,M8) serialized; page-workspace writers (R5,R7,M5,M7,R19 hazard) serialized; vault-state writers (M1,M3,R4,R10,R12,R13,R17) serialized; eval-canonical (M1,M4,R13,R14) serialized. No live race today (overlapping writers all gated FOG/BLOCKED per Wave F `plan.md:357`).
+No unmitigated high-severity risk; ceilings explicit.
 
-## 9. Risks — carried and mitigated
+## 10. Modularity — PASS
 
-- Cross-lambda split-brain via `createFallbackStore` silent fallback `store.ts:130-181` — `plan.md:384` + `architecture/report.md:310` mitigation via `store?` injection + R1 WARN, resolved before M8 cutover (StoreUnavailableError honest) — accepted ceiling.
-- Ledger `KEYS` star-expansion bounded by 500 trim `ledger.ts:25` + orphan heal — `plan.md:385`.
-- Health shape break additive only nullable degraded flag `health/route.ts:132-138` — `plan.md:386`.
-- Staging poison via `git add -A` — `plan.md:387` + `AGENTS.md` + R12 curated commit `plan.md:170-176`.
-- Brave silent degrade — `plan.md:388` R16 `refusals` + WARN + health degraded after 2 zero-hit runs.
-- Ticket index drift (R19) — `plan.md:389` mitigate via `npm run tickets` CI check; `tracker-index.md` curated commit via R12.
-- Evidence staleness `commit != HEAD` — `plan.md:390` R17 CI gate + atomic twin-write `cmp -s`.
+One module per frontier ticket (VG-01, VG-02) smallest diff, no bundling (filesystem vs keychain concerns kept separate per `decisions.md:AD-08` `one adapter = hypothetical`); infra closure VG-SYNC is separate module but may be batched as follow-up turn after P commits (`plan.md:61` `module boundary ≠ child-session boundary`). Touches scoped ≤2 files per VG plus distinct journal, ≤4 per VG-SYNC; reads via HEAD worktree. Wayfinder deferred at `plan.md:61` not needed at n=2.
 
-## 10. Scope — PASS
+## 11. Scope — PASS
 
-Planning-only output per `plan.md:3` `planning-only. No product code dispatched, no tracker/map/ADR/state mutation. Ponytail ladder enforced; vault determinism & evidence byte-identity hard constraints.` Honored: `git diff HEAD --stat` shows plan/discovery/architecture/grilling tracked changes only, no `stages/*/output` mutation beyond curated `.autoforge` per `AGENTS.md` Storage policy.
+Planning-only output per `plan.md:3` `planning-only. No product code dispatched, no tracker/map/ADR/state mutation.` Honored: `git diff HEAD --stat` shows plan/discovery/architecture/grilling tracked changes plus `state/discovery-ledger.json` (harvest side-effect, not vault lane) — no `vault/` or `state/vault-notes.json` or `vault/views` mutation beyond curated plan. Frozen doctrine preserved (`plan.md:41` + `work-order.json:123`).
 
-## 11. Acceptance — PASS
+## 12. Acceptance — PASS
 
-Global proof `plan.md:363` `vault-sync --check` + `cmp -s` + `npm run typecheck` green — verified at review time both pass. Evidence anchors `056b75f 2026-08-31T22:05:26Z` (historicalProbe `61c7475`), `HEAD a715ee8` at `plan.md:394` pinned and consistent with `git rev-parse HEAD`. R17 regen twin-write preserves byte-identity; R4 live bundle is additive `plan.md:99` mirrored evidence.
+Acceptance boxes concrete and testable (`plan.md:77-82,97-102,117-126`, `work-order.json:32,50,68`):
 
-## 12. Ponytail / Lean-build — PASS
+- VG-01: `status open→settled` preserves `title:"Journal deletions..." type:gotcha date:2026-08-23 owner:agent`, body unchanged except optional settlement note, new journal `type:journal status null owner:agent links.evidence_ids [] or resolves`, `parseFrontMatter+validateNoteFrontMatter` pass, no `state/views` edit, `rg status:open →0`.
+- VG-02: same with `title:"OPENCODE_API_KEY handling..." date:2026-08-22`, body cites `security find-generic-password -a "$USER" -s auditorai/opencode -w` + `npx tsx scripts/run-eval.ts` + length check, no secret pasted.
+- VG-SYNC: `--check` exit 0, `jq` both settled, `note_count` =25+delta (expected 27), sorted `localeCompare`, byte-identical, `source_hash` matches `sha(state)` at `vault-export.mjs:85,63`, tracker drift 0, explicit staging, `rg` secret 0, `typecheck/lint/build` green. Global proof `plan.md:174` enforced.
 
-Every seam reuses installed `DataStore`/`KvRestStore.call()` at `store.ts:68`, stdlib, single-method extension `setIfAbsent`, pure fns (`health-aggregate.ts`, `tickets.ts` compile), WARN tokens, no new deps/facade/ORM/cache/framework. `ponytail:` ceilings tagged at `plan.md:74 (3600s)`, `84 (500-trim)`, `113 (per-iteration poll)`, `122 (20-index cap)`, `242 (pure fn compile)`. Checks lean-build smallest diff: no speculative M1-M8 bundling.
+## 13. Vault-sync + git diff twin invariants — PASS
 
-## 13. Vault-sync + cmp twin invariants — PASS
-
-- `scripts/vault-sync.mjs:16-44` HEAD worktree compilation via `git worktree add --detach HEAD` + `vault-import/export` + `git show HEAD:state/vault-notes.json` comparison — never bare `vault-import/export` per `AGENTS.md:15-17` and `plan.md:52`.
-- `work-order.json:60-62` `global_guardrails vault_determinism: node scripts/vault-sync.mjs --check` + `evidence_byte_identity: cmp -s .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json` — both verified pass at review time.
-- No worker scheduled to mutate `state/vault-notes.json` concurrently without `vault-state-single-writer` per `plan.md:343` lock.
-
-## 14. DAG correctness — PASS
-
-Only `M1→M4` (quality gate precedes AI assists per `plan.md:123-130` + `decisions.md AD-10`) and `R4→T2` traceability (T2 CLOSED per `plan.md:245-252` `blocked_by:[R4] traceability only, not dispatch gate`) — `work-order.json:45` edges match. All other overlaps hazard-only per `grilling.md:14-15`. Acyclic.
+- `scripts/vault-sync.mjs:16-44` HEAD worktree compilation verified pass at review time (`vault-sync --check` exit 0, `git diff --exit-code -- vault/views state/vault-notes.json` exit 0, `note_count 25`, 23 journals, 161 evidence notes, `source_hash bcd420...` / `a5b0e44...` consistent).
+- `work-order.json:118-124` `global_guardrails vault_determinism: node scripts/vault-sync.mjs --check` + `evidence_byte_identity: sorted keys + sha12` both preserved; VG-SYNC is the only writer that preserves byte-identity via `vault-import.mjs:79` sort + `vault-export.mjs:14-16` sha.
+- No worker scheduled to mutate `state/vault-notes.json` concurrently without `vault-state-single-writer`; VG-01/VG-02 are read-only for state at compile time.
 
 ---
 
-## Required changes before execution (directly resolvable, no need-human)
+## Required changes before execution
 
-These are the same three normalizations flagged in prior `plan-critique.md` for 27-entry plan — carried forward correctly but not yet normalized in the 28-entry work-order:
+All are directly resolvable, no `need-human.md` required (non-destructive, planning-only, gated by existing locks). None block `APPROVED` status — carry as dispatch notes.
 
-1. **R11 hazard** — `work-order.json:26` add `hazard_touches: ["src/discovery/harvest.ts"]` and annotate `schedule R11 before any harvest.ts writer; never parallel with R1/R5`. Update `plan.md:161` to list `hazard_touches: [src/discovery/harvest.ts]` and `plan.md:359` guard to note A↔B harvest.ts serialization.
-2. **R16 lock** — `work-order.json:48` add `R16` to `persistence-single-writer.modules` (or remove `health/route.ts` from `work-order.json:31` touches). Update `plan.md:344` to remove parenthetical and list `R16` explicitly in that row, and `plan.md:356` Wave E guard to note health write hazard serializes with Wave B.
-3. **R14/R13 wave** — `plan.md:352-355` / `work-order.json:53,56` annotate `R14 shares eval-canonical-report with R13 — serialize A∩D when both ready` (or move R14 to Wave D). Set `R14 parallel_safe:false` when eval lock contended; update `plan.md:359` "A and E may parallel (disjoint locks)" to "A and E may parallel except R14↔R13 via eval-canonical-report".
+### N1 — Hazard guard normalization for P-wave (file-level disjoint) — polish before dispatch
 
-Optional polish (not gating):
-- Keep `plan.md:44` R19 counting proof wording; no "1 behind" drift text remains (fixed vs prior 27-entry critique).
-- Ensure `work-order.json:19` R4 touches mirror `plan.md:99` (both now list `.autoforge/validation/ops-loop-evidence-live.json` + `stages/...` + `report.md`) — currently consistent.
+- **What:** Keep `work-order.json:26,44` `hazard_touches: ["vault/journal/**"]` as-is OR narrow to file-specific globs, but ensure scheduler annotation is honored. Current `work-order.json:115` `shared_state_guard: VG-01 and VG-02 touch vault/journal/** at directory level but file-level disjoint → parallel_safe true` and `plan.md:76` `parallel_safe: true ... guard is filename` correctly override directory overlap. Before dispatch, add one-line scheduler note to `plan.md:158` wave guard and `work-order.json:31,49` `parallel_notes`: `parallel_safe true iff journal slugs differ (journal-deletions-settled vs opencode-key-settled) — directory glob collision ignored at file level per CHARTER file-per-session §27`.
+- **Why:** Strict `hazard_touches` intersect = sequential per instruction would serialize P-wave despite disjoint files. Architecture `report.md:§6` and `decisions.md:AD-03` explicitly allow per-file parallelism if naming holds. Annotate so a lock-only scheduler does not incorrectly serialize.
+- **Lean fix:** No code, one-line comment. Alternatively set `hazard_touches` to `["vault/journal/*journal-deletions*"]` and `["vault/journal/*opencode*"]` to make glob-disjoint and remove the need for the annotation — either is acceptable; keep the annotation as minimum.
 
-No `need-human.md` required — all gaps are resolvable from evidence, non-destructive, planning-only, gated by existing HITL/owner gates.
+### N2 — Prose settlement lock documentation — informational
+
+- **What:** `work-order.json:85-90` `vault-state-single-writer modules [VG-SYNC]` excludes VG-01/VG-02 who do write `vault/gotchas/**`. No fix needed because VG-SYNC does not write `vault/gotchas/**` and waves are sequential (`VG-01,VG-02 → VG-SYNC`), so no write-write race. Document at `plan.md:149` locks table: `vault-state-single-writer members in this lane: VG-SYNC only (prose gotcha edits are file-disjoint and wave-serialized before S; if future lane adds concurrent gotcha writers on same file, add to lock)`.
+- **Why:** Aligns `decisions.md:AD-09` hazard `vault/gotchas/** settlement` under same lock family without over-locking today's disjoint P-wave. Keeps ponytail ceiling honest.
+
+### Optional polish (not gating)
+
+- Keep `plan.md:199` `node --input-type=module -e "import{parseFrontMatter...` form (correct ESM) and update `plan.md:80` legacy `require(...)` example to same ESM import to avoid confusion — trivial doc fix.
+
+No irreversible, ambiguous, or doctrine-violating defect found. No `need-human.md`.
 
 ## References
 
-- Vault determinism & evidence byte-identity verified `vault-sync --check` pass, `cmp -s` identical at review time.
-- Thresholds/judge/E5 frozen per `docs/validation/eval-gates.md:8-12`; ponytail ladder, no new deps.
-- Wayfinder MAP: `workflow/wayfinder/maps/ops-residual/MAP.md:41-59` (R1–R19), `MAP.md:21` T2 blocked wording reconciled via R4.
-- Model policy `muse-spark-1.2 1M → 80k cap` — inputs verbatim `tracker-index 140 + grilling 519 + plan 394` tracked, within cap.
+- Vault determinism & byte-identity verified `vault-sync --check` pass, `git diff --exit-code -- vault/views state/vault-notes.json` pass at 2026-09-02 review time; `state/vault-notes.json:4 note_count:25` baseline; `state/graph-state.json` → `vault/views/graph-overview.md:2-5` `source_hash:bcd4207749e4` at `vault-export.mjs:85`; `state/evidence-registry.json` (161 records) → `vault/views/evidence-index.md:5` `source_hash:a5b0e4409061` at `:63`.
+- Thresholds/judge/E5 frozen per `docs/validation/eval-gates.md:8-12`; ponytail ladder, no new deps; model budget `80k tok inherit muse-spark-1.2 1M*0.30 capped` — inputs sized `plan 237 + work-order 140 + tracker-index 2 + grilling 60 + report 270 + decisions 112` within cap.
+- Architecture seams `scripts/lib/frontmatter.mjs:78-109` status contract, `vault-import.mjs:14-90` zone routing + sorted emit, `vault-export.mjs:45-96` wholesale + sha12, `vault-sync.mjs:16-44` HEAD worktree + symlink + Buffer.equals.
 
 ---
-*Reviewer: independent, least-privilege read-only; no speculative M1–M8 implementation proposed; E5/judge/threshold frozen; vault determinism and evidence byte-identity preserved; ponytail ladder respected; grill-with-docs rigor.*
+*Reviewer: independent, least-privilege read-only; no speculative vault implementation proposed; E5/judge/threshold frozen; vault determinism and evidence byte-identity preserved; ponytail ladder respected.*

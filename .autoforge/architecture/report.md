@@ -1,346 +1,270 @@
-# Architecture Report — 28-entry Frontier (R1–R19, T2, M1–M8) — Corrected Grilling 2026-09-01
+# Architecture Report — Obsidian Vault Memory Update
 
-Date: 2026-09-01
-Scope: `workflow/wayfinder/**`, `.autoforge/discovery/**`, `.autoforge/requirements/grilling.md` (513+ lines patched), `src/discovery/**`, `src/lib/persistence/**`, `src/app/api/**`, `src/wayfinder/**`, `scripts/**`, `.github/workflows/**`, `state/**`, `stages/**`. Inputs: `.autoforge/discovery/tracker-index.md` (28 entries verbatim), `.autoforge/requirements/grilling.md` (R1–R19+T2+M1–M8, MAP 41-59 fixes, locks plan 399-404, M gates 66-196), `.autoforge/plans/plan.md` (443 lines, prior wave for reference), `workflow/wayfinder/maps/ops-residual/MAP.md:41-59` (R1–R19 definitions), prior architecture report/decisions.
-Status: design-only — no implementation. Ponytail ladder enforced, vault determinism & evidence byte-identity preserved as hard constraints. Model budget 80k tok inherit muse-spark-1.2 1M*0.30.
-Skills invoked: `codebase-design` (selectively; `improve-codebase-architecture` not warranted — deepening already captured in prior report §8).
+Date: 2026-09-02
+Scope: `vault/CHARTER.md`, `vault/journal/**`, `vault/gotchas/**`, `vault/views/**`, `state/vault-notes.json`, `state/evidence-registry.json`, `state/graph-state.json`, `state/validation-state.json`, `scripts/vault-sync.mjs`, `scripts/vault-import.mjs`, `scripts/vault-export.mjs`, `scripts/lib/frontmatter.mjs`, `AGENTS.md`, `.github/workflows/ci.yml:35-50`, `.autoforge/discovery/report.md`, `.autoforge/discovery/tracker-index.md`, `.autoforge/requirements/grilling.md`
+Status: design-only — no implementation. Ponytail ladder enforced, vault determinism as hard constraint. Model budget 80k tok (inherit orchestrator `opencode/muse-spark-1.2-contributor-free` 1M*0.30 capped).
+Blocked-by: discovery + grilling. Inputs sized to fit: `tracker-index.md` (2 entries verbatim), `grilling.md` (Q1–Q10 + R1–R6), `CHARTER.md` (85 lines summarized), `vault-sync/import/export` + `state/vault-notes.json` read verbatim.
+Skills invoked: `codebase-design` (module/interface/seam/depth vocabulary throughout), `improve-codebase-architecture` (selectively — deepening candidates §8).
 
-## 1. Hard constraints (non-negotiable)
+## 1. Findings — boundaries as they exist
 
-| Constraint | Enforcement | Cite |
-|---|---|---|
-| **Vault determinism** | `state/vault-notes.json` compiled from HEAD worktree only. Never `vault-import/export` bare before commit. Use `node scripts/vault-sync.mjs` (write) / `--check` (CI/read). Worktree owns `node_modules` symlink seam. | `scripts/vault-sync.mjs:16-44` `AGENTS.md:15-17` `architecture/report.md:145-148` |
-| **Evidence byte-identity** | `.autoforge/validation/ops-loop-evidence.json` ↔ `stages/07_validate/output/ops-loop-evidence.json` must `cmp -s` identical (056b75f anchored, historicalProbe 61c7475, HEAD a715ee8). Regen overwrites both atomically (R17). | `plan.md:55-56` `grilling.md:309` `scripts/vault-sync.mjs:22` |
-| **Staging hygiene** | Explicit `git add <paths>` only; never `git add -A` (AGENTS.md). | `AGENTS.md` staging hygiene |
-| **Ponytail ladder** | Reuse `DataStore`/`KvRestStore.call()` seam, stdlib, smallest diff. No new deps, no generic facade/ORM/cache/framework. One-line where one line holds. `ponytail:` comment for deliberate ceilings. | `src/lib/persistence/store.ts:68-96` `plan.md:58` |
-| **Single-writer locks** | `vault-state-single-writer`, `persistence-single-writer`, `page-workspace-single-writer`, `eval-canonical-report` (plan.md:399-404). Scheduler serializes; `blocked_by` stays semantic only (`M1→M4`). | `plan.md:399-404` `grilling.md:14-15` |
-| **Frozen doctrine** | Thresholds, judge prompts, E5, ODD, `need-human.md` frozen (`docs/validation/eval-gates.md`). Speculative M1–M8/R1/R4 gated — no dispatch before owner/HITL. | `docs/validation/eval-gates.md:8-12` `grilling.md:237` |
-| **External gates** | 5 R HITL + 8 M owner gates (`OWNER_GF_SOURCE_AND_ACCEPTANCE`, `BLOB_LIMIT_TRIGGER`, `VAULT_CONFLICT_TRIGGER_AND_OWNER`, `FLAG_1/2`, `PHASE_3_KEY_SCHEME_AND_POSTGRES_AUTHORITY`, `HITL_PRODUCTION_DAEMON_PROOF`, `FOG_BRAVE_QUOTA_REPLENISHMENT_HITL`) — held = not dispatched. | `plan.md:66-196` `grilling.md:372-503` |
-| **Tests** | Existing `npm run test` (`vitest`) + `typecheck` + `lint` + `build`. No new harness. | `plan.md:62` |
+**Three zones, locked at charter** [vault/CHARTER.md:16-20]:
 
-Model-policy note: architect inherits orchestrator `muse-spark-1.2 1M → 80k cap`; inputs sized to fit (tracker-index 140 lines + grilling 519 lines + plan 443 lines verbatim tracked).
+| Zone | Paths | Canonical form | Owner | Who writes |
+|---|---|---|---|---|
+| **Prose** | `vault/journal/`, `vault/decisions/`, `vault/research-notes/`, `vault/gotchas/` | Markdown + YAML front-matter | human-curated | agents: append journals; propose curated edits via PR-style; never overwrite |
+| **Views** | `vault/views/` | Generated Markdown (`generated: true` + `source_hash`) | machines | `scripts/vault-export.mjs` wholesale; humans must never hand-edit |
+| **Registries** | `state/*.json` (outside vault) | JSON `schema_version: "1.0.0"`, sorted keys, byte-identical | machines + validated compiles | only through `vault-import.mjs`/`vault-sync.mjs` with determinism checks |
 
-## 2. Seam inventory (reuse, don't invent)
+**Front-matter contract** [vault/CHARTER.md:38-54][scripts/lib/frontmatter.mjs:78-109] — every prose file carries `title`, `type` (`journal|decision|research-note|gotcha` at `frontmatter.mjs:6`), `date: YYYY-MM-DD` (`DATE_RE` at `:4`), `owner: human|agent` (`:95`), `status: open|settled|superseded` required for non-journal (`:99-106`, journals omit/null), `links: {evidence_ids, issues, adr}` normalized at `:111-123` where `evidence_ids` MUST resolve in `state/evidence-registry.json` (validated at `vault-import.mjs:52-54`).
 
-- `DataStore` (`src/lib/persistence/store.ts:16-26`): `MemoryStore` + `KvRestStore` (Upstash REST `call(["SET",…])` at line 68), `getDataStore()` singleton with Memory fallback (`createFallbackStore:130-181`). `keys(prefix)` sorted, `null` on miss vs `StoreUnavailableError` on transport. **Only** persistence seam — all R/M persistence variation goes here. `setDataStoreForTests` at line 192 for hermetic tests.
-- `harvest.ts:98-104` process-local `HARVEST_LOCK` boolean — accepted ceiling documented as cross-instance insufficient (MAP Notes line 17-18). Upgrade path is KV SET NX.
-- `ledger.ts:8-39` (`appendLedgerKV`/`getLedgerTailKV`): index `discovery:ledger:index` (sorted, trimmed 500 at line 25) + per-entry `discovery:ledger:entry:{seq}`. Current race: read-sort-write loses concurrent appends; orphan keys return null.
-- `jobs.ts:41-368` (`PREFIX discovery:job:`, `INDEX_KEY discovery:job:index` cap 20 at line 159, `indexOf(cursor)` pagination at line 234, file fallback `state/discovery-jobs.json` when `!isKv()` at line 112).
-- `dedupe-persist.ts:12-72` + `keys.ts:50` `DISCOVERY_DEDUPE_INDEX_KEY`: file `state/dedupe-index.json` is read source, KV mirror best-effort — fork under ROFS.
-- `providers/brave-search.ts:58-83`: 402 `USAGE_LIMIT_EXCEEDED` early-return `[]` at line 61 but no refusal/observable metric; `withHostBudget`/`retryAfterMs` already present at line 45.
-- `provider-health.tsx:135-154` (`lastOnRunJobId` dedup gate at 138-144 + `JOB_STORAGE_KEY auditorai.discovery.jobId` at 57 + 1.5s poll at 153). Refresh path at line 478 intentionally bypasses dedup (comment at 379-387).
-- `scripts/vault-sync.mjs:6-44`: HEAD worktree compiler — the vault seam. No auto-merge. `--check` at line 27 compares `git show HEAD:state/vault-notes.json` to compiled.
-- `src/wayfinder/tickets.ts + ticket-types.ts` + `workflow/wayfinder/TRACKER.md:15-18` + `workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md`: Wayfinder plumbing — markdown tickets compile via `tickets.ts:parseTicketFrontMatter` + `classifyTickets` into `TicketIndex` for Mission Control (`/dev/mission-control` → Tickets) and `npm run tickets`. Markdown remains canonical; claim/resolve edits front-matter.
-- `scripts/discovery-doctor.ts:17-53` `--json` branch already present (JSON contract `{providers:[{id,enabled,hostsOk,sampleHits}], totals}`).
-- `src/app/api/dev/health/route.ts:11-138` provider pings + ledger age + topology drift — seam for harvestHealth aggregate.
-- Deletion test: one adapter = hypothetical; two = real. All recommendations below either reuse the seam or wait for second concrete implementation.
+**Determinism invariant** [AGENTS.md:7-10][scripts/vault-sync.mjs:2-6][.github/workflows/ci.yml:35-50]:
+- `state/vault-notes.json` is compiled from vault, checked byte-for-byte against committed tree. CI runs bare `vault-export.mjs` + `vault-import.mjs` then `git diff --exit-code -- vault/views state/vault-notes.json` (`ci.yml:48-50`).
+- Parallel sessions hold uncommitted journal edits; compiling with those poisons the commit → fails `vault compile determinism (V2)` (`AGENTS.md:9-10`).
+- `vault-sync.mjs:16-44` is the hardened path: detached HEAD worktree (`git worktree add --detach ${tmp} HEAD` at `:17`), symlink `node_modules` at `:19`, compile in tmp at `:21-22`, then either `--check` compare `git show HEAD:state/vault-notes.json` vs compiled (`:28-36`) or sync write `fs.writeFileSync(live, compiled)` (`:42`).
 
-## 3. Frontier-by-frontier design (28 entries)
+**Current memory gaps** [state/vault-notes.json:7-35][.autoforge/discovery/tracker-index.md:1-2]: 2 open gotchas — `vault/gotchas/journal-deletions-and-tz.md` (`status: "open"` at `:12`) and `vault/gotchas/opencode-api-key-invocation.md` (`:26`). Total `note_count: 25` at `state/vault-notes.json:4` (2 gotchas + 23 journals, journals `status: null` at e.g. `:42` per charter "journals omit status").
 
-### R1 — Cross-instance harvest lock via KV SET NX (BLOCKED)
+**Views regeneration** [scripts/vault-export.mjs:45-96][vault/views/graph-overview.md:1-9]: `rmSync(VIEWS,{recursive:true})` at `vault-export.mjs:46` then `mkdirSync` + `emitFrontMatter` with `generated: true` + `source_hash: sha(stateJSON).slice(0,12)` (`:14-15`). Three view families: `evidence-index.md` + `evidence/EV-*.md` from `state/evidence-registry.json` (`:50-76`), `graph-overview.md` from `state/graph-state.json` (`:78-95`, front-matter `generated:true, type:graph-overview, source:state/graph-state.json, source_hash:bcd420…` at `vault/views/graph-overview.md:1-5`), `validation-log.md` from `state/validation-state.json` (`:97-113`). Ordering deterministic: records sorted by `evidence_id` (`:51`), jurisdictions sorted (`:67`), `notes.sort(localeCompare)` in import at `vault-import.mjs:79`.
 
-**Problem:** `HARVEST_LOCK` boolean at `harvest.ts:103` prevents only intra-process concurrency; Vercel may run 2 lambdas → seq/index collision.
+**Obsidian graph** [vault/views/graph-overview.md:7-56][state/graph-state.json:graphs.audit_graph]: audit pipeline graph surfaced as human-readable view; source is `state/graph-state.json` `graphs.audit_graph` (nodes `AG-PROJECT` … `AG-PERSIST`, edges `AG-PROJECT→…→AG-PERSIST`). Hash linkage `source_hash: sha(gs)` at `vault-export.mjs:85` ties view staleness to registry commit.
 
-**Alternatives:**
-- A) **Chosen (ponytail):** Add `DataStore.setIfAbsent(key,value,ttlSeconds):Promise<boolean>` → `KvRestStore` issues `["SET",k,v,"NX","EX",ttl]` via existing `call()` at `store.ts:68`, returns true on OK else false; `MemoryStore` does atomic `!has→set` on its `Map`. New `src/discovery/harvest-lock.ts` `acquireHarvestLock(workspaceHash, ttl=3600, store?) → {acquired, release}` using deterministic key `discovery:harvest:lock:{workspaceHash}`. `executeJob` at `harvest.ts:98-219` replaces boolean check with `await acquire`; on `!acquired` calls `setJobError(busy)` and returns; `finally` calls `release`. Local dev without KV env falls back to process flag + single `WARN` log. No new dep, one REST command. `ponytail: 3600s TTL covers maxDuration 60s; global lock ceiling, per-cell locks deferred to Not yet specified`.
-- B) Redlock lib / Upstash SDK — new dep, larger surface, rejected per ladder rung 5 (reuse installed dep beats new dep).
-- C) KV pipeline helper / Lua script — speculative, not needed for single SET; deferred.
+**Journal append-only** [vault/CHARTER.md:64-66][AGENTS.md:5-10]: journals one file per session `YYYY-MM-DD-slug.md` (`CHARTER.md:27`), append-only, corrections as new entries referencing old. No `status` field (null in compiled state). Concurrent human+agent edits target different files by construction; curated-note conflicts human wins, agents re-propose (`CHARTER.md:73-74`). Gotcha `journal-deletions-and-tz.md` documents violation mode: shell `rm` bypasses append-only, cost >5 min forensics (`vault/gotchas/journal-deletions-and-tz.md:11-21`), deterrent `scripts/watch-vault-journal.sh` via `fswatch`.
 
-**Tradeoff:** A gives cross-instance safety with 1 method + 1 file, testable via MemoryStore; B/C add deps/complexity without measurable trigger. Chosen maximizes leverage (all callers route through `acquireHarvestLock`) and locality (TTL/key policy in one place).
+## 2. Seam inventory — reuse before inventing (ponytail rung 2)
 
-**Seam:** `DataStore.setIfAbsent` (transport atomicity), `harvest-lock.ts` (key/TTL), `harvest.ts` (busy→setJobError without throw + finally release).
+| Seam | File:line | Interface | Depth notes |
+|---|---|---|---|
+| **Front-matter parser** | `scripts/lib/frontmatter.mjs:3-133` | `parseFrontMatter(text,file) → {fields,bodyStart}`, `validateNoteFrontMatter(file,fields,expectedType)`, `normalizeLinks`, `emitFrontMatter(entries)` | Deep module: small interface (3 fns) hides YAML guard (`guardPlainScalars` at `:29-42`, `guardFlowItems` at `:44-58`), date/type/status validation, evidence_id normalization. Leverage: every prose→JSON path routes through it. Locality: fix quoting/bracket handling once. |
+| **Vault import seam** | `scripts/vault-import.mjs:14-90` | `CHARTERED_ZONES: [zone,expectedType]` at `:14-19` → `listMarkdown` sorted at `:21-28` → `loadRegistryIds` at `:30-39` → `notes.sort` at `:79` → `state/vault-notes.json` `{schema_version, compiled_at_commit_only, note_count, notes}` at `:80-85` | Deep: large behaviour (zone routing, validation, body_chars accounting) behind single output file interface. Deletion test: removing it scatters validation across callers. |
+| **Vault export seam** | `scripts/vault-export.mjs:14-116` | `sha(json)→12hex` at `:14-16` + `writeView` at `:18-20` → `vault/views/*.md` with `emitFrontMatter` | Deep: 3 registry families behind one `main()`. Locality: hash/ordering/rmSync policy in one place. |
+| **Vault sync determinism seam** | `scripts/vault-sync.mjs:14-52` | `--check` vs sync mode (`check` flag at `:13`), uses HEAD worktree + symlink + compile-in-tmp | Module's interface is CLI flag + console exit code. Depth: hides worktree lifecycle, symlink, compiled-vs-committed byte compare (`committed.equals(compiled)` at `:31`). |
+| **Evidence registry seam** | `state/evidence-registry.json` + `scripts/compile-evidence.mjs` | 161 records (INT 26, UK 25, US 35, CA 39, AE 36), `evidence_id` PK, `evidence_records[].evidence_id` validated by import | Canonical for `evidence_ids` resolution. |
+| **Graph state seam** | `state/graph-state.json` | `graphs.audit_graph.{nodes,edges}` | Only producer of `graph-overview.md`. |
+| **Tracker-index seam** | `.autoforge/discovery/tracker-index.md` | 2 lines mirroring open notes | Shallow today (no parse/classify) — candidate to deepen if frontier grows (see §8). |
 
-**Touches:** `[src/lib/persistence/store.ts, src/discovery/harvest-lock.ts, src/discovery/harvest.ts]` **Hazard:** `[src/lib/persistence/**]` **Lock:** `persistence-single-writer` (plan 399-404, grilling R1 lock).
+No new dependencies needed. `yaml` already installed for front-matter (`frontmatter.mjs:1` `parseYaml`).
 
-**Verification:** concurrent `acquire` vs MemoryStore → 1 true/1 false; `release` → third succeeds; KV unavailable → WARN fallback; TTL default 3600 configurable; `executeJob` busy → `setJobError(busy)` no throw.
+## 3. Alternatives — design-it-twice per concern
 
-### R2 — Ledger KV ordering + orphan-key recovery (BLOCKED)
+### 3.1 Vault sync determinism (core tradeoff)
 
-**Problem:** read-sort-trim-write races; `getLedgerTailKV` returns null orphans (`ledger.ts:33-39`).
+**Problem:** parallel sessions with uncommitted `vault/journal/**` poison `state/vault-notes.json` if compiled bare, failing CI `git diff --exit-code` at `ci.yml:50`.
 
-**Alternatives:**
-- A) **Chosen:** Keep signatures but harden: `appendLedgerKV` deduplicates `index.includes(seq)` before push at line 22, sorts at 24, trims 500 at 25; `getLedgerTailKV` does `getMany→filter(null)→sort(seq)` (already at 37) plus **self-heal** pass that drops orphan seqs from index (write back trimmed without orphans best-effort). Under concurrent 50-entry test eventually all 50 seqs present, no duplicates. Minimal diff, no Lua. `ponytail: 500-trim bound is accepted ceiling for KEYS latency`.
-- B) KV Lua/CAS allocator (`INCR` seq) — real but needs Upstash script support, second ticket. Defer until contention measurable.
-- C) Per-shard index keys — speculative sharding, violates Not yet specified.
+- **A) HEAD worktree compile — CHOSEN (current `vault-sync.mjs:16-44`)**
+  - `git worktree add --detach ${tmp} HEAD` isolates committed tree; symlink `node_modules`; `node scripts/vault-import.mjs && vault-export.mjs` in tmp; byte-compare or `fs.writeFileSync(live, compiled)`.
+  - Pros: immune to foreign uncommitted edits by construction; CI `--check` (`:27-36`) is repo-truth; no stash side-effects; stdlib only (`child_process`, `fs`, `os`, `path`).
+  - Cons: tmp dir + worktree add/remove cost (~100ms + node_modules symlink); leaves orphan `vault-head-*` on crash if `finally` at `:45-52` skipped (best-effort `rmSync`).
+  - Ponytail rung: 3 (stdlib) + 5 (reuse installed `yaml`/`node_modules`). No new dep.
 
-**Tradeoff:** A is smallest correct hardening, preserves file:line locality; B reduces races further but adds operational surface before evidence warrants.
+- **B) Bare compile (`node scripts/vault-import.mjs` directly in working tree)**
+  - Pros: one command, no tmp.
+  - Cons: includes uncommitted foreign journals → committed `vault-notes.json` diverges from HEAD → CI failure deterministic; silent poison. Violates `AGENTS.md:15-18` rule.
+  - Rejected: fails correctness invariant; not least-privilege (reads more than committed truth).
 
-**Touches:** `[src/discovery/ledger.ts]` **Hazard:** `[src/lib/persistence/**]` **Lock:** `persistence-single-writer`.
+- **C) Stash-then-compile (`git stash push --keep-index && vault-import && git stash pop`)**
+  - Pros: no worktree.
+  - Cons: loses untracked journals (`--include-untracked` needed, still races); stash pop conflicts with concurrent edits; slower; `stash` workaround explicitly deprecated at `AGENTS.md:19` ("If you stash…stop — vault-sync replaces that").
+  - Rejected: fragile, non-atomic, deprecated.
 
-### R3 — Regression tests for lock + dedup (BLOCKED)
+- **D) KV/DB-backed vault state (store notes in Upstash/Vercel KV)**
+  - Pros: cross-instance visibility.
+  - Cons: second source of truth, splits `vault/` vs `state/` canonicality, violates charter `state/` JSON-canonical (`CHARTER.md:20`), adds network dep for local determinism check.
+  - Rejected: speculative, violates YAGNI (one-file `vault-notes.json` is sufficient).
 
-**No seam change.** Add 3 focused tests on existing in-memory seams: (1) concurrent `executeJob` → one `done` one busy-error without throw (stubs `store`), (2) `lastOnRunJobId` dedup mock `fetchJobById` at `provider-health.tsx:138` → `onRun` once per terminal id, (3) spy order `appendLedgerKV` before `setJobDone` at `harvest.ts:188-211`. Runner is existing `npm run test` (`vitest`), no new harness. **HOLD** until R1/R2 seams land — serialize by hazard, not DAG.
+**Tradeoff matrix — determinism tooling:**
 
-**Alternatives:** standalone MemoryStore synthetic suite vs integrated live-KV suite — chosen is MemoryStore first (fast, deterministic), live-KV as HITL follow-on.
+| Criterion | A HEAD worktree | B Bare | C Stash |
+|---|---|---|---|
+| Correctness vs poison | ✅ HEAD only | ❌ includes dirty | ⚠️ loses untracked |
+| CI `git diff` green | ✅ | ❌ | ⚠️ flaky |
+| Stdlib only | ✅ | ✅ | ✅ (git) |
+| Atomic / no side-effect | ✅ tmp isolated | ✅ but wrong | ❌ mutates index |
+| Ponytail pick | **chosen** | rejected | deprecated |
 
-**Touches:** `[tests/discovery/regression-lock-dedup.test.ts]` **Lock:** none (read-only seam, persistence hazard if touching live store).
+### 3.2 Journal append-only vs mutable history
 
-### R4 — Production harvest proof bundle (BLOCKED, HITL)
+- **A) File-per-session append-only + corrective entry — CHOSEN** [vault/CHARTER.md:64-66][vault/CHARTER.md:27]
+  - One file per session `vault/journal/2026-08-23-ticket-21-verify-close.md` style, `status: null`, never edit yesterday's file; corrections as new dated entry referencing old; `vault/gotchas/journal-deletions-and-tz.md:17-21` documents recovery (`stat` + `shasum` vs `git show HEAD:<path>`, then `git restore`).
+  - Pros: git history is truth; `vault-import` deterministic (`readdirSync` sorted at `vault-import.mjs:27`); Obsidian conflict-free (different files per session at `CHARTER.md:72-73`).
+  - Ponytail: zero code, convention depth.
 
-**No code seam.** Pure evidence capture: transcript + JSON bundle from `https://auditorai-gamma.vercel.app/api/dev/discovery` after 24h window → `.autoforge/validation/ops-loop-evidence-live.json` mirrored to `stages/07_validate/output/ops-loop-evidence-live.json`, schema-compatible with validator. Must show `ledgerGrowth.verified true` (before/after counts), `productionDeploymentVerified true` (deploy id `33295…`), `daemonVerified true` (`launchctl print` active + log tail), validator re-run GO. Remains `HITL_PRODUCTION_DAEMON_PROOF` gated; architecture preserves schema compatibility and `cmp -s` byte-identity for canonical evidence (live bundle is additive, not divergent).
+- **B) Mutable journal (edit in place, add `status` field)**
+  - Cons: breaks `status:null` contract (`state/vault-notes.json:42`), loses audit trail, creates merge conflicts, violates charter.
+  - Rejected.
 
-**Alternatives:** local synthetic bundle vs live Vercel daemon proof — chosen is live (only proof that satisfies validator `false→true`); synthetic is prep only.
+- **C) Indexed append log (single `journal.md` with seq: lines, KV-style index)**
+  - Pros: single file, easy tail.
+  - Cons: concurrent append races (same `ledger.ts` race that R2 hardened elsewhere), needs lock; Obsidian graph per-file navigation lost.
+  - Rejected: shallower than file-per-session (more coordination for less leverage).
 
-**Touches:** `[.autoforge/validation/ops-loop-evidence-live.json, stages/07_validate/output/ops-loop-evidence-live.json, .autoforge/validation/report.md]` **Lock:** `vault-state-single-writer` if touching `state/**` evidence mirrors.
-
-### R5 — Stop/Cancel server endpoint (OPEN) ✅
-
-**Problem:** `provider-health.tsx:163-168 handleStop` only stops polling client-side; job continues server-side.
-
-**Alternatives:**
-- A) **Chosen (minimal honest):** Extend `DiscoveryJobStatus` at `jobs.ts:10` with `"cancelled"` (or explicit sentinel) — prefer explicit `cancelled` to keep status enum honest vs overloading `error`. New route `src/app/api/dev/discovery/jobs/[jobId]/cancel/route.ts` POST `requireAdmin` → `updateJob(id,{status:"cancelled"})` via `jobs.ts:276`. `executeJob` at `harvest.ts:146` loop checks `await getJob(jobId,store)` before each `DISCOVERY_NODE_IDS` iteration; if `cancelled` → `appendLog(cancelled)` + `setJobError("cancelled by user")` + return (no mid-node abort signal). Front: `provider-health.tsx:163` `handleStop` calls cancel then keeps polling until terminal, label `cancelling…` → `paused · cancelled`. Admin-key header reused via `src/lib/api:requireAdmin`. `ponytail: per-iteration poll, not per-node abort signal`.
-- B) AbortController per node — heavier, needs pipeline refactor; deferred.
-- C) Client-only Stop kept — rejected; inconsistent across nodes without KV truth chain.
-
-**Tradeoff:** A is 1 route + 1 status + loop guard, no concurrency primitive; B adds cancellation token plumbing without multi-lambda benefit.
-
-**Touches:** `[src/app/api/dev/discovery/jobs/[jobId]/cancel/route.ts, src/discovery/jobs.ts, src/discovery/harvest.ts, src/app/dev/mission-control/_components/provider-health.tsx]` **Hazard:** `[src/lib/persistence/**]` + `page-workspace` **Locks:** `persistence-single-writer` + `page-workspace-single-writer`.
-
-### R6 — Pagination cursor stability (OPEN) ✅
-
-**Problem:** `jobs.ts:233-235 index.indexOf(cursor)` trimming to 20 losing stale cursor.
-
-**Alternatives:**
-- A) **Chosen:** When cursor missing/trimmed return latest page `slice(0,limit)` with `nextCursor=lastId` and correct `total`; when present paginate from cursor+1. Cap `[1,20]` default 10 unchanged. No storage change. `ponytail: 20-index cap is accepted ceiling; cursor stability via latest-page fallback`.
-- B) Opaque cursor (base64 seq) — robust but new encoding contract, over-engineered for 20-cap index.
-- C) Preserve full index file — unbounded growth, rejected.
-
-**Tradeoff:** A fixes staleness with one branch, keeps existing index semantics.
-
-**Touches:** `[src/discovery/jobs.ts, src/app/api/dev/discovery/jobs/route.ts]` **Lock:** `persistence-single-writer`.
-
-### R7 — Refresh parity tooltip (OPEN) ✅
-
-**Alternatives:**
-- A) **Chosen:** `provider-health.tsx:478` Refresh button add `title="Refresh bypasses onRun dedup — deliberate manual inspection, no scheduling side-effect"` (R7). No scheduling side-effects; tests focus on DOM attributes; keep dependency-free.
-- B) Remove Refresh entirely relying on auto-poll — less discoverable; rejected.
-
-**Touches:** `[src/app/dev/mission-control/_components/provider-health.tsx]` **Lock:** `page-workspace-single-writer` (hazard).
-
-### R8 — Health route harvestHealth sub-object (OPEN) ✅
-
-**Alternatives:**
-- A) **Chosen:** New pure `src/discovery/health-aggregate.ts` `harvestHealthSummary(store?) → {lastRunAt,lastRunStatus,lockHolder,lockAcquiredAt,indexedEntriesCount}` from `getLedgerTailKV` at `ledger.ts:28` + `listJobs(1)` at `jobs.ts:223`. Route `src/app/api/dev/health/route.ts:11` merges additive `harvestHealth` while preserving `providers/ledger/topology` at lines 132-138. Graceful nulls when KV unavailable. Test under MemoryStore with one done job. `ponytail: pure fn, KV reads best-effort`.
-- B) Inline health logic directly in route — shallower, less testable; rejected (depth via pure fn gives leverage).
-- C) New health service class — speculative abstraction, rejected.
-
-**Touches:** `[src/discovery/health-aggregate.ts, src/app/api/dev/health/route.ts]` **Hazard:** `[src/lib/persistence/**]` **Lock:** `persistence-single-writer` (reads hazard).
-
-### R9 — Discovery doctor JSON contract (OPEN) ✅
-
-**Alternatives:**
-- A) **Chosen:** `scripts/discovery-doctor.ts:17-53` add `--json` branch: single JSON `{providers:[{id,enabled,hostsOk,sampleHits}], totals:{totalProviders,totalEnabled,totalSampleHits}}` to stdout, exit codes unchanged. Evidence validator parses deterministically. Already present at lines 17-53; stabilize as contract (freeze shape, add test against CI ingest parser).
-- B) Separate `doctor-json.ts` script — duplicate seam; rejected.
-- C) No JSON (human-only) — blocks CI automation; rejected.
-
-**Touches:** `[scripts/discovery-doctor.ts]` **Lock:** none.
-
-### R10 — state/dedupe-index.json write authority (OPEN) ✅
-
-**Problem:** file `state/dedupe-index.json` vs KV `discovery:dedupe-index` fork under ROFS.
-
-**Alternatives:**
-- A) **Chosen (KV-truth):** `src/discovery/dedupe-persist.ts:16-72` load KV-first (`s.get(DISCOVERY_DEDUPE_INDEX_KEY)` at keys.ts:50 else file seed on null at `loadDedupeIndex:16`), persist KV-first (`s.put` at 70) + file best-effort (`catch EROFS → WARN dedupe: FS mirror skipped (ROFS)`). Local dev without KV writes both deterministically. Vault determinism `vault-sync --check` invariant cited at `grilling.md:184`.
-- B) File-truth with KV mirror — fork persists under ROFS; rejected.
-- C) Dual-write with conflict merge — complexity without trigger; rejected.
-
-**Tradeoff:** A breaks fork, preserves ROFS operability via WARN token.
-
-**Touches:** `[src/discovery/dedupe-persist.ts, src/lib/persistence/keys.ts]` **Hazard:** `[src/lib/persistence/**, state/**]` **Locks:** `persistence-single-writer` + `vault-state-single-writer`.
-
-### R11 — Drop speculative source comments (OPEN) ✅
-
-**Alternatives:** A) Delete stale `getGitHead()`/global hook chatter at `harvest.ts:98-102` comments; keep only ceiling/contract comments. No behavior. B) Keep comments — rejected (drift per grilling R11).
-
-**Touches:** `[src/discovery/harvest.ts]` **Lock:** none.
-
-### R12 — AutoForge staging: exclude .autoforge/ from committed tree (OPEN) ✅
-
-**Alternatives:**
-- A) **Chosen (curated commit):** Commit ` .autoforge/state.json`, `decisions/**`, completed `plans/reviews`, `need-human.md`; ephemeral `validation/stages/**` mirrors ignored or byte-identical. Document in `.autoforge/AGENTS.md` Storage policy + `.gitignore`. Matches `.autoforge/AGENTS.md` already present (Storage policy section) and `plan.md:204-211`.
-- B) Blanket `.gitignore .autoforge/` — hides review trail, rejected.
-- C) Commit everything — poisons vault determinism; rejected.
-
-**Touches:** `[.gitignore, .autoforge/AGENTS.md]` **Hazard:** `[vault/**, state/**, state/vault-notes.json]` **Lock:** `vault-state-single-writer`.
-
-### R13 — Eval gate §2 freshness automation: timestamp check (OPEN HITL) ✅
-
-**Alternatives:**
-- A) **Chosen:** New `scripts/check-eval-gate-freshness.mjs` reads `state/eval-scorecards/` mtime, threshold sourced from `docs/validation/eval-gates.md:14-25` (not hardcoded); CI job `gate-freshness` fails >7d with `run tier1 --topup` message. Doctrine `HITL_EVAL_DOCTRINE_FROZEN` read-only at grilling R13.
-- B) Hardcode 7d in script — drift risk; rejected.
-- C) No check — gate silent; rejected.
-
-**Touches:** `[scripts/check-eval-gate-freshness.mjs, .github/workflows/ci.yml]` **Hazard:** `[state/**, state/eval-scorecards/**]` **Lock:** `eval-canonical-report` + `vault-state-single-writer`.
-
-### R14 — Tier-1 archive: keep helper script, de-skill its drift (OPEN) ✅
-
-**Alternatives:** A) Header comment hygiene — keep `--topup <runId>` next to `--rebase` at `scripts/tier1-archive.mjs`, reference doctrine by path. No behavior. B) Rewrite helper — rejected.
-
-**Touches:** `[scripts/tier1-archive.mjs]` **Lock:** `eval-canonical-report`.
-
-### R15 — README + CONTRIBUTING: refresh Production deploy section (OPEN) ✅
-
-**Alternatives:** A) Text-only sync: main is production, Vercel auto-deploys on push, `discovery-harvest.yml` schedule refreshes state, reference `AGENTS.md` Eval gates. Sync `docs/ops/deploy.md` if present. B) No docs change — drift persists; rejected.
-
-**Touches:** `[README.md, CONTRIBUTING.md, docs/ops/deploy.md]` **Lock:** none.
-
-### R19 — Wayfinder plumbing traceability — ticket index + Mission Control board (OPEN) ✅ NEW
-
-**Problem:** Wayfinder local-markdown tracker must be traceable to Mission Control without grepping; R19 triaged 2026-09-01 at MAP:58-59, tracker-index 93-95.
-
-**Alternatives:**
-- A) **Chosen (ponytail, compile don't duplicate):** Keep `workflow/wayfinder/maps/*/tickets/*.md` as canonical (TRACKER.md:15). `src/wayfinder/tickets.ts:parseTicketFrontMatter` + `classifyTickets` + `ticketFromFields` compiles every ticket into `TicketIndex` for Mission Control (`/dev/mission-control` → Tickets tab) and `npm run tickets` CLI. Add/refresh `workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md` with `blocked_by`/`blocks` front-matter; Mission Control board reads via `tickets.ts` `readdirSync` + `WAYFINDER_MAPS_DIR`. Ticket index compilation stays pure (no `state/**` writes), board polling reuses existing `fetchHealth`/`adminApi` seam. Traceability is `MAP.md Decisions so far` one-line per resolution + `tracker-index.md` compiled verbatim from `tickets.ts` output. `ponytail: markdown canonical, compilation is pure fn, no new store`.
-- B) Duplicate tracker into KV/DB with sync job — second source of truth, drift risk; rejected.
-- C) GitHub Issues only (drop local markdown) — breaks offline `workflow/wayfinder/TRACKER.md` local-markdown guarantee; rejected.
-
-**Tradeoff:** A preserves single source of truth, leverages existing `tickets.ts` deep module (large behaviour — parse/classify/index — behind small `TicketIndex` interface), locality for maintainers (one place to fix plumbing).
-
-**Seam:** `src/wayfinder/tickets.ts` (`parseTicketFrontMatter:30-42`, `classifyTickets`, `WAYFINDER_MAPS_DIR`) + `workflow/wayfinder/TRACKER.md` conventions + `workflow/wayfinder/maps/ops-residual/tickets/R19-*.md` + Mission Control board `src/app/dev/mission-control/page.tsx` (existing `/dev/mission-control` route).
-
-**Touches:** `[workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md, workflow/wayfinder/maps/ops-residual/MAP.md:58-59, src/wayfinder/tickets.ts, src/wayfinder/ticket-types.ts, src/app/dev/mission-control/page.tsx]` **Hazard:** none (read-only compile) **Lock:** none (but board poll shares `page-workspace` hazard if editing tickets — serialize).
-
-**Verification:** `npm run tickets` prints R19 with status OPEN; Mission Control Tickets tab lists R19 with `blocked_by`/`blocks`; `tracker-index.md:93-95` matches MAP:58-59; `src/wayfinder/tickets.ts` unit test asserts `parseTicketFrontMatter` + `classifyTickets` frontier detection.
-
-### R16 — Brave quota 402 graceful degradation + monitoring (FOG) ⚠️
-
-**Current:** `brave-search.ts:61-83` already returns `[]` on 402 (70a519c) so harvest no longer hard-fails (degraded 0 hits).
-
-**Alternatives:**
-- A) **Chosen (smallest observable):** On 402 append `refusals` entry `brave:USAGE_LIMIT_EXCEEDED` via `runDiscoveryNode` aggregation at `pipeline.ts:92` into ledger/evidence; structured log `WARN brave quota 402` searchable; assert pipeline ordering Google CSE before seeds (not short-circuited via `harvest.ts:327` provider ordering); monitor `health` `providers.brave.degraded` when last 2 runs 0 Brave hits (or `harvestHealth` refusal count) at `health/route.ts`. No key rotation/plan upgrade in code (HITL per `plan.md:260` `FOG_BRAVE_QUOTA_REPLENISHMENT_HITL`). `ponytail: 500-trim bound is accepted ceiling for degraded runs`.
-- B) Retry with backoff on 402 — quota is terminal; rejected.
-- C) Auto-rotate keys in code — violates HITL; rejected.
-
-**Tradeoff:** A surfaces degradation without changing fetch semantics; B/C either waste quota or breach ownership.
-
-**Touches:** `[src/discovery/providers/brave-search.ts, src/discovery/pipeline.ts, src/app/api/dev/health/route.ts]` **Hazard:** `[src/lib/persistence/**]` (health reads) **Lock:** none (but health read hazard under `persistence-single-writer` if competing).
-
-**Verification:** mock 402 → `[]` no throw + refusal propagated, `WARN` token searchable, next scheduled harvest green via seeds while quota exceeded, health degraded flag flips after 2 zero-hit runs.
-
-### R17 — Evidence bundle reconciliation + HEAD anchoring automation (FOG) ⚠️
-
-**Alternatives:**
-- A) **Chosen:** New `scripts/check-evidence-head.mjs` asserts `commit == $(git rev-parse HEAD)` and `generatedAt` within 24h of HEAD author date; exits 1 `evidence stale: commit 61c7475 != HEAD 70a519c — run: gh workflow run discovery-harvest` otherwise. CI job `evidence-head-check` after `vault determinism` at `.github/workflows/ci.yml`. Regen `workflow_dispatch regen-evidence=true` overwrites both `.autoforge/validation/ops-loop-evidence.json` and `stages/07_validate/output/ops-loop-evidence.json` atomically, preserving `cmp -s` byte-identity at plan 55-56. `ponytail: read-only check, no new dep`.
-- B) Auto-regen on every push — noisy, hides staleness; rejected.
-- C) Single evidence file — breaks `.autoforge ↔ stages` ICM invariant; rejected.
-
-**Touches:** `[scripts/check-evidence-head.mjs, .github/workflows/ci.yml]` **Hazard:** `[state/**, .autoforge/validation/**, stages/**]` **Lock:** `vault-state-single-writer`.
-
-### R18 — Bento components merge verification — safety/conflicts/functional (FOG) ⚠️
-
-**Verify-only, no code.** Alternatives: A) Full verify-and-stop matrix (chosen): `git ls-files --others --exclude-standard | grep -E "\.jsx|\.js$"` 0 shadowing under `src/app/_components/ui/*` (13 `.tsx` + `reset-key.tsx`/`stage-label.tsx` at 056b75f, `.jsx` duplicates cleaned 2026-08-31); `npm run build` (`/dev/mission-control` 13.9kB) + `npm run lint` 0 errors; visual segmented tabs / odd-matrix 16-cell / kpi-strip with tokens, no console errors; `git diff main...feat/mission-control -- src/app/_components/ui/` empty; `flow.spec.ts` pass/skip with reason; `stages/` vs `.autoforge/stages/` divergence tracked separately. B) Code change — rejected (duplicates already cleaned).
-
-**Touches:** [] (verification-only; no writable) **Lock:** none.
-
-### T2 — Ops-seamless-verify (CLOSED)
-
-Verified closed 2026-08-30 under Loop-2 close-out (`dce8f08` durable harvest + UI debouncing). No new module. Residual gaps (ledgerGrowth/production/daemon `false`) are captured by R4/R17, not by reopening T2. `tracker-index.md:98-101` CLOSED, `plan.md:24-25` + `decisions.md AD-09` authoritative. Touches: [] **Lock:** none.
-
-### M1–M8 — Loop-3 frontiers (all BLOCKED, HOLD — no dispatch)
-
-All eight remain **HOLD** pending owner/data/HITL gates per `plans/plan.md:66-196` and grilling M gates. Architecture reaffirms Loop-3 seams but marks no implementation. Ponytail ladder defers all.
-
-| M | Gate / trigger | HOLD token | Seam | Touches | Invariant |
-|---|---|---|---|---|---|
-| **M1** Quote-bearing GF-6..10 baseline upgrade | `OWNER_GF_SOURCE_AND_ACCEPTANCE` + all-five `passes_corpus_mark` + fresh Tier-1 | HOLD | `FindingEvidence.quote` + evidence registry | `state/eval-scorecards/**`, `vault/journal/**` | zero-drop, quote provenance, E5 frozen, fresh Tier-1 |
-| **M2** Conditional blob-storage escape hatch | `BLOB_LIMIT_TRIGGER` + security/rollback owner | HOLD | `Attachment`/`ProjectStore`/`Repository` + new Blob adapter only if real 2nd impl | `src/domain/types.ts`, `src/lib/persistence/project-store.ts`, `src/lib/persistence/attachments/**` | URL issuance/deletion/ownership stay out of routes/UI |
-| **M3** Vault sync-conflict UX | `VAULT_CONFLICT_TRIGGER_AND_OWNER` (qualifying divergence) | HOLD | `scripts/vault-sync.mjs`/`vault-import.mjs` | `scripts/vault-sync.mjs`, `scripts/vault-import.mjs`, `tests/vault/**` | append-only journals, fail-closed to human, never auto-merge |
-| **M4** Report/recommendation drafting assists | `M1 → M4` + `OWNER_ASSIST_SCHEMA_AND_QUALITY_INTERPRETATION` + fresh Tier-1 | HOLD | `AiAdapter`/`inference.ts`, `candidate-review.ts` | `src/lib/ai.ts`, `src/lib/inference.ts`, `src/domain/candidate-review.ts`, `src/app/projects/.../page.tsx` | deterministic `AuditResult`/Markdown canonical, OFF default, typed provenance/budget/refusal/degraded, no `renderReportMarkdown` mutation |
-| **M5** Candidate-findings review UX | `FLAG_2_PRODUCT_COMMITMENT` + live bottleneck | HOLD | `candidate-review.ts` + `audit-workspace.ts` | `src/app/projects/*/audits/*/page.tsx`, `src/domain/audit-workspace.ts` | validation/whitelist/consent/provenance/index/issuance stripping preserved, no auto-accept |
-| **M6** Audit-history retention policy | `FLAG_1_RETENTION_AUTHORITY` | HOLD | `issue-ledger.ts`/`artifact-trail.ts`/`outcomes.ts` | `src/lib/persistence/issue-ledger.ts`, `src/lib/persistence/artifact-trail.ts`, `src/domain/outcomes.ts` | ADR-0004 binding: issued issues never modified/deleted, drafts depth-1, no generic framework |
-| **M7** RSC initial Repository snapshot (fog) | `RSC_MEASURABLE_TARGET_AND_RISK_ACCEPTANCE` (SEO/TTFB target) | HOLD | existing Repository read path | `src/app/projects/*/page.tsx` | retain `WorkspaceApiAdapter` + API mutations, no second Repository/cache |
-| **M8** Postgres third DataStore adapter | `PHASE_3_KEY_SCHEME_AND_POSTGRES_AUTHORITY` | HOLD | `DataStore` operations, `kind` typing | `src/lib/persistence/store.ts:16-26`, `src/lib/persistence/keys.ts` | null-on-miss vs `StoreUnavailableError`, sorted prefixes, workspace isolation, no ORM; resolve silent KV→Memory fallback |
-
-No generic facade/ORM/framework. `M1→M4` semantic edge preserved; other overlaps are resource hazards, not `blocked_by`.
-
-## 4. Boundaries, locks & concurrent-safe execution
-
-**Resource locks (from plan.md:399-404, extended to 28-entry):**
-
-| Lock | Members | Policy |
-|---|---|---|
-| `vault-state-single-writer` | M1, M3, R12 (curated commit), R13/R17 writers, R4 evidence regen, any `vault/**`/`state/vault-notes.json` compiler | sequential; no concurrent journal/state compile; `vault-sync --check` before handoff; `vault-sync` itself is verification, not concurrency control |
-| `persistence-single-writer` | M2, M6, M8, **R1, R2, R5, R6, R8, R10** (+ R16 health read hazard) | sequential in whichever gate opens first; no semantic ordering; hazard is `src/lib/persistence/**` + `state/**` overlap |
-| `page-workspace-single-writer` | M5, M7, **R5(UI half), R7, R19(board polling)** | sequential; disjoint other modules may run around it |
-| `eval-canonical-report` | M1, M4, **R13, R14** | M4 semantic dependency on M1; canonical report read-only gate |
-
-**Scheduling rule:** OPEN = dispatchable (R5-R15, R19). FOG/OPEN need hazard-aware serialization. After gates open, pick first ready per lock; e.g. R1 and R2 share `persistence-single-writer` and must not parallel; R7 and M5 share `page-workspace`; M2/M6/M8 mutually exclusive despite no `blocked_by` edge. `state/**` hazard flag applies to any `touches` containing `state/**`; that writer must not run concurrently with any other `vault-state` or `persistence` writer. Disjoint unlocked Rs (e.g. R9 scripts + R11 harvest comment + R15 docs + R14 header) may run in parallel if their `touches`/`hazard_touches`/lock sets are disjoint.
-
-**Waves (dispatchable now — OPEN):**
-
-- **Wave A (parallel safe, disjoint touches/locks):** `R9` (scripts), `R11` (harvest comment), `R15` (docs), `R14` (header) — none share locks/touches. May run concurrently if scheduler respects file-level disjointness.
-- **Wave B (serialize on `persistence-single-writer`):** `R5`, `R6`, `R8`, `R10` — pick first ready, one at a time. `R8` and `R10` also touch `persistence` hazard. `R19` plumbing read does not need this lock but board writes serialize under page-workspace.
-- **Wave C (serialize on `page-workspace`):** `R7` + `R19` board polling (and later M5/M7 when gated). `R5` is in both B and C — it must acquire both locks if dispatched.
-- **Wave D (`vault-state`):** `R12`, `R13` — sequential, never concurrent with each other or with any other `state/**` writer (e.g., R10's `state/**` hazard, R17 regen).
-- **Wave E (HOLD until trigger):** `R1,R2,R3,R4,R16,R17,R18,M1-M8` — held (BLOCKED/FOG/HITL). First ready per lock when gate opens (e.g., R1 and R2 share lock → one at a time).
-- **Wave F (verify-only):** `R18` verify can run anytime (no writes); `R16/R17` monitors can be pulled early as low-risk observability (R17's stale check is already actionable).
-
-**Parallelization guard:** `R9 + R11 + R15 + R19-tickets` can run in parallel today (disjoint touches, no shared lock). `R12` cannot parallel with `R13` (`vault-state` shared) and neither can run with `R10`'s `state/**` hazard. `R5` cannot parallel with any `persistence` or `page-workspace` holder.
-
-**Explicit touches/hazard_touches for R (supplement to plan.md M table):**
-
-- R1: `touches [src/lib/persistence/store.ts, src/discovery/harvest-lock.ts, src/discovery/harvest.ts]` `hazard_touches [src/lib/persistence/**]`
-- R2: `touches [src/discovery/ledger.ts]` `hazard_touches [src/lib/persistence/**]`
-- R5: `touches [src/app/api/dev/discovery/jobs/[jobId]/cancel/route.ts, src/discovery/jobs.ts, src/discovery/harvest.ts, src/app/dev/mission-control/_components/provider-health.tsx]` `hazard_touches [src/lib/persistence/**]` + `page-workspace`
-- R6: `touches [src/discovery/jobs.ts, src/app/api/dev/discovery/jobs/route.ts]`
-- R8: `touches [src/discovery/health-aggregate.ts, src/app/api/dev/health/route.ts]` `hazard [src/lib/persistence/**]`
-- R10: `touches [src/discovery/dedupe-persist.ts, src/lib/persistence/keys.ts]` `hazard [src/lib/persistence/**, state/**]`
-- R16: `touches [src/discovery/providers/brave-search.ts, src/discovery/pipeline.ts, src/app/api/dev/health/route.ts]`
-- R17: `touches [scripts/check-evidence-head.mjs, .github/workflows/ci.yml]` `hazard [state/**, .autoforge/validation/**, stages/**]`
-- R19: `touches [workflow/wayfinder/maps/ops-residual/tickets/R19-*.md, src/wayfinder/tickets.ts, src/wayfinder/ticket-types.ts]` `hazard []`
-- R9/R11/R14/R15: docs/scripts/comments only, no lock.
-
-## 5. Vault determinism & evidence byte-identity as architectural constraints
-
-- Vault: `scripts/vault-sync.mjs:16-22` compiles from detached HEAD worktree with `node_modules` symlink; CI `vault determinism (V2)` does bare `vault-export`+`vault-import` + `git diff --exit-code -- vault/views state/vault-notes.json`. Workers must never bare-compile before commit; use `vault-sync --check` as pre-push gate. This is not a lock but a correctness invariant — any module writing `vault/**` or `state/vault-notes.json` must be serialized under `vault-state-single-writer`.
-- Evidence: `ops-loop-evidence.json` schema stable (`commit`, `generatedAt`, `historicalProbe`, `vaultCheck`, `typecheck`, `build`, `ledgerGrowth`, `productionDeploymentVerified`, `daemonVerified` + T1/T2). Both copies byte-identical by construction (`cmp -s`); regen must atomically overwrite both (R17). Staleness check ties `commit` to `HEAD` and `generatedAt` to HEAD author date ±24h.
-
-## 6. Tradeoffs & alternatives rejected
-
-- **Generic `DistLockService` facade** — rejected. Ponytail: one method `setIfAbsent` on existing `DataStore` is smaller than new service, testable via `MemoryStore`, no dep.
-- **ORM for Postgres (M8)** — rejected. Interface is key/value + prefix scan (`put/get/getMany/keys/del/delByPrefix` at `store.ts:16-26`); ORM adds mapping without value and hides null vs unavailable semantics.
-- **KV pipeline helper for ledger index** — deferred. If post-R2 contention remains, add explicit CAS helper later; premature now.
-- **Auto-merge for vault** — rejected. Trigger is real divergence; diagnostics + human resolution preserves chartered ownership.
-- **Broad cache/RSC provider** — deferred to measurable TTFB/SEO target (M7); current `WorkspaceApiAdapter` is testable seam.
-- **New AI framework/cache/auto-merge/history framework** — globally rejected (plan Global guardrails §2).
-- **Duplicate tracker DB (R19 alt B)** — rejected; single markdown canonical via `tickets.ts` compile is cheaper and drift-free.
-- **Bento code change (R18 alt)** — rejected; verification-only suffices after duplicate cleanup.
-
-## 7. Risks & mitigations
-
-- **Coupling via `getDataStore()` singleton at `store.ts:183`:** KV env absence silently falls back to Memory per-route, creating split-brain across lambdas. R1/R2/R10 still isolate via `store?` injection param; M8 must resolve `createFallbackStore` silent fallback before production cutover (follow-on to ADR-0001).
-- **TTL vs `maxDuration 60s` drift:** `acquireHarvestLock` default 3600s is safe; per-call override if future jobs lengthen. `ponytail: 3600s global lock ceiling`.
-- **Index orphan accumulation:** R2 heal pass prevents tail divergence but may mask KV `KEYS` star-expansion latency at large prefixes — 500-entry trim at `ledger.ts:25` bounds it.
-- **Health surface growth:** R8/R16 add fields to `GET /health` at `route.ts:132`; keep shape additive, never remove `providers/ledger/topology`, document degraded flag as nullable boolean.
-- **Staging hygiene regression:** R12 decision must land before any `.autoforge` migration; otherwise parallel lanes re-introduce `git add -A` poison (AGENTS.md). CI could enforce `git status --porcelain` check for stray `.autoforge` staging.
-- **Brave quota silent degrade:** without R16 refusal propagation, ops has no signal; next Actions run green with 0 hits masks gap coverage loss. Mitigated by `refusals` + `WARN` token + health degraded flag.
-- **Ticket index drift (R19):** `tracker-index.md` compiled verbatim from `tickets.ts` + `MAP.md:58-59`; if Wayfinder tickets edited without recompiling, frontier stale. Mitigate by `npm run tickets` CI check and `tracker-index.md` as curated commit (R12 policy).
-- **Evidence staleness:** `commit != HEAD` already present (61c7475 vs 056b75f vs a715ee8); R17 check makes it CI-visible.
-
-## 8. Deepening opportunities (codebase-design lens)
-
-- **Shallow module:** `store.ts:130-181 createFallbackStore` catches all KV failures and silently falls back to Memory — violates honest `StoreUnavailableError` semantics. Deepen by making fallback opt-in per call or removing it for production (M8 unblocks this). `ponytail: global fallback is ceiling until M8`.
-- **Repetition:** `jobs.ts:94-180 loadIndex/saveIndex/createJob/updateJob/appendLog` all triplicate `if(store) else if(isKv()) else file` branch. Extract `resolveStore(store?)` once; R6 fix is chance to consolidate. `ponytail: triplicated store branch, extract resolveStore if fourth caller appears`.
-- **Interface vs parameter:** `DedupeIndex` file vs KV fork hidden behind global env check (`isKv()` at `jobs.ts:53`). R10 makes choice explicit at seam (KV-first) — stricter boundary.
-- **Design cohesion:** `harvest.ts:146-161` loop + `provider-health.tsx:119-237` visibility logic + poll + storage key interleaved — candidate for extraction after R5 ships (view model only after second consumer).
-- **Wayfinder plumbing depth:** `tickets.ts` already deep (large behaviour — front-matter parse + classify + index — behind small `TicketIndex` interface); R19 leverages this — no new deepening needed, just traceability wiring.
-
-## 9. Verification (no new infra)
-
-- R1: MemoryStore concurrent acquire + `vitest` in-process lock regression.
-- R2: 50-entry concurrent append + orphan-drop; `tests/domain/discovery-harvest.test.ts` green without new mocks.
-- R3: three regression tests.
-- R5: cancel flips `running→cancelled`; next iteration bails with `setJobError`.
-- R6: stale cursor (present/missing/trimmed-past) tests.
-- R7: DOM `title` contains `bypasses.*dedup` and `no scheduling side-effect`.
-- R8: `harvestHealth` shape under MemoryStore with one done job.
-- R9: `--live --json` valid JSON nothing else; validator parses deterministically.
-- R10: ROFS fake-FS throw → KV succeeds + WARN; local dev writes both.
-- R16: 402 mock empty no throw + refusal log token; 429 still retries.
-- R17: `node scripts/check-evidence-head.mjs` exit 0 when `commit==HEAD`, fail with actionable msg otherwise; `cmp -s` twin.
-- R18: `git ls-files --others --exclude-standard` 0 jsx/js shadow; `npm run typecheck && lint && build` green; `flow.spec.ts` pass/skip.
-- R19: `npm run tickets` + Mission Control Tickets tab list R19; `tracker-index.md:93-95` matches MAP:58-59.
-- Vault: `node scripts/vault-sync.mjs --check` pre-handoff; CI `vault determinism (V2)` green.
-- Evidence: `cmp -s .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json` green.
+### 3.3 Gotchas lifecycle
+
+- **A) Status field `open|settled|superseded` + owner + tracker-index mirror — CHOSEN** [vault/CHARTER.md:38-54][frontmatter.mjs:7][state/vault-notes.json:12,26]
+  - Gotcha file front-matter `status: open` (e.g., `vault/gotchas/journal-deletions-and-tz.md:5`), `owner: agent` at `:6`; compiled `notes[].status`; `tracker-index.md:1-2` lists open items verbatim; settlement is front-matter edit `open→settled` (+ new journal entry recording decision).
+  - Pros: deterministic (`validateNoteFrontMatter` at `frontmatter.mjs:99-106`), Obsidian-readable, `vault-notes.json` single source for gap queries.
+  - Cons: tracker-index drifts if manual edit forgotten (same drift noted in grilling Q4–Q5 at `.autoforge/requirements/grilling.md:20-21`).
+
+- **B) Separate `state/gotchas-registry.json` (duplicate registry)**
+  - Cons: second canonical, must keep in sync with `vault/gotchas/*.md` → violates charter single prose-canonical for gotchas (`CHARTER.md:66`, human-owned).
+  - Rejected: speculative abstraction, one interface with one implementation.
+
+- **C) GitHub Issues only**
+  - Cons: offline Obsidian lost; issue ↔ vault link still needed (`links.issues` at `frontmatter.mjs:111`), but gotcha body (hard-won lesson) belongs in vault prose per charter skeleton `CHARTER.md:31`.
+  - Rejected.
+
+### 3.4 Views regeneration
+
+- **A) Wholesale `rmSync` + deterministic re-emit — CHOSEN** [scripts/vault-export.mjs:45-48][vault/views/graph-overview.md:1-6]
+  - `rmSync(VIEWS,{recursive:true})` then `mkdirSync` + sorted emit; `source_hash: sha(registry).slice(0,12)` ties staleness; `generated:true` marks machine-owned (`CHARTER.md:60-61`).
+  - Pros: no stale files (evidence records removed → note removed, `VIEWS/evidence/EV-*.md` at `:72-76`), byte-identical (`JSON.stringify` + sorted keys via `createHash` at `:15`).
+  - Cons: re-writes all evidence notes (161 files) on any evidence change — ~tens of ms, acceptable; ponytail ceiling: `ponytail: wholesale regen O(n) n=161, incremental deferred until n>1k measurable`.
+
+- **B) Incremental patch (diff registries, write only changed views)**
+  - Pros: less I/O.
+  - Cons: needs diff logic, stale-file GC, hash cache; complexity for unmeasured gain.
+  - Rejected: YAGNI, violates pony ladder rung 6 (one-liner `rmSync` beats bespoke patch).
+
+- **C) No views (read `state/*.json` directly in Obsidian via dataview)**
+  - Cons: breaks Obsidian `[[EV-*.md]]` wikilinks (`vault/views/evidence/*.md` at `vault-export.mjs:74-76`), `[[evidence-index]]` navigation, `graph-overview.md` pipeline reference; charter mandates `vault/views/` as generated zone (`CHARTER.md:19,32`).
+  - Rejected.
+
+### 3.5 Obsidian graph surface
+
+- **A) `state/graph-state.json` → `vault/views/graph-overview.md` generated view — CHOSEN** [scripts/vault-export.mjs:78-95][vault/views/graph-overview.md:7-56]
+  - `gs.graphs.audit_graph.nodes/edges` rendered as bullet lists + `impl:` backticks; `source_hash: sha(gs)` at `:85` detects drift.
+  - Pros: deterministic, versioned in git, testable (`git diff` check); complements but never replaces audit pipeline graph canonical in `state/`.
+
+- **B) Vault-canonical graph (edit `graph-overview.md` by hand, compile to `state/graph-state.json`)**
+  - Cons: inverts charter `state/` wins when both exist (`CHARTER.md:70-71`); hand edits lost on export by design.
+  - Rejected.
+
+- **C) Obsidian plugin auto-generates graph (dataviewjs/graph plugin)**
+  - Pros: live.
+  - Cons: outside repo, non-deterministic, not CI-checked, requires plugin dep.
+  - Rejected: new dep violates ladder.
+
+## 4. Recommendation — smallest correct change
+
+**Keep three seams, enforce via `vault-sync` path, settle gotchas via status transition, keep wholesale views:**
+
+1. **Determinism** — keep `scripts/vault-sync.mjs:16-44` as ONLY writer of `state/vault-notes.json` before commit; forbid bare `vault-import/export` in `AGENTS.md:15-18`. CI stays `vault determinism (V2)` at `ci.yml:35-50`. `ponytail: worktree is ceiling; per-journal locking deferred until parallel-write measurable`.
+2. **Journal discipline** — file-per-session append-only (`CHARTER.md:64`); recovery runbook is `git status --porcelain` for ` D`, `shasum` vs `git show HEAD:<path>`, `git restore <path>` (`vault/gotchas/journal-deletions-and-tz.md:19`), plus `scripts/watch-vault-journal.sh` deterrent (`:40-44`). No code change.
+3. **Gotcha settlement** — for the 2 open gotchas, transition is front-matter `status: open → settled` (validated at `frontmatter.mjs:104-105`) + one journal entry referencing the gotcha (append-only), then `node scripts/vault-sync.mjs` + commit `state/vault-notes.json` + `vault/views/*` in one commit with explicit `git add` per `AGENTS.md:21-23`. `tracker-index.md:1-2` updated to empty or remaining open set (see §5 dependencies).
+4. **Views** — keep `vault-export.mjs:46` `rmSync` + sorted emit; no incremental logic. `source_hash` already links staleness.
+5. **Graph** — keep `graph-state.json`→`graph-overview.md` pipeline; do not hand-edit views (`CHARTER.md:68`).
+
+No new dependencies, no new modules. The lazy version covers it; if settlement needs formal ADR, add `docs/adr/NNNN-vault-gotcha-settlement.md` only when owner requests.
+
+## 5. Interfaces — `vault/` ↔ `state/*.json` ↔ `vault/views/*`
+
+```
+vault/  ──front-matter contract──▶  state/*.json  ──sha12+sorted emit──▶  vault/views/*
+(prose)    scripts/lib/frontmatter.mjs:78-123       scripts/vault-*.mjs       (generated)
+human-     validateNoteFrontMatter                 vault-import: md→json     emitFrontMatter
+ curated   + normalizeLinks                        vault-export: json→md     generated:true
+           parseFrontMatter:YAML guard             vault-sync: HEAD worktree source_hash:sha12
+```
+
+**Interface vault/prose → registries (import direction)** [scripts/vault-import.mjs:14-90]:
+- Input: `vault/{journal,decisions,research-notes,gotchas}/*.md` filtered by `listMarkdown` at `:21-28` (sorted, `*.md` only).
+- Contract: `parseFrontMatter` (`:49`, `frontmatter.mjs:15-27` via `splitFrontMatter` `:9-13` + `guardPlainScalars` `:29-42`) → `validateNoteFrontMatter` (`:50`, `frontmatter.mjs:78-109`) → `normalizeLinks` (`:51`, `frontmatter.mjs:111-123`) → `registryIds.has` check (`:52-54`).
+- Output: `state/vault-notes.json` `{schema_version:"1.0.0", compiled_at_commit_only:true, note_count, notes:[{path,zone,title,type,date,status,owner,links:{evidence_ids,issues,adr},body_chars}]}` at `:80-85`.
+- Ordering: `CHARTERED_ZONES` at `:14-19` + `notes.sort(localeCompare)` at `:79` → byte-identical (`:87-88` `JSON.stringify(out,null,2)+"\n"`).
+- Error mode: `errors[]` collected at `:44-69`, then `process.exit(1)` at `:76` with `malformed chartered front-matter` + fail-loud unknown `evidence_ids` (`:53-54`).
+
+**Interface registries → vault/views (export direction)** [scripts/vault-export.mjs:14-116]:
+- Inputs: `state/evidence-registry.json` (`:50`, 161 records), `state/graph-state.json` (`:79`), `state/validation-state.json` (`:98`).
+- Contract: `emitFrontMatter(entries)` at `frontmatter.mjs:125-133` produces `---\nkey: value\n---\n`; `sha(json)→slice(0,12)` at `vault-export.mjs:14-16` gives `source_hash`; deterministic sorts (`:51,67` for evidence, `:79-88` for graph).
+- Output: `vault/views/evidence-index.md` + `evidence/EV-*.md` (`:71-76`), `graph-overview.md` (`:81-95`), `validation-log.md` (`:99-113`), all with `generated:true` (`:24,60,82,100`) + `source` + `source_hash`.
+- Invariant: machine-owned, `rmSync` wholesale (`:46`) → hand edits discarded by design (`CHARTER.md:68`, `AGENTS.md:11`).
+
+**Interface determinism guard** [scripts/vault-sync.mjs:2-52][AGENTS.md:15-18]:
+- `--check` mode: `git show HEAD:state/vault-notes.json` at `:28` vs `compiled` at `:24` via `Buffer.equals` at `:31`; on mismatch `exit 1` with `Fix: run node scripts/vault-sync.mjs` at `:35`.
+- Sync mode: `fs.writeFileSync(live, compiled)` at `:42` → working tree carries HEAD-clean state regardless of foreign journal edits (`:40-41` comment).
+- Worktree lifecycle at `:17-19` + `finally` at `:45-52` (`worktree remove --force` + `rmSync tmp`) — seam where alteration without editing occurs (head vs dirty).
+
+**Least-privilege mapping:**
+- Human: owns `vault/decisions|research-notes|gotchas` bodies (`CHARTER.md:66-67`), `vault/CHARTER.md` via amendment (`:82-85`); agents propose, owner applies.
+- Agent: may `append journal entries` only (`CHARTER.md:18,64`); must never silently overwrite curated notes or hand-edit views.
+- Machine: owns `vault/views/**` + `state/*.json` writes via compiles (`CHARTER.md:19-20`).
+
+## 6. Dependencies & sequencing (blocked_by as text, not DAG)
+
+```
+discovery done (.autoforge/discovery/report.md:7-13  2 open gotchas)
+   │
+   ▼
+grilling done (.autoforge/requirements/grilling.md Q1-Q10, R1-R6)
+   │
+   ▼
+this architecture report (seams, alternatives, recommendation)
+   │
+   ├──► settlement PRs (per-gotcha: front-matter status + journal entry)
+   │         │
+   │         ▼
+   │    node scripts/vault-sync.mjs  (or --check pre-push)
+   │         │
+   │         ▼
+   │    state/vault-notes.json + vault/views/* byte-identical (ci.yml:48-50 git diff check)
+   │
+   └──► CI vault determinism (V2) gate at .github/workflows/ci.yml:35-50
+```
+
+- `vault-import` blocked by `state/evidence-registry.json` existence (fails at `:35-38` if missing) — requires `scripts/compile-evidence.mjs` first.
+- `vault-export` blocked by all three `state/*.json` registries (evidence, graph, validation) — missing → hard fail at `readFileSync`.
+- `vault-sync` blocked by both import+export success; `node_modules` symlink seam at `:18-19` assumes `npm ci` already ran.
+- `tracker-index.md` is downstream of `state/vault-notes.json` open-set query (`state/vault-notes.json:7-35` → `.autoforge/discovery/tracker-index.md:1-2`); update together or lose gating.
+
+**Touches / hazard (single-writer):**
+
+| Concern | Touches | Hazard | Lock (serialize) |
+|---|---|---|---|
+| Determinism compile | `scripts/vault-sync.mjs`, `state/vault-notes.json`, `vault/views/*` | `state/**`, `vault/views/**` | `vault-state-single-writer` — no concurrent `vault-import/export/sync` |
+| Journal append | `vault/journal/YYYY-MM-DD-*.md` | `vault/journal/**` | per-session file level; parallel sessions target different files by convention — no lock if naming holds |
+| Gotcha settlement | `vault/gotchas/*.md`, `state/vault-notes.json`, `.autoforge/discovery/tracker-index.md`, `vault/journal/*` (new entry) | `state/**`, `vault/gotchas/**` | same `vault-state-single-writer` + explicit `git add <paths>` (`AGENTS.md:21`) |
+| Views regen | `scripts/vault-export.mjs`, `vault/views/**` | `vault/views/**` | same writer — never run bare in parallel with sync |
+| Evidence resolution | `vault/**/front-matter links.evidence_ids`, `state/evidence-registry.json` | `state/evidence-registry.json` | `evidence-registry` single-writer (compile-evidence) |
+
+## 7. Risks, gotchas & mitigations
+
+| Risk | Where it bites | Mitigation | Upgrade path (ponytail ceiling) |
+|---|---|---|---|
+| **Parallel journal poison** — uncommitted foreign `vault/journal/**` leaks into committed `state/vault-notes.json` | `AGENTS.md:7-10`, `vault-sync.mjs:2-6`, `ci.yml:50` | Enforce `vault-sync.mjs` path (`:16-44`) not bare compile; CI `--check` at `:27-37`; `AGENTS.md:15-17` rule + `git diff --exit-code` fails loud | `ponytail: worktree + symlink is ceiling; per-file journal lock deferred until Vercel lambda contention measurable` |
+| **Journal deletion (append-only is convention not FS guarantee)** — `rm` bypasses charter, >5 min forensics | `vault/gotchas/journal-deletions-and-tz.md:11-21`, `CHARTER.md:64` | Recovery runbook at gotcha `:19-21`; `scripts/watch-vault-journal.sh:40-44` `fswatch` → `~/Library/Logs/auditorai-journal-watch.log`; `git restore <path>` not rewrite-from-memory | `ponytail: shell-deterrent + restore is ceiling; FS immutable flag / git hooks deferred` |
+| **TZ confusion burning triage time** — GitHub UTC vs PDT UTC-7 | `vault/gotchas/journal-deletions-and-tz.md:33-36` | Convert first: `date -u`, `TZ=... date` (`:35-36`); log UTC in `watch-vault-journal.sh` | none — doc fix |
+| **Evidence_ids unresolvable** — `evidence_ids` with typo/removed EV id | `vault-import.mjs:52-54` throws, `frontmatter.mjs:111-123` normalizes | Fail-fast at `:53-54` with actionable `evidence_ids do not resolve`; pre-check `state/evidence-registry.json` exists at `:35`; pin threshold `E5` frozen (`docs/validation/eval-gates.md`) | `ponytail: loud fail is ceiling; pre-commit hook deferred` |
+| **Hand-edit of views lost** — human edits `vault/views/graph-overview.md` discarded on next export | `CHARTER.md:68-71`, `vault-export.mjs:46` `rmSync`, `vault/views/graph-overview.md:2-6` `generated:true` | Charter rule + `ci.yml:50` `git diff` enforces machines-only; Obsidian note at `vault/views/evidence-index.md: Compiled … do not edit` | none — intentional discard |
+| **Orphan tmp/worktree leaves** — crash leaves `vault-head-*` tmp or detached worktree | `vault-sync.mjs:14,45-52` | `finally` best-effort `worktree remove --force` + `rmSync(tmp,{recursive:true,force:true})`; `node_modules` symlink only if `fs.existsSync(nm)` at `:19` | `ponytail: best-effort cleanup ceiling; tmp reaper cron deferred` |
+| **Tracker-index drift** — open gotchas in `state/vault-notes.json` ≠ `.autoforge/discovery/tracker-index.md` | `state/vault-notes.json:7-35` vs `tracker-index.md:1-2`, `grilling.md:19,40` | Update together in same commit as settlement; CI could add `cmp` between compiled open-set and tracker-index (not yet) | `ponytail: co-commit is ceiling; tracker-index compilation from notes deferred until frontier >10` |
+| **Staging poison** — `git add -A` commits foreign lane journals | `AGENTS.md:21-23` | Explicit `git add <paths>` only; no blanket add | `ponytail: doc is ceiling; pre-commit `git status --porcelain` hook deferred` |
+| **View hash drift undetected locally** — stale `source_hash` in committed views | `vault-export.mjs:14-16,63,85,103` | `vault-sync.mjs:22` recompiles export in tmp too; CI `git diff -- vault/views` at `ci.yml:50` catches drift | none |
+| **`node_modules` symlink seam missing** — `npm ci` not run in fresh clone | `vault-sync.mjs:18-19` | Guard `if(fs.existsSync(nm))` at `:19`; worktree compile still runs but may fail on missing `yaml` import — fail loud, ask `npm ci` | none |
+
+## 8. Deepening opportunities (improve-codebase-architecture lens)
+
+- **Shallow boundary — tracker-index** (`tracker-index.md:1-2` as raw lines vs `state/vault-notes.json` open-set). Today `tracker-index.md` is hand-maintained shallow mirror. If frontier grows past ~10, deepen into pure fn `compileTrackerIndex(state/vault-notes.json)→tracker-index.md` (two adapters: current 2-entry file, future CI-compiled file). Deletion test: removing the compile concentrates tracker drift bugs, passing.
+  **Recommendation:** `Speculative` — keep hand-edited while n=2; deepen when `note_count` at `state/vault-notes.json:4` pushes frontier.
+
+- **Locality leak — `guardPlainScalars` + `guardFlowItems`** (`frontmatter.mjs:29-58`). Quoting logic for `issues: [#20]` (`frontmatter.mjs:48-55` handling `#`/leading-zero) spreads knowledge between YAML parse and `validateNoteFrontMatter`. Already deep (hidden behind `parseFrontMatter`), but split across two helpers.
+  **Recommendation:** `Worth exploring` only if front-matter errors recur — consolidate guard tests in one place.
+
+- **Worktree cleanup as shallow `finally`** (`vault-sync.mjs:45-52`). `finally` swallows `worktree remove` errors (`catch {}` at `:48-50`) with no observable. Bugs hide in silent swallow.
+  **Recommendation:** `Worth exploring` — emit `WARN` token on `catch` instead of silent `best effort`, for log-searchable failure.
+
+- **`vault-export.mjs` family-local repetition** — three blocks (evidence/graph/validation) repeat `emitFrontMatter + sha + writeView` pattern at `:59-65,81-86,99-105` and `writeView` at `:18-20` is thin adapter.
+  **Recommendation:** `Speculative` — repetition is 3× and domain-distinct (jurisdiction buckets vs nodes/edges vs validations); keep locality per-family until fourth family appears (`ponytail: triplicated emit is ceiling until fourth view family`).
+
+- **`vault-import.mjs` zone routing** (`:14-19` `CHARTERED_ZONES`) — adding `vault/decisions/` etc already covered, `fromRoot` path helper in `scripts/lib/paths.mjs:6` is correct seam; depth is sufficient. No deepening needed.
+
+Overall: current seams are deep where they need to be (front-matter parser, import, export, sync guard each hide large behaviour behind small CLI/file interface). Keep locality; defer abstractions until second concrete variation appears (one adapter = hypothetical).
+
+## 9. Verification — no new infra
+
+- `node scripts/vault-sync.mjs --check` → `committed vault state matches HEAD compilation` (`:38`) when clean.
+- `node scripts/vault-sync.mjs` → `state/vault-notes.json refreshed from HEAD compilation` (`:42`) and `git diff --exit-code -- vault/views state/vault-notes.json` green.
+- `npm run test` (`vitest`) + `npm run lint` + `npm run typecheck` + `npm run build` remain green — no harness added.
+- For gotcha settlement: edit `vault/gotchas/<name>.md` `status:open→settled` → add `vault/journal/YYYY-MM-DD-<gotcha-settled>.md` → `node scripts/vault-sync.mjs` → `cat state/vault-notes.json | grep -A2 <gotcha>` shows `status: settled` + `note_count` unchanged or +1 journal, `tracker-index.md` trimmed accordingly → commit with explicit `git add vault/gotchas/... vault/journal/... state/vault-notes.json .autoforge/discovery/tracker-index.md` → push → CI `vault compile determinism (V2)` green.
 
 ---
-No new dependencies. No generic facades. All Rs/Ms reuse existing seams or wait for explicit trigger/HITL. Smallest correct change per frontier; multi-frontier bundling (Postgres+Blob) rejected. Ponytail ceilings tagged per module.
+No new dependencies. No generic facades. All prose↔registry↔views variation stays behind the three chartered seams. Smallest correct change per concern; wholesale regen + worktree guard are the pony ceilings.

@@ -1,66 +1,140 @@
 {
-  "loop": 4,
+  "loop": "vault-memory-2026-09-02",
   "phase": "plan",
-  "status": "planning-complete; execution-gated",
+  "status": "planning-complete; execution-gated; blocked_by architect",
   "source": ".autoforge/discovery/tracker-index.md",
-  "tracker_count": 28,
-  "model_budget": "80k tok inherit muse-spark-1.2 1M*0.30 capped",
+  "tracker_count": 2,
+  "tracker_index_verbatim": [
+    "vault/gotchas/journal-deletions-and-tz.md — vault",
+    "vault/gotchas/opencode-api-key-invocation.md — vault"
+  ],
+  "model_budget": "80k tok inherit opencode/muse-spark-1.2-contributor-free 1M*0.30 capped",
   "reconciliation": {
-    "ops_T1": "closed",
-    "ops_T2": "closed_trace_blocked_by_R4",
-    "counting_proof": "19R + 1T2 + 8M = 28",
-    "r19_note": "R19 Wayfinder plumbing traceability triaged 2026-09-01 MAP:58-59",
-    "source_label_note": "tracker v2/v3 label lag; R1-R19 canonical ops-residual MAP.md:41-59"
+    "counting_proof": "2 lines in tracker-index.md = 2 frontier tickets = 2 frontier modules (VG-01, VG-02) + 1 infra closure (VG-SYNC) = 3 total modules; no merge — distinct operational domains (fs/append-only vs keychain/eval), cited no dedup",
+    "discovery_report": ".autoforge/discovery/report.md:7-13 — 2 open gotchas at state/vault-notes.json:7-13,22-28, note_count:25",
+    "architecture_pinned": "vault/CHARTER.md:16-20 three zones; scripts/vault-sync.mjs:16-44 HEAD worktree; frontmatter.mjs:99-106 status contract",
+    "grilling_pinned": "Q1-Q10, R1-R6 lazy-first, vault-sync as standard path, tracker-index = downstream of open-set",
+    "state_pinned": "state/vault-notes.json:4 note_count:25, notes[0] journal-deletions-and-tz status:open body_chars:1984, notes[1] opencode-api-key status:open body_chars:1190"
   },
   "modules": [
-    {"id": "R1", "title": "Cross-instance harvest lock via Vercel KV atomic SET NX", "status": "BLOCKED", "touches": ["src/lib/persistence/store.ts", "src/discovery/harvest-lock.ts", "src/discovery/harvest.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "R2", "title": "Ledger KV ordering + orphan-key recovery", "status": "BLOCKED", "touches": ["src/discovery/ledger.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "R3", "title": "Regression tests for lock + dedup", "status": "BLOCKED", "touches": ["tests/discovery/regression-lock-dedup.test.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "F", "parallel_safe": true},
-    {"id": "R4", "title": "Production harvest proof bundle", "status": "BLOCKED", "touches": [".autoforge/validation/ops-loop-evidence-live.json", "stages/07_validate/output/ops-loop-evidence-live.json", ".autoforge/validation/report.md"], "hazard_touches": ["state/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "R5", "title": "Stop/Cancel server endpoint", "status": "OPEN", "touches": ["src/app/api/dev/discovery/jobs/[jobId]/cancel/route.ts", "src/discovery/jobs.ts", "src/discovery/harvest.ts", "src/app/dev/mission-control/_components/provider-health.tsx"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer", "page-workspace-single-writer"], "wave": "B", "parallel_safe": false},
-    {"id": "R6", "title": "Pagination cursor stability", "status": "OPEN", "touches": ["src/discovery/jobs.ts", "src/app/api/dev/discovery/jobs/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "B", "parallel_safe": false},
-    {"id": "R7", "title": "Refresh parity tooltip", "status": "OPEN", "touches": ["src/app/dev/mission-control/_components/provider-health.tsx"], "hazard_touches": ["src/app/dev/mission-control/_components/provider-health.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "C", "parallel_safe": false},
-    {"id": "R8", "title": "Health route harvestHealth", "status": "OPEN", "touches": ["src/discovery/health-aggregate.ts", "src/app/api/dev/health/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "B", "parallel_safe": false},
-    {"id": "R9", "title": "Discovery doctor JSON contract", "status": "OPEN", "touches": ["scripts/discovery-doctor.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
-    {"id": "R10", "title": "state/dedupe-index.json KV-truth", "status": "OPEN", "touches": ["src/discovery/dedupe-persist.ts", "src/lib/persistence/keys.ts"], "hazard_touches": ["src/lib/persistence/**", "state/**"], "blocked_by": [], "locks": ["persistence-single-writer", "vault-state-single-writer"], "wave": "B", "parallel_safe": false},
-    {"id": "R11", "title": "Drop speculative source comments", "status": "OPEN", "touches": ["src/discovery/harvest.ts"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
-    {"id": "R12", "title": "AutoForge staging policy", "status": "OPEN", "touches": [".gitignore", ".autoforge/AGENTS.md"], "hazard_touches": ["vault/**", "state/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "D", "parallel_safe": false},
-    {"id": "R13", "title": "Eval gate freshness automation", "status": "OPEN", "touches": ["scripts/check-eval-gate-freshness.mjs", ".github/workflows/ci.yml"], "hazard_touches": ["state/**"], "blocked_by": [], "locks": ["eval-canonical-report", "vault-state-single-writer"], "wave": "D", "parallel_safe": false},
-    {"id": "R14", "title": "Tier-1 archive helper drift", "status": "OPEN", "touches": ["scripts/tier1-archive.mjs"], "hazard_touches": [], "blocked_by": [], "locks": ["eval-canonical-report"], "wave": "A", "parallel_safe": true},
-    {"id": "R15", "title": "README/CONTRIBUTING deploy refresh", "status": "OPEN", "touches": ["README.md", "CONTRIBUTING.md", "docs/ops/deploy.md"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
-    {"id": "R16", "title": "Brave 402 graceful degradation + monitoring", "status": "FOG", "touches": ["src/discovery/providers/brave-search.ts", "src/discovery/pipeline.ts", "src/app/api/dev/health/route.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": [], "wave": "E", "parallel_safe": true},
-    {"id": "R17", "title": "Evidence HEAD anchoring automation", "status": "FOG", "touches": ["scripts/check-evidence-head.mjs", ".github/workflows/ci.yml"], "hazard_touches": ["state/**", ".autoforge/validation/**"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "D", "parallel_safe": false},
-    {"id": "R18", "title": "Bento merge verification", "status": "FOG", "touches": [], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "E", "parallel_safe": true},
-    {"id": "R19", "title": "Wayfinder plumbing traceability", "status": "OPEN", "touches": ["workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md", "workflow/wayfinder/maps/ops-residual/MAP.md", "src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts", "src/app/dev/mission-control/page.tsx"], "hazard_touches": [], "blocked_by": [], "locks": [], "wave": "A", "parallel_safe": true},
-    {"id": "T2", "title": "Ops-seamless-verify", "status": "CLOSED", "touches": [], "hazard_touches": [], "blocked_by": ["R4"], "locks": [], "wave": "E", "parallel_safe": true},
-    {"id": "M1", "title": "Quote-bearing GF-6..10 baseline upgrade", "status": "BLOCKED", "touches": ["state/eval-scorecards/**", "vault/journal/**"], "hazard_touches": ["state/**", "vault/**"], "blocked_by": [], "locks": ["vault-state-single-writer", "eval-canonical-report"], "wave": "F", "parallel_safe": false},
-    {"id": "M2", "title": "Conditional blob-storage escape hatch", "status": "BLOCKED", "touches": ["src/domain/types.ts", "src/lib/persistence/project-store.ts", "src/lib/persistence/attachments/**"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "M3", "title": "Vault sync-conflict UX", "status": "BLOCKED", "touches": ["scripts/vault-sync.mjs", "scripts/vault-import.mjs"], "hazard_touches": ["vault/**", "state/vault-notes.json"], "blocked_by": [], "locks": ["vault-state-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "M4", "title": "Report and recommendation drafting assists", "status": "BLOCKED", "touches": ["src/lib/ai.ts", "src/lib/inference.ts", "src/domain/candidate-review.ts"], "hazard_touches": ["state/eval-scorecards/**"], "blocked_by": ["M1"], "locks": ["eval-canonical-report"], "wave": "F", "parallel_safe": false},
-    {"id": "M5", "title": "Candidate-findings review UX", "status": "BLOCKED", "touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx", "src/domain/audit-workspace.ts"], "hazard_touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "M6", "title": "Audit-history retention policy", "status": "BLOCKED", "touches": ["src/lib/persistence/issue-ledger.ts", "src/lib/persistence/artifact-trail.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "M7", "title": "RSC initial Repository snapshot", "status": "BLOCKED", "touches": ["src/app/projects/[projectId]/page.tsx", "src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "hazard_touches": ["src/app/projects/[projectId]/audits/[auditId]/page.tsx"], "blocked_by": [], "locks": ["page-workspace-single-writer"], "wave": "F", "parallel_safe": false},
-    {"id": "M8", "title": "Postgres third DataStore adapter", "status": "BLOCKED", "touches": ["src/lib/persistence/store.ts", "src/lib/persistence/keys.ts"], "hazard_touches": ["src/lib/persistence/**"], "blocked_by": [], "locks": ["persistence-single-writer"], "wave": "F", "parallel_safe": false}
+    {
+      "id": "VG-01",
+      "title": "Settle journal-deletions-and-tz gotcha (status open→settled + journal entry)",
+      "status": "OPEN",
+      "frontier_ticket": "vault/gotchas/journal-deletions-and-tz.md — vault (tracker-index.md:1, state/vault-notes.json:7-20)",
+      "touches": ["vault/gotchas/journal-deletions-and-tz.md", "vault/journal/*.md"],
+      "hazard_touches": ["vault/journal/**"],
+      "blocked_by": [],
+      "locks": [],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "disjoint touches from VG-02 (distinct gotcha file + distinct journal filename); no state/** write, so parallel_safe with VG-02; sequential only with VG-SYNC",
+      "acceptance": "status open→settled preserves title/type/date/owner; new journal vault/journal/YYYY-MM-DD-journal-deletions-settled.md with type:journal date owner status null and body refs gotcha; parseFrontMatter+validateNoteFrontMatter pass; no state/views mutated",
+      "skills": ["lean-build", "codebase-design", "verify-and-stop"],
+      "agent": "autoforge-worker (surgical — prose-only)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "one-line status edit + one journal file; skipped FS immutable flag / pre-commit hook — add when second deletion incident measured"
+    },
+    {
+      "id": "VG-02",
+      "title": "Settle opencode-api-key-invocation gotcha (status open→settled + journal entry)",
+      "status": "OPEN",
+      "frontier_ticket": "vault/gotchas/opencode-api-key-invocation.md — vault (tracker-index.md:2, state/vault-notes.json:22-35)",
+      "touches": ["vault/gotchas/opencode-api-key-invocation.md", "vault/journal/*.md"],
+      "hazard_touches": ["vault/journal/**"],
+      "blocked_by": [],
+      "locks": [],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "disjoint touches from VG-01; parallel_safe with VG-01; blocked only by VG-SYNC (needs HEAD)",
+      "acceptance": "status open→settled preserves title/type/date/owner; new journal vault/journal/YYYY-MM-DD-opencode-key-settled.md with type:journal and body cites security find-generic-password + npx tsx; no secret pasted; front-matter validates; no state/views mutated",
+      "skills": ["lean-build", "domain-modeling", "verify-and-stop"],
+      "agent": "autoforge-worker (surgical — prose-only)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "doc-only diff; skipped keychain helper script / tsx wrapper — add when latency >60s"
+    },
+    {
+      "id": "VG-SYNC",
+      "title": "Head-worktree determinism refresh + tracker-index alignment (single writer closure)",
+      "status": "OPEN",
+      "frontier_ticket": "infra closure — not a frontier ticket; compiles VG-01+VG-02 prose into machine-canonical state",
+      "touches": ["state/vault-notes.json", "vault/views/**", "vault/views/evidence/**", ".autoforge/discovery/tracker-index.md"],
+      "hazard_touches": ["state/**", "vault/views/**", ".autoforge/discovery/tracker-index.md"],
+      "blocked_by": ["VG-01", "VG-02"],
+      "locks": ["vault-state-single-writer"],
+      "wave": "S",
+      "parallel_safe": false,
+      "parallel_notes": "holds vault-state-single-writer — sequential alone; cannot parallel with VG-01/VG-02 prose (needs their HEAD commit) nor any other state/views writer; pony ceiling wholesale rmSync O(n) n=161",
+      "acceptance": "node scripts/vault-sync.mjs --check exit 0 (committed matches HEAD); jq both gotchas status settled; note_count = 25 + journals added, sorted localeCompare, byte-identical; vault/views source_hash matches sha(state); tracker-index drift 0 (rg open gotcha 0 hits); explicit git add <paths> only; git diff --exit-code -- vault/views state/vault-notes.json green after commit",
+      "skills": ["surgical-patch", "codebase-design", "verify-and-stop"],
+      "agent": "autoforge-worker (determinism guard)",
+      "reviewer": "autoforge-reviewer + autoforge-validator",
+      "ponytail": "reuse vault-sync.mjs worktree+symlink ceiling; skipped incremental patch + compileTrackerIndex() until n>10/1k"
+    }
   ],
-  "edges": [{"from": "M1", "to": "M4", "reason": "quality gate precedes AI assists — only true DAG edge"}, {"from": "R4", "to": "T2", "reason": "T2 CLOSED traceability; R4 owns ledgerGrowth/production/daemon"}],
+  "edges": [
+    {"from": "VG-01", "to": "VG-SYNC", "reason": "prose must be in HEAD before HEAD worktree compile can reflect settled (vault-sync.mjs:17 worktree from HEAD)"},
+    {"from": "VG-02", "to": "VG-SYNC", "reason": "prose must be in HEAD before compile; vault-state-single-writer needs both journals+gotchas committed"}
+  ],
+  "DAG": {
+    "nodes": ["VG-01", "VG-02", "VG-SYNC"],
+    "edges": [["VG-01", "VG-SYNC"], ["VG-02", "VG-SYNC"]],
+    "topological_order": [["VG-01", "VG-02"], ["VG-SYNC"]],
+    "note": "VG-01 and VG-02 are roots (blocked_by [] hazard-only per grilling.md:14-15). Only true DAG edges are VG-* → VG-SYNC. No edge VG-01→VG-02."
+  },
   "resource_locks": {
-    "vault-state-single-writer": {"modules": ["M1", "M3", "R4", "R10", "R12", "R13", "R17"], "mode": "sequential"},
-    "persistence-single-writer": {"modules": ["M2", "M6", "M8", "R1", "R2", "R5", "R6", "R8", "R10"], "mode": "sequential-ready-order"},
-    "page-workspace-single-writer": {"modules": ["M5", "M7", "R5", "R7", "R19"], "mode": "sequential-ready-order"},
-    "eval-canonical-report": {"modules": ["M1", "M4", "R13", "R14"], "mode": "sequential"}
+    "vault-state-single-writer": {
+      "modules": ["VG-SYNC"],
+      "mode": "sequential",
+      "touches": ["state/vault-notes.json", "vault/views/**", ".autoforge/discovery/tracker-index.md", "vault/gotchas/** settlement"],
+      "policy": "any writer of state/vault-notes.json or vault/views/** or gotcha settlement or tracker-index co-commit must serialize; VG-01/VG-02 are prose-only and do not hold lock, VG-SYNC is sole holder; vault-sync --check before handoff",
+      "cite": "vault/CHARTER.md:19-20,69-71 scripts/vault-sync.mjs:16-44 .autoforge/architecture/decisions.md:AD-09"
+    },
+    "evidence-registry-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["state/evidence-registry.json"],
+      "policy": "read-only in this lane (vault-import.mjs:30-39 validates evidence_ids), no write",
+      "cite": "scripts/vault-import.mjs:30-39"
+    },
+    "graph-state-single-writer": {
+      "modules": [],
+      "mode": "subsumed",
+      "touches": ["state/graph-state.json", "vault/views/graph-overview.md"],
+      "policy": "subsumed by vault-state-single-writer; read-only via vault-export.mjs:78-95",
+      "cite": "scripts/vault-export.mjs:78-95 vault/views/graph-overview.md:1-5"
+    }
   },
   "waves": [
-    {"id": "wave-A-docs-safe", "wave": "A", "parallel": true, "members": ["R9", "R11", "R15", "R14", "R19"]},
-    {"id": "wave-B-persistence-serial", "wave": "B", "parallel": false, "members": ["R5", "R6", "R8", "R10"]},
-    {"id": "wave-C-page-workspace-serial", "wave": "C", "parallel": false, "members": ["R7", "R5"]},
-    {"id": "wave-D-vault-state-serial", "wave": "D", "parallel": false, "members": ["R12", "R13", "R17"]},
-    {"id": "wave-E-fog-verify", "wave": "E", "parallel": true, "members": ["R16", "R18", "T2"]},
-    {"id": "wave-F-blocked", "wave": "F", "parallel": false, "members": ["R1", "R2", "R3", "R4", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"]}
+    {"id": "wave-P-prose-parallel", "wave": "P", "parallel": true, "members": ["VG-01", "VG-02"], "guard": "disjoint touches (distinct gotcha file + distinct journal filename); no shared lock; may dispatch same turn as two Task calls"},
+    {"id": "wave-S-state-serial", "wave": "S", "parallel": false, "members": ["VG-SYNC"], "guard": "holds vault-state-single-writer; blocked_by [VG-01,VG-02]; cannot parallel with any state/views writer; touching vault/↔state/*.json boundary"}
   ],
+  "parallel_groups": {
+    "parallel_safe_groups": [["VG-01", "VG-02"]],
+    "sequential_groups": [["VG-01", "VG-02"], ["VG-SYNC"]],
+    "shared_state_guard": "VG-01 and VG-02 touch vault/journal/** at directory level but file-level disjoint → parallel_safe true. VG-SYNC touches state/vault-notes.json + vault/views/** + .autoforge/discovery/tracker-index.md → intersects any state/views writer → sequential. Intersecting touches = sequential per instruction.",
+    "module_boundary_note": "module boundary ≠ child-session boundary — VG-01+VG-02 are distinct modules but may be executed in one child session batch (parallel calls); VG-SYNC may follow in next turn after HEAD commit"
+  },
   "global_guardrails": {
-    "vault_determinism": "node scripts/vault-sync.mjs --check",
-    "evidence_byte_identity": "cmp -s .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json",
-    "staging_hygiene": "git add <paths> only",
-    "ponytail": "reuse DataStore seam, stdlib, smallest diff, no new deps"
-  }
+    "vault_determinism": "node scripts/vault-sync.mjs --check (commit vs HEAD-compiled via Buffer.equals at vault-sync.mjs:31) — CI vault compile determinism (V2) at .github/workflows/ci.yml:35-50 runs vault-export+import + git diff --exit-code -- vault/views state/vault-notes.json",
+    "vault_sync_hardened_path": "git worktree add --detach ${tmp} HEAD at vault-sync.mjs:17, symlink node_modules at :19, compile-in-tmp at :21-22, fs.writeFileSync(live,compiled) at :42, finally cleanup at :45-52",
+    "evidence_byte_identity": "determinism via sorted keys + sha12 at vault-export.mjs:14-16 and import sort at vault-import.mjs:79 — not in this lane but view regen preserves it",
+    "staging_hygiene": "git add <paths> only — never git add -A — per AGENTS.md:21-23; staging list is exactly vault/gotchas/*.md + vault/journal/*.md + state/vault-notes.json + vault/views/** + .autoforge/discovery/tracker-index.md",
+    "ponytail": "reuse frontmatter.mjs + paths.mjs + yaml (already installed), stdlib only, no new deps, wholesale rmSync O(n) n=161 ceiling, best-effort worktree cleanup ceiling",
+    "testability": "vault-sync --check + git diff --exit-code -- vault/views state/vault-notes.json + jq '.notes[] | select(.status==\"open\")' ==0 + npm run typecheck/lint/build green"
+  },
+  "traceability": {
+    "tracker_index": ".autoforge/discovery/tracker-index.md:1-2 verbatim",
+    "discovery_report": ".autoforge/discovery/report.md:7-13",
+    "grilling": ".autoforge/requirements/grilling.md Q1-Q10 R1-R6",
+    "architecture_report": ".autoforge/architecture/report.md §1-§9",
+    "decisions": ".autoforge/architecture/decisions.md AD-01..AD-10",
+    "charter": "vault/CHARTER.md:16-20,38-54,64-71",
+    "sync_script": "scripts/vault-sync.mjs:16-44",
+    "state": "state/vault-notes.json:7-13,22-28 note_count:25",
+    "views_export": "scripts/vault-export.mjs:45-96",
+    "import_validation": "scripts/vault-import.mjs:14-90 frontmatter.mjs:78-109"
+  },
+  "acceptance_global": "work-order enumerates all 2 open vault memory items (VG-01, VG-02), includes touches for vault/ ↔ state/*.json (VG-SYNC vault/views/** + state/vault-notes.json), enforces vault-state-single-writer (VG-SYNC sole writer, blocked_by both), testable via vault-sync --check + git diff --exit-code -- vault/views state/vault-notes.json + jq settled checks",
+  "wayfinder_note": "wayfinder skill not invoked (n=2 shallow tracker-index); deepen into compileTrackerIndex() only when frontier >10 per architecture report §8 Speculative"
 }
