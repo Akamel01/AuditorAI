@@ -2,7 +2,7 @@
 title: OPENCODE_API_KEY handling + eval invocation quirks
 type: gotcha
 date: 2026-08-22
-status: open
+status: settled
 owner: agent
 ---
 

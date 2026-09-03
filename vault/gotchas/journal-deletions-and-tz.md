@@ -2,7 +2,7 @@
 title: Journal deletions by parallel sessions + UTC/local timestamp confusion
 type: gotcha
 date: 2026-08-23
-status: open
+status: settled
 owner: agent
 ---
 
