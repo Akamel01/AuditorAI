@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 25,
+  "note_count": 27,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -9,7 +9,7 @@
       "title": "Journal deletions by parallel sessions + UTC/local timestamp confusion",
       "type": "gotcha",
       "date": "2026-08-23",
-      "status": "open",
+      "status": "settled",
       "owner": "agent",
       "links": {
         "evidence_ids": [],
@@ -24,7 +24,7 @@
       "title": "OPENCODE_API_KEY handling + eval invocation quirks",
       "type": "gotcha",
       "date": "2026-08-22",
-      "status": "open",
+      "status": "settled",
       "owner": "agent",
       "links": {
         "evidence_ids": [],
@@ -377,6 +377,36 @@
         "adr": []
       },
       "body_chars": 2464
+    },
+    {
+      "path": "vault/journal/2026-09-02-journal-deletions-settled.md",
+      "zone": "vault/journal",
+      "title": "Journal settlements for: Journal deletions by parallel sessions + UTC/local timestamp confusion",
+      "type": "journal",
+      "date": "2026-09-02",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 586
+    },
+    {
+      "path": "vault/journal/2026-09-02-opencode-key-settled.md",
+      "zone": "vault/journal",
+      "title": "Journal settlements for: OPENCODE_API_KEY handling + eval invocation quirks",
+      "type": "journal",
+      "date": "2026-09-02",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 957
     }
   ]
 }

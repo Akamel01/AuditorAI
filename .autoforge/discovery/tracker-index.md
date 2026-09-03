@@ -138,3 +138,7 @@ Source: v2/v3 Not-yet-specified
 Ticket: M8 — Postgres third DataStore adapter
 Status: BLOCKED
 Citations: .autoforge/plans/plan.md:180-196
+
+# Vault memory gaps 2026-09-02 — settled
+# vault/gotchas/journal-deletions-and-tz.md — settled (was open)
+# vault/gotchas/opencode-api-key-invocation.md — settled (was open)
