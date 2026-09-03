@@ -44,3 +44,6 @@ state/candidate-outcomes/
 tsconfig.tsbuildinfo
 .vercel
 .env*
+
+# AutoForge staging (R12 curated default: ephemeral auto-generated state, not project state)
+.autoforge/
