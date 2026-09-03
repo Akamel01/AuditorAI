@@ -162,7 +162,16 @@ export async function executeJob(
     const artifacts: unknown[] = [];
     let refusals: string[] = [];
 
-    for (const nodeId of DISCOVERY_NODE_IDS) {
+    // per-node polling ceiling: cap the number of discovery nodes polled in a single run
+    const budget = (() => {
+      const v = process.env.HARVEST_NODE_POLL_BUDGET;
+      if (!v) return DISCOVERY_NODE_IDS.length;
+      const n = Number(v);
+      return Number.isFinite(n) && n > 0 ? Math.floor(n) : DISCOVERY_NODE_IDS.length;
+    })();
+    const maxNodes = Math.min(DISCOVERY_NODE_IDS.length, budget);
+    for (let idx = 0; idx < maxNodes; idx++) {
+      const nodeId = DISCOVERY_NODE_IDS[idx] as string;
       // per-node cancellation poll — ponytail: one guard in shared function, smallest diff
       try {
         const cur2 = await getJob(jobId, store);

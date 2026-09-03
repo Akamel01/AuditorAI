@@ -227,22 +227,24 @@ export async function listJobs(
 ): Promise<{ jobs: DiscoveryJob[]; nextCursor: string | null; total: number }> {
   const ids = await loadIndex(store);
   const total = ids.length;
+  // MR6: cap page size to [1, 20] and ensure stable behavior on stale cursors
+  const cap = Math.max(1, Math.min(20, limit));
   // determine the ids that should be in this page
   let pageIds: string[];
   if (cursor) {
     const idx = ids.indexOf(cursor);
     if (idx >= 0) {
-      pageIds = ids.slice(idx + 1, idx + 1 + limit);
+      pageIds = ids.slice(idx + 1, idx + 1 + cap);
       // if cursor exists but there are no items after it, fall back to latest page
       if (pageIds.length === 0) {
-        pageIds = ids.slice(0, limit);
+        pageIds = ids.slice(0, cap);
       }
     } else {
-      // cursor not found (trimmed past), return latest page
-      pageIds = ids.slice(0, limit);
+      // cursor not found (trimmed past or stale), return latest page
+      pageIds = ids.slice(0, cap);
     }
   } else {
-    pageIds = ids.slice(0, limit);
+    pageIds = ids.slice(0, cap);
   }
   if (pageIds.length === 0) {
     return { jobs: [], nextCursor: null, total };

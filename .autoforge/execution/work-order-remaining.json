@@ -1,0 +1,468 @@
+{
+  "loop": "ops-residual-2026-09-03",
+  "phase": "plan",
+  "status": "planning-complete; execution-gated; blocked_by architect-remaining",
+  "source": ".autoforge/discovery/tracker-index.md",
+  "scope": "self-approving remaining frontier R5,R6,R7,R9,R10,R11,R15,R19 — 8 modules (R8,R12,R13,R14 deferred NEEDS REVIEW per decisions-remaining AD-14,AD-18,AD-19,AD-20)",
+  "tracker_count": 8,
+  "tracker_total_open": 12,
+  "tracker_index_verbatim": [
+    "R5 — Stop/Cancel server endpoint (server mark cancelled vs client-only Stop) — OPEN (.autoforge/discovery/tracker-index.md:23)",
+    "R6 — Pagination across large job index (cursor stability) — OPEN (:28)",
+    "R7 — Refresh parity for parent reload on manual click — OPEN (:33)",
+    "R9 — Discovery doctor JSON contract stable for CI — OPEN (:43)",
+    "R10 — state/dedupe-index.json write authority (KV-truth vs file fallback) — OPEN (:48)",
+    "R11 — Hardening: drop speculative source comments — OPEN (:53)",
+    "R15 — README + CONTRIBUTING: refresh Production deploy section — OPEN (:72)",
+    "R19 — Wayfinder plumbing traceability — ticket index + Mission Control board — OPEN (:93)"
+  ],
+  "deferred_verbatim": [
+    "R8 — Health route exposes harvest-health sub-object — OPEN — DEFERRED AD-14 FALSE NEEDS REVIEW (shape freeze)",
+    "R12 — AutoForge staging: exclude .autoforge/ from committed tree — OPEN — DEFERRED AD-18 FALSE HITL-policy",
+    "R13 — Eval gate §2 freshness automation: timestamp check — OPEN — DEFERRED AD-19 FALSE HITL",
+    "R14 — Tier-1 archive: keep helper script, de-skill its drift — OPEN — DEFERRED AD-20 NEEDS REVIEW (clarify file)",
+    "R1 — Cross-instance harvest lock via Vercel KV atomic SET NX — BLOCKED",
+    "R2 — Ledger KV ordering + orphan-key recovery — BLOCKED",
+    "R3 — Regression tests for in-process lock + callback dedup — BLOCKED",
+    "R4 — Production harvest proof bundle (Vercel KV + daemon) — BLOCKED",
+    "R16 — Brave quota 402 graceful degradation — FOG",
+    "R17 — Evidence bundle reconciliation + HEAD anchoring — FOG",
+    "R18 — Bento components merge verification — FOG"
+  ],
+  "model_budget": "80k tok inherit opencode/muse-spark-1.2-contributor-free 1M*0.30 capped",
+  "reconciliation": {
+    "counting_proof": "12 OPEN lines (R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15,R19) in tracker-index.md:22-96 = 8 frontier modules (M-R5,M-R6,M-R7,M-R9,M-R10,M-R11,M-R15,M-R19) self-approving + 4 deferred NEEDS REVIEW (R8,R12,R13,R14) = 12; no merge — distinct operational domains (cancel vs pagination vs tooltip vs doctor vs dedupe vs comments vs docs vs wayfinder), deduplication via report-remaining §1 map-ownership local-markdown only TRACKER.md:14 would fail; FOG R16-18 and BLOCKED R1-4 excluded per MAP.md:39-59 + decisions-remaining AD-11..AD-22; first-item-only (only M-R5) would be failure per instructions",
+    "discovery_report": ".autoforge/architecture/report-remaining.md:4 — 12 OPEN at workflow/wayfinder/maps/ops-residual/MAP.md:39-59 * tickets/R5-server-cancel.md through R15 + R19:29-48",
+    "architecture_pinned": "report-remaining §1-§9 seams: DataStore store.ts:16-26, Job store jobs.ts:41-42, Health-aggregate health-aggregate.ts:20-61, Wayfinder tickets.ts:34-193, Dedupe dedupe-persist.ts:12-107, Ledger ledger.ts:4-40, Harvest harvest.ts:106-247; hazard locks §6",
+    "grilling_pinned": ".autoforge/requirements/grilling-remaining.md:1-122 Q1-12 — R5:27 false, R6:36 false, R7:44 false, R8:52 false, R9:58 false, R10:64 false, R11:72 false, R12:80 false, R13:86 false, R14:92 false, R15:100 false, R19:107 false — overridden by decisions-remaining AD-11,12,13,15,16,17,21,22 to TRUE for 8",
+    "decisions_pinned": ".autoforge/architecture/decisions-remaining.md:1-203 AD-11 R5 TRUE, AD-12 R6 TRUE, AD-13 R7 TRUE, AD-15 R9 TRUE, AD-16 R10 TRUE, AD-17 R11 TRUE, AD-21 R15 TRUE, AD-22 R19 TRUE; AD-14 R8 FALSE NEEDS REVIEW (shape freeze), AD-18 R12 FALSE HITL-policy, AD-19 R13 FALSE HITL, AD-20 R14 NEEDS REVIEW",
+    "state_pinned": "state/vault-notes.json:4 note_count:25 (vault lane unchanged) — work-order-remaining does not write state/vault-notes.json directly (ops-residual lane) but retains vault-sync --check guard; workflow/wayfinder/maps/ops-residual/** markdown canonical TRACKER.md:17",
+    "wayfinder_pinned": "workflow/wayfinder/TRACKER.md:14-17 local-markdown only ops-residual; v2-agentic-platform GitHub-canonical on issue #20 only"
+  },
+  "modules": [
+    {
+      "id": "M-R5",
+      "title": "Stop/Cancel server endpoint (server mark cancelled vs client-only Stop)",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-11",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R5-server-cancel.md:1-35 — type:task hitl:false status:open blocked_by:[]",
+      "touches": [
+        "src/app/api/dev/discovery/jobs/[id]/cancel/route.ts",
+        "src/discovery/jobs.ts",
+        "src/discovery/harvest.ts",
+        "src/app/dev/mission-control/_components/provider-health.tsx",
+        "tests/domain/cancel.test.ts"
+      ],
+      "hazard_touches": [
+        "src/discovery/jobs.ts",
+        "src/discovery/harvest.ts",
+        "src/app/dev/mission-control/_components/provider-health.tsx"
+      ],
+      "blocked_by": [],
+      "locks": ["harvest-single-writer", "job-index-single-writer", "provider-health-client"],
+      "wave": "S",
+      "parallel_safe": false,
+      "parallel_notes": "sequential with M-R6 (shared src/discovery/jobs.ts job-index-single-writer) and M-R11 (shared src/discovery/harvest.ts harvest-single-writer) and M-R7 (shared provider-health.tsx). Disjoint with M-R9 (doctor), M-R10 (dedupe), M-R15 (docs), M-R19 (wayfinder) — may parallel those if scheduler proves disjoint but file hazard with M-R6/M-R11/M-R7 forces isolated turn after they commit.",
+      "acceptance": "POST /api/dev/discovery/jobs/:id/cancel admin-gated flips running→cancelled in MemoryStore; executeJob with cancelled seed bails before lock and per-node (harvest.ts:118-130,166-173) with D00-CANCELLED; idempotent second POST no-op; UI Stop→cancelling…→paused · cancelled by user; npm run typecheck/test/build green; explicit git add for touches only",
+      "skills": ["lean-build", "codebase-design", "verify-and-stop", "tdd"],
+      "agent": "autoforge-worker (surgical — route+store)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "one updateJob(jobId,{status:\"cancelled\"}) call is lazy; skipped AbortSignal through every runDiscoveryNode (widens N nodes) and separate discovery:job:cancel:* token (second truth); per-node poll ceiling deferred until inside-node latency measured",
+      "grilling_session": "self-approve TRUE; optional 1-question (confirm per-node poll ceiling) → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-11 TRUE — contract fully in R5-server-cancel.md:22-27 + cancel/route.ts:16 + harvest.ts:166-173 mechanical reuse of updateJob seam; grilling false overridden"
+    },
+    {
+      "id": "M-R6",
+      "title": "Pagination across large job index (cursor stability)",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-12",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R6-pagination-trim.md:1-33 — hitl:false open blocked_by:[]",
+      "touches": [
+        "src/discovery/jobs.ts",
+        "src/app/api/dev/discovery/jobs/route.ts",
+        "tests/domain/jobs-pagination.test.ts"
+      ],
+      "hazard_touches": ["src/discovery/jobs.ts"],
+      "blocked_by": [],
+      "locks": ["job-index-single-writer"],
+      "wave": "S",
+      "parallel_safe": false,
+      "parallel_notes": "sequential with M-R5 (shared src/discovery/jobs.ts). Parallel_safe with P members M-R7,R9,R11,R15,R19 (disjoint files) and M-R10 dedupe (disjoint seam).",
+      "acceptance": "Documented truncation comment; stale cursor→latest page with nextCursor last pageId, total present, never null until last page; tests cursor present/missing/trimmedPast + limit clamp [1,20] at jobs/route.ts:13; listJobs via loadIndex store.ts seam; npm run typecheck/test/build green; git add jobs.ts + route + test only",
+      "skills": ["lean-build", "codebase-design", "tdd"],
+      "agent": "autoforge-worker",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "stable cursor via loadIndex scan wins over KV KEYS prefix* scan; O(indexLen) n≤20 trivial ceiling deferred until n>500; ponytail: 20-window ceiling, KV tail scan deferred",
+      "grilling_session": "self-approve TRUE; no grilling needed — pure read-path fix; optional 1-q (confirm 20-window) → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-12 TRUE — stable paging already lands at jobs.ts:223-274, shape preserved, contract at R6:20-21"
+    },
+    {
+      "id": "M-R7",
+      "title": "Refresh parity for parent reload on manual click",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-13",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R7-refresh-parity.md:1-32 — hitl:false open blocked_by:[]",
+      "touches": [
+        "src/app/dev/mission-control/_components/provider-health.tsx",
+        "tests/domain/provider-health-refresh.test.tsx"
+      ],
+      "hazard_touches": ["src/app/dev/mission-control/_components/provider-health.tsx"],
+      "blocked_by": [],
+      "locks": ["provider-health-client"],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "parallel_safe with P members M-R9,R15,R19 and M-R11,M-R10 (disjoint files). Sequential with M-R5 (shared provider-health.tsx) — flagged intersecting touches as sequential per instruction; may batch same turn as M-R11 (disjoint harvest.ts vs provider-health.tsx) but not same turn as M-R5 before M-R5 commits.",
+      "acceptance": "Refresh button exposes title=\"Refresh bypasses onRun dedup — deliberate manual inspection…\" at provider-health.tsx:482 (or aria-label) explaining dedup bypass; getByRole button title.includes('dedup'); no new dep/component; typecheck/test green; git add provider-health.tsx + test only",
+      "skills": ["lean-build", "verify-and-stop"],
+      "agent": "autoforge-worker (surgical — one attribute)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "HTML title over custom <Tooltip> — native platform feature covers it (ladder rung 4); skipped component abstraction for one string",
+      "grilling_session": "self-approve TRUE; no session — 0-risk UI string → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-13 TRUE — trivial HTML attribute, no deps, no behaviour change beyond discoverability"
+    },
+    {
+      "id": "M-R9",
+      "title": "Discovery doctor JSON contract stable for CI",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-15",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R9-discovery-doctor-json.md:1-32 — hitl:false open blocked_by:[]",
+      "touches": [
+        "scripts/discovery-doctor.ts",
+        "tests/domain/discovery-doctor-json.test.ts"
+      ],
+      "hazard_touches": ["scripts/discovery-doctor.ts"],
+      "blocked_by": [],
+      "locks": [],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "fully parallel_safe — touches disjoint from all other modules (no other writer to discovery-doctor.ts); may dispatch same turn as any P or S member (scheduler may batch with M-R15+M-R19 as stateless docs/script lane)",
+      "acceptance": "npx tsx scripts/discovery-doctor.ts --json prints valid JSON {providers:[{id,enabled,hostsOk,sampleHits}],totals:{totalProviders,totalEnabled,totalSampleHits}} at discovery-doctor.ts:44-51; --live --json valid JSON; human path untouched :55-112; unit test JSON.parse stdout shape; npm run test/build green; git add doctor + test only",
+      "skills": ["lean-build", "tdd", "verify-and-stop"],
+      "agent": "autoforge-worker",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "single --json branch printing JSON.stringify at :51 with process.exit(0) at :52 is laziest; skipped file output (breaks | jq) and replacing human mode",
+      "grilling_session": "self-approve TRUE; no session → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-15 TRUE — contract pinned at R9:20-25, exit codes preserved, deterministic validator"
+    },
+    {
+      "id": "M-R10",
+      "title": "state/dedupe-index.json write authority (KV-truth vs file fallback)",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-16",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R10-dedupe-write-authority.md:1-34 — hitl:false open blocked_by:[]",
+      "touches": [
+        "src/discovery/dedupe-persist.ts",
+        "src/lib/persistence/keys.ts",
+        "tests/domain/dedupe-kv-truth.test.ts"
+      ],
+      "hazard_touches": [
+        "src/discovery/dedupe-persist.ts",
+        "src/lib/persistence/keys.ts",
+        "state/dedupe-index.json"
+      ],
+      "blocked_by": [],
+      "locks": ["dedupe-index-single-writer"],
+      "wave": "S",
+      "parallel_safe": true,
+      "parallel_notes": "standalone dedupe-index-single-writer (writeQueue:17). Disjoint touches from M-R5 (jobs/harvest/provider-health), M-R6 (jobs), M-R7 (provider-health), M-R9 (doctor), M-R11 (harvest.ts only), M-R15 (docs), M-R19 (wayfinder). Therefore may parallel same turn as P members and technically with M-R6/M-R5 after their file hazard resolved; conservative S serial after P2 for lock clarity but not required by shared file — allowed parallel if scheduler proves disjoint which it is.",
+      "acceptance": "persistDedupeFromResult now awaits loadDedupeIndexAsync(store,cwd) at dedupe-persist.ts:85 (replacing sync), KV-first s.get(DISCOVERY_DEDUPE_INDEX_KEY) at keys.ts:50; ROFS fake writeFileSync throw → KV updated + single console.warn dedupe: FS mirror skipped (ROFS) per R10 AC:28; local dev writes both; npm run test vitest ROFS/local dual green + typecheck/build green; git add dedupe-persist + keys + test only",
+      "skills": ["lean-build", "surgical-patch", "tdd", "codebase-design"],
+      "agent": "autoforge-worker (one-line fix + EROFS test)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "KV-first load + async persist + EROFS warn+continue + serialized writeQueue:17 ceiling; skipped removing file entirely (breaks loadDedupeIndex sync callers) and keeping file-only (forks on ROFS); global __KV_DEDUPE_INDEX__ at :19-26 ceiling deferred removal",
+      "grilling_session": "self-approve TRUE; optional 1-q (confirm file best-effort on ROFS) → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-16 TRUE — KV-first seam spelled at R10:21-25 + keys.ts:50 + dedupe-persist.ts:51-58; one-line swap + EROFS test per R10 AC:30"
+    },
+    {
+      "id": "M-R11",
+      "title": "Hardening: drop speculative source comments",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-17",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R11-drop-stale-comments.md:1-32 — hitl:false open blocked_by:[]",
+      "touches": ["src/discovery/harvest.ts"],
+      "hazard_touches": ["src/discovery/harvest.ts"],
+      "blocked_by": [],
+      "locks": ["harvest-single-writer"],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "parallel_safe with P members M-R7,R9,R15,R19 and S member M-R6 (disjoint files harvest.ts vs jobs.ts vs doctor/docs/wayfinder). Sequential with M-R5 (shared harvest.ts) — flagged intersecting touches as sequential; must not dispatch same turn as M-R5.",
+      "acceptance": "rg getGitHead|deleted global hook in harvest.ts 0 hits; remaining comments pass 'explains ceiling or contract' at R11:21 (keep HARVEST_LOCK ponytail:99-103); npm run typecheck 0 errors + test/build green; git add src/discovery/harvest.ts only (comment-only diff)",
+      "skills": ["lean-build", "verify-and-stop"],
+      "agent": "autoforge-worker (surgical — prose comments)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "deletion over addition; skipped docs refactor outside harvest.ts (out of scope R11:30); keep ponytail ceilings global lock O(n) queue",
+      "grilling_session": "self-approve TRUE; no session — no logic change → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-17 TRUE — prune stale, keep ponytail ceilings, typecheck gates"
+    },
+    {
+      "id": "M-R15",
+      "title": "README + CONTRIBUTING: refresh Production deploy section",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-21",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R15-docs-production-deploy-refresh.md:1-33 — hitl:false open blocked_by:[]",
+      "touches": ["README.md", "CONTRIBUTING.md", "docs/deployment.md"],
+      "hazard_touches": ["README.md", "CONTRIBUTING.md", "docs/deployment.md"],
+      "blocked_by": [],
+      "locks": ["docs-single-writer"],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "parallel_safe with all P and S members — touches disjoint (docs text only vs code/script seams). No docs writer contender in this lane (R14 tier1 deferred, no .gitignore writer). May batch same turn as M-R9+M-R19.",
+      "acceptance": "README deployment section + docs/deployment.md + CONTRIBUTING.md describe main is production; Vercel auto-deploys from main; discovery-harvest schedule refreshes state; reference AGENTS.md Eval gates freshness window; no commands reordered per R15:29; rg main is production 1+ hit and manual Vercel CLI 0; build/lint green; git add README+CONTRIBUTING+docs/deployment only",
+      "skills": ["lean-build", "domain-modeling"],
+      "agent": "autoforge-worker (surgical — prose)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "text-only sync is minimal; skipped tutorial migration (out of scope R15:32); keep command order",
+      "grilling_session": "self-approve TRUE; no session → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-21 TRUE — text-only sync, no code"
+    },
+    {
+      "id": "M-R19",
+      "title": "Wayfinder plumbing traceability — ticket index + Mission Control board",
+      "status": "OPEN",
+      "self_approve": true,
+      "decision": "AD-22",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md:1-53 — hitl:false open blocked_by:[]",
+      "touches": [
+        "src/wayfinder/tickets.ts",
+        "src/wayfinder/ticket-types.ts",
+        "src/app/api/dev/tickets/route.ts",
+        "src/app/dev/mission-control/_components/ticket-board.tsx",
+        "scripts/wayfinder-tickets.ts",
+        "package.json",
+        "tests/domain/wayfinder-tickets.test.ts",
+        "workflow/wayfinder/maps/ops-residual/tickets/R19-wayfinder-plumbing-traceability.md"
+      ],
+      "hazard_touches": [
+        "workflow/wayfinder/maps/**",
+        "scripts/wayfinder-tickets.ts",
+        "package.json",
+        "src/wayfinder/**",
+        "src/app/api/dev/tickets/route.ts",
+        "src/app/dev/mission-control/_components/ticket-board.tsx"
+      ],
+      "blocked_by": [],
+      "locks": ["wayfinder-compile", "docs-single-writer:package.json"],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "reads workflow/wayfinder/maps/** only (no write contention except package.json). Disjoint from M-R5/M-R6/M-R7/M-R10/M-R11 (jobs/harvest/provider-health/dedupe). Parallel_safe with M-R9,M-R15,M-R7,M-R11. Package.json writer singleton in this lane — no other module touches package.json, so parallel_safe remains. Deterministic readdirSync sorted at tickets.ts:141,151.",
+      "acceptance": "npm run tickets -- --json emits valid JSON counts.total/frontier/ready_without_owner/hitl_frontier/blocked + tickets[].key|status|hitl|ready_without_owner per R19 AC:45-46; /dev/mission-control Tickets lane same counts as CLI via same TicketIndex (inLane tickets.ts:28-33); editing one ticket status open→claimed with assignee reflected without code change (canonical TRACKER.md:60-62); no GitHub sync for ops-residual (v2-agentic-platform #20 only canonical); vitest wayfinder-tickets.test.ts + typecheck/build green; explicit git add includes wayfinder seam + CLI + package.json + board + test + R19 markdown (never git add -A)",
+      "skills": ["codebase-design", "wayfinder", "lean-build", "verify-and-stop", "tdd"],
+      "agent": "autoforge-worker (thin CLI + wayfinder seam)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "single function indexWayfinderTickets() serves API+board+CLI — leverage rung 2; reuse FRONT_MATTER_RE, isTerminalStatus, classifyTickets seams; skipped migrating ops-residual to GitHub Issues (out of scope R19:51) and DB index (speculative); ponytail: single seam ceiling, GitHub sync deferred",
+      "grilling_session": "self-approve TRUE; optional 1-q (confirm local-markdown canonical for ops-residual stays per TRACKER.md:17) → APPROVE",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-remaining.md AD-22 TRUE — 3 real adapters (markdown, compiled JSON, board UI) prove seam; CLI is 4th thin per report-remaining §1 Wayfinder index deep"
+    }
+  ],
+  "edges": [],
+  "edges_reason": "All 8 self-approving modules have blocked_by:[] per tickets R5:8, R6:8, R7:8, R9:8, R10:8, R11:8, R15:8, R19:8 — no semantic DAG edges; sequencing is hazard-only (same-file writes) via resource locks, not blocked_by. Deferred R8/R12/R13/R14 would be blocked_by owner-review but not in this lane, so no edges included. Prior vault lane VG-01→VG-SYNC edges via vault-sync.mjs:17 worktree head are retained as reference but not part of this work-order's edges.",
+  "DAG": {
+    "nodes": ["M-R5", "M-R6", "M-R7", "M-R9", "M-R10", "M-R11", "M-R15", "M-R19"],
+    "edges": [],
+    "topological_order": [["M-R7", "M-R9", "M-R15", "M-R19", "M-R11", "M-R10", "M-R6", "M-R5"]],
+    "hazard_order_note": "Semantic DAG has no edges (all roots). Topological_order here is one valid serialization respecting hazard locks only: P members first (M-R7+M-R11 parallel but disjoint so order within P arbitrary; M-R9+M-R15+M-R19 parallel), then S members dedupe M-R10 then pagination M-R6 then cancel M-R5 last because M-R5 touches three files and must be alone after M-R6+M-R11+M-R7. Alternative hazard-respecting orders exist — any order that serializes intersecting touches is valid.",
+    "note": "All blocked_by [] hazard-only per grilling-remaining.md:14-15 + report-remaining §6 + decisions-remaining AD-24. Only true DAG edges in prior lane were VG-*→VG-SYNC via vault-sync worktree. This lane's DAG is empty; hazard serialization via locks."
+  },
+  "resource_locks": {
+    "vault-state-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["state/vault-notes.json", "vault/views/**", ".autoforge/discovery/tracker-index.md", "vault/gotchas/** settlement"],
+      "policy": "any writer of state/vault-notes.json or vault/views/** or gotcha settlement or tracker-index co-commit must serialize; this lane has no such writer (ops-residual does not settle gotchas), so lock is declared but uncontended; vault-sync --check still required before any state/** commit; pony ceiling wholesale rmSync O(n) n=161 + worktree+symlink at vault-sync.mjs:16-44",
+      "cite": "vault/CHARTER.md:19-20,69-71 scripts/vault-sync.mjs:16-44 .autoforge/architecture/decisions.md:AD-09 report-remaining §3.14",
+      "guard": "declared global — never run bare vault-import/export; only vault-sync or --check; parallel sessions own different vault/journal filenames but state is global"
+    },
+    "harvest-single-writer": {
+      "modules": ["M-R5", "M-R11"],
+      "mode": "sequential",
+      "touches": ["src/discovery/harvest.ts"],
+      "policy": "sequential on src/discovery/harvest.ts — M-R5 and M-R11 cannot dispatch same turn (shared file). M-R5 owns HARVEST_LOCK:104 poll points, M-R11 owns comment prune; pony ceiling process-local lock until harvest-lock.ts SET NX ships (R1)",
+      "cite": "src/discovery/harvest.ts:99-103,104,118-173,244 decisions-remaining.md:AD-24"
+    },
+    "job-index-single-writer": {
+      "modules": ["M-R5", "M-R6"],
+      "mode": "sequential",
+      "touches": ["src/discovery/jobs.ts", "src/app/api/dev/discovery/jobs/**"],
+      "policy": "sequential on src/discovery/jobs.ts — M-R5 (updateJob status patch, createJob index key PREFIX:41 INDEX_KEY:42) and M-R6 (listJobs:223-274 loadIndex) share job-index-single-writer; put(INDEX_KEY) not CAS but single harvest at a time; index trim slice(0,20) at :159,189 is pony ceiling O(20)",
+      "cite": "src/discovery/jobs.ts:41-42,94-113,133-357,223-274 report-remaining §3.2"
+    },
+    "provider-health-client": {
+      "modules": ["M-R5", "M-R7"],
+      "mode": "sequential",
+      "touches": ["src/app/dev/mission-control/_components/provider-health.tsx"],
+      "policy": "sequential on provider-health.tsx — M-R5 (Stop→cancel wiring, cancelled label) and M-R7 (Refresh title) share file; they must not commit same turn. Disjoint with M-R11 (harvest.ts) so M-R7+M-R11 may parallel, but M-R5 alone last.",
+      "cite": "src/app/dev/mission-control/_components/provider-health.tsx:163-171,383-391,474-485"
+    },
+    "dedupe-index-single-writer": {
+      "modules": ["M-R10"],
+      "mode": "sequential",
+      "touches": ["src/discovery/dedupe-persist.ts", "src/lib/persistence/keys.ts", "state/dedupe-index.json"],
+      "policy": "only writer in this lane is M-R10 (writeQueue:17 serialized). Degenerate singleton but declared to flag future ROFS file writers. State/dedupe-index.json file mirror is best-effort on ROFS EROFS warn+continue at :70-71 + KV put at :104. pony ceiling global queue, per-package locks deferred at :16",
+      "cite": "src/discovery/dedupe-persist.ts:12-107,17,51-58,70-71,104 decisions-remaining.md:AD-16"
+    },
+    "wayfinder-compile": {
+      "modules": ["M-R19"],
+      "mode": "sequential",
+      "touches": ["src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts", "src/app/api/dev/tickets/route.ts", "src/app/dev/mission-control/_components/ticket-board.tsx", "scripts/wayfinder-tickets.ts", "package.json", "workflow/wayfinder/maps/**"],
+      "policy": "only writer in this lane is M-R19 but declared to serialize any future wayfinder-compile contenders. Reads workflow/wayfinder/maps/** via readdirSync sorted at tickets.ts:141,151 deterministic; writes package.json tickets script; board inLane at ticket-board.tsx:28-33. Reads only, no state/write contention. pony ceiling single function seam, GitHub sync deferred R19:51",
+      "cite": "src/wayfinder/tickets.ts:34-193 report-remaining §3.12"
+    },
+    "docs-single-writer": {
+      "modules": ["M-R15"],
+      "mode": "sequential",
+      "touches": ["README.md", "CONTRIBUTING.md", "docs/deployment.md"],
+      "policy": "only writer in this lane is M-R15; R14 tier1 deferred so no contention. Text-only, staging hygiene explicit git add.",
+      "cite": "R15-docs-production-deploy-refresh.md:24 decisions-remaining.md:AD-21"
+    },
+    "evidence-registry-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["state/evidence-registry.json"],
+      "policy": "read-only in this lane (vault-import.mjs:30-39 validates evidence_ids), no write",
+      "cite": "scripts/vault-import.mjs:30-39"
+    },
+    "graph-state-single-writer": {
+      "modules": [],
+      "mode": "subsumed",
+      "touches": ["state/graph-state.json", "vault/views/graph-overview.md"],
+      "policy": "subsumed by vault-state-single-writer; read-only via vault-export.mjs:78-95",
+      "cite": "scripts/vault-export.mjs:78-95 vault/views/graph-overview.md:1-5"
+    },
+    "health-read": {
+      "modules": [],
+      "mode": "deferred",
+      "touches": ["src/app/api/dev/health/route.ts", "src/discovery/health-aggregate.ts"],
+      "policy": "deferred — R8 NEEDS REVIEW shape freeze; would be in-process withPersistenceSingleWriter at single-writer.ts:7-16 when scheduled",
+      "cite": "src/app/api/dev/health/route.ts:15-169 src/discovery/health-aggregate.ts:20-61 decisions-remaining.md:AD-14"
+    },
+    "ci-single-writer": {
+      "modules": [],
+      "mode": "deferred",
+      "touches": [".github/workflows/ci.yml", "scripts/check-eval-gate-freshness.mjs"],
+      "policy": "deferred — R13 HITL freshness gate; threshold from docs/validation/eval-gates.md:31-38 parse 7d, process.exit(1) when stale, GH Action gate-freshness job; not in this lane",
+      "cite": "scripts/check-eval-gate-freshness.mjs:7-34 decisions-remaining.md:AD-19"
+    },
+    "gitignore-single-writer": {
+      "modules": [],
+      "mode": "deferred",
+      "touches": [".gitignore", ".autoforge/AGENTS.md"],
+      "policy": "deferred — R12 AutoForge storage policy (a) curated subset vs (b) ignore .autoforge/; owner pick before ci can schedule; not in this lane",
+      "cite": ".gitignore:1-46 decisions-remaining.md:AD-18"
+    }
+  },
+  "waves": [
+    {
+      "id": "wave-P-stateless-docs-wayfinder-doctor",
+      "wave": "P",
+      "parallel": true,
+      "members": ["M-R9", "M-R15", "M-R19"],
+      "touches_union": ["scripts/discovery-doctor.ts", "README.md", "CONTRIBUTING.md", "docs/deployment.md", "src/wayfinder/**", "scripts/wayfinder-tickets.ts", "package.json"],
+      "guard": "disjoint touches (doctor vs docs vs wayfinder) — no shared lock; may dispatch same turn as three Task calls (module boundary ≠ child-session boundary)"
+    },
+    {
+      "id": "wave-P-client-comments-p2",
+      "wave": "P",
+      "parallel": true,
+      "members": ["M-R11", "M-R7"],
+      "touches_union": ["src/discovery/harvest.ts", "src/app/dev/mission-control/_components/provider-health.tsx"],
+      "guard": "disjoint touches between themselves (harvest.ts vs provider-health.tsx) → parallel_safe together. Sequential with M-R5 on both files — must commit before M-R5 turn. May batch same turn as wave-P-stateless if scheduler proves disjoint (they are: doctor/docs/wayfinder vs harvest/provider-health) — so TurnP could be [M-R9,M-R15,M-R19,M-R11,M-R7] in parallel except for later S hazard with M-R5."
+    },
+    {
+      "id": "wave-S-dedupe",
+      "wave": "S",
+      "parallel": false,
+      "members": ["M-R10"],
+      "touches_union": ["src/discovery/dedupe-persist.ts", "src/lib/persistence/keys.ts", "state/dedupe-index.json"],
+      "guard": "sole holder holds dedupe-index-single-writer — disjoint with P waves so may overlap P2 same turn (scheduler may prove parallel with P if not serialized for clarity); sequential with any other dedupe writer (none else in lane)"
+    },
+    {
+      "id": "wave-S-jobs-pagination",
+      "wave": "S",
+      "parallel": false,
+      "members": ["M-R6"],
+      "touches_union": ["src/discovery/jobs.ts", "src/app/api/dev/discovery/jobs/route.ts"],
+      "guard": "holds job-index-single-writer — cannot parallel with M-R5 (shared jobs.ts). Parallel_safe with M-R11,M-R7,M-R9,M-R15,M-R19,M-R10 (disjoint). Must run before M-R5."
+    },
+    {
+      "id": "wave-S-cancel-terminal",
+      "wave": "S",
+      "parallel": false,
+      "members": ["M-R5"],
+      "touches_union": ["src/app/api/dev/discovery/jobs/[id]/cancel/route.ts", "src/discovery/jobs.ts", "src/discovery/harvest.ts", "src/app/dev/mission-control/_components/provider-health.tsx"],
+      "guard": "holds harvest-single-writer + job-index-single-writer + provider-health-client — MUST be alone after M-R6+M-R11+M-R7 committed; cannot parallel with any other writer in lane that touches jobs.ts/harvest.ts/provider-health.tsx (all three locks). Disjoint with M-R9/M-R15/M-R19/M-R10 so could parallel those if not serialized for isolation — simplest is alone terminal."
+    }
+  ],
+  "parallel_groups": {
+    "parallel_safe_groups": [
+      ["M-R9", "M-R15", "M-R19"],
+      ["M-R11", "M-R7"],
+      ["M-R11", "M-R9"],
+      ["M-R7", "M-R9"],
+      ["M-R9", "M-R10"],
+      ["M-R15", "M-R19"],
+      ["M-R11", "M-R19"],
+      ["M-R7", "M-R19"],
+      ["M-R11", "M-R6"],
+      ["M-R10", "M-R6"]
+    ],
+    "sequential_groups": [
+      ["M-R5", "M-R6"],
+      ["M-R5", "M-R11"],
+      ["M-R5", "M-R7"],
+      ["M-R5", "M-R10-blocking-only-if-shared-transaction-but-declared-serial-for-clarity"]
+    ],
+    "shared_state_guard": "Intersecting touches = sequential per instruction. M-R5↔M-R6 share src/discovery/jobs.ts (job-index-single-writer); M-R5↔M-R11 share src/discovery/harvest.ts (harvest-single-writer); M-R5↔M-R7 share provider-health.tsx (provider-health-client). M-R11↔M-R6 disjoint (harvest vs jobs) → parallel_safe; M-R7↔M-R11 disjoint → parallel_safe; M-R10 dedupe touches owned singleton so parallel_safe with any job/harvest/provider-health but wave S conservatively serializes S-members for lock clarity — may overlap P same turn if dispatcher proves disjoint. P members among themselves (doctor/docs/wayfinder) fully parallel_safe. Module boundary ≠ child-session boundary — parallel_safe groups may be dispatched as parallel Task calls in one turn; sequential groups must be different turns after previous writers committed.",
+    "module_boundary_note": "module boundary ≠ child-session boundary — M-R9+M-R15+M-R19 are distinct modules but may run in one child session batch (three parallel Tasks); M-R11+M-R7 similarly batchable; M-R10/M-R6/M-R5 must follow in later turns after intersecting file writers committed to avoid same-file race even though blocked_by is [] hazard-only"
+  },
+  "global_guardrails": {
+    "vault_determinism": "node scripts/vault-sync.mjs --check (commit vs HEAD-compiled via Buffer.equals at vault-sync.mjs:31) — CI vault compile determinism (V2) at .github/workflows/ci.yml:35-50 runs vault-export+import + git diff --exit-code -- vault/views state/vault-notes.json; retained as pre-flight even for ops-residual lane (docs/scripts don't touch vault but gate still runs)",
+    "vault_sync_hardened_path": "git worktree add --detach ${tmp} HEAD at vault-sync.mjs:17, symlink node_modules at :19, compile-in-tmp at :21-22, fs.writeFileSync(live,compiled) at :42, finally cleanup at :45-52; pony ceiling best-effort cleanup, tmp reaper deferred",
+    "evidence_byte_identity": "determinism via sorted keys + sha12 at vault-export.mjs:14-16 and import sort at vault-import.mjs:79 — not mutated in this lane but view regen preserves it; wayfinder readdirSync sorted at tickets.ts:141,151 likewise",
+    "staging_hygiene": "git add <paths> only — never git add -A — per AGENTS.md:21-23; staging list per module §4 is exactly its touches (e.g., M-R5 git add src/app/api/dev/discovery/jobs/[id]/cancel/route.ts src/discovery/jobs.ts src/discovery/harvest.ts src/app/dev/mission-control/_components/provider-health.tsx tests/domain/cancel.test.ts); drift check git status --porcelain shows only touches lane, no foreign vault/journal or workflow/wayfinder map churn",
+    "ponytail": "reuse DataStore KV seam (already installed), MemoryStore for tests via setDataStoreForTests, stdlib only (fs/path/crypto), existing yaml, tsx already installed for doctor/wayfinder CLI, HTML title for tooltip, no new deps, no generic facade; ceilings: wholesale O(n) n=161, 20-window O(20), global dedupe writeQueue, process-local HARVEST_LOCK per-node poll, wayfinder single function seam until second variation",
+    "testability": "npm run lint && npm run typecheck && npm run test (vitest run) && npm run build green required per §7; plus vault-sync --check green; plus per-module asserts (cancel MemoryStore flip, stale cursor fallback, title includes dedup, JSON.parse shape, ROFS EROFS warn, rg getGitHead 0, docs 0 manual CLI, wayfinder counts JSON valid) — smallest runnable check per non-trivial branch, no framework beyond vitest/jq"
+  },
+  "traceability": {
+    "tracker_index": ".autoforge/discovery/tracker-index.md:22-96 verbatim 12 OPEN (R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15,R19) cited §1",
+    "grilling": ".autoforge/requirements/grilling-remaining.md:1-122 (R5:27 false, R6:36 false, R7:44 false, R8:52 false, R9:58 false, R10:64 false, R11:72 false, R12:80 false, R13:86 false, R14:92 false, R15:100 false, R19:107 false; all overridden to TRUE per AD for 8)",
+    "architecture_report": ".autoforge/architecture/report-remaining.md §1-§8 — seams at src/discovery/jobs.ts:41-42 harvest.ts:99-173 store.ts:16-26 dedupe-persist.ts:12-107 tickets.ts:34-193 health-aggregate.ts:20-61 discovery-doctor.ts:14-53; alternatives matrices §3, locks §6, ponytail ceilings",
+    "decisions": ".autoforge/architecture/decisions-remaining.md AD-11..AD-25 (AD-11 TRUE R5, AD-12 TRUE R6, AD-13 TRUE R7, AD-15 TRUE R9, AD-16 TRUE R10, AD-17 TRUE R11, AD-21 TRUE R15, AD-22 TRUE R19; AD-14 FALSE R8 shape, AD-18 FALSE R12 policy, AD-19 FALSE R13 HITL, AD-20 NEEDS REVIEW R14)",
+    "map": "workflow/wayfinder/maps/ops-residual/MAP.md:39-59 tickets + MAP.md:9,14-17 canonical + MAP.md:15 staging hygiene + MAP.md:17 ceiling notes",
+    "tickets": "workflow/wayfinder/maps/ops-residual/tickets/R5-server-cancel.md:16-35, R6-pagination-trim.md:16-30, R7-refresh-parity.md:16-29, R9-discovery-doctor-json.md:16-29, R10-dedupe-write-authority.md:16-31, R11-drop-stale-comments.md:16-29, R15-docs-production-deploy-refresh.md:16-30, R19-wayfinder-plumbing-traceability.md:29-48",
+    "code_seams": "src/discovery/jobs.ts:41-42,64-66,94-113,223-274,276-318; src/lib/persistence/store.ts:16-188; src/discovery/harvest.ts:99-173,244; src/discovery/dedupe-persist.ts:12-107; src/lib/persistence/keys.ts:50; src/app/api/dev/discovery/jobs/[id]/cancel/route.ts:1-21; src/app/dev/mission-control/_components/provider-health.tsx:163-171,383-391,474-485; scripts/discovery-doctor.ts:14-53; src/wayfinder/tickets.ts:34-193; src/wayfinder/ticket-types.ts:2; src/app/api/dev/tickets/route.ts:6-17; src/app/dev/mission-control/_components/ticket-board.tsx:28-33",
+    "prior_work_order_lock_context": ".autoforge/execution/work-order.json:1-140 — resource_locks.vault-state-single-writer + wayfinder heritage; wayfinder note n=2 shallow retained as wayfinder-compile seam",
+    "state": "state/vault-notes.json:4 note_count:25 (vault baseline unchanged), .autoforge/state.json:1-28 loop 6, AGENTS.md:15-23 determinism + staging, .github/workflows/ci.yml:35-50 determinism gate"
+  },
+  "acceptance_global": "work-order enumerates all 8 self-approving Rs (M-R5,M-R6,M-R7,M-R9,M-R10,M-R11,M-R15,M-R19) per decisions-remaining AD-11,12,13,15,16,17,21,22 TRUE; includes touches for jobs.ts (M-R5/M-R6), harvest.ts (M-R5/M-R11), provider-health.tsx (M-R5/M-R7), dedupe-persist/keys.ts + state/dedupe-index.json (M-R10), health deferred R8 documented, docs README/CONTRIBUTING/deployment (M-R15), tickets wayfinder compile + CLI + board + API (M-R19); enforces single-writer guards via locks (vault-state-single-writer declared + harvest/job/dedupe/wayfinder/docs locks); parallel groups where touches disjoint (M-R9+M-R15+M-R19; M-R11+M-R7; M-R10 with P) and sequential where touches intersect (M-R5↔M-R6 jobs.ts, M-R5↔M-R11 harvest.ts, M-R5↔M-R7 provider-health.tsx); testability via npm run build + vault-sync --check + vitest (cancel, pagination, tooltip, doctor JSON, dedupe ROFS, wayfinder counts) + typecheck/lint green; staging hygiene explicit git add <paths> never -A",
+  "wayfinder_note": "wayfinder skill invoked for M-R19 only (thin CLI script/wayfinder-tickets.ts reusing tickets.ts seam, local-markdown canonical ops-residual per TRACKER.md:17); deepen into compileTrackerIndex() deferred until frontier >10 per architecture report §8 Speculative — not needed at n=12 total but 8 self-approving",
+  "deployment_note": "main is production (Vercel auto-deploys from main per R15); tasks are stateless except M-R10 dedupe file best-effort mirror and M-R5/M-R6 job-index KV truth; implementation is environment-agnostic (MemoryStore via setDataStoreForTests for local, KvRestStore for prod)",
+  "self_approve_summary": "8/8 modules self-approving per AD-11 AD-12 AD-13 AD-15 AD-16 AD-17 AD-21 AD-22 all TRUE; 4 deferred R8,R12,R13,R14 NEEDS REVIEW/HITL per AD-14,AD-18,AD-19,AD-20 — each requires single-owner grilling (R8 shape freeze, R12 curated vs ignore, R13 7d threshold + process.exit(1), R14 canonical tier1 path) before hardening; grilling-remaining false flags overridden by decisions where contract fully documented and seam reuse mechanical (ponytail ladder); grilling sessions for this lane: 0 required, optionally 1-question confirms (per-node poll ceiling, ROFS warn wording, local-markdown canonical) — all expected APPROVE",
+  "self_approve_verdict_per_module": {
+    "M-R5": "TRUE — AD-11 mechanical updateJob reuse; grilling session not required, optional 1-q (per-node poll ceiling) → APPROVE",
+    "M-R6": "TRUE — AD-12 stable paging already lands; optional 1-q (20-window) → APPROVE",
+    "M-R7": "TRUE — AD-13 trivial HTML title; no session → APPROVE",
+    "M-R9": "TRUE — AD-15 contract pinned; no session → APPROVE",
+    "M-R10": "TRUE — AD-16 one-line KV-first swap + ROFS test; optional 1-q (EROFS warn wording) → APPROVE",
+    "M-R11": "TRUE — AD-17 comment-only prune; no session → APPROVE",
+    "M-R15": "TRUE — AD-21 text-only sync; no session → APPROVE",
+    "M-R19": "TRUE — AD-22 3 real adapters prove seam; optional 1-q (local-markdown canonical) → APPROVE"
+  },
+  "ponytail_ladder_applied": "R5 rung 2 reuse updateJob seam; R6 rung 2 reuse loadIndex + rung 6 one-liner slice; R7 rung 4 native title over component; R9 rung 2 reuse discover seam; R10 rung 2 KV seam + stdlib; R11 rung 1 deletion; R15 rung 1 deletion/prose; R19 rung 2 reuse indexWayfinderTickets seam — all shortest working diff, no new dep, stdlib/native before install",
+  "vault_state_single_writer_guard": "declared global at resource_locks.vault-state-single-writer (modules [] uncontended this lane) → any future state/vault-notes.json or vault/views/** writer must serialize + vault-sync --check before commit (AGENTS.md:15-18 + vault-sync.mjs:16-44 HEAD worktree Buffer.equals); analog dedupe-index-single-writer guards state/dedupe-index.json ROFS fork with EROFS warn; staging hygiene explicit git add <paths> only never -A per AGENTS.md:21-23 enforced in each module acceptance",
+  "staging_hygiene": "explicit git add <paths> per module §4 §7; never git add -A; git status --porcelain shows only touches lane; workflow/wayfinder/maps/** disjoint per ticket file keeps parallel sessions non-colliding; vault/journal/** not in this lane but same rule applies"
+}

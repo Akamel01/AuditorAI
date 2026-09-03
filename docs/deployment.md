@@ -1,6 +1,11 @@
 # Deployment
 
-Target: **Vercel free (Hobby) tier** — ADR-0001. Docker explicitly out of scope.
+Target: **Vercel free (Hobby) tier** — ADR-0001. Docker explicitly out of scope. Production is `main` — Vercel auto-deploys from `main` (no manual promotion).
+
+main is production: every push to `main` auto-deploys to production (`auditorai-gamma.vercel.app`, `auditorai-auditor-ai1.vercel.app`, region `iad1`). No manual promotion; Vercel auto-deploys is the source of truth.
+
+- Discovery harvest: a `discovery-harvest` schedule (cron/GitHub Action) runs harvest and pushes `data(discovery): harvest … [skip ci]` to `main` (updates `state/discovery-ledger.json`, `state/odd-coverage.json`). Schedule is defined in `.github/workflows/` discovery-harvest; main remains production.
+- Eval gates: thresholds and judge prompts are doctrine-frozen; see `docs/validation/eval-gates.md:15-38` and `AGENTS.md` Eval gates — §2 trigger paths require a fresh Tier-1 archive, judge flakes prefer `--topup <runId>`.
 
 ## Option A — Dashboard integration (simplest)
 
@@ -20,7 +25,7 @@ Target: **Vercel free (Hobby) tier** — ADR-0001. Docker explicitly out of scop
 Set repository secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
 (Vercel → Project → Settings → General → "Git" / CLI instructions). The
 [`deploy.yml`](../.github/workflows/deploy.yml) workflow then builds and promotes
-production deployments on every push to `main`; it skips cleanly while secrets are absent.
+production deployments on every push to `main`; it skips cleanly while secrets are absent. Production remains `main` Vercel auto-deploys.
 
 ## Post-deploy verification
 

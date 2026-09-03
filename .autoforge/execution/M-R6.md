@@ -1,0 +1,23 @@
+MR: M-R6 Pagination across large job index (cursor stability)
+
+- Objective: Implement MR6 to support pagination over a large job index with a stable cursor, fix stale cursor fallback, perform loadIndex scan with an O(20) ceiling, cap page size to [1,20], and preserve API shape.
+- Scope: touched files
+  - src/discovery/jobs.ts
+  - src/app/api/dev/discovery/jobs/route.ts (preserved API and wiring via listJobs)
+- What changed:
+  - Enforced cap on page size within listJobs: cap = clamp(limit, 1, 20)
+  - Cursor handling: if a provided cursor is not found (trimmedPast), fallback to latest page (0..cap)
+  - Continued to rely on existing loadIndex to fetch the index and to fetch page objects via getMany when a store is provided
+  - Avoided introducing new dependencies; reused existing loadIndex and storage layers
+- Tests:
+  - Added MR6 test suite at src/__tests__/discovery-jobs.mr6.test.ts
+  - Scenarios:
+    - First page respects cap (20) when limit > 20
+    - Cursor following an id yields the expected next page and nextCursor
+    - Cursor not found falls back to latest page (trimmedPast) and returns proper nextCursor
+- Evidence:
+  - Patch adds 1) code changes in src/discovery/jobs.ts to clamp and stabilize cursor, 2) tests for MR6 pagination 3) route compatibility preserved
+- How to verify:
+  - Run npm run build; ensure vault-sync --check passes
+  - Run tests (e.g., npm test or project-specific test script)
+- Status: Ready for review

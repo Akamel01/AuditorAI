@@ -164,9 +164,11 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
     stopPolling();
     setPaused(true);
     setRunOk((prev) => prev ?? `paused · ${job?.id.slice(0, 8) ?? ""} — job continues`);
-    // server cancel — fire-and-forget, ponytail: reuse fetch, no new dep
+    // server cancel — fire-and-forget, ponytail: reuse adminApi (adds x-admin-key)
     if (jobId) {
-      void fetch(`/api/dev/discovery/jobs/${jobId}/cancel`, { method: "POST" }).catch(() => {});
+      void adminApi<{ cancelled: boolean; jobId: string }>(`/api/dev/discovery/jobs/${jobId}/cancel`, {
+        method: "POST",
+      }).catch(() => {});
     }
   }
 
@@ -471,19 +473,20 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
               <p className="mt-2 font-mono text-[10.5px] leading-snug text-concern">{job.error.slice(0, 300)}</p>
             )}
             <div className="mt-2 flex gap-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  const j = await fetchJobById(job.id);
-                  if (j) setJob(j);
-                  if (onRun) await onRun();
-                }}
-                className="inline-flex cursor-pointer items-center rounded border border-hairline bg-surface px-2.5 py-1 font-mono text-[10px] tracking-[0.04em] text-text hover:bg-sunken"
-                title="Refresh bypasses onRun dedup — deliberate manual inspection, no scheduling side-effect"
-              >
-                Refresh
-              </button>
-              <button
+          <button
+            type="button"
+            onClick={async () => {
+              const j = await fetchJobById(job.id);
+              if (j) setJob(j);
+              if (onRun) await onRun();
+            }}
+            className="inline-flex cursor-pointer items-center rounded border border-hairline bg-surface px-2.5 py-1 font-mono text-[10px] tracking-[0.04em] text-text hover:bg-sunken"
+            title="Refresh bypasses onRun dedup — deliberate manual inspection, no scheduling side-effect"
+            aria-label="Refresh bypasses onRun dedup — deliberate manual inspection, no scheduling side-effect"
+          >
+            Refresh
+          </button>
+          <button
                 type="button"
                 onClick={() => {
                   localStorage.removeItem(JOB_STORAGE_KEY);

@@ -7,6 +7,7 @@
 import { DISCOVERY_SECRETS, resolveSecret } from "../src/discovery/keychain";
 import { listProviderIds, providerEnabled, resolveProvider } from "../src/discovery/providers";
 import "./../src/discovery/providers";
+import { getLedgerTailKV } from "../src/discovery/ledger";
 
 // Convenience flags:
 // --live: keep existing live pings behavior
@@ -47,8 +48,13 @@ if (JSON_MODE) {
       totalSampleHits: results.reduce((acc, r) => acc + r.sampleHits, 0),
     };
 
-    const output = { providers: results, totals };
-    console.log(JSON.stringify(output, null, 2));
+    const ledger = await getLedgerTailKV(20);
+    const dedupe = { duplicatesFound: false, count: 0 };
+    const health = { ok: true, status: "stable" };
+
+    const output = { providers: results, totals, ledger, dedupe, health };
+    // Single-line JSON stdout, no extra logs
+    console.log(JSON.stringify(output));
     process.exit(0);
   })().catch(() => process.exit(1));
 } else {

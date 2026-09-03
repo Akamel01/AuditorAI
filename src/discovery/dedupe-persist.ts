@@ -6,11 +6,13 @@ import path from "node:path";
 import type { DataStore } from "@/lib/persistence";
 import { getDataStore } from "@/lib/persistence/store";
 import { DISCOVERY_DEDUPE_INDEX_KEY } from "@/lib/persistence/keys";
+import { DEDUPE_INDEX_PATH } from "@/lib/persistence/keys";
 import { claimFingerprints, emptyDedupeIndex, type DedupeIndexDoc } from "./dedupe";
 import type { AcquisitionBundle, ProjectPackageAssembly, QualityVerdictRecord } from "./types";
 
 function dedupePath(cwd = process.cwd()): string {
-  return path.join(cwd, "state", "dedupe-index.json");
+  // Use centralized constant to avoid path divergence and enable reuse
+  return path.join(cwd, DEDUPE_INDEX_PATH);
 }
 
 // ponytail: EROFS ceiling — KV-first with file seed fallback; per-account locks if throughput matters

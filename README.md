@@ -84,10 +84,12 @@ node scripts/validate-state.mjs   # validate shared state
 
 ## Deployment
 
-Vercel free tier — two options in [`docs/deployment.md`](docs/deployment.md)
-(dashboard import ≈ 5 minutes, or automatic CI deploys once `VERCEL_*` secrets exist).
-Persistence uses an Upstash/Vercel-KV free Redis via env vars; without it the app runs on
-an in-memory fallback.
+Production is `main` — Vercel auto-deploys from `main` (alias `auditorai-gamma.vercel.app`, hobby `iad1`). No manual promotion.
+
+- `state/discovery-ledger.json` and `state/odd-coverage.json` are updated by a `discovery-harvest` schedule (cron) that runs harvest and pushes `data(discovery): harvest … [skip ci]` to `main`; see `AGENTS.md` vault determinism and `.github/workflows/` for `discovery-harvest` schedule.
+- Eval gates doctrine is frozen; thresholds and judge prompts live in `docs/validation/eval-gates.md:15-38` and `AGENTS.md` Eval gates — §2 trigger paths require a fresh Tier-1 archive, prefer `--topup <runId>` for flakes.
+
+Persistence uses an Upstash/Vercel-KV free Redis via env vars; without it the app runs on an in-memory fallback. Details in [`docs/deployment.md`](docs/deployment.md).
 
 ## License
 
