@@ -45,5 +45,21 @@ tsconfig.tsbuildinfo
 .vercel
 .env*
 
-# AutoForge staging (R12 curated default: ephemeral auto-generated state, not project state)
+# AutoForge staging (R12 curated: keep state + discovery + architecture + plans + reviews + validation, ignore ephemeral)
 .autoforge/
+!.autoforge/state.json
+!.autoforge/discovery/
+!.autoforge/discovery/**
+!.autoforge/architecture/
+!.autoforge/architecture/**
+!.autoforge/plans/
+!.autoforge/plans/**
+!.autoforge/requirements/
+!.autoforge/requirements/**
+!.autoforge/execution/
+!.autoforge/execution/**
+!.autoforge/reviews/
+!.autoforge/reviews/**
+!.autoforge/validation/
+!.autoforge/validation/**
+!.autoforge/AGENTS.md

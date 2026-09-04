@@ -49,6 +49,18 @@ jobs:
       - name: fail if committed vault views/notes differ from compiled output
         run: git diff --exit-code -- vault/views state/vault-notes.json
 
+  eval-gate:
+    name: eval gate freshness (R13)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/check-eval-gate-freshness.mjs
+
   quality:
     name: lint / typecheck / test / build
     runs-on: ubuntu-latest

@@ -1,0 +1,326 @@
+{
+  "loop": "ops-residual-HOLD-2026-09-03",
+  "phase": "plan",
+  "status": "planning-complete; execution-gated; blocked_by architect-HOLD",
+  "source": ".autoforge/discovery/tracker-index.md",
+  "scope": "self-approving HOLD frontier R1,R2,R3,R4-bundle (R4 daemon HITL deferred, M1-M8 HITL/FOG no code)",
+  "tracker_count": 4,
+  "tracker_total_open": 12,
+  "tracker_total_blocked_hold": 4,
+  "tracker_index_verbatim": [
+    "R1 — Cross-instance harvest lock via Vercel KV atomic SET NX — BLOCKED (.autoforge/discovery/tracker-index.md:3-4; MAP.md:41-42)",
+    "R2 — Ledger KV ordering + orphan-key recovery — BLOCKED (:7-10; MAP.md:42-43)",
+    "R3 — Regression tests for in-process lock + callback dedup — BLOCKED (:13-15; MAP.md:43-44)",
+    "R4 — Production harvest proof bundle (Vercel KV + daemon) — BLOCKED (:18-20; MAP.md:44-45) hitl:true — bundle self-approving MV, daemon HITL deferred"
+  ],
+  "deferred_verbatim": [
+    "R4 daemon live capture — HITL true — manifest.launchctl + productionDeploymentVerified + daemonVerified at R4-production-harvest-proof.md:27-32 remain HITL per AD-29 (bundle MV true, live HITL)",
+    "M1 — Quote-bearing GF-6..10 baseline upgrade — BLOCKED — DEFERRED AD-30 FALSE NEEDS REVIEW (domain-model required)",
+    "M2 — Conditional blob-storage escape hatch — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M3 — Vault sync-conflict UX — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M4 — Report and recommendation drafting assists — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M5 — Candidate-findings review UX hardening — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M6 — Audit-history retention policy — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M7 — RSC initial Repository snapshot (fog) — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "M8 — Postgres third DataStore adapter — BLOCKED — DEFERRED AD-30 FALSE HITL/FOG",
+    "R8 — Health route exposes harvest-health sub-object — OPEN — DEFERRED AD-14 FALSE NEEDS REVIEW (shape freeze) — not in this HOLD lane but retained from work-order-remaining.json",
+    "R12 — AutoForge staging: exclude .autoforge/ from committed tree — OPEN — DEFERRED AD-18 FALSE HITL-policy",
+    "R13 — Eval gate §2 freshness automation: timestamp check — OPEN — DEFERRED AD-19 FALSE HITL",
+    "R14 — Tier-1 archive: keep helper script, de-skill its drift — OPEN — DEFERRED AD-20 NEEDS REVIEW"
+  ],
+  "model_budget": "80k tok inherit opencode/muse-spark-1.2-contributor-free 1M*0.30 capped",
+  "reconciliation": {
+    "counting_proof": "4 BLOCKED lines (R1,R2,R3,R4) in tracker-index.md:3-20 = 4 frontier modules (M-R1,M-R2,M-R3,M-R4-bundle) self-approving MV per grilling-HOLD.md Self-approve Yes at :24,:39,:52,:65 + decisions-HOLD.md AD-26..AD-29 TRUE; no merge — distinct operational domains (lock SET NX vs ledger INDEX_KEY vs tests vs proof bundle digest), deduplication via report-HOLD.md §1 map-ownership local-markdown only TRACKER.md:14 + seam inventory store.ts:16-26 vs ledger.ts:4-40 vs harvest-lock.ts vs proof-bundle.ts would fail; FOG R16-18 and remaining OPEN R5,R6,R7,R9,R10,R11,R15,R19 excluded per MAP.md:39-59 + work-order-remaining.json scope (self-approving remaining frontier 8 modules) + decisions-HOLD.md AD-30 M1-M8 HITL/FOG no code; first-item-only (only M-R1) would be failure per instructions",
+    "discovery_report": ".autoforge/architecture/report-HOLD.md:1-40 — seams at src/lib/persistence/store.ts:16-26, src/discovery/harvest.ts:99-105/106-256, src/discovery/ledger.ts:4-40, src/discovery/jobs.ts:41-42, dedupe-persist.ts:12-109, single-writer.ts:7-17; hazard locks §6; map citations workflow/wayfinder/maps/ops-residual/MAP.md:41-45",
+    "architecture_pinned": "report-HOLD.md §1-§9 seams: DataStore store.ts:16-26 MemoryStore:28-57 KvRestStore:60-126 getDataStore:183-188 setDataStoreForTests:192-194, Job store jobs.ts:41-42 createJob:133-197 getJob:199-215 listJobs:223-274 updateJob:276-318, Harvest HARVEST_LOCK:99-105 executeJob:106-256 persistDiscoveryState:258-334 harvest:336-429, Ledger ledger.ts:4-40 ENTRY_PREFIX:4 INDEX_KEY:5 appendLedgerKV:8-26 getLedgerTailKV:28-39, Dedupe dedupe-persist.ts:12-109 keys.ts:50, Single-writer:7; §2 boundaries per HOLD ticket, §3 alternatives design-it-twice, §5 interfaces, §6 dependencies blocked_by [] hazard-only, §7 risks ponytail ceilings",
+    "grilling_pinned": ".autoforge/requirements/grilling-HOLD.md:10-67 — R1:10-26 Self-approve Yes at :24 Gate HITL if KV not available at :25; R2:28-41 Self-approve Yes at :39 Gate HITL if orphan risks corruption at :40; R3:43-54 Self-approve Yes at :52 Gate HITL if KV locks at :53; R4:56-67 Self-approve Yes at :65 Gate HITL if no durable path at :65-66; M1-M8:69-76 HITL/FOG at :74",
+    "decisions_pinned": ".autoforge/architecture/decisions-HOLD.md:1-163 AD-26 R1 TRUE reversible SET NX EX + harvest-lock.ts, AD-27 R2 TRUE per-entry hint + lazy heal, AD-28 R3 TRUE one file MemoryStore, AD-29 R4 TRUE MV bundle HITL live daemon/deploy (hitl:true at R4:5), AD-30 M1-M8 FALSE HITL/FOG, AD-31 seam depth, AD-32 locks, AD-33 risks",
+    "state_pinned": "state/vault-notes.json:4 note_count:25 (vault lane unchanged) — work-order-HOLD does not write state/vault-notes.json directly but retains vault-sync --check guard for any state/*.json commit (state/production-harvest-proof.json mirror); state/production-harvest-proof.json new deterministic path not vault-compiled per AD-29 but staging hygiene vault-state-single-writer declared",
+    "wayfinder_pinned": "workflow/wayfinder/TRACKER.md:14-17 local-markdown only ops-residual; v2-agentic-platform GitHub-canonical on issue #20 only — HOLD R1-R4 are local-markdown, no GitHub sync, wayfinder n=4 shallow so skill not invoked (compileTrackerIndex deferred until frontier>10 per report-HOLD §8 Speculative)",
+    "prior_lock_context": ".autoforge/execution/work-order-remaining.json:1-468 — resource_locks.vault-state-single-writer + harvest-single-writer + job-index-single-writer + dedupe-index-single-writer + wayfinder-compile + docs-single-writer heritage; analog locks reused for HOLD lane per decisions-HOLD.md AD-32"
+  },
+  "modules": [
+    {
+      "id": "M-R1",
+      "title": "Cross-instance harvest lock via Vercel KV atomic SET NX",
+      "status": "BLOCKED",
+      "self_approve": true,
+      "decision": "AD-26",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R1-cross-instance-harvest-lock.md:1-40 — type:task hitl:false status:open blocked_by:[] — grilling-HOLD.md:10-26 MV 6 steps — report-HOLD.md:28-30 delta",
+      "touches": [
+        "src/lib/persistence/store.ts",
+        "src/discovery/harvest-lock.ts",
+        "src/discovery/harvest.ts"
+      ],
+      "hazard_touches": [
+        "src/lib/persistence/store.ts",
+        "src/discovery/harvest.ts"
+      ],
+      "blocked_by": [],
+      "locks": ["datastore-seam-single-writer", "harvest-single-writer"],
+      "wave": "P-seam+ S-wire",
+      "parallel_safe": true,
+      "parallel_notes": "P-phase (store.ts + harvest-lock.ts) parallel_safe with M-R2 (ledger.ts), M-R3 (tests), M-R4-module (proof-bundle.ts) — distinct files. S-phase wire (harvest.ts:118-157 acquire, 252-255 release) sequential with M-R4-wire (shared harvest.ts harvest-single-writer) — flagged intersecting touches as sequential. Recommended R1 before R2 for strong 50-concurrent test but not semantic blocked_by — hazard-only.",
+      "acceptance": "store.ts:16-26 setIfAbsent?(key,value,ttlSec):Promise<boolean> added — MemoryStore in-map + TTL unref at :28-57, KvRestStore [\"SET\",key,val,\"NX\",\"EX\",ttl] via call at :68-99 returns result===\"OK\"; harvest-lock.ts new ≤40 lines HARVEST_LOCK_KEY=\"harvest:lock\" + acquireHarvestLock(store?,ttlSec=120,holder?=randomUUID)→{acquired,release} with WARN fallback on StoreUnavailableError or !KV env (R1 AC:32); harvest.ts:106-256 wire after cancel check :118-130 before setJobRunning :157 — if(!acquired) await setJobError(jobId,\"harvest is already running\",store); return; try{...} finally{await release(); HARVEST_LOCK=false;} holder-guarded DEL; concurrent MemoryStore acquire pair → one true one false, third after release succeeds (R1 AC:30-31); TTL default 120 (grilling) or 3600 (ticket) documented; executeJob busy does not throw (R1 AC:34-35); explicit git add src/lib/persistence/store.ts src/discovery/harvest-lock.ts src/discovery/harvest.ts",
+      "skills": ["lean-build", "codebase-design", "verify-and-stop", "tdd"],
+      "agent": "autoforge-worker (surgical — seam + narrow wire)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "one DataStore.setIfAbsent helper + one harvest-lock.ts module is lazy — reuse DataStore seam rung 2, stdlib randomUUID rung 3, no new dep rung 5; skipped GET→PUT non-atomic (race window) and INCR harvest:seq allocator (speculative per report-HOLD §3.1); ponytail: global harvest:lock 120s TTL ceiling; per-cell locks (MAP.md:30) + heartbeat EXPIRE deferred until measured",
+      "grilling_session": "self-approve TRUE; reversible where KV gateway available; optional 1-question (confirm TTL 120) → APPROVE; HITL only if KV gateway not available per grilling-HOLD.md:25",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-HOLD.md AD-26 TRUE — grilling-HOLD.md:24 Self-approve Yes reversible minimal wiring; revert by deleting harvest-lock.ts + store.ts:setIfAbsent + executeJob call site"
+    },
+    {
+      "id": "M-R2",
+      "title": "Ledger KV ordering + orphan-key recovery",
+      "status": "BLOCKED",
+      "self_approve": true,
+      "decision": "AD-27",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R2-ledger-improve-indexing.md:1-35 — hitl:false open blocked_by:[] — grilling-HOLD.md:28-41 MV 4 steps — report-HOLD.md:30-31 delta",
+      "touches": [
+        "src/discovery/ledger.ts",
+        "src/lib/persistence/single-writer.ts"
+      ],
+      "hazard_touches": [
+        "src/discovery/ledger.ts"
+      ],
+      "blocked_by": [],
+      "locks": ["discovery-ledger-index-single-writer"],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "parallel_safe with M-R1-seam (store.ts vs ledger.ts disjoint), M-R3 (tests), M-R4-module (proof-bundle.ts). May run same Turn P1 as those — all distinct files. Sequential only if future writer contends INDEX_KEY (none else in HOLD lane except harvest.ts tail reader :281-289 read-only). R1 lock is primary serialization so hot race window = TTL expiry only.",
+      "acceptance": "ledger.ts:8-26 appendLedgerKV per-entry s.put(entryKey(seq),e) + await s.setIfAbsent?.(\"discovery:ledger:index-entry:\"+seq,\"1\",30*24*3600) (30d hint SET NX dedup) then rebuild INDEX_KEY via read idx=get<number[]>/merge !includes/sort/slice(-500)/put — no pipeline form per store.ts:64-67; getLedgerTailKV at :28-39 keeps vals.filter v!==null plus orphanSeqs=tailSeqs.filter((_,i)=>vals[i]===null) then if(orphans) cleaned=idx.filter(!orphanSet)+ await withPersistenceSingleWriter(()=>s.put(INDEX_KEY,cleaned.slice(-500))) best-effort at single-writer.ts:7; 50-concurrent append test → all 50 unique no dups (R2 AC:28); getLedgerTailKV drops orphan rows (injected s.del(entryKey) without INDEX_KEY edit → tail drops seq + INDEX_KEY cleaned) (R2 AC:29); tests/domain/discovery-harvest.test.ts still pass with no new mocks (R2 AC:30); explicit git add src/discovery/ledger.ts src/lib/persistence/single-writer.ts",
+      "skills": ["lean-build", "codebase-design", "tdd", "surgical-patch"],
+      "agent": "autoforge-worker",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "per-entry SET NX hint + lazy orphan heal on read is ceiling — leverages existing store.keys/getMany/put at :108-114; skipped pure INDEX_KEY RMW filter-only (fails heal AC) and KV pipeline MULTI/EXEC EVAL (assumes Upstash pipeline, needs pipelinedCall helper) — speculative until orphan >1% per report-HOLD §3.2; O(500) scan ceiling; ponytail: filter+heal on tail read is ceiling; full KEYS rebuild deferred",
+      "grilling_session": "self-approve TRUE; reversible MV local to ledger path; optional 1-q (confirm 500-window stays) → APPROVE; HITL only if orphan recovery risks corruption or schema migration per grilling-HOLD.md:40",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-HOLD.md AD-27 TRUE — grilling-HOLD.md:39 MV local reversible; revert ledger.ts:4-40"
+    },
+    {
+      "id": "M-R3",
+      "title": "Regression tests for in-process lock + callback dedup",
+      "status": "BLOCKED",
+      "self_approve": true,
+      "decision": "AD-28",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R3-regression-tests.md:1-37 — hitl:false open blocked_by:[] — grilling-HOLD.md:43-54 MV 3 steps — report-HOLD.md:32 delta",
+      "touches": [
+        "tests/discovery/hold-r3.test.ts"
+      ],
+      "hazard_touches": [],
+      "blocked_by": [],
+      "locks": [],
+      "wave": "P",
+      "parallel_safe": true,
+      "parallel_notes": "fully parallel_safe — touches disjoint from all prod modules (tests/** only, hermetic MemoryStore via setDataStoreForTests at store.ts:192-194); never hits KV or state/*.json via VITEST!==true guard at harvest.ts:215; may dispatch same Turn P1 as M-R1/M-R2/M-R4-module as three parallel Tasks (module boundary ≠ child-session boundary)",
+      "acceptance": "tests/discovery/hold-r3.test.ts via MemoryStore + setDataStoreForTests hermetic: (A) concurrent Promise.all([executeJob(id1...),executeJob(id2...)]) with trivial runDiscoveryNode stub → one status:\"done\" or queued→running→done and one status:\"error\" error includes \"already running\" at harvest.ts:143 without throw + HARVEST_LOCK reset at :252-255 (when R1 ships same test swaps to acquireHarvestLock); (B) dedup repeat callback checkDuplicate/claimFingerprints/persistDedupeFromResult with identical doc.sha256 + text_sha256 → second status:\"duplicate\"|\"near_dup\" only one clusters entry at dedupe.ts:76-78; (C) ordering spy wrappers Date.now() before delegate for appendLedgerKV:8 vs persistDedupeFromResult:77 vs setJobDone:365 at harvest.ts:214-247 → t_append < t_dedupe < t_done; npm run test (vitest run) green repeatable no new deps no fetch mocking at store.ts:68 5s abort; npm run typecheck/build green; explicit git add tests/discovery/hold-r3.test.ts only",
+      "skills": ["tdd", "lean-build", "verify-and-stop"],
+      "agent": "autoforge-worker (test surface)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "one test file via MemoryStore is ceiling — shortest diff, no separate files per concern (harvest-lock.test.ts + dedupe.test.ts + ordering.test.ts repeats setup), no mocked fetch for KvRestStore.call 5s abort, no live Upstash KV E2E (flaky secrets per AGENTS.md:33); ponytail: one file is ceiling; dedicated harness or live KV deferred",
+      "grilling_session": "self-approve TRUE; tests are non-invasive reversible only verify existing behavior per grilling-HOLD.md:52 → APPROVE; HITL only if tests rely on KV-backed locks per :53 (they don't)",
+      "self_approve_verdict": "TRUE",
+      "self_approve_cite": "decisions-HOLD.md AD-28 TRUE — grilling-HOLD.md:52 Self-approve Yes; harness is existing vitest at package.json:14, VITEST!==true guard at harvest.ts:215 preserves determinism"
+    },
+    {
+      "id": "M-R4",
+      "title": "Production harvest proof bundle (Vercel KV + file mirror, daemon HITL deferred)",
+      "status": "BLOCKED",
+      "self_approve": true,
+      "decision": "AD-29",
+      "frontier_ticket": "workflow/wayfinder/maps/ops-residual/tickets/R4-production-harvest-proof.md:1-36 — hitl:true status:open blocked_by:[] — grilling-HOLD.md:56-67 MV 3 steps — report-HOLD.md:33 delta — daemon HITL deferred per AD-29",
+      "touches": [
+        "src/discovery/proof-bundle.ts",
+        "src/discovery/harvest.ts",
+        "src/app/api/dev/discovery/proof/route.ts",
+        "state/production-harvest-proof.json",
+        "tests/discovery/proof-bundle.test.ts"
+      ],
+      "hazard_touches": [
+        "src/discovery/harvest.ts",
+        "state/production-harvest-proof.json"
+      ],
+      "blocked_by": [],
+      "locks": ["proof-bundle-single-writer", "vault-state-single-writer", "harvest-single-writer"],
+      "wave": "P-module+ S-wire",
+      "parallel_safe": false,
+      "parallel_notes": "P-phase module file src/discovery/proof-bundle.ts parallel_safe with M-R1-seam/M-R2/M-R3 (disjoint files). S-phase wire (harvest.ts:237-247 after setJobDone) sequential with M-R1-wire (shared harvest.ts harvest-single-writer) — flagged intersecting touches as sequential; state/production-harvest-proof.json under state/*.json so vault-state-single-writer + proof-bundle-single-writer guard applies — explicit git add + vault-sync --check before commit. Module may batch P same turn as others; wire must be alone after M-R1-wire committed.",
+      "acceptance": "proof-bundle.ts new ≤70 lines with HarvestProofBundle{version:\"1.0.0\",jobId,ranAtIso,providers,ledgerDigest,ledgerTail:{total,entries},dedupeDigest,stateDigest,capturedAt,manifest?:{deployId,daemonSnippet,env}} + buildProofBundle({jobId,ranAtIso,providers,store?}) via getLedgerTailKV(20,store) + sha256(JSON.stringify(entries)) via node:crypto at store.ts:4 + persistProofBundle(bundle,store?) does await s.put(\"discovery:proof:bundle\",bundle).catch(()=>{}) (single-key atomic) + try{mkdirSync+writeFileSync(\"state/production-harvest-proof.json\",JSON)} catch(EROFS warn) per dedupe-persist.ts:70 + PROOF_BUNDLE_ENABLED=0 short-circuit; readProofBundle(store?) KV-first then file fallback (discovery/route.ts:15-45 chain); harvest.ts:237-247 wire try{const b=await buildProofBundle({jobId,ranAtIso,providers:providerIds,store}); await persistProofBundle(b,store);} catch{appendLog PERSIST-WARN} same swallow as :219; 202 {jobId} at :426 unchanged; tests/discovery/proof-bundle.test.ts via MemoryStore → bundle non-null ledgerDigest equals sha256(entries) version 1.0.0 file mirror valid; optional GET /api/dev/discovery/proof admin-gated at health/route.ts:16 style → bundle JSON or 404; staging git add src/discovery/proof-bundle.ts src/discovery/harvest.ts src/app/api/dev/discovery/proof/route.ts state/production-harvest-proof.json tests/discovery/proof-bundle.test.ts then node scripts/vault-sync.mjs --check green; daemon live HITL NOT required for bundle DoD — ledgerGrowth.verified/productionDeploymentVerified/daemonVerified flip + launchctl transcript at R4:27-32 remain HITL per hitl:true",
+      "skills": ["lean-build", "codebase-design", "tdd", "verify-and-stop"],
+      "agent": "autoforge-worker (thin aggregator + file mirror)",
+      "reviewer": "autoforge-reviewer",
+      "ponytail": "single last-write-wins KV object + file mirror with sha256 digest is ceiling — reuses DataStore seam + node:crypto stdlib, no new dep, no pipeline; skipped per-harvest indexed history discovery:proof:{jobId} + index (reintroduces INDEX_KEY race, needs trim) per report-HOLD §3.4 and launchctl+deploy-only transcript with no KV put (fails tamper-evident per grilling-HOLD.md:59); ponytail: single KV object + file mirror is ceiling; indexed history deferred until R17 evidence reconciliation automation demands it",
+      "grilling_session": "self-approve TRUE for MV bundle generation; live daemon/deploy capture HITL — MV is reversible tightly scoped no core path change per grilling-HOLD.md:64-65 → APPROVE for bundle; HITL 1-question (confirm durable path + launchctl available) stays FOG per :65-66 if env not provided",
+      "self_approve_verdict": "TRUE for MV bundle generation; HITL for live daemon/deploy capture (hitl:true not auto-flipped)",
+      "self_approve_cite": "decisions-HOLD.md AD-29 — grilling-HOLD.md:65 Self-approve Yes for bundle (small reversible toggle PROOF_BUNDLE_ENABLED=0), but hitl:true at R4-production-harvest-proof.md:5 + AC ledgerGrowth.verified daemonVerified productionDeploymentVerified at :27-32 require live Vercel + launchctl active count >0 per report-HOLD §4"
+    }
+  ],
+  "edges": [],
+  "edges_reason": "All 4 self-approving HOLD modules have blocked_by:[] per tickets R1:8, R2:8, R3:8, R4:8 — no semantic DAG edges; sequencing is hazard-only (same-file writes) via resource locks, not blocked_by. R1 before R2 for strong 50-concurrent test is hazard recommendation not semantic DAG (report-HOLD.md §6 wave note). M1–M8 deferred would be blocked_by owner-review but not in this HOLD lane (AD-30 HITL/FOG), so no edges included. Prior vault lane VG-01→VG-SYNC edges via vault-sync.mjs:17 worktree head are retained as heritage context per work-order-remaining.json but not part of this HOLD DAG.",
+  "DAG": {
+    "nodes": ["M-R1", "M-R2", "M-R3", "M-R4"],
+    "edges": [],
+    "topological_order": [["M-R1", "M-R2", "M-R3", "M-R4"]],
+    "hazard_order_note": "Semantic DAG has no edges (all roots). Hazard-respecting serialization: P-phase disjoint files first (M-R1-seam M-R2 M-R3 M-R4-module parallel), then S-phase harvest.ts writers serial (M-R1-wire → M-R4-wire). Topological_order here is one valid hazard-respecting serialization; alternative where M-R2/M-R3/M-R4-module order within P arbitrary is valid. R1 should ideally commit before R2's 50-concurrent test for strongest race closure but not semantically blocked.",
+    "note": "All blocked_by [] hazard-only per grilling-HOLD.md:14-15 + report-HOLD.md §6 + decisions-HOLD.md AD-26..AD-29. Only true DAG edges in prior lane were VG-*→VG-SYNC via vault-sync worktree. This HOLD lane DAG is empty; hazard serialization via locks per §5."
+  },
+  "resource_locks": {
+    "vault-state-single-writer": {
+      "modules": ["M-R4"],
+      "mode": "sequential",
+      "touches": ["state/vault-notes.json", "vault/views/**", ".autoforge/discovery/tracker-index.md", "vault/gotchas/** settlement", "state/production-harvest-proof.json", "state/discovery-ledger.json", "state/discovery-jobs.json"],
+      "policy": "any writer of state/vault-notes.json or vault/views/** or gotcha settlement or tracker-index co-commit or state/production-harvest-proof.json (proof bundle) must serialize; this HOLD lane has one such writer M-R4 (proof-bundle-single-writer) so lock is declared global; vault-sync --check required before any state/** commit per AGENTS.md:15-18 + vault-sync.mjs:16-44 HEAD worktree Buffer.equals at :31; pony ceiling wholesale rmSync O(n) n=161 + worktree+symlink per heritage work-order.json",
+      "cite": "vault/CHARTER.md:19-20,69-71 scripts/vault-sync.mjs:16-44 .autoforge/architecture/decisions-HOLD.md:AD-32 report-HOLD.md §3.14 vault-state-single-writer",
+      "guard": "declared global — never run bare vault-import/export; only vault-sync or --check; parallel sessions own different vault/journal filenames but state is global; state/production-harvest-proof.json is not vault-compiled (only state/vault-notes.json at ci.yml:35-50) but follows same explicit-add discipline per AD-29"
+    },
+    "harvest-single-writer": {
+      "modules": ["M-R1", "M-R4"],
+      "mode": "sequential",
+      "touches": ["src/discovery/harvest.ts"],
+      "policy": "sequential on src/discovery/harvest.ts — M-R1 (acquireHarvestLock before D01-DISCOVER at :140-157, release in finally :252-255) and M-R4 (persistProofBundle after setJobDone at :237-247) share harvest-single-writer; ponytail: global harvest:lock 120s TTL ceiling until per-cell locks (MAP.md:30) deferred; only one harvest.ts writer per commit lane",
+      "cite": "src/discovery/harvest.ts:99-103,104,118-130,140-157,214-247,252-255 decisions-HOLD.md:AD-32 report-HOLD.md:28-30"
+    },
+    "discovery-ledger-index-single-writer": {
+      "modules": ["M-R2"],
+      "mode": "sequential",
+      "touches": ["src/discovery/ledger.ts", "src/lib/persistence/single-writer.ts"],
+      "policy": "only writer in this HOLD lane is M-R2 (INDEX_KEY read→merge→sort→put at :12-26 + getLedgerTailKV orphan prune at :28-39 with withPersistenceSingleWriter:7 in-process guard); serialized by harvest-single-writer hot window = TTL expiry only when R1 holds lock; O(500) scan ceiling per ledger.ts:25 slice(-500)",
+      "cite": "src/discovery/ledger.ts:4-40 store.ts:108-114 getMany/keys decisions-HOLD.md AD-27"
+    },
+    "datastore-seam-single-writer": {
+      "modules": ["M-R1"],
+      "mode": "sequential",
+      "touches": ["src/lib/persistence/store.ts"],
+      "policy": "only extender of DataStore seam in this HOLD lane is M-R1 (adds setIfAbsent?: (key,value,ttlSec)=>Promise<boolean> at :16-26; MemoryStore at :28-57 with setTimeout ttl unref, KvRestStore at :60-126 via [\"SET\",key,val,\"NX\",\"EX\",ttl] single call:68-99); no concurrent pipeline per store.ts:64-67 pipeline-form rejected; batching via Promise.all per-key put at :108-109; M-R2 reads via getMany/keys but does not extend seam so parallel_safe with M-R1 except for store.ts file itself — P-phase disjoint still because R2 doesn't touch store.ts file",
+      "cite": "src/lib/persistence/store.ts:16-26,28-57,60-126,130-181,64-67 decisions-HOLD.md AD-26"
+    },
+    "dedupe-index-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["src/discovery/dedupe-persist.ts", "src/lib/persistence/keys.ts", "state/dedupe-index.json"],
+      "policy": "read-only heritage in this HOLD lane (harvest.ts:230 persistDedupeFromResult is ordered after appendLedgerKV at :225-227 but not mutated here); declared from work-order-remaining.json for gauge — ponytail global writeQueue:17 ceiling retained",
+      "cite": "src/discovery/dedupe-persist.ts:12-107,17,51-58 decisions-HOLD.md AD-32 work-order-remaining.json"
+    },
+    "proof-bundle-single-writer": {
+      "modules": ["M-R4"],
+      "mode": "sequential",
+      "touches": ["src/discovery/proof-bundle.ts", "state/production-harvest-proof.json", "src/app/api/dev/discovery/proof/route.ts"],
+      "policy": "only writer in this HOLD lane is M-R4 — last-write-wins KV discovery:proof:bundle (no index contention) + file mkdirSync+writeFileSync try/catch EROFS swallow; disjoint from ledger/store/jobs except harvest.ts wire; ponytail single last-write-wins key is ceiling until R17 indexed history",
+      "cite": "src/discovery/proof-bundle.ts:1-70 decisions-HOLD.md AD-29 report-HOLD.md §2 R4"
+    },
+    "job-index-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["src/discovery/jobs.ts", "src/app/api/dev/discovery/jobs/**"],
+      "policy": "heritage from work-order-remaining.json (M-R5/M-R6) — not written in HOLD lane except via harvest.ts executeJob's createJob/getJob/updateJob/setJobError/setJobDone at harvest.ts:118-247 which read job index; declared but uncontended this lane",
+      "cite": "src/discovery/jobs.ts:41-42,94-113,133-357 work-order-remaining.json"
+    },
+    "wayfinder-compile": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts", "workflow/wayfinder/maps/**"],
+      "policy": "heritage — not in HOLD lane (n=4 shallow); reads workflow/wayfinder/maps/** via readdirSync sorted deterministic; wayfinder skill not invoked until frontier>10 per report-HOLD §8",
+      "cite": "src/wayfinder/tickets.ts:34-193 work-order-remaining.json"
+    },
+    "evidence-registry-single-writer": {
+      "modules": [],
+      "mode": "sequential",
+      "touches": ["state/evidence-registry.json"],
+      "policy": "read-only in this HOLD lane (vault-import.mjs:30-39 validates evidence_ids), no write",
+      "cite": "scripts/vault-import.mjs:30-39"
+    },
+    "graph-state-single-writer": {
+      "modules": [],
+      "mode": "subsumed",
+      "touches": ["state/graph-state.json", "vault/views/graph-overview.md"],
+      "policy": "subsumed by vault-state-single-writer; read-only via vault-export.mjs:78-95",
+      "cite": "scripts/vault-export.mjs:78-95"
+    }
+  },
+  "waves": [
+    {
+      "id": "wave-P-pure-disjoint",
+      "wave": "P",
+      "parallel": true,
+      "members": ["M-R1-seam", "M-R2", "M-R3", "M-R4-module"],
+      "touches_union": ["src/lib/persistence/store.ts", "src/discovery/harvest-lock.ts", "src/discovery/ledger.ts", "src/lib/persistence/single-writer.ts", "src/discovery/proof-bundle.ts", "tests/discovery/hold-r3.test.ts"],
+      "guard": "disjoint files (store+harvest-lock vs ledger vs proof-bundle vs tests) — no shared lock; may dispatch same turn as four parallel Task autoforge-worker calls (module boundary ≠ child-session boundary) per report-HOLD.md §6 P wave"
+    },
+    {
+      "id": "wave-S-harvest-writers-serialize",
+      "wave": "S",
+      "parallel": false,
+      "members": ["M-R1-wire", "M-R4-wire"],
+      "touches_union": ["src/discovery/harvest.ts"],
+      "guard": "holds harvest-single-writer — M-R1-wire (acquire before D00-QUEUED :140-157 + release finally :252-255) and M-R4-wire (persistProofBundle after setJobDone :237-247) both touch harvest.ts so sequential; each after P commit. Ledger heal already in P (ledger.ts) so not in S."
+    },
+    {
+      "id": "wave-V-validation",
+      "wave": "V",
+      "parallel": false,
+      "members": [],
+      "touches_union": ["state/production-harvest-proof.json", "vault/views/**", "state/vault-notes.json"],
+      "guard": "sequential after S — node scripts/vault-sync.mjs --check + npm run lint/typecheck/test/build green; holds vault-state-single-writer for state/*.json commit"
+    },
+    {
+      "id": "wave-H-HITL-deferred",
+      "wave": "H",
+      "parallel": false,
+      "members": ["M1-M8", "R4-daemon-live"],
+      "touches_union": [],
+      "guard": "blocked until owner HITL ack — no worker code; AD-30 FALSE HITL/FOG + R4 hitl:true live daemon/deploy evidence at R4:21 launchctl + :22 deploy id requires live Vercel per work-order-remaining.json precedent"
+    }
+  ],
+  "parallel_groups": {
+    "parallel_safe_groups": [
+      ["M-R1-seam", "M-R2"],
+      ["M-R1-seam", "M-R3"],
+      ["M-R1-seam", "M-R4-module"],
+      ["M-R2", "M-R3"],
+      ["M-R2", "M-R4-module"],
+      ["M-R3", "M-R4-module"],
+      ["M-R2", "M-R4-module", "M-R3"],
+      ["M-R1-seam", "M-R2", "M-R3", "M-R4-module"]
+    ],
+    "sequential_groups": [
+      ["M-R1-wire", "M-R4-wire"],
+      ["M-R1", "M-R4-wire"],
+      ["M-R1-wire", "M-R4"]
+    ],
+    "shared_state_guard": "Intersecting touches = sequential per instruction. M-R1-wire↔M-R4-wire share src/discovery/harvest.ts (harvest-single-writer) → sequential; vault-state-single-writer M-R4 holds state/production-harvest-proof.json vs any other state/** writer (none else HOLD). Disjoint P members (store vs ledger vs proof-bundle vs tests) → parallel_safe same turn. Module boundary ≠ child-session boundary — parallel_safe groups may be dispatched as parallel Task calls in one turn; sequential groups must be different turns after previous writers committed. Pond: M-R1 before M-R2 for strongest 50-concurrent + orphan test is hazard recommendation not semantic blocked_by.",
+    "module_boundary_note": "module boundary ≠ child-session boundary — M-R1-seam+M-R2+M-R3+M-R4-module are distinct modules but may run in one child session batch (four parallel Tasks); M-R1-wire and M-R4-wire must follow in later turns after previous harvest.ts writer committed to avoid same-file race even though blocked_by is [] hazard-only; M1-M8 not batched (HITL)."
+  },
+  "global_guardrails": {
+    "vault_determinism": "node scripts/vault-sync.mjs --check (commit vs HEAD-compiled via Buffer.equals at vault-sync.mjs:31) — CI vault compile determinism (V2) at .github/workflows/ci.yml:35-50 runs vault-export+import + git diff --exit-code -- vault/views state/vault-notes.json; retained as pre-flight even for HOLD lane (proof-bundle state/production-harvest-proof.json file mirror discipline; not vault-compiled but same explicit-add rule per AD-29)",
+    "vault_sync_hardened_path": "git worktree add --detach ${tmp} HEAD at vault-sync.mjs:17, symlink node_modules at :19, compile-in-tmp at :21-22, fs.writeFileSync(live,compiled) at :42, finally cleanup at :45-52; pony ceiling best-effort cleanup, tmp reaper deferred",
+    "evidence_byte_identity": "determinism via sorted keys + sha12 at vault-export.mjs:14-16 and import sort at vault-import.mjs:79 — bundle digest repro via sha256(JSON.stringify(entries)) at store.ts:4 node:crypto createHash follows same compare pattern",
+    "staging_hygiene": "git add <paths> only — never git add -A — per AGENTS.md:21-23; staging list per module §4 is exactly its touches (e.g., M-R1 git add src/lib/persistence/store.ts src/discovery/harvest-lock.ts src/discovery/harvest.ts; M-R2 git add src/discovery/ledger.ts src/lib/persistence/single-writer.ts; M-R3 git add tests/discovery/hold-r3.test.ts; M-R4 git add src/discovery/proof-bundle.ts src/discovery/harvest.ts src/app/api/dev/discovery/proof/route.ts state/production-harvest-proof.json tests/discovery/proof-bundle.test.ts); drift check git status --porcelain shows only touches lane",
+    "ponytail": "reuse DataStore KV seam (already installed), MemoryStore for tests via setDataStoreForTests, stdlib only (fs/path/crypto/randomUUID), withPersistenceSingleWriter guard, no new deps, no generic facade; ceilings: global harvest:lock 120s TTL ceiling (per-cell locks deferred MAP.md:30), ledger slice(-500) O(500) + SET NX hint + lazy heal on tail read (full KEYS rebuild deferred), dedupe writeQueue global ceiling retained as heritage, wayfinder single function seam not invoked until n>10",
+    "testability": "npm run lint && npm run typecheck && npm run test (vitest run includes hold-r3.test.ts + proof-bundle.test.ts + discovery-harvest.test.ts) && npm run build green required; plus vault-sync --check green before any state/** commit; plus per-module asserts (M-R1 concurrent acquire true/false + release, M-R2 50-concurrent no-dups + orphan prune, M-R3 busy lock without throw + dedup single cluster + ordering spy, M-R4 bundle digest repro + state file JSON valid) — smallest runnable check per non-trivial branch, no framework beyond vitest/jq, MemoryStore hermetic via setDataStoreForTests"
+  },
+  "traceability": {
+    "tracker_index": ".autoforge/discovery/tracker-index.md:3-20 verbatim 4 BLOCKED (R1,R2,R3,R4) cited §1 — plus :22-96 heritage OPEN/FOG excluded via work-order-remaining.json",
+    "grilling": ".autoforge/requirements/grilling-HOLD.md:10-67 (R1:10-26 Self-approve Yes at :24 Gate HITL if KV not available :25; R2:28-41 Yes at :39 Gate if orphan corrupts :40; R3:43-54 Yes at :52 Gate if KV locks :53; R4:56-67 Yes at :65 Gate if no durable path :65-66; M1-M8:69-76 HITL/FOG at :74)",
+    "architecture_report": ".autoforge/architecture/report-HOLD.md:1-373 — seams at src/discovery/harvest.ts:99-105/106-256 store.ts:16-26/28-57/60-126 ledger.ts:4-40 jobs.ts:41-42 dedupe-persist.ts:12-109 single-writer.ts:7-17; boundaries §2, alternatives §3, interfaces §5, locks §6 blocked_by [] hazard-only, ponytail ceilings §7",
+    "decisions": ".autoforge/architecture/decisions-HOLD.md:1-163 AD-26 R1 TRUE, AD-27 R2 TRUE, AD-28 R3 TRUE, AD-29 R4 TRUE MV bundle HITL live, AD-30 M1-M8 FALSE HITL/FOG, AD-31 seam depth, AD-32 locks, AD-33 risks",
+    "map": "workflow/wayfinder/maps/ops-residual/MAP.md:41-45 tickets R1-R4 + MAP.md:9,14-17 canonical + MAP.md:15 staging hygiene + MAP.md:16-17 ceiling notes (process-local lock + best-effort KV mirror accepted ceilings)",
+    "tickets": "workflow/wayfinder/maps/ops-residual/tickets/R1-cross-instance-harvest-lock.md:1-40 (blocked_by:[] hitl:false), R2-ledger-improve-indexing.md:1-35 ([] false), R3-regression-tests.md:1-37 ([] false), R4-production-harvest-proof.md:1-36 ([] hitl:true)",
+    "code_seams": "src/lib/persistence/store.ts:16-26,28-57,60-126,130-181,183-194; src/discovery/harvest.ts:99-105,106-256,214-247,258-334,336-429; src/discovery/ledger.ts:4-40; src/discovery/jobs.ts:41-42,64-66,94-371; src/discovery/dedupe-persist.ts:12-109; src/lib/persistence/keys.ts:50 DISCOVERY_DEDUPE_INDEX_KEY; src/lib/persistence/single-writer.ts:7-17; node:crypto createHash at store.ts:4",
+    "prior_work_order_lock_context": ".autoforge/execution/work-order-remaining.json:1-468 — resource_locks.vault-state-single-writer + harvest-single-writer + job-index-single-writer + dedupe-index-single-writer + wayfinder-compile heritage; M-R5→M-R19 8 modules self-approving remaining frontier; lock policy reuse cited per decisions-HOLD.md AD-32",
+    "state": "state/vault-notes.json:4 note_count:25 (vault baseline unchanged), state/production-harvest-proof.json new file (not vault-compiled) + state/discovery-ledger.json + state/discovery-jobs.json, vault/views/** byte-identical via vault-sync.mjs:16-44"
+  },
+  "acceptance_global": "work-order enumerates all 4 self-approving HOLD frontier modules (M-R1,M-R2,M-R3,M-R4-bundle) per grilling-HOLD Self-approve Yes + decisions-HOLD AD-26..AD-29 TRUE (R4 true for MV bundle, HITL for daemon live); includes touches for harvest-lock (store.ts + harvest-lock.ts + harvest.ts), ledger (ledger.ts + single-writer.ts orphan heal), tests (tests/discovery/hold-r3.test.ts), proof-bundle (proof-bundle.ts + harvest.ts wire + proof route + state/production-harvest-proof.json + proof-bundle.test.ts); enforces single-writer guards via locks (vault-state-single-writer declared for state/*.json + harvest-single-writer harvest.ts + discovery-ledger-index-single-writer INDEX_KEY + datastore-seam-single-writer + proof-bundle-single-writer); parallel groups where touches disjoint (M-R1-seam+M-R2+M-R3+M-R4-module four-way parallel in P) and sequential where touches intersect (M-R1-wire↔M-R4-wire shared harvest.ts flagged sequential per instruction); testability via MemoryStore (setDataStoreForTests) + vault-sync --check + vitest (hold-r3 + proof-bundle) + typecheck/lint/build green; staging hygiene explicit git add <paths> never -A",
+  "wayfinder_note": "wayfinder skill not invoked for HOLD frontier n=4 shallow (tracker-index stays hand-edited); deepen into compileTrackerIndex() only when frontier >10 per report-HOLD §8 Speculative — retained heritage wayfinder-compile lock from work-order-remaining.json but uncontended this lane",
+  "deployment_note": "main is production (Vercel auto-deploys from main per R15 heritage); HOLD tasks are stateless except M-R4 file mirror best-effort on ROFS EROFS warn+continue at dedupe-persist.ts:70 + proof-bundle file mirror; implementation is environment-agnostic (MemoryStore via setDataStoreForTests for local, KvRestStore for prod via KV_REST_API_URL/TOKEN at store.ts:131)",
+  "self_approve_summary": "4/4 modules self-approving for MV per AD-26 AD-27 AD-28 AD-29-TRUE-MV-bundle (R1 TRUE reversible SET NX EX, R2 TRUE local ledger heal, R3 TRUE non-invasive tests, R4 TRUE MV bundle reversible via PROOF_BUNDLE_ENABLED=0 + holder-guarded DEL); R4 live daemon/deploy capture stays HITL/FOG per AD-29 HITL-for-live (hitl:true at R4:5 + AC ledgerGrowth.verified daemonVerified productionDeploymentVerified at R4:27-32) so no auto-flip blocked→resolved without launchctl + deploy id evidence; M1–M8 remain HITL/FOG FALSE per AD-30 (no worker code); grilling-HOLD false flags overridden by decisions where contract fully documented and seam reuse mechanical (ponytail ladder); grilling sessions for this HOLD lane: 0 required for MV, optionally 1-question confirms (TTL 120, 500-window, durable path) — all expected APPROVE",
+  "self_approve_verdict_per_module": {
+    "M-R1": "TRUE — AD-26 mechanical DataStore.setIfAbsent reuse + harvest-lock.ts thin deep module; optional 1-q (TTL 120) → APPROVE; HITL only if KV gateway absent",
+    "M-R2": "TRUE — AD-27 local ledger path reversible; optional 1-q (500-window) → APPROVE; HITL only if orphan recovery corrupts ledger",
+    "M-R3": "TRUE — AD-28 non-invasive tests; no session → APPROVE; HITL only if KV-backed locks required (not here)",
+    "M-R4": "TRUE for MV bundle generation; HITL for live daemon/deploy (hitl:true not auto-flipped) — AD-29 MV reversible single last-write-wins KV+file, daemon HITL deferred"
+  },
+  "ponytail_ladder_applied": "R1 rung 2 reuse DataStore seam → rung 3 stdlib randomUUID → rung 5 no new dep (smallest correct SET NX EX), skipped GET→PUT non-atomic + INCR allocator; R2 rung 2 reuse store.keys/getMany/put + rung 6 small delta (per-entry NX hint) before lazy heal, skipped CAS EVAL pipeline; R3 rung 2 reuse MemoryStore + rung 6 one file before separate harness, live KV E2E skipped; R4 rung 2 reuse store seam + rung 3 node:crypto stdlib before per-harvest indexed history, no new dep — all shortest working diff, ponytail ceilings named: harvest:lock 120s TTL global, ledger slice(-500) O(500) lazy heal, proof single KV object, dedupe writeQueue heritage",
+  "vault_state_single_writer_guard": "declared global at resource_locks.vault-state-single-writer (M-R4 holds for state/production-harvest-proof.json mirror this lane; M-R1/M-R2/M-R3 don't write state/vault-notes.json directly) → any future state/vault-notes.json or vault/views/** or tracker-index co-commit or state/discovery-ledger.json writer must serialize + vault-sync --check before commit (AGENTS.md:15-18 + vault-sync.mjs:16-44 HEAD worktree Buffer.equals per CI); analog proof-bundle-single-writer guards state/production-harvest-proof.json ROFS fork with EROFS warn+continue; staging hygiene explicit git add <paths> only never -A per AGENTS.md:21-23 enforced in each module acceptance",
+  "staging_hygiene": "explicit git add <paths> per module §4 — e.g., M-R1 git add src/lib/persistence/store.ts src/discovery/harvest-lock.ts src/discovery/harvest.ts; M-R2 git add src/discovery/ledger.ts src/lib/persistence/single-writer.ts; M-R3 git add tests/discovery/hold-r3.test.ts; M-R4 git add src/discovery/proof-bundle.ts src/discovery/harvest.ts src/app/api/dev/discovery/proof/route.ts state/production-harvest-proof.json tests/discovery/proof-bundle.test.ts — never git add -A; git status --porcelain shows only touches lane; workflow/wayfinder/maps/** disjoint per ticket file keeps parallel sessions non-colliding"
+}

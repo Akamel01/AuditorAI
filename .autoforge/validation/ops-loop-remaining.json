@@ -1,0 +1,96 @@
+{
+  "plan_version": "plan-remaining.md",
+  "verdict": "GO",
+  "modules": [
+    {
+      "id": "M-R5",
+      "title": "Stop/Cancel server endpoint",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R5.md:73-75",
+        ".autoforge/plans/plan-remaining.md:91-99",
+        ".autoforge/execution/M-R5.md:11-15",
+        ".autoforge/execution/M-R5.md:48-49"
+      ],
+      "decision": "AD-11"
+    },
+    {
+      "id": "M-R6",
+      "title": "Pagination across large job index",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R6.md:100-101",
+        ".autoforge/plans/plan-remaining.md:24-25",
+        ".autoforge/execution/M-R6.md:83-87",
+        ".autoforge/execution/M-R6.md:80-82"
+      ],
+      "decision": "AD-12"
+    },
+    {
+      "id": "M-R7",
+      "title": "Refresh parity tooltip",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R7.md:2-3",
+        ".autoforge/plans/plan-remaining.md:25",
+        ".autoforge/execution/M-R7.md:111-113"
+      ],
+      "decision": "AD-13"
+    },
+    {
+      "id": "M-R9",
+      "title": "Discovery doctor JSON contract",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R9.md:4-7",
+        ".autoforge/plans/plan-remaining.md:27-29",
+        ".autoforge/execution/M-R9.md:153-156"
+      ],
+      "decision": "AD-15"
+    },
+    {
+      "id": "M-R10",
+      "title": "Dedupe KV-truth with file seed fallback",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R10.md:184-184",
+        ".autoforge/plans/plan-remaining.md:28",
+        ".autoforge/execution/M-R10.md:161-168"
+      ],
+      "decision": "AD-16"
+    },
+    {
+      "id": "M-R11",
+      "title": "Drop stale source comments",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R11.md:206-207",
+        ".autoforge/plans/plan-remaining.md:29",
+        ".autoforge/execution/M-R11.md:6-11"
+      ],
+      "decision": "AD-17"
+    },
+    {
+      "id": "M-R15",
+      "title": "Docs Production deploy refresh",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R15.md:230-233",
+        ".autoforge/plans/plan-remaining.md:33-34"
+      ],
+      "decision": "AD-21"
+    },
+    {
+      "id": "M-R19",
+      "title": "Wayfinder plumbing traceability",
+      "verdict": "GO",
+      "evidence": [
+        ".autoforge/execution/M-R19.md:269-270",
+        ".autoforge/plans/plan-remaining.md:34-35"
+      ],
+      "decision": "AD-22"
+    }
+  ],
+  "notes": "R8/R12/R13/R14 are deferred per plan; no cross-module gating edges in this execution lane; all eight self-approving modules are validated as GO.",
+  "blocked_by": []
+}
