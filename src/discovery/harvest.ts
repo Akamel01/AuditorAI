@@ -146,6 +146,21 @@ export async function executeJob(
     }
     return;
   }
+  // Cross-instance KV lock (R1) — SET NX EX 120, holder-guarded release; ponytail: global 120s TTL
+  let kvRelease: (() => Promise<void>) | null = null;
+  try {
+    const { acquireHarvestLock } = await import("./harvest-lock");
+    const { acquired, release } = await acquireHarvestLock(deps?.store, 120, jobId);
+    if (!acquired) {
+      try {
+        await setJobError(jobId, "harvest lock held (kv)", deps?.store);
+      } catch {}
+      return;
+    }
+    kvRelease = release;
+  } catch {
+    // best-effort: KV unavailable → fall back to process-local lock only
+  }
   HARVEST_LOCK = true;
   // Capture common dependencies in outer scope so both the main path and
   // error-handling catch blocks can reference them.
@@ -233,6 +248,23 @@ export async function executeJob(
       const quals = (s.quality as unknown as import("./types").QualityVerdictRecord[]) ?? [];
       await persistDedupeFromResult(pkgs, bundles, quals, store);
     } catch {}
+    // R4 proof bundle — single KV object + file mirror EROFS warn
+    try {
+      const { createHarvestProofBundle } = await import("./proof-bundle");
+      const bundle = createHarvestProofBundle(persistedEntries, { jobId, ranAtIso });
+      try {
+        const { getDataStore } = await import("@/lib/persistence/store");
+        await (store ?? getDataStore()).put("discovery:proof:bundle", bundle);
+      } catch {}
+      try {
+        const { writeFileSync, existsSync, mkdirSync } = await import("node:fs");
+        const p = path.join(process.cwd(), "state", "production-harvest-proof.json");
+        const dir = path.dirname(p);
+        if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+        writeFileSync(p, JSON.stringify(bundle, null, 2) + "\n", "utf8");
+      } catch {}
+      (globalThis as unknown as Record<string, unknown>).__HARVEST_PROOF_BUNDLE__ = bundle;
+    } catch {}
 
   await setJobDone(jobId, {
        ranAtIso,
@@ -252,6 +284,11 @@ export async function executeJob(
   } finally {
     // Release the in-progress lock regardless of success or failure
     HARVEST_LOCK = false;
+    if (kvRelease) {
+      try {
+        await kvRelease();
+      } catch {}
+    }
   }
 }
 

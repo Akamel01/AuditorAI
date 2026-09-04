@@ -23,11 +23,14 @@ export interface DataStore {
   /** Delete every key under prefix; resolves with the deleted count. KV has
    *  no atomic multi-delete, so this is ordered best-effort per key. */
   delByPrefix(prefix: string): Promise<number>;
+  /** SET NX EX — true if set (OK), false if already exists. Used for harvest:lock. */
+  setIfAbsent?(key: string, value: string, ttlSeconds: number): Promise<boolean>;
 }
 
 export class MemoryStore implements DataStore {
   readonly kind = "memory" as const;
   private m = new Map<string, string>();
+  private t = new Map<string, ReturnType<typeof setTimeout>>();
   async put(key: string, value: unknown) {
     this.m.set(key, JSON.stringify(value));
   }
@@ -43,16 +46,40 @@ export class MemoryStore implements DataStore {
   }
   async del(key: string): Promise<void> {
     this.m.delete(key);
+    const tm = this.t.get(key);
+    if (tm) {
+      clearTimeout(tm);
+      this.t.delete(key);
+    }
   }
   async delByPrefix(prefix: string): Promise<number> {
     let n = 0;
     for (const k of [...this.m.keys()]) {
       if (k.startsWith(prefix)) {
         this.m.delete(k);
+        const tm = this.t.get(k);
+        if (tm) {
+          clearTimeout(tm);
+          this.t.delete(k);
+        }
         n += 1;
       }
     }
     return n;
+  }
+  async setIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    if (this.m.has(key)) return false;
+    this.m.set(key, JSON.stringify(value));
+    if (ttlSeconds > 0) {
+      const tm = setTimeout(() => {
+        this.m.delete(key);
+        this.t.delete(key);
+      }, ttlSeconds * 1000);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((tm as any).unref) (tm as any).unref();
+      this.t.set(key, tm);
+    }
+    return true;
   }
 }
 
@@ -123,6 +150,12 @@ export class KvRestStore implements DataStore {
     await Promise.all(matches.map((k) => this.del(k)));
     return matches.length;
   }
+
+  async setIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    const json = await this.call(["SET", key, value, "NX", "EX", String(ttlSeconds)]);
+    // Upstash returns "OK" when set, null when not set
+    return json.result === "OK";
+  }
 }
 
 let storeSingleton: DataStore | null = null;
@@ -175,6 +208,13 @@ function createFallbackStore(): DataStore {
         return await kv.delByPrefix(prefix);
       } catch {
         return fallback.delByPrefix(prefix);
+      }
+    },
+    async setIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+      try {
+        return await kv.setIfAbsent(key, value, ttlSeconds);
+      } catch {
+        return fallback.setIfAbsent(key, value, ttlSeconds);
       }
     },
   };
