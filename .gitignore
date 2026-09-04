@@ -46,7 +46,8 @@ tsconfig.tsbuildinfo
 .env*
 
 # AutoForge staging (R12 curated: keep state + discovery + architecture + plans + reviews + validation, ignore ephemeral)
-.autoforge/
+.autoforge/*
+!.autoforge/AGENTS.md
 !.autoforge/state.json
 !.autoforge/discovery/
 !.autoforge/discovery/**
@@ -62,4 +63,3 @@ tsconfig.tsbuildinfo
 !.autoforge/reviews/**
 !.autoforge/validation/
 !.autoforge/validation/**
-!.autoforge/AGENTS.md

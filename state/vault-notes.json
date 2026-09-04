@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 27,
+  "note_count": 35,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -407,6 +407,126 @@
         "adr": []
       },
       "body_chars": 957
+    },
+    {
+      "path": "vault/journal/2026-09-03-M1-started.md",
+      "zone": "vault/journal",
+      "title": "M1 started — Quote-bearing GF-6..10 baseline upgrade",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 326
+    },
+    {
+      "path": "vault/journal/2026-09-03-M2-started.md",
+      "zone": "vault/journal",
+      "title": "M2 started — Conditional blob-storage escape hatch",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 324
+    },
+    {
+      "path": "vault/journal/2026-09-03-M3-started.md",
+      "zone": "vault/journal",
+      "title": "M3 started — Vault sync-conflict UX",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 309
+    },
+    {
+      "path": "vault/journal/2026-09-03-M4-started.md",
+      "zone": "vault/journal",
+      "title": "M4 started — Report and recommendation drafting assists",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 329
+    },
+    {
+      "path": "vault/journal/2026-09-03-M5-started.md",
+      "zone": "vault/journal",
+      "title": "M5 started — Candidate-findings review UX hardening",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 325
+    },
+    {
+      "path": "vault/journal/2026-09-03-M6-started.md",
+      "zone": "vault/journal",
+      "title": "M6 started — Audit-history retention policy",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 317
+    },
+    {
+      "path": "vault/journal/2026-09-03-M7-started.md",
+      "zone": "vault/journal",
+      "title": "M7 started — RSC initial Repository snapshot (fog)",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 324
+    },
+    {
+      "path": "vault/journal/2026-09-03-M8-started.md",
+      "zone": "vault/journal",
+      "title": "M8 started — Postgres third DataStore adapter",
+      "type": "journal",
+      "date": "2026-09-03",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 319
     }
   ]
 }
