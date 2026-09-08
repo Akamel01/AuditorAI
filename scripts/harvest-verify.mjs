@@ -5,6 +5,7 @@
 // Usage:
 //   ADMIN_KEY=... node scripts/harvest-verify.mjs --api gap --cellKey usa:DETAILED_DESIGN --live --monitor
 //   ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest --live --monitor
+//   ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest-stream [--cellKey <cellKey>] --live --monitor
 //   ADMIN_KEY=... node scripts/harvest-verify.mjs --jobId job_xxx --monitor
 //   ADMIN_KEY=test-admin-key-... node scripts/harvest-verify.mjs --dry --api gap --cellKey usa:PRELIMINARY_DESIGN --monitor  (seed-only, no quota)
 //   node scripts/harvest-verify.mjs --help
@@ -19,14 +20,19 @@ const ROOT = path.resolve(__dirname, '..');
 
 function help() {
   console.log(`
-harvest-verify — auto-monitor for harvesting (HV3)
+harvest-verify — auto-monitor for harvesting (HV3/HV4)
 
 Watches the same backend the buttons hit, proving gap-targeted vs gap-aware.
 
-  API (live, needs server + ADMIN_KEY):
+  API discovery (needs server + ADMIN_KEY, mirrors UI 1.5s poll):
     ADMIN_KEY=... node scripts/harvest-verify.mjs --api gap --cellKey <cellKey> --live --monitor
     ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest --live --monitor
     ADMIN_KEY=... node scripts/harvest-verify.mjs --jobId <jobId> --monitor
+
+  API harvest-stream (AI Harvest Stream, polls 2s GET /api/dev/harvest-stream/:id):
+    ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest-stream [--cellKey <cellKey>] --live --monitor
+    ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest-stream --cellKey uk:PRELIMINARY_DESIGN --live --monitor
+    # dry (seed-only):  --api harvest-stream --cellKey usa:PRELIMINARY_DESIGN  (omit --live)
 
   Dry (seed-only, no brave quota, deterministic):
     ADMIN_KEY=test-admin-key-... node scripts/harvest-verify.mjs --dry --api gap --cellKey usa:PRELIMINARY_DESIGN --monitor
@@ -42,8 +48,9 @@ Seams polled (mirrors HV1 table J/L/C/D/H/P/Q):
   H: GET /api/dev/health harvestHealth.lastRunAt/health_degraded
   P: GET /api/dev/discovery/proof manifest.jobId/ledgerDigest
   Q: job.result.queue vs coverage.gaps_ranked
+  S: POST /api/dev/harvest-stream {live,cellKey} -> streamId, GET /api/dev/harvest-stream/:id poll 2s
 
-Output: state/harvest-verify/<jobId>.json (ticks + before/after deltas + HV5 pass/fail) + stdout summary.
+Output: state/harvest-verify/<jobId>.json (discovery) or stream-<streamId>.json (harvest-stream) + HV5 pass/fail + stdout.
 Env: ADMIN_KEY (x-admin-key), HARVEST_BASE_URL (default http://localhost:3000)
 `.trim());
 }
@@ -171,7 +178,7 @@ async function main() {
   const opts = parseArgs(process.argv);
   if (opts.help) { help(); return 0; }
   if (opts.mock) return runMock();
-  // Harvest-stream harness mode
+  // Harvest-stream harness mode — HV4: POST /api/dev/harvest-stream {live,cellKey} -> streamId, poll 2s GET /api/dev/harvest-stream/:id
   if (opts.api === 'harvest-stream') {
     const adminKey = process.env.ADMIN_KEY || process.env.ADMINKEY || '';
     if (!adminKey) {
@@ -179,13 +186,19 @@ async function main() {
       return 1;
     }
     const baseUrl = (opts.baseUrl || '').replace(/\/$/, '');
-    // create stream
-    const body = { live: !!opts.live };
+    const before = await snapshot(baseUrl, adminKey);
+    const beforeLedgerTotal = before.discovery?.ledgerTotal ?? before.files?.ledger?.entries?.length ?? 0;
+    const beforeDedupe = before.discovery?.dedupe?.sha256Entries ?? Object.keys(before.files?.dedupe?.sha256||{}).length ?? 0;
+    // dry => live:false regardless of --live flag if --dry set (keep discovery behavior)
+    const live = opts.dry ? false : !!opts.live;
+    const body = { live };
     if (opts.cellKey) body.cellKey = opts.cellKey;
     console.log(`[harvest-verify] POST /api/dev/harvest-stream ${JSON.stringify(body)}`);
     const res = await apiPost(baseUrl, '/api/dev/harvest-stream', body, adminKey);
     if (!res.ok) {
       console.error(`[harvest-verify] POST harvest-stream failed ${res.status} ${JSON.stringify(res.json)}`);
+      if (res.status===400) console.error('  → bad cellKey or payload');
+      if (res.status===401) console.error('  → unauthorized: set ADMIN_KEY (x-admin-key)');
       return 1;
     }
     const streamId = res.json.streamId ?? res.json.id ?? res.json.stream?.id;
@@ -194,15 +207,11 @@ async function main() {
       return 1;
     }
     console.log(`[harvest-verify] streamId=${streamId}`);
-    // poll stream until DONE/FAILED or timeout
-    const before = await snapshot(baseUrl, adminKey);
-    const beforeLedgerTotal = before.discovery?.ledgerTotal ?? before.files?.ledger?.entries?.length ?? 0;
-    const beforeDedupe = before.discovery?.dedupe?.sha256Entries ?? Object.keys(before.files?.dedupe?.sha256||{}).length ?? 0;
     const started = Date.now();
     const timeoutMs = 180000;
     const ticks = [];
-    let status = 'queued';
-    let stream = null;
+    let status = res.json.stream?.status ?? 'RUNNING';
+    let stream = res.json.stream ?? null;
     while (true) {
       const elapsed = Date.now() - started;
       if (elapsed > timeoutMs) { console.error('[harvest-verify] harvest-stream timeout 180s'); status='timeout'; break; }
@@ -214,7 +223,6 @@ async function main() {
       }
       stream = r.json.stream ?? r.json;
       status = stream?.status ?? status;
-      // per-tick snapshot
       const snap = await snapshot(baseUrl, adminKey);
       ticks.push({
         at: new Date().toISOString(),
@@ -224,12 +232,10 @@ async function main() {
         dedupeSha: snap.discovery?.dedupe?.sha256Entries ?? null,
         healthAt: snap.health?.harvestHealth?.lastRunAt ?? null,
       });
-      // log line
-      const line = `[${(elapsed/1000).toFixed(1)}s] ${status} stream=${stream?.id ?? ''} logs=${(stream?.logs?.length)||0}`;
+      const line = `[${(elapsed/1000).toFixed(1)}s] ${status} stream=${stream?.id ?? streamId} logs=${(stream?.logs?.length)||0} pkgs=${(stream?.packages?.length)||0}`;
       console.log(line);
-      if (status === 'DONE' || status === 'FAILED' || status === 'CANCELLED') break;
+      if (status === 'DONE' || status === 'FAILED' || status === 'CANCELLED' || status === 'timeout') break;
     }
-    // After snapshot
     const after = await snapshot(baseUrl, adminKey);
     const afterLedgerTotal = after.discovery?.ledgerTotal ?? after.files?.ledger?.entries?.length ?? 0;
     const afterDedupe = after.discovery?.dedupe?.sha256Entries ?? Object.keys(after.files?.dedupe?.sha256||{}).length ?? 0;
@@ -240,20 +246,23 @@ async function main() {
     await fs.mkdir(outDir, { recursive: true });
     const outPath = path.join(outDir, `stream-${streamId}.json`);
     const bundle = {
-      meta: { streamId, ranAtIso: null, cellKey: opts.cellKey||null, gapTargeted: !!opts.cellKey, live: !!opts.live, dry: !!opts.dry, baseUrl, generated_at: new Date().toISOString(), note: 'HV3 harvest-stream harness' },
+      meta: { streamId, ranAtIso: stream?.updatedAt ?? null, cellKey: opts.cellKey||null, gapTargeted: !!opts.cellKey, live, dry: !!opts.dry, baseUrl, generated_at: new Date().toISOString(), note: 'HV4 harvest-stream harness (POST /api/dev/harvest-stream {live,cellKey} -> streamId, poll 2s)' },
       before: { ledgerTotal: beforeLedgerTotal, dedupeSha: beforeDedupe },
       after: { ledgerTotal: afterLedgerTotal, dedupeSha: afterDedupe },
       deltas: { ledgerDelta, packagesLen },
       ticks,
-      job: { status, currentNode: null, logs: [], result: stream?.result ?? null, error: stream?.error ?? null },
+      job: { status, currentNode: stream?.currentNode ?? null, logs: stream?.logs ?? [], result: stream ?? null, error: stream?.error ?? null },
+      stream,
       hv5,
       snapshots: { before, after },
     };
     await fs.writeFile(outPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
-    const latestPath = path.join(outDir, `HV6-latest.json`);
-    await fs.writeFile(latestPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
+    const streamLatestPath = path.join(outDir, `harvest-stream-latest.json`);
+    await fs.writeFile(streamLatestPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
 
     console.log(`\n[harvest-verify] ${hv5.verdict.toUpperCase()} — stream ${streamId} status ${status} ledger+${ledgerDelta} dedupe+${(afterDedupe - beforeDedupe) ?? 0} pkgs ${packagesLen}`);
+    console.log(`[harvest-verify] evidence → ${path.relative(ROOT, outPath)}`);
+    console.log(`[harvest-verify] also → ${path.relative(ROOT, streamLatestPath)}`);
     if (hv5.verdict==='fail') return 1;
     return 0;
   }
