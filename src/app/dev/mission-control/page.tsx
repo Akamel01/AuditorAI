@@ -87,6 +87,7 @@ export default function MissionControlPage() {
   const [learning, setLearning] = useState<LearningMetrics | null>(null);
   const [discovery, setDiscovery] = useState<DiscoveryData | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [gapOrigin, setGapOrigin] = useState<string>("50%");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [adminKeyInput, setAdminKeyInput] = useState("");
@@ -96,6 +97,25 @@ export default function MissionControlPage() {
   const [gapRunError, setGapRunError] = useState<string | null>(null);
   const [gapRun, setGapRun] = useState<{ id: string; status: string; cellKey: string | null } | null>(null);
   const gapPollRef = useRef<number | null>(null);
+
+  const lastPointerXRef = useRef<number | null>(null);
+  useEffect(() => {
+    const h = (e: PointerEvent) => {
+      lastPointerXRef.current = e.clientX;
+    };
+    window.addEventListener("pointerdown", h);
+    return () => window.removeEventListener("pointerdown", h);
+  }, []);
+
+  const handleSelectKey = (key: string | null, origin?: string) => {
+    if (origin) {
+      setGapOrigin(origin);
+    } else if (key && lastPointerXRef.current !== null) {
+      const pct = Math.max(12, Math.min(88, (lastPointerXRef.current / window.innerWidth) * 100));
+      setGapOrigin(`${pct}%`);
+    }
+    setSelectedKey(key);
+  };
 
   async function handleRunGap(cellKey: string) {
     setGapRunError(null);
@@ -264,7 +284,7 @@ export default function MissionControlPage() {
         )}
 
         {ready && (
-          <div className="mt-6 space-y-6">
+          <div key={segment} className="segment-panel active mt-6 space-y-6">
             {segment === "overview" && (
               <>
                 <KpiStrip
@@ -283,7 +303,7 @@ export default function MissionControlPage() {
                     <span>providers: {(discovery?.providers ?? []).filter((p) => p.enabled).length}/{(discovery?.providers ?? []).length} enabled</span>
                   </div>
                 </Panel>
-                <OddMatrix declaration={declaration} coverage={coverage} onCellClick={setSelectedKey} selectedKey={selectedKey} />
+                <OddMatrix declaration={declaration} coverage={coverage} onCellClick={(k) => handleSelectKey(k)} selectedKey={selectedKey} />
                 <ReadinessMeters readiness={readiness} learning={learning} coverage={coverage} />
               </>
             )}
@@ -299,29 +319,31 @@ export default function MissionControlPage() {
                 />
                 <QueueTicker
                   coverage={(displayCoverage as OddCoverageView) ?? coverage!}
-                  onSelectCell={setSelectedKey}
+                  onSelectCell={(k) => handleSelectKey(k)}
                   onRunCell={handleRunGap}
                   selectedKey={selectedKey}
                   activeCellKey={gapRun?.cellKey ?? null}
                   limit={3}
                 />
                 {gapRun && (
-                  <Panel className="border-accent/30 bg-accent/[0.04] px-4 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[11px] font-medium text-text">
-                        Triggered <span className="text-accent">{gapRun.cellKey}</span> · job {gapRun.id.slice(0, 8)} · {gapRun.status}
-                      </span>
-                      <span className="font-mono text-[10px] text-faint">{gapRun.status === "queued" || gapRun.status === "running" ? "polling 1.5s" : gapRun.status}</span>
-                    </div>
-                    {(gapRun.status === "queued" || gapRun.status === "running") && (
-                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
-                        <div className="h-full w-[45%] animate-[shimmer_1.2s_ease-in-out_infinite] bg-accent/70" />
+                  <div className="gap-detail open" style={{ ["--ox" as unknown as string]: gapOrigin } as React.CSSProperties}>
+                    <Panel className="border-accent/30 bg-accent/[0.04] px-4 py-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[11px] font-medium text-text">
+                          Triggered <span className="text-accent">{gapRun.cellKey}</span> · job {gapRun.id.slice(0, 8)} · {gapRun.status}
+                        </span>
+                        <span className="font-mono text-[10px] text-faint">{gapRun.status === "queued" || gapRun.status === "running" ? "polling 1.5s" : gapRun.status}</span>
                       </div>
-                    )}
-                    <p className="mt-1.5 font-mono text-[10.5px] leading-snug text-muted">
-                      Live harvesting <span className="text-text">{gapRun.cellKey}</span> — check Provider health log for D01..D10 progress. Updates survive refresh.
-                    </p>
-                  </Panel>
+                      {(gapRun.status === "queued" || gapRun.status === "running") && (
+                        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
+                          <div className="h-full w-[45%] animate-[shimmer_1.2s_ease-in-out_infinite] bg-accent/70" />
+                        </div>
+                      )}
+                      <p className="mt-1.5 font-mono text-[10.5px] leading-snug text-muted">
+                        Live harvesting <span className="text-text">{gapRun.cellKey}</span> — check Provider health log for D01..D10 progress. Updates survive refresh.
+                      </p>
+                    </Panel>
+                  </div>
                 )}
                 {selectedKey &&
                   (() => {
@@ -329,37 +351,39 @@ export default function MissionControlPage() {
                     if (!cell) return null;
                     const pct = cell.target > 0 ? Math.round((cell.have_total / cell.target) * 1000) / 10 : 0;
                     return (
-                      <Panel className="border-hairline bg-surface px-4 py-3">
-                        <Eyebrow code="CH 0+421">Gap detail · {selectedKey}</Eyebrow>
-                        <div className="mt-2 grid gap-3 sm:grid-cols-3">
-                          <div>
-                            <div className="font-mono text-[11px] font-medium text-text">
-                              {cell.have_total} / {cell.target} · {cell.label}
+                      <div className="gap-detail open" style={{ ["--ox" as unknown as string]: gapOrigin } as React.CSSProperties}>
+                        <Panel className="border-hairline bg-surface px-4 py-3">
+                          <Eyebrow code="CH 0+421">Gap detail · {selectedKey}</Eyebrow>
+                          <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                            <div>
+                              <div className="font-mono text-[11px] font-medium text-text">
+                                {cell.have_total} / {cell.target} · {cell.label}
+                              </div>
+                              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
+                                <div className="h-full bg-accent" style={{ width: `${Math.min(100, pct)}%` }} />
+                              </div>
+                              <div className="mt-1 font-mono text-[10px] text-faint">
+                                {pct}% · priority {cell.priority.toFixed(2)} · full-package {cell.have_full_package}
+                              </div>
                             </div>
-                            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
-                              <div className="h-full bg-accent" style={{ width: `${Math.min(100, pct)}%` }} />
+                            <div className="font-mono text-[10.5px] leading-snug text-muted">
+                              <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Uncovered</div>
+                              <ul className="mt-1 list-disc pl-4">
+                                {cell.uncovered_reasons.length ? cell.uncovered_reasons.map((r) => <li key={r}>{r}</li>) : <li className="text-faint">Covered</li>}
+                              </ul>
                             </div>
-                            <div className="mt-1 font-mono text-[10px] text-faint">
-                              {pct}% · priority {cell.priority.toFixed(2)} · full-package {cell.have_full_package}
+                            <div className="font-mono text-[10.5px] leading-snug text-muted">
+                              <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Provenance</div>
+                              <div className="mt-1">
+                                status <span className="text-text">{cell.status}</span> · stage <span className="text-text">{cell.native_stage_id ?? "—"}</span>
+                              </div>
+                              <div className="mt-0.5">fixtures {cell.fixture_ids.join(", ") || "—"}</div>
+                              <div className="mt-0.5">have {cell.have_total} · target {cell.target}</div>
                             </div>
                           </div>
-                          <div className="font-mono text-[10.5px] leading-snug text-muted">
-                            <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Uncovered</div>
-                            <ul className="mt-1 list-disc pl-4">
-                              {cell.uncovered_reasons.length ? cell.uncovered_reasons.map((r) => <li key={r}>{r}</li>) : <li className="text-faint">Covered</li>}
-                            </ul>
-                          </div>
-                          <div className="font-mono text-[10.5px] leading-snug text-muted">
-                            <div className="text-[10px] uppercase tracking-[0.08em] text-faint">Provenance</div>
-                            <div className="mt-1">
-                              status <span className="text-text">{cell.status}</span> · stage <span className="text-text">{cell.native_stage_id ?? "—"}</span>
-                            </div>
-                            <div className="mt-0.5">fixtures {cell.fixture_ids.join(", ") || "—"}</div>
-                            <div className="mt-0.5">have {cell.have_total} · target {cell.target}</div>
-                          </div>
-                        </div>
-                        <p className="mt-2 font-mono text-[10px] text-faint">Card click shows this progress; use “Run this gap (Live)” button on the card to harvest.</p>
-                      </Panel>
+                          <p className="mt-2 font-mono text-[10px] text-faint">Card click shows this progress; use “Run this gap (Live)” button on the card to harvest.</p>
+                        </Panel>
+                      </div>
                     );
                   })()}
                 {gapRunError && (
@@ -378,7 +402,7 @@ export default function MissionControlPage() {
               </>
             )}
 
-            {segment === "odd" && <OddMatrix declaration={declaration} coverage={coverage} onCellClick={setSelectedKey} selectedKey={selectedKey} />}
+            {segment === "odd" && <OddMatrix declaration={declaration} coverage={coverage} onCellClick={(k) => handleSelectKey(k)} selectedKey={selectedKey} />}
 
             {segment === "readiness" && <ReadinessMeters readiness={readiness} learning={learning} coverage={coverage} />}
 

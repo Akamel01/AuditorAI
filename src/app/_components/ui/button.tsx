@@ -33,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       disabled={disabled || loading}
-      className={`inline-flex cursor-pointer select-none items-center justify-center font-medium leading-none transition-[background-color,border-color,color] duration-150 ease-[cubic-bezier(.2,0,0,1)] active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`pressable inline-flex cursor-pointer select-none items-center justify-center font-medium leading-none transition-[background-color,border-color,color,transform] duration-150 ease-[cubic-bezier(.2,0,0,1)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...rest}
     >
       {loading && <Spinner size={14} />}

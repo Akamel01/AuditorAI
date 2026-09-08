@@ -185,6 +185,28 @@ h3 {
   }
 }
 
+@keyframes confirmBackdrop {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes confirmSheet {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .anim-settle {
   animation: settle 0.5s cubic-bezier(0.2, 0, 0, 1) both;
 }
@@ -219,6 +241,55 @@ h3 {
   animation: shimmer 1.4s linear infinite;
 }
 
+/* Option A Crisp — segment cross-fade + gap spatial anchor */
+.segment-panel {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 140ms cubic-bezier(0.2, 0, 0, 1),
+    transform 140ms cubic-bezier(0.2, 0, 0, 1);
+  will-change: opacity, transform;
+}
+.segment-panel.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.gap-detail {
+  transform-origin: var(--ox, 50%) 0;
+  opacity: 0;
+  transform: scale(0.97) translateY(6px);
+  transition:
+    opacity 220ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, opacity;
+}
+.gap-detail.open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.pressable {
+  transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+.empty-stagger > * {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 340ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 340ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.empty-stagger.in > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.empty-stagger.in > *:nth-child(1) { transition-delay: 0ms; }
+.empty-stagger.in > *:nth-child(2) { transition-delay: 60ms; }
+.empty-stagger.in > *:nth-child(3) { transition-delay: 120ms; }
+.empty-stagger.in > *:nth-child(4) { transition-delay: 180ms; }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -233,6 +304,19 @@ h3 {
   }
   .anim-draw {
     stroke-dashoffset: 0;
+  }
+  .segment-panel {
+    transform: none !important;
+    transition: opacity 140ms ease !important;
+  }
+  .gap-detail {
+    transform: none !important;
+    transition: opacity 140ms ease !important;
+  }
+  .empty-stagger > * {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: opacity 140ms ease !important;
   }
 }
 

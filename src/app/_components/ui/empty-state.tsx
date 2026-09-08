@@ -12,7 +12,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-md border border-dashed border-edge bg-surface px-6 py-12 text-center">
+    <div className="empty-stagger in flex flex-col items-center rounded-md border border-dashed border-edge bg-surface px-6 py-12 text-center">
       {icon && <div className="mb-3 text-faint">{icon}</div>}
       <p className="text-[14px] font-medium text-text">{title}</p>
       {hint && <p className="mt-1.5 max-w-[44ch] text-[12.5px] leading-relaxed text-subtle">{hint}</p>}

@@ -46,7 +46,8 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4"
+      className="fixed inset-0 z-50 grid place-items-center bg-black/45 p-4 backdrop-blur-[8px]"
+      style={{ animation: "confirmBackdrop 200ms cubic-bezier(0.2,0,0,1)" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onCancel();
       }}
@@ -55,7 +56,8 @@ export function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         aria-label={title}
-        className="anim-settle w-full max-w-[440px] rounded-lg border border-edge bg-surface p-5 shadow-[var(--pop-shadow)]"
+        className="w-full max-w-[440px] rounded-lg border border-edge bg-surface p-5 shadow-[var(--pop-shadow)]"
+        style={{ animation: "confirmSheet 240ms cubic-bezier(0.32,0.72,0,1)" }}
       >
         <div className="flex items-start gap-3">
           <Seal size={20} className="mt-0.5 shrink-0 text-accent" />
