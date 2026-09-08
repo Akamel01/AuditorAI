@@ -228,6 +228,23 @@ _Avoid_: harvest monitor, topology health (broader).
 **Job Cancellation** — the idempotent `POST /api/dev/discovery/:jobId/cancel` (x-admin-key) that marks `queued|running → cancelled` via `updateJob`; `executeJob` checks `getJob` before each node and short-circuits with `cancelled` sentinel and `D00-CANCELLED` log. Repeated cancels on terminal jobs are no-op 200s.
 _Avoid_: job abort, harvest pause (implies resumable).
 
+**Gap-Targeted Harvest** — a harvest invoked with explicit `cellKey` (e.g. `usa:DETAILED_DESIGN`) that claims to acquire for that ODD cell. Succeeds only when ledger contains `package.assemblies` for *that* `cellKey`; a package for another cell is `Degraded` (HV5).
+_Avoid_: targeted harvest (vague), gap harvest (implies gap-aware)
+
+**Gap-Aware Harvest** — a harvest invoked with `cellKey=null` that selects `gaps_ranked.slice(0,3)` themes, runs `D01..D10`, and recomputes `coverage.gaps_ranked` (`generated==ranAtIso`) and `queue[0..2]`. Ledger may gain `0..N`; `0` with recomputed gaps is still `Success` (HV5).
+_Avoid_: auto harvest, harvest all (implies unbounded)
+
+**Harvest Success** — job `done`, `D01..D10` complete (22 logs `D00-QUEUED×2→D10`), ledger `+≥1` for intended cell(s) (gap-targeted exact `cellKey`, gap-aware any `0..N`), `coverage` for that cell `have_total`↑ *or* refusal with reason recorded, `dedupe delta == packages` (no double-count), `health.lastRunAt==ranAtIso`. `Degraded` is still `Success` if ledger/refusal correctly recorded.
+_Avoid_: harvest passed (implies no nuance)
+
+**Harvest Degraded** — job `done` but a provider was unavailable (`health_degraded:true`, `brave-search 402 Usage limit exceeded`) or seed-only fallback produced a package for a different cell than requested. Ledger is correctly *unmutated* or mutated for another cell, error is surfaced via `gapRunError`/`runError`, not silent. Dry runs must never be `Degraded`.
+_Avoid_: harvest failed (implies no ledger), soft fail
+
+**Harvest Skipped (Busy)** — `POST 202` then job `error` `harvest lock held` (`harvest:lock` holder busy), ledger `+0`, no `D01..D10` beyond `D00`, error surfaced as `error` with `lock held` string (HV5). Distinct from `Degraded`.
+_Avoid_: harvest skipped (implies intentional), lock error (vague)
+
+**Harvest Dry vs Live** — `Dry` (`live:false`) uses `seed-portals` only, never touches quota, never `health_degraded`. `Live` (`live:true`) may call `brave-search` and may `402`; `Dry` mock (`MemoryStore`) deterministically yields `1` package `usa:PRELIMINARY_DESIGN` for CI oracle.
+
 ## System contracts
 
 **Audit Context** — the assembled bundle an audit runs against: project inputs, selected
