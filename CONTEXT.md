@@ -211,6 +211,23 @@ Coverage Score. Purely derived; recomputed, never hand-edited.
 purchase. Case-by-case approval is required before its material may leave reserve;
 approval is recorded, never assumed.
 
+**Harvest Lease** — the single cross-instance claim that gates a discovery harvest run, held in KV as `harvest:lock` via `SET NX EX 120` and released only by its holder. Global per deployment, 120 s TTL, holder-guarded non-atomic release (`ponytail:` per-cell locks if throughput matters).
+_Avoid_: distributed lock (generic), per-workspace lock, mutex.
+
+**Ledger Entry** — the durable truth of a discovery ledger fact: `discovery:ledger:entry:{seq}` holds one `LedgerEntry` JSON. Exists independent of the index.
+
+**Ledger Index** — the best-effort hint `discovery:ledger:index` listing seqs in order, trimmed to 500. Last-write-wins under concurrent appends; healed on read by orphan prune + KEYS-scan merge. `ponytail:` atomic EVAL if strict ordering proves required.
+_Avoid_: ledger table, ledger log (implies total order guarantee).
+
+**Dedupe Index** — the set of URL hashes already acquired, keyed `discovery:dedupe:index` in KV (truth) with `state/dedupe-index.json` as file-seed fallback and best-effort mirror (warn on ROFS). Load KV-first; persist KV-first.
+_Avoid_: dedupe table (implies DB), dedupe cache (implies eviction).
+
+**Harvest Health** — the derived `harvestHealth` sub-object in `GET /api/dev/health`: `lastRunAt/lastStatus/lockHolder/lockAcquiredAt:null/indexedCount` from `getLedgerTailKV` + `jobs.listLatest` + `harvest:lock` holder string. Honest nulls when KV unavailable.
+_Avoid_: harvest monitor, topology health (broader).
+
+**Job Cancellation** — the idempotent `POST /api/dev/discovery/:jobId/cancel` (x-admin-key) that marks `queued|running → cancelled` via `updateJob`; `executeJob` checks `getJob` before each node and short-circuits with `cancelled` sentinel and `D00-CANCELLED` log. Repeated cancels on terminal jobs are no-op 200s.
+_Avoid_: job abort, harvest pause (implies resumable).
+
 ## System contracts
 
 **Audit Context** — the assembled bundle an audit runs against: project inputs, selected

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 35,
+  "note_count": 36,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -527,6 +527,21 @@
         "adr": []
       },
       "body_chars": 319
+    },
+    {
+      "path": "vault/journal/2026-09-08-vault-refresh-ui.md",
+      "zone": "vault/journal",
+      "title": "Vault refresh UI + grill sharpened R1-R19",
+      "type": "journal",
+      "date": "2026-09-08",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1171
     }
   ]
 }

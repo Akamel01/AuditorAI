@@ -20,6 +20,7 @@ import { TicketBoard } from "./_components/ticket-board";
 import type { TicketIndex } from "@/wayfinder/ticket-types";
 import { AiHarvestControl, type Stream as HarvestStream } from "./_components/ai-harvest-control";
 import { AiHarvestViz } from "./_components/ai-harvest-viz";
+import { VaultPanel } from "./_components/vault-panel";
 import { getAdminKey, setAdminKey } from "@/lib/client";
 import type { OddCoverageView } from "@/discovery/types";
 import type { OddDeclaration } from "@/domain/odd";
@@ -31,7 +32,7 @@ type LatestJob = {
   result?: { coverage?: unknown; packages?: unknown[]; hits?: unknown[]; queue?: unknown[] };
 } | null;
 
-type Segment = "overview" | "discovery" | "odd" | "readiness" | "tickets" | "ai-harvest";
+type Segment = "overview" | "discovery" | "odd" | "readiness" | "tickets" | "ai-harvest" | "vault";
 
 const SEGMENTS: { value: Segment; label: string }[] = [
   { value: "overview", label: "Overview" },
@@ -40,6 +41,7 @@ const SEGMENTS: { value: Segment; label: string }[] = [
   { value: "readiness", label: "Readiness" },
   { value: "tickets", label: "Tickets" },
   { value: "ai-harvest", label: "AI Harvest" },
+  { value: "vault", label: "Vault" },
 ];
 
 type DiscoveryData = {
@@ -272,6 +274,7 @@ export default function MissionControlPage() {
                   ledgerLastAt={discovery?.lastAt ?? null}
                   isLive={isLiveCoverage}
                 />
+                <VaultPanel />
                 <Panel className="px-4 py-4">
                   <Eyebrow code="CH 0+180">Health · quick look</Eyebrow>
                   <div className="grid gap-3 font-mono text-[11px] leading-snug text-muted sm:grid-cols-3">
@@ -382,6 +385,8 @@ export default function MissionControlPage() {
             {segment === "tickets" && tickets && <TicketBoard index={tickets} />}
 
             {segment === "ai-harvest" && <AiHarvestTab />}
+
+            {segment === "vault" && <VaultPanel />}
           </div>
         )}
 

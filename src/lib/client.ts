@@ -131,3 +131,9 @@ export function fetchHarvestStream<T = unknown>(id: string): Promise<T> {
 export function startHarvestStream<T = unknown>(body: { live?: boolean; cellKey?: string | null }): Promise<T> {
   return adminApi<T>("/api/dev/harvest-stream", { method: "POST", json: body });
 }
+export function fetchVault<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/vault");
+}
+export function syncVault<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/vault/sync", { method: "POST" });
+}
