@@ -33,3 +33,12 @@ files your ticket touched: explicit `git add <paths>`, never blanket `git add -A
 
 Keychain services `auditorai/opencode`, `auditorai/kv-url`, `auditorai/kv-token`
 (`security find-generic-password -a "$USER" -s <name> -w`). Never paste values.
+
+## Guardrails (CI green)
+
+- Hook: `git config core.hooksPath .githooks` (auto via `npm run prepare`). Pre-commit runs `lint` + `typecheck` + vault determinism + YAML parse. Block on fail: `npm run lint:fix`.
+- Local CI: `npm run ci:local` mirrors `ci.yml` + `ci-gates.yml` (validate-state, evidence, vault, eval-gate, lint/typecheck/test/build, e2e).
+- Lint ignore: `.next/` `.vercel/` are ignored in `eslint.config.mjs:4` — never lint build output.
+- Vault: `node scripts/vault-sync.mjs --check` before push; hook also checks staged `vault/` changes.
+- YAML: quote workflow `name:` with `:` (e.g. `"Gate: R13 & R17"`) — unquoted `Gate:` yields 0-job runs.
+- Gates: `check-eval-gate-freshness.mjs` parses `docs/validation/eval-gates.md` `Freshness max age 7d`; refresh via `node scripts/tier1-archive.mjs --rebase --topup <runId>` + `touch state/eval-scorecards`. `check-evidence-head.mjs` allows ancestor commit within 24h; refresh via harvest or updating `.autoforge/validation/ops-loop-evidence.json`.

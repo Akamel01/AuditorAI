@@ -40,7 +40,6 @@ export async function POST(req: Request) {
         // Best-effort handling: a busy harvest should not crash the API route.
         // Without a per-call job id available here (beyond result.jobId), we
         // simply log for observability and swallow.
-        // eslint-disable-next-line no-console
         console.error("harvest executeJob busy or failed:", (err as Error)?.message ?? err);
       }
     });

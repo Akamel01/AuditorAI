@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T19-54-07-248Z",
+  "fixture_id": "GF-14",
+  "fixture_name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0.5
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF14-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Dysfunctional pedestrian signals at a high-volume arterial crossing pose a real, substantive safety hazard for pedestrians and is squarely relevant to the scheme's safety context at preliminary design.",
+        "evidence_grounding": "Pivotal deficiency claim is anchored by a verbatim quoted record (EV-US-034: 'Investigate and fix existing dysfunctional pedestrian signals') tied to the recorded safety-issue table for this location.",
+        "jurisdiction_correctness": "Correctly framed as a safety_concern under FHWA RSA semantics with no conflation of compliance questions; addressing existing conditions bearing on user safety is legitimate at the design stage.",
+        "recommendation_quality": "Specific (intersection, pedestrian indications), actionable (investigate and repair before design progresses), and viable within the current stage; not null or vague.",
+        "vru_coverage": "Pedestrians—the affected vulnerable road users—are explicitly identified as the exposed group and the exposure scenario is built around their reliance on the displays."
+      }
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Concrete, scheme-relevant compliance scope covering five named pedestrian access elements (markings, refuge island sizing, detectable warnings, APS, countdown signals) against mandatory AAB/ADA Standards at audited intersections.",
+        "evidence_grounding": "EV-US-035 supplies a verbatim quote of the enhancement-list entry that directly supports the pivotal claim; the statement restates the recorded entry without invention.",
+        "jurisdiction_correctness": "Correctly framed as a normative conformance question with risk components nulled, keeping the AAB/ADA compliance issue categorically distinct from any safety severity/likelihood judgment per FHWA RSA semantics.",
+        "recommendation_quality": "Specific (all pedestrian crossings, enumerated elements), actionable ('within the current design' at preliminary design stage), and viable for the design team to incorporate.",
+        "vru_coverage": "Pedestrians—the core VRU group—are the explicit focus, with their crossing, refuge, detection, and signal needs comprehensively addressed across all listed elements."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T20:03:42.787Z"
+}

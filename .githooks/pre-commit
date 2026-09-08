@@ -1,0 +1,46 @@
+#!/bin/sh
+# Guardrail: block commits that would fail CI (lint + vault determinism + gates)
+# Ponytail: single file, stdlib only, fastest failing check first.
+
+set -e
+
+# 1) lint (fastest, catches unused vars like _ and HARVEST_LOCK_KEY)
+echo "[pre-commit] lint..."
+npm run lint --silent
+if [ $? -ne 0 ]; then
+  echo "[pre-commit] FAIL lint — run: npm run lint:fix"
+  exit 1
+fi
+
+# 2) typecheck (catches API wiring before push)
+echo "[pre-commit] typecheck..."
+npm run typecheck --silent
+if [ $? -ne 0 ]; then
+  echo "[pre-commit] FAIL typecheck"
+  exit 1
+fi
+
+# 3) vault determinism (V2) — CI's vault job does vault-export+import then git diff
+echo "[pre-commit] vault determinism..."
+# Only check if vault/ or state/vault-notes.json is staged or modified
+if git diff --cached --name-only -- vault/ state/vault-notes.json | grep -q . || git diff --name-only -- vault/ state/vault-notes.json | grep -q .; then
+  node scripts/vault-export.mjs >/dev/null 2>&1
+  node scripts/vault-import.mjs >/dev/null 2>&1
+  if ! git diff --exit-code -- vault/views state/vault-notes.json >/dev/null 2>&1; then
+    echo "[pre-commit] FAIL vault determinism — vault/views or state/vault-notes.json differs from compiled output"
+    echo "  Fix: node scripts/vault-sync.mjs && git add vault/views state/vault-notes.json"
+    git checkout -- vault/views state/vault-notes.json 2>/dev/null || true
+    exit 1
+  fi
+fi
+
+# 4) YAML validity of workflows (catches unquoted 'name: Gate: ...' which yields 0-job runs)
+for f in .github/workflows/*.yml; do
+  node -e "import fs from 'node:fs'; import yaml from 'yaml'; yaml.parse(fs.readFileSync(process.argv[1],'utf8'))" "$f" 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "[pre-commit] FAIL yaml parse $f — quote 'name:' with ':'"
+    exit 1
+  fi
+done
+
+echo "[pre-commit] ok"

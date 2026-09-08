@@ -1,4 +1,4 @@
-name: Gate: R13 eval freshness & R17 evidence HEAD
+name: "Gate: R13 eval freshness & R17 evidence HEAD"
 
 on:
   push:
@@ -16,7 +16,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
+          cache: npm
+      - run: npm ci
       - name: Run R13 eval gate freshness check
         run: node scripts/check-eval-gate-freshness.mjs
       - name: Run R17 evidence HEAD anchoring check

@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { MemoryStore, setDataStoreForTests } from "@/lib/persistence/store";
-import { acquireHarvestLock, HARVEST_LOCK_KEY } from "@/discovery/harvest-lock";
+import { acquireHarvestLock } from "@/discovery/harvest-lock";
 import { emptyDedupeIndex, claimFingerprints, checkDuplicate } from "@/discovery/dedupe";
 
 describe("R3 regression: lock + dedup", () => {

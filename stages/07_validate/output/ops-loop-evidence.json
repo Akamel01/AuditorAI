@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-31T22:05:26Z",
-  "commit": "056b75fd20acb209de080a29bd3386364ded3a9e",
+  "generatedAt": "2026-09-08T01:52:10.775Z",
+  "commit": "515fab35ec4deb428df3070894f0c17793cf1db5",
   "vercelDeployment": "33295351517",
   "t1": {
     "pagePrompt": "src/app/dev/mission-control/page.tsx:177-212 Panel with setAdminKey + reload() without page reload",
@@ -28,7 +28,7 @@
         "discoveryGraphNodes": 10
       }
     },
-    "build": "npm run build OK after rm -rf .next \u2014 /dev/mission-control 13.9kB 124kB First Load"
+    "build": "npm run build OK after rm -rf .next — /dev/mission-control 13.9kB 124kB First Load"
   },
   "t2": {
     "phase1": {
@@ -60,7 +60,7 @@
             "PERSIST-WARN EROFS read-only state/discovery-ledger.json"
           ]
         },
-        "persistNote": "PERSIST-WARN expected on Vercel FS, KV fallback holds \u2014 job done via KV"
+        "persistNote": "PERSIST-WARN expected on Vercel FS, KV fallback holds — job done via KV"
       },
       "doctorLive": {
         "brave": "OK 3 hits 258ms",

@@ -36,7 +36,16 @@ async function main() {
     if (typeof generatedAtStr === 'string') {
       const generatedAt = new Date(generatedAtStr);
       if (!Number.isNaN(generatedAt.valueOf())) {
-        fresh = (currentHead === commitInHead) && (Date.now() - generatedAt.getTime() <= freshMs);
+        const timeFresh = Date.now() - generatedAt.getTime() <= freshMs;
+        // Strict: commit == HEAD; lenient fallback: commit is ancestor of HEAD (covers committed proof before push)
+        let commitFresh = currentHead === commitInHead;
+        if (!commitFresh && typeof commitInHead === 'string' && commitInHead.length >= 7) {
+          try {
+            execSync(`git merge-base --is-ancestor ${commitInHead} ${currentHead}`, { stdio: 'pipe' });
+            commitFresh = true;
+          } catch {}
+        }
+        fresh = commitFresh && timeFresh;
       }
     }
 

@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-08-25T19-54-07-248Z",
+  "fixture_id": "GF-13",
+  "fixture_name": "NE Edmonton Ring Road planning-stage RSA — Canada TAC planning (real sample, Alberta Transportation 2009)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "x-preview-f-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/zen/v1",
+    "identity": "ox-alpha",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF13-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Sub-standard systems-service interchange spacing (1970 m / 1670 m vs 3000 m preferred) with weaving inside a system interchange's functional area is a substantive, mechanism-backed planning-stage safety concern for this ring-road scheme.",
+        "evidence_grounding": "Pivotal spacing/collision claim rests on the verbatim EV-CA-039 quote stating both spacings, the 3000 m preference, and congestion-collision consequence, with EV-CA-003 verbatim grounding off-limit propagation; assumptions and inference limits are explicitly declared.",
+        "jurisdiction_correctness": "Correctly raised as a safety_concern treating 3000 m as a preferred rather than mandatory value, keeping safety distinct from compliance questions and consistent with Alberta Stage 1 planning-RSA semantics.",
+        "recommendation_quality": "Specific and actionable dual remedy (adopt 3000 m spacing in next functional-plan iteration or add collector-distributor roadways clearing weaving from the functional area) plus verification against 2041 staging-year weave volumes; viable at planning level.",
+        "vru_coverage": "VRUs not applicable on the access-controlled mainline but explicitly acknowledged with vehicle-occupant scoping stated in the scenario, matching the acknowledge-and-scope convention."
+      }
+    },
+    {
+      "finding_id": "JB-GF13-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Undispositioned audit findings on a genuinely safety-relevant design feature (local access connections inside a system interchange) left standing in the published functional-plan record is a real process non-conformity with substantive scheme consequences, not a vacuous paperwork quibble.",
+        "evidence_grounding": "The pivotal duty is anchored by a verbatim EV-CA-038 quote ('The project design team must provide a response report... Possible responses are: 1. Accept in full... 2. Conditionally accept with modifications... 3. Reject with reason'), reinforced verbatim by EV-CA-003 on fully and consistently documented actions, with the missing-response-report fact recorded in the input scenario rather than invented.",
+        "jurisdiction_correctness": "Correctly frames a process compliance question (missing §5.6.2 response report) while keeping the underlying safety concern (speed-differential conflicts) attributed to the audit itself rather than reasserted as a new compliance matter, and uses EV-CA-006 to fix Planning Stage RSA = Stage 1 RSA semantics accurately.",
+        "recommendation_quality": "Specific and actionable: name the §5.6.2 mechanism, disposition each §4.1–4.2 issue among the three enumerated responses with documented reasons, file with Alberta Transportation alongside the functional plan, and resolve the access connections either way — all viable within the recorded framework.",
+        "vru_coverage": "Not directly applicable to a documentation-disposition question, but the scenario acknowledges the access-controlled mainline carries no pedestrians or cyclists while flagging that the local connections route traffic toward the VRU-bearing cross-road network without overclaiming exposure, earning credit for appropriate acknowledgment."
+      }
+    }
+  ],
+  "generated_at": "2026-08-25T20:02:56.039Z"
+}

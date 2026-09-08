@@ -34,7 +34,7 @@ date: ${new Date().toISOString()}
 `;
     const body = `Total: ${idx.counts.total}\nFrontier: ${idx.counts.frontier}\nReady: ${idx.counts.ready_without_owner}\nHitL: ${idx.counts.hitl_frontier}\n`;
     fs.writeFileSync(mdPath, frontmatter + "\n" + body, 'utf8');
-  } catch (_) {
+  } catch {
     // best-effort; do not fail CLI if markdown write fails
   }
 }

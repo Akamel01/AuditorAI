@@ -33,6 +33,7 @@ Everything else ships on Tier 0 alone.
 | Regression tolerance | **zero-drop**: any decline in a project's mean dimension-total vs the prior archived run triggers §5 |
 | Judge identity/effort | recorded per scorecard (`x-preview-f-free`, effort max) — a scorecard without provenance is invalid |
 | Rubric clarification (owner, ω 2026-08-22) | **`evidence_grounding=2` requires a verbatim quoted snippet from a cited source supporting the pivotal claim.** Registry-id citation alone scores at most 1. Baselines must carry quotes to pass. |
+| Freshness max age | 7d — Tier-1 scorecards valid for 7 days; older requires fresh `node scripts/tier1-archive.mjs --rebase --topup <runId>` |
 
 Latest archived run: `state/eval-scorecards/<latest>/` (first live archive
 2026-08-22T22-13-39Z: all five projects below the 90 % mark — see §6).
