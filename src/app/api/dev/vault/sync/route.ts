@@ -31,7 +31,23 @@ export async function POST(req: Request) {
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : String(e);
         const stderr = (e as { stderr?: Buffer | string })?.stderr;
-        const detail = stderr ? String(stderr).slice(0, 2000) : msg.slice(0, 2000);
+        const detail = stderr ? String(stderr).slice(0, 3000) : msg.slice(0, 3000);
+        // On Vercel scripts may be partially bundled — missing lib is expected; fall back to git truth
+        if (detail.includes("MODULE_NOT_FOUND") || detail.includes("ERR_MODULE_NOT_FOUND")) {
+          try {
+            const raw = readFileSync(notesPath, "utf8");
+            const doc = JSON.parse(raw) as { note_count?: number };
+            return NextResponse.json({
+              ok: true,
+              noteCount: doc.note_count ?? 0,
+              vaultNotes: doc,
+              stdout,
+              note: "production (Vercel) — vault is git-committed read-only; run `node scripts/vault-sync.mjs` locally and push",
+            });
+          } catch {
+            // fall through to error
+          }
+        }
         return NextResponse.json({ ok: false, error: detail, stdout: stdout.slice(0, 2000) }, { status: 422 });
       }
     }
