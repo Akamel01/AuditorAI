@@ -140,6 +140,7 @@ export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) =
           onClick={start}
           disabled={busy}
           className="inline-flex items-center rounded-md bg-accent px-4 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] hover:bg-accent-strong disabled:bg-sunken disabled:text-faint active:scale-[0.98]"
+          data-testid="ai-harvest-start"
         >
           {busy ? "Starting…" : "Start"}
         </button>

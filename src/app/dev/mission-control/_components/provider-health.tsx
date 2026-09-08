@@ -378,6 +378,7 @@ export function ProviderHealth({ providers, onRun, onJob, lastLatencyMs = null }
             onClick={handleRun}
             disabled={runLoading}
             className="inline-flex cursor-pointer items-center rounded-md bg-accent px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong disabled:opacity-50"
+            data-testid="provider-health-run-live-harvest"
             aria-label="Run one live harvest batch — POST /api/dev/discovery/run"
           >
             {runLoading ? `Running… ${job?.currentNode ?? ""}` : "Run live harvest"}

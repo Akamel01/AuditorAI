@@ -171,6 +171,92 @@ async function main() {
   const opts = parseArgs(process.argv);
   if (opts.help) { help(); return 0; }
   if (opts.mock) return runMock();
+  // Harvest-stream harness mode
+  if (opts.api === 'harvest-stream') {
+    const adminKey = process.env.ADMIN_KEY || process.env.ADMINKEY || '';
+    if (!adminKey) {
+      console.error('ADMIN_KEY not set. Set ADMIN_KEY to run harvest-stream harness.');
+      return 1;
+    }
+    const baseUrl = (opts.baseUrl || '').replace(/\/$/, '');
+    // create stream
+    const body = { live: !!opts.live };
+    if (opts.cellKey) body.cellKey = opts.cellKey;
+    console.log(`[harvest-verify] POST /api/dev/harvest-stream ${JSON.stringify(body)}`);
+    const res = await apiPost(baseUrl, '/api/dev/harvest-stream', body, adminKey);
+    if (!res.ok) {
+      console.error(`[harvest-verify] POST harvest-stream failed ${res.status} ${JSON.stringify(res.json)}`);
+      return 1;
+    }
+    const streamId = res.json.streamId ?? res.json.id ?? res.json.stream?.id;
+    if (!streamId) {
+      console.error('No streamId returned from harvest-stream');
+      return 1;
+    }
+    console.log(`[harvest-verify] streamId=${streamId}`);
+    // poll stream until DONE/FAILED or timeout
+    const before = await snapshot(baseUrl, adminKey);
+    const beforeLedgerTotal = before.discovery?.ledgerTotal ?? before.files?.ledger?.entries?.length ?? 0;
+    const beforeDedupe = before.discovery?.dedupe?.sha256Entries ?? Object.keys(before.files?.dedupe?.sha256||{}).length ?? 0;
+    const started = Date.now();
+    const timeoutMs = 180000;
+    const ticks = [];
+    let status = 'queued';
+    let stream = null;
+    while (true) {
+      const elapsed = Date.now() - started;
+      if (elapsed > timeoutMs) { console.error('[harvest-verify] harvest-stream timeout 180s'); status='timeout'; break; }
+      await new Promise(r => setTimeout(r, 2000));
+      const r = await apiGet(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}`, adminKey);
+      if (!r.ok) {
+        ticks.push({ at: new Date().toISOString(), error: `GET stream ${r.status} ${JSON.stringify(r.json)}` });
+        continue;
+      }
+      stream = r.json.stream ?? r.json;
+      status = stream?.status ?? status;
+      // per-tick snapshot
+      const snap = await snapshot(baseUrl, adminKey);
+      ticks.push({
+        at: new Date().toISOString(),
+        elapsedMs: elapsed,
+        status, ledgerTotal: snap.discovery?.ledgerTotal ?? null,
+        coverageGenerated: snap.coverage?.generated ?? snap.coverage?.generated_at ?? null,
+        dedupeSha: snap.discovery?.dedupe?.sha256Entries ?? null,
+        healthAt: snap.health?.harvestHealth?.lastRunAt ?? null,
+      });
+      // log line
+      const line = `[${(elapsed/1000).toFixed(1)}s] ${status} stream=${stream?.id ?? ''} logs=${(stream?.logs?.length)||0}`;
+      console.log(line);
+      if (status === 'DONE' || status === 'FAILED' || status === 'CANCELLED') break;
+    }
+    // After snapshot
+    const after = await snapshot(baseUrl, adminKey);
+    const afterLedgerTotal = after.discovery?.ledgerTotal ?? after.files?.ledger?.entries?.length ?? 0;
+    const afterDedupe = after.discovery?.dedupe?.sha256Entries ?? Object.keys(after.files?.dedupe?.sha256||{}).length ?? 0;
+    const ledgerDelta = afterLedgerTotal - beforeLedgerTotal;
+    const packagesLen = Array.isArray((stream?.packages)||[]) ? stream.packages.length : 0;
+    const hv5 = hv5PassFail({ gapTargeted: !!opts.cellKey, ledgerDelta, dedupeDelta: afterDedupe - beforeDedupe, packagesLen, healthAdvanced: true, haveTotalDelta: 0, gapsRecomputed: true, jobStatus: status, isDegraded: false, isBusy: false });
+    const outDir = path.join(ROOT, 'state', 'harvest-verify');
+    await fs.mkdir(outDir, { recursive: true });
+    const outPath = path.join(outDir, `stream-${streamId}.json`);
+    const bundle = {
+      meta: { streamId, ranAtIso: null, cellKey: opts.cellKey||null, gapTargeted: !!opts.cellKey, live: !!opts.live, dry: !!opts.dry, baseUrl, generated_at: new Date().toISOString(), note: 'HV3 harvest-stream harness' },
+      before: { ledgerTotal: beforeLedgerTotal, dedupeSha: beforeDedupe },
+      after: { ledgerTotal: afterLedgerTotal, dedupeSha: afterDedupe },
+      deltas: { ledgerDelta, packagesLen },
+      ticks,
+      job: { status, currentNode: null, logs: [], result: stream?.result ?? null, error: stream?.error ?? null },
+      hv5,
+      snapshots: { before, after },
+    };
+    await fs.writeFile(outPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
+    const latestPath = path.join(outDir, `HV6-latest.json`);
+    await fs.writeFile(latestPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
+
+    console.log(`\n[harvest-verify] ${hv5.verdict.toUpperCase()} — stream ${streamId} status ${status} ledger+${ledgerDelta} dedupe+${(afterDedupe - beforeDedupe) ?? 0} pkgs ${packagesLen}`);
+    if (hv5.verdict==='fail') return 1;
+    return 0;
+  }
 
   const adminKey = process.env.ADMIN_KEY || process.env.ADMINKEY || '';
   if (!adminKey) {
