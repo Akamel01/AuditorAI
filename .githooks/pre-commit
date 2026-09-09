@@ -43,4 +43,11 @@ for f in .github/workflows/*.yml; do
   fi
 done
 
+# 5) harvest-verify harness sanity (HV3/HV4) — no server, no quota
+node scripts/harvest-verify.mjs --mock >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+  echo "[pre-commit] FAIL harvest-verify --mock"
+  exit 1
+fi
+
 echo "[pre-commit] ok"

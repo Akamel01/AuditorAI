@@ -19,7 +19,7 @@
     "render-learning-html": "tsx scripts/render-learning-html.ts",
     "vault": "node scripts/compile-evidence.mjs && node scripts/vault-export.mjs && node scripts/vault-import.mjs",
     "ci": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "ci:local": "npm run lint && npm run typecheck && npm run test && npm run build && node scripts/validate-state.mjs && node scripts/compile-evidence.mjs && git diff --exit-code -- state/evidence-registry.json && node scripts/vault-export.mjs && node scripts/vault-import.mjs && git diff --exit-code -- vault/views state/vault-notes.json && node scripts/check-eval-gate-freshness.mjs && node scripts/check-evidence-head.mjs",
+    "ci:local": "npm run lint && npm run typecheck && npm run test && npm run build && node scripts/validate-state.mjs && node scripts/compile-evidence.mjs && git diff --exit-code -- state/evidence-registry.json && node scripts/vault-export.mjs && node scripts/vault-import.mjs && git diff --exit-code -- vault/views state/vault-notes.json && node scripts/check-eval-gate-freshness.mjs && node scripts/check-evidence-head.mjs && node scripts/harvest-verify.mjs --mock",
     "prepare": "husky install 2>/dev/null || git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {

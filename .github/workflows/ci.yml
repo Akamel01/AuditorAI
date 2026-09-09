@@ -75,6 +75,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
+      - run: node scripts/harvest-verify.mjs --mock
 
   e2e:
     name: browser e2e (playwright)
