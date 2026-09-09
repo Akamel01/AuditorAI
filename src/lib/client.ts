@@ -128,7 +128,7 @@ export function fetchHarvestStreams<T = unknown>(): Promise<T> {
 export function fetchHarvestStream<T = unknown>(id: string): Promise<T> {
   return adminApi<T>(`/api/dev/harvest-stream/${encodeURIComponent(id)}`);
 }
-export function startHarvestStream<T = unknown>(body: { live?: boolean; cellKey?: string | null }): Promise<T> {
+export function startHarvestStream<T = unknown>(body: { live?: boolean; cellKey?: string | null; continuous?: boolean }): Promise<T> {
   return adminApi<T>("/api/dev/harvest-stream", { method: "POST", json: body });
 }
 export function fetchReachSecrets<T = unknown>(): Promise<T> {

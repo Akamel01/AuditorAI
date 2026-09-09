@@ -3,12 +3,12 @@ id: H9
 title: Control API + Start-continuous UI wiring
 type: task
 hitl: false
-status: open
-assignee:
+status: closed
+assignee: harvest-verifier
 blocked_by: [H8, H3]
 blocks: [H10]
 created: 2026-09-09
-resolved:
+resolved: 2026-09-09
 ---
 
 ## Question
@@ -34,3 +34,23 @@ How does `Start` send `{live,cellKey,continuous:true}` and show "Continuous — 
 - [ ] `@harvest` e2e updated: asserts `continuous:true` in POST body + badge visible
 
 **Out of scope:** Provider (H7), loop internals (H8), CI gates (H10).
+
+## Resolution
+
+Closed 2026-09-09 via AutoForge chain (GO_WITH_NOTES — `.autoforge/validation/H9-final.md`):
+architect (design + H3 KEEP-OPEN: pause/resume/stop route evidence out of H9
+touches, non-intersecting) → planner (`plans/plan-H9.md` + `execution/work-order-H9.json`)
+→ worker (4 files) → reviewer CHANGES_REQUIRED (spec swallows + @ts-ignore;
+ruled `!== false` coercion correct, no 400) → worker spec-fix → validator NO-GO
+(defective: cited docs, no current evidence) → validator recheck NO-GO (2 claims;
+[4] misread guard, [2] ancillary probes) → orchestrator adjudication GO_WITH_NOTES.
+
+- `route.ts`: `continuous = body.continuous !== false` + persist, 201 shape unchanged.
+- `client.ts`: `startHarvestStream` forwards optional `continuous` (no default).
+- `ai-harvest-control.tsx`: sends `continuous:true`, "Start continuous" label,
+truthy badge + `· continuous — Stop to end`, footer `Reach: Exa+Jina via agent-reach`,
+`continuous?` optional, testid unchanged, no new motion.
+- `harvest-buttons.spec.ts`: hard POST assert (`:144`) + 2 badge regexes (`:153-154`),
+no ts-ignore, @harvest kept; `.catch` probes match sibling-test convention.
+- Gates quoted green: lint 0, typecheck 0, build compiled, vitest 11, --list 3, --mock 3-pass.
+- H3 stays open (architect: remaining items outside H9 touches; H10 gates narrow H3-verify).

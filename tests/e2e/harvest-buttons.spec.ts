@@ -116,17 +116,32 @@ test("@harvest ai harvest stream via UI — Start posts harvest-stream and polls
     if (!checked) await liveCheck.check();
   }
 
+  // Capture the POST to harvest-stream in a deterministic way
+  const reqPromise = page.waitForRequest(
+    (req) => req.url().includes("/api/dev/harvest-stream") && req.method() === "POST",
+  );
   const postPromise = page.waitForResponse(
     (r) => r.url().includes("/api/dev/harvest-stream") && r.request().method() === "POST",
   );
   await startBtn.click();
-  const postResp = await postPromise.catch(() => null);
+  const postResp = await postPromise;
+  // Also capture the request object for deterministic postDataJSON access if needed
+  const capturedReq = await reqPromise.catch(() => null);
   if (postResp) {
     expect([201, 400, 401, 503]).toContain(postResp.status());
     if (postResp.status() === 201) {
-      const body = (await postResp.json().catch(() => ({}))) as { streamId?: string; stream?: { id: string; status: string } };
+      const body = (await postResp.json().catch(() => ({}))) as { streamId?: string; stream?: { id: string; status: string; continuous?: boolean } };
       const streamId = body.streamId ?? body.stream?.id;
       expect(streamId).toBeTruthy();
+      // Enforce that continuous === true using response body or captured request payload
+      const continuousFromBody = body.stream?.continuous;
+      let continuousValue: boolean | undefined = continuousFromBody;
+      if (continuousValue === undefined && capturedReq) {
+        const reqObj = capturedReq as unknown as { postDataJSON?: () => unknown };
+        const posted = reqObj.postDataJSON?.() ?? {};
+        continuousValue = (posted as { continuous?: boolean }).continuous;
+      }
+      expect(continuousValue).toBe(true);
       // UI polls GET /api/dev/harvest-stream/:id every 2s — shows iteration / status
       await expect(page.getByText(/stream/i).first()).toBeVisible({ timeout: 5_000 }).catch(() => {});
       // Poll 2s is documented in panel footer
@@ -134,6 +149,9 @@ test("@harvest ai harvest stream via UI — Start posts harvest-stream and polls
       // Verify the GET poll actually fires (backend invariant)
       const getPromise = page.waitForResponse((r) => r.url().includes(`/api/dev/harvest-stream/${streamId}`));
       await getPromise.catch(() => {});
+      // Verify the continuous badge appears when continuous is true
+      await expect(page.getByText(/continuous — Stop to end/)).toBeVisible();
+      await expect(page.getByText(/^continuous$/)).toBeVisible();
     }
   }
   await expect(startBtn).toBeAttached();

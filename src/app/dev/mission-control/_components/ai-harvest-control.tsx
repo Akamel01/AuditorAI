@@ -18,6 +18,7 @@ export type Stream = {
   quality: unknown[];
   logs: Array<{ at: string; node: string; message: string }>;
   error: string | null;
+  continuous?: boolean;
 };
 
 export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) => void }) {
@@ -42,7 +43,7 @@ export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) =
     try {
       const res = await adminApi<{ streamId: string; stream: Stream }>("/api/dev/harvest-stream", {
         method: "POST",
-        body: JSON.stringify({ live, cellKey: cellKey || null }),
+        body: JSON.stringify({ live, cellKey: cellKey || null, continuous: true }),
       });
       setStreamId(res.streamId);
       push(res.stream);
@@ -142,7 +143,7 @@ export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) =
           className="inline-flex items-center rounded-md bg-accent px-4 py-1.5 font-mono text-[11px] font-medium tracking-[0.04em] text-[color:var(--accent-contrast)] hover:bg-accent-strong disabled:bg-sunken disabled:text-faint active:scale-[0.98]"
           data-testid="ai-harvest-start"
         >
-          {busy ? "Starting…" : "Start"}
+          {busy ? "Starting…" : "Start continuous"}
         </button>
         <button
           onClick={pause}
@@ -183,11 +184,17 @@ export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) =
               copy
             </button>
             <span className={`font-semibold ${statusColor}`}>{stream.status}</span>
+            {stream.continuous && (
+              <span className="rounded bg-sunken px-1.5 py-0.5 text-text ml-2" title="continuous">
+                continuous
+              </span>
+            )}
             {(stream.status === "RUNNING" || stream.status === "VERIFYING") && (
               <span className="h-2 w-2 animate-pulse rounded-full bg-accent" aria-hidden />
             )}
             <span className="text-muted">
               iter {stream.iteration}/{stream.maxIterations} · packages {stream.packages.length} · live {String(stream.live)}
+              {stream.continuous ? " · continuous — Stop to end" : null}
             </span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-sunken ring-1 ring-hairline">
@@ -212,7 +219,7 @@ export function AiHarvestControl({ onStream }: { onStream?: (s: Stream | null) =
       )}
 
       <div className="font-mono text-[10.5px] text-faint">
-        Model: opencode/gpt-5-nano · Web search via LLM · Never stops till verified (coverage/quality gates) · Poll 2s
+        Model: opencode/gpt-5-nano · Web search via LLM · Never stops till verified (coverage/quality gates) · Poll 2s · Reach: Exa+Jina via agent-reach
       </div>
     </Panel>
   );
