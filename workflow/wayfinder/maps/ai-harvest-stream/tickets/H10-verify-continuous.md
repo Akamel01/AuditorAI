@@ -32,5 +32,6 @@ How do we prove continuous reach-out runs till Stop, with no URL-invention and n
 - [ ] E2E: Start-continuous → 2 polls `RUNNING` → Stop → `FAILED/stopped`; asserts POST body `continuous:true`
 - [ ] Unit: provider test (H7) + stream test (H8) run in `npm run test`; `node scripts/harvest-verify.mjs --mock` still 3-pass in `ci:local`/`ci.yml`/`pre-commit`
 - [ ] Evidence: `state/harvest-verify/HV10-stream_*.json` + ticket resolution
+- [ ] Legacy FAILED-at-cap live pin (carried from H8 GO_WITH_NOTES 2026-09-09): single-shot (`continuous:false`) stream against a 0-yield cell/provider state reaches FAILED with max-iterations reason — H8 unit test covers DONE-fallback only, so this closes the pin where 0-yield is natural.
 
 **Out of scope:** New thresholds; daemon/cron keep-alive is documented, not gated.

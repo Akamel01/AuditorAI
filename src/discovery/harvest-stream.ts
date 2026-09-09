@@ -26,6 +26,8 @@ export interface HarvestStream {
   dedupeIndex: DedupeIndexDoc;
   logs: Array<{ at: string; node: string; message: string }>;
   error: string | null;
+  // Whether this stream should continue running after verification (continuous loop)
+  continuous: boolean;
 }
 
 const PREFIX = "harvest:stream:";
@@ -43,7 +45,7 @@ function newId(): string {
   return `stream_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function createStream(cellKey: string | null, live: boolean): HarvestStream {
+export function createStream(cellKey: string | null, live: boolean, continuous: boolean = true): HarvestStream {
   const id = newId();
   const now = nowIso();
   return {
@@ -60,8 +62,9 @@ export function createStream(cellKey: string | null, live: boolean): HarvestStre
     packages: [],
     quality: [],
     dedupeIndex: emptyDedupeIndex(),
-    logs: [{ at: now, node: "STREAM", message: `created live=${live} cellKey=${cellKey ?? "gap-aware"}` }],
+    logs: [{ at: now, node: "STREAM", message: `created live=${live} cellKey=${cellKey ?? "gap-aware"} continuous=${continuous}` }],
     error: null,
+    continuous,
   };
 }
 
@@ -78,7 +81,17 @@ export async function saveStream(stream: HarvestStream, store?: DataStore): Prom
 
 export async function loadStream(id: string, store?: DataStore): Promise<HarvestStream | null> {
   const s = store ?? getDataStore();
-  return (await s.get(streamKey(id))) as HarvestStream | null;
+  const st = (await s.get(streamKey(id))) as HarvestStream | null;
+  if (st) {
+    // Migration: ensure legacy streams have a defined continuous flag
+    // Old streams may have `continuous` unset. Treat as non-continuous by default.
+    if (typeof st.continuous !== "boolean") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (st as any).continuous = false;
+      // legacy streams stay single-shot unless explicitly upgraded
+    }
+  }
+  return st;
 }
 
 export async function listStreams(store?: DataStore): Promise<HarvestStream[]> {
@@ -159,11 +172,16 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
         }),
   };
 
+  // For logging context in continuous mode, derive a label from cellKey or first jurisdiction
+  const logLabel = stream.cellKey ?? ((ctx.query?.jurisdictions?.[0] ?? "UNKNOWN") as string);
   try {
     const { state } = await runDiscoveryPipeline(ctx);
-    // Update stream with pipeline results — also persist dedupe for next iteration
-    stream.packages = (state.package as unknown[]) ?? [];
-    stream.quality = (state.quality as unknown[]) ?? [];
+    // Prepare delta payloads for verification and persistence
+    const newPkgs = (state.package as unknown[]) ?? [];
+    const newQuals = (state.quality as unknown[]) ?? [];
+    // Update stream with pipeline results — append new items and cap history at 50
+    stream.packages = [...(stream.packages ?? []), ...newPkgs].slice(-50);
+    stream.quality = [...(stream.quality ?? []), ...newQuals].slice(-50);
     stream.coverage = (state.coverage as unknown) ?? null;
     // pipeline returns dedupe via ctx.dedupeIndex when available (otherwise keep current)
     if ((state as { dedupe?: DedupeIndexDoc }).dedupe) {
@@ -173,10 +191,25 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     stream.status = "VERIFYING";
     appendLog(stream, "STREAM", `iteration ${stream.iteration} done packages=${stream.packages.length}`);
 
-    const v = verifyStream(stream);
+    // delta verify: cumulative evidence kept; transition uses per-iteration verdict
+    // invariant: continuous:true → DONE unreachable here, maxIterations ignored; single-shot falls through to DONE/FAILED
+    const v = verifyStream({
+      ...stream,
+      packages: newPkgs,
+      quality: newQuals,
+      coverage: stream.coverage,
+    } as HarvestStream);
     if (v.passed) {
-      stream.status = "DONE";
-      appendLog(stream, "STREAM", `verified — DONE`);
+      if (stream.continuous) {
+        stream.status = "RUNNING";
+        appendLog(stream, "STREAM", `continuous next ${logLabel}`);
+      } else {
+        stream.status = "DONE";
+        appendLog(stream, "STREAM", `verified — DONE`);
+      }
+    } else if (stream.continuous) {
+      stream.status = "RUNNING";
+      appendLog(stream, "STREAM", `verification failed: ${v.reasons.join("; ")} — continuous next ${logLabel}`);
     } else if (stream.iteration >= stream.maxIterations) {
       stream.status = "FAILED";
       stream.error = `max iterations ${stream.maxIterations} reached: ${v.reasons.join("; ")}`;
