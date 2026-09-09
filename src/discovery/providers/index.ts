@@ -9,6 +9,7 @@ import "./seed-portals";
 import "./brave-search";
 import "./google-cse";
 import "./ai-search";
+import "./agent-reach-search";
 
 export {
   listProviderIds,

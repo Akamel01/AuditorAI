@@ -59,6 +59,13 @@ export function providerEnabled(id: string): boolean {
       // ponytail: gated off by default, no cost when disabled
       return flag && key;
     }
+    case "agent-reach-search": {
+      const flag = process.env.AGENT_REACH_ENABLED === "true" || resolveSecret({ envVar: "AGENT_REACH_ENABLED", service: "auditorai/agent-reach" }) === "true";
+      const exa = resolveSecret({ envVar: "EXA_API_KEY", service: "auditorai/exa" }) !== null || !!process.env.EXA_API_KEY;
+      const key = resolveSecret({ envVar: "OPENCODE_API_KEY", service: "auditorai/opencode" }) !== null || !!process.env.OPENCODE_API_KEY;
+      // ponytail: gated off by default, no cost when disabled (H7)
+      return flag && exa && key;
+    }
     default:
       return false;
   }

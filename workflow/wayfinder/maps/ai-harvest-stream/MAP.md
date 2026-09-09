@@ -22,6 +22,7 @@ AuditorAI runs a **continuous AI harvesting stream** alongside `seed-portals` an
 
 - [Wayfinder map created 2026-09-02](MAP.md): destination, notes, and 6 frontier tickets defined for AI harvest stream (H1-H6).
 - [Tickets H1-H6 created](tickets/H1-ai-provider-gpt5-nano.md): H1 provider, H2 structured workflow, H3 control API, H4 UI, H5 verification loop, H6 fixtures/samples.
+- [Start = gpt-5-nano + agent-reach, non-stop till Stop (owner confirmed 2026-09-09)](tickets/H7-agent-reach-provider.md): `ai-search` invents URLs — replaced by `agent-reach-search` (`gpt-5-nano` plans/qualifies, Exa search + Jina reader reach out via HTTP, Exa-optional fallback); stream gains `continuous:true` default (rotate top-3 gaps when `cellKey=null`, stick when set; `DONE` unreachable, `Stop→FAILED stopped` kept); H7 provider → H8 loop → H9 Start-continuous UI → H10 verify.
 
 ## Not yet specified
 
