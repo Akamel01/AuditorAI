@@ -132,7 +132,8 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
   const live = stream.live;
   const cellKey = stream.cellKey;
   const providerIds = live
-    ? (["seed-portals", ...listProviderIds().filter((p) => p !== "seed-portals" && providerEnabled(p) && !DEPRECATED_PROVIDERS.has(p))] as string[])
+    // ponytail: agent-reach-search self-gates async (env/Keychain or UI runtime keys) → [] when off, zero cost
+    ? (["seed-portals", ...listProviderIds().filter((p) => p !== "seed-portals" && (providerEnabled(p) || p === "agent-reach-search") && !DEPRECATED_PROVIDERS.has(p))] as string[])
     : (["seed-portals"] as string[]);
   const providers = providerIds.map((pid) => resolveProvider(pid)).filter(Boolean) as NonNullable<ReturnType<typeof resolveProvider>>[];
 

@@ -19,6 +19,7 @@ import { fetchCoverage, fetchDiscovery, fetchOdd, fetchReadiness, fetchTickets }
 import { TicketBoard } from "./_components/ticket-board";
 import type { TicketIndex } from "@/wayfinder/ticket-types";
 import { AiHarvestControl, type Stream as HarvestStream } from "./_components/ai-harvest-control";
+import { AiHarvestKeys } from "./_components/ai-harvest-keys";
 import { AiHarvestViz } from "./_components/ai-harvest-viz";
 import { VaultPanel } from "./_components/vault-panel";
 import { getAdminKey, setAdminKey } from "@/lib/client";
@@ -72,6 +73,7 @@ function AiHarvestTab() {
   const [harvestStream, setHarvestStream] = useState<HarvestStream | null>(null);
   return (
     <div className="space-y-4">
+      <AiHarvestKeys />
       <AiHarvestControl onStream={setHarvestStream} />
       <AiHarvestViz stream={harvestStream} />
     </div>

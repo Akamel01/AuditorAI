@@ -7,6 +7,7 @@
 import { hitId } from "@/discovery/ids";
 import { resolveSecret } from "@/discovery/keychain";
 import { withHostBudget } from "@/discovery/ratelimit";
+import { getRuntimeSecrets } from "@/discovery/runtime-secrets";
 import type { DiscoveryHit } from "@/discovery/types";
 import type { DiscoverQuery, FetchResult } from "./provider-types";
 import { registerProvider } from "./provider-types";
@@ -19,11 +20,31 @@ const SECRETS = {
   opencode: { envVar: "OPENCODE_API_KEY", service: "auditorai/opencode" },
 } as const;
 
-function isEnabled(): boolean {
+interface ReachCreds {
+  enabled: boolean;
+  exaKey: string | null;
+  opencodeKey: string | null;
+}
+
+// Env/Keychain first, UI runtime overrides (H11) second — per-field fallback
+// so a Vercel env key and a UI-pasted key can mix.
+async function resolveReach(): Promise<ReachCreds> {
   const flag = resolveSecret(SECRETS.enabled);
-  const on = flag !== null ? flag.toLowerCase() === "true" : process.env.AGENT_REACH_ENABLED === "true";
-  if (!on) return false;
-  return resolveSecret(SECRETS.exa) !== null && resolveSecret(SECRETS.opencode) !== null;
+  const envOn = flag !== null ? flag.toLowerCase() === "true" : process.env.AGENT_REACH_ENABLED === "true";
+  const exa = resolveSecret(SECRETS.exa);
+  const open = resolveSecret(SECRETS.opencode);
+  if (envOn && exa && open) return { enabled: true, exaKey: exa, opencodeKey: open };
+  let rt: { enabled: boolean; exaKey: string | null; opencodeKey: string | null } | null = null;
+  try {
+    rt = await getRuntimeSecrets();
+  } catch {
+    rt = null;
+  }
+  return {
+    enabled: envOn || rt?.enabled === true,
+    exaKey: exa ?? rt?.exaKey ?? null,
+    opencodeKey: open ?? rt?.opencodeKey ?? null,
+  };
 }
 
 interface ExaResult {
@@ -39,9 +60,9 @@ function exaQueryFor(jur: string, themes: string[]): string {
 async function exaSearch(
   query: string,
   limit: number,
+  apiKey: string,
   fetchImpl: typeof fetch,
 ): Promise<ExaResult[]> {
-  const apiKey = resolveSecret(SECRETS.exa)!;
   const res = await withHostBudget("api.exa.ai", () =>
     fetchImpl("https://api.exa.ai/search", {
       method: "POST",
@@ -86,16 +107,16 @@ async function jinaAlive(url: string, fetchImpl: typeof fetch): Promise<boolean>
 async function qualify(
   jur: string,
   candidates: Array<{ url: string; title: string | null }>,
+  opencodeKey: string,
   fetchImpl: typeof fetch,
 ): Promise<Array<{ url: string; keep: boolean; title_hint?: string }>> {
-  const apiKey = resolveSecret(SECRETS.opencode)!;
   const endpoint = process.env.OPENCODE_BASE_URL ?? "https://opencode.ai/zen/v1";
   const model = process.env.OPENCODE_MODEL ?? "gpt-5-nano";
   const list = candidates.map((c) => `- ${c.url} :: ${c.title ?? "(no title)"}`).join("\n");
   try {
     const raw = await withHostBudget("api.opencode.ai", () =>
       chatComplete(
-        { endpoint: { baseUrl: endpoint, apiKey }, model, effort: "low", fetchImpl },
+        { endpoint: { baseUrl: endpoint, apiKey: opencodeKey }, model, effort: "low", fetchImpl },
         [
           {
             role: "system",
@@ -130,7 +151,10 @@ class AgentReachSearchProvider {
   readonly source_type = "search-engine" as const;
 
   async discover(query: DiscoverQuery, fetchImpl: typeof fetch = fetch): Promise<DiscoveryHit[]> {
-    if (!isEnabled()) return [];
+    const creds = await resolveReach();
+    if (!creds.enabled || !creds.exaKey || !creds.opencodeKey) return [];
+    const exaKey = creds.exaKey;
+    const opencodeKey = creds.opencodeKey;
     const limit = Math.min(query.limit ?? 5, 10);
     const perJur = Math.max(1, Math.min(5, Math.ceil(limit / Math.max(1, query.jurisdictions.length))));
     const hits: DiscoveryHit[] = [];
@@ -140,7 +164,7 @@ class AgentReachSearchProvider {
     for (const jur of query.jurisdictions) {
       let results: ExaResult[];
       try {
-        results = await exaSearch(exaQueryFor(jur, query.themes), perJur, fetchImpl);
+        results = await exaSearch(exaQueryFor(jur, query.themes), perJur, exaKey, fetchImpl);
       } catch (e) {
         console.warn(`[agent-reach-search] exa error: ${(e instanceof Error ? e.message : String(e)).slice(0, 160)}`);
         degraded = true;
@@ -165,7 +189,7 @@ class AgentReachSearchProvider {
         candidates.push({ url: r.url, title: r.title ?? null });
       }
       if (candidates.length === 0) continue;
-      const verdicts = await qualify(jur, candidates, fetchImpl);
+      const verdicts = await qualify(jur, candidates, opencodeKey, fetchImpl);
       for (const v of verdicts) {
         if (!v.keep) continue;
         if (hits.some((h) => h.url === v.url)) continue;

@@ -131,6 +131,15 @@ export function fetchHarvestStream<T = unknown>(id: string): Promise<T> {
 export function startHarvestStream<T = unknown>(body: { live?: boolean; cellKey?: string | null }): Promise<T> {
   return adminApi<T>("/api/dev/harvest-stream", { method: "POST", json: body });
 }
+export function fetchReachSecrets<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/harvest-stream/secrets");
+}
+export function saveReachSecrets<T = unknown>(body: { enabled?: boolean; exaKey?: string; opencodeKey?: string }): Promise<T> {
+  return adminApi<T>("/api/dev/harvest-stream/secrets", { method: "POST", json: body });
+}
+export function clearReachSecrets<T = unknown>(): Promise<T> {
+  return adminApi<T>("/api/dev/harvest-stream/secrets", { method: "DELETE" });
+}
 export function fetchVault<T = unknown>(): Promise<T> {
   return adminApi<T>("/api/dev/vault");
 }
