@@ -3,12 +3,12 @@ id: H3
 title: Control API start pause resume stop for harvest stream
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H2]
 blocks: [H4]
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -34,5 +34,13 @@ How do we expose start, pause, resume, stop for the AI harvest stream via a mini
 - [ ] All routes `requireAdmin` fail-closed, timing-safe, 30/min bucket (like `D1`)
 - [ ] Idempotent: `pause` twice → 200, `stop` on done → 404 or 200 with no-op
 - [ ] Tests with `MemoryStore` prove lifecycle
+
+## Resolution
+- Evidence anchors:
+- src/app/api/dev/harvest-stream/[id]/route.ts:6-23 (GET status + auto-tick)
+- src/app/api/dev/harvest-stream/[id]/pause/route.ts:5-13
+- src/app/api/dev/harvest-stream/[id]/resume/route.ts:5-14
+- src/app/api/dev/harvest-stream/[id]/stop/route.ts:5-13
+- H9-delta: continuous = body.continuous !== false default-true (route.ts:30) + client pass-through + control sends continuous:true
 
 **Out of scope:** UI, verification loop internals.

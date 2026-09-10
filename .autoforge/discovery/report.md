@@ -1,14 +1,41 @@
-Vault memory discovery report
-Generated: 2026-09-02
+H13 ticket-index leniency discovery report
 
-- Summary: The vault is the hybrid memory with Prose (journal/decisions/research-notes/gotchas), Views (machine-generated), and Registries (state/*.json) as defined in vault/CHARTER.md. Journals are append-only; views are machine-owned; determinism relies on HEAD-compilation of vault-notes.json. (CHARTER: zones, append-only, and one-way sync) [vault/CHARTER.md:18-20][vault/CHARTER.md:64-66][vault/CHARTER.md:68-71]
-- Structure and rules: The charter defines three zones with canonical forms and owner rules; revisions to views are regenerated, not hand-edited. Front-matter contract is enforced for journals; sync direction is one-way from registry to view and back via charter: one-way determinism rules exist. (CHARTER.md: 16-20, 38-54, 64-71) [vault/CHARTER.md:16-20][vault/CHARTER.md:40-54][vault/CHARTER.md:68-71]
-- Determinism and head-compilation: state/vault-notes.json is compiled from vault and checked by CI; vault-sync.mjs is the recommended workflow to refresh the head-based state without polluting uncommitted journal edits. (AGENTS.md: vault-notes.json compiled; vault-sync.mjs usage); (scripts/vault-sync.mjs: usage and determinism checks) [AGENTS.md:7-10][AGENTS.md:15-18][scripts/vault-sync.mjs:2-6][scripts/vault-sync.mjs:27-37][scripts/vault-sync.mjs:40-44]
-- Current open memory gaps: Two open vault memory items exist in state/vault-notes.json: vault/gotchas/journal-deletions-and-tz.md and vault/gotchas/opencode-api-key-invocation.md. Both have status: "open" in the registry. This is the set of gaps to resolve. (state/vault-notes.json; open status) [state/vault-notes.json:7-13][state/vault-notes.json:22-28]
-- Journal freshness and behavior: Journal entries are append-only, with journals typically not carrying a status field; in practice, entries show status: null where not open. Example: a journal entry has status: null. This adheres to the charter append-only policy. (vault/noted example in state; CHARTER.md) [state/vault-notes.json:40-43]
-- Obsidian graph memory: The vault graph is generated from state/graph-state.json and surfaced in vault/views/graph-overview.md as machine-generated, with source_hash metadata. This confirms a live graph of the memory. (vault/views/graph-overview.md:2-6][vault/views/graph-overview.md:7-9) [vault/views/graph-overview.md:2-5][vault/views/graph-overview.md:7-9]
-- Observations on sources and determinism: The graph and views rely on deterministic state; manual edits to views are not kept (generated: true). The front-matter and registry constraints enforce stability. (vault/views/graph-overview.md:2-6) [vault/views/graph-overview.md:2-6]
+Open tickets and blockers (status/frontier):
+- H13: open blocked_by=[H12] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H13-ticket-index-leniency.md) 6: status: open; 8: blocked_by: [H12]
+- H1: open blocked_by=[] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H1-ai-provider-gpt5-nano.md) 6: status: open; 8: blocked_by: []
+- H2: open blocked_by=[H1] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H2-structured-workflow.md) 6: status: open; 8: blocked_by: [H1]
+- H3: open blocked_by=[H2] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H3-control-api.md) 6: status: open; 8: blocked_by: [H2]
+- H4: open blocked_by=[H3] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H4-ui-monitoring.md) 6: status: open; 8: blocked_by: [H3]
+- H5: open blocked_by=[H2] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H5-verification-loop.md) 6: status: open; 8: blocked_by: [H2]
+- H6: open blocked_by=[H1] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H6-fixtures-samples.md) 6: status: open; 8: blocked_by: [H1]
 
-- Gaps and minimal next steps (high level): add the two open gotchas to the tracker-index, and plan minimal journal entries if needed to record decisions. The two open items are already identified in state/vault-notes.json. (state/vault-notes.json references) [state/vault-notes.json:7-13][state/vault-notes.json:22-28]
+Evidence of H13 leniency approach (summary and gate integration):
+- H13 front-matter notes the lenient-load design and the lint gate requirement (skip-invalid-front-matter; log reason) and cites the target interfaces (src/wayfinder/tickets.ts, scripts/wayfinder-tickets.ts, pre-commit, ci.yml): see H13 doc lines 25-29 and 34-35 for acceptance mechanics and gate surface. See: workflow/wayfinder/maps/ai-harvest-stream/tickets/H13-ticket-index-leniency.md:25-29, 34-35.
+  - citations: H13:25-29; H13:34-35
 
-Notes on evidence and citations: All cited lines refer to the current repository snapshot used for this discovery. See: vault/CHARTER.md for zone rules; AGENTS.md and scripts/vault-sync.mjs for determinism; and state/vault-notes.json for the actual gap items. Graph state is described in vault/views/graph-overview.md. (citations in-line above)
+Throw sites identified in H13 (exact locations and conditions where errors are raised):
+- missing front-matter block (parseTicketFrontMatter): H13 mentions this front-matter error; evidence in code: parseTicketFrontMatter throws when missing front-matter (parseTicketFrontMatter: 46).  See: H13 doc lines 46; code: src/wayfinder/tickets.ts:44-58.
+- missing id/title: ticketFromFields requires id and title and will throw if missing (lines 96-100). See: H13 doc line 98-100; code: src/wayfinder/tickets.ts:96-100.
+- invalid status: parseStatus throws if status is not in known set (lines 83-87). See: H13 doc line 83-87; code: src/wayfinder/tickets.ts:83-89.
+- duplicate key: duplicate ticket key error (lines 161-164). See: H13 doc line 161-164; code: src/wayfinder/tickets.ts:161-165.
+
+Lint gate and gating integration (lint gate surface):
+- Lint gate and CI gating surface are described in H13 acceptance: lint gate (CI or pre-commit) that fails-fast on invalid front-matter; see H13 doc lines 28-29. Evidence of gates in repo: .githooks/pre-commit (lint/typecheck/vault checks) and .github/workflows/ci.yml quality job (lint/typecheck/test/build). See: .githooks/pre-commit:7-13; ci.yml:65-77.
+
+Open vs closed status in this slice (evidence snapshot):
+- H12 is closed; the chain note shows the splitter causing H13 to be necessary. See H12-ci-green.md:6-9 (status: closed; blocked_by: []), and 42-58 describing the chain context. See: workflow/wayfinder/maps/ai-harvest-stream/tickets/H12-ci-green.md:6-9; 42-58.
+
+Done-in-code verdicts for H1-H6 (evidence that changes exist in code):
+- H1: AI search provider wired in code (src/discovery/providers/ai-search.ts) with gating via DISCOVERY_AI_ENABLED and OPENCODE_API_KEY; provider is registered when enabled. See: src/discovery/providers/ai-search.ts:30-39, 31-33, 40-46, 123-130.
+- H2: HarvestStream state machine implemented (src/discovery/harvest-stream.ts) with IDLE→RUNNING, etc., and tick loop. See: src/discovery/harvest-stream.ts:1-3, 11-15, 136-138, 181-186, 235-259.
+- H3: API routes for start/pause/resume/stop exist (src/app/api/dev/harvest-stream/route.ts). See: route.ts:29-36, 7-12.
+- H4: Monitoring UI pieces exist in UI sources (src/app/dev/mission-control/_components/ai-harvest-control.tsx). See: ai-harvest-control.tsx: Start button with continuous label (lines 144-147), continuous badge (lines 186-199).
+- H5: Verification gates implemented in HarvestStream.verifyStream and tickStream gating; see verifyStream (src/discovery/harvest-stream.ts:113-128) and tickStream (lines 131-159, 235-259).
+- H6: Fixtures/tests for ai-harvest exist (tests/domain/ai-harvest.test.ts) showing 2-hit scenario and verification flow. See: tests/domain/ai-harvest.test.ts:7-15, 37-45, 98-111.
+
+Notes
+- This report reflects evidence as of the current repository snapshot; live streams were not re-run per H10 guidance. See H10-final.md verdict (CLOSE) for reference: .autoforge/validation/H10-final.md:60.
+
+Artifacts referenced
+- tracker: .autoforge/discovery/tracker-index.md
+- report: .autoforge/discovery/report.md

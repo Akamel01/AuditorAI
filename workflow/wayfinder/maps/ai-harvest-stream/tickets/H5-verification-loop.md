@@ -3,12 +3,12 @@ id: H5
 title: Verification loop never stop till verified (coverage quality provenance gates)
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H2]
 blocks: []
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -32,3 +32,11 @@ How do we guarantee the AI harvesting stream never stops until results are verif
 - [ ] Tests: `tests/domain/harvest-stream-verify.test.ts` with `MemoryStore` fixtures (0 packages → retry, 1 unique → done), live smoke `AE` limit:5 via real `gpt-5-nano` (owner key required, skipped in CI)
 
 **Out of scope:** Per-jurisdiction prompt tuning, cost budget.
+
+## Resolution
+Evidence anchors:
+- src/discovery/harvest-stream.ts:2 (HarvestStreamState machine comment)
+- src/discovery/harvest-stream.ts:11-13 (HarvestStreamStatus)
+- src/discovery/harvest-stream.ts:113-121 (verifyStream checks)
+- src/discovery/harvest-stream.ts:234-270 (VERIFYING path)
+- src/discovery/harvest-stream.ts:252-259 (DONE path)

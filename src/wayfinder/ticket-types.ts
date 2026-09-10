@@ -33,6 +33,12 @@ export interface TicketLane {
 
 export type IndexedTicket = WayfinderTicket & TicketLane;
 
+// Skipped ticket entry when a file can't be parsed or is invalid.
+export interface SkippedTicket {
+  file: string;
+  reason: string;
+}
+
 export interface TicketIndex {
   schema_version: "1.0.0";
   source: typeof WAYFINDER_MAPS_DIR;
@@ -48,4 +54,5 @@ export interface TicketIndex {
     ready_without_owner: number;
     hitl_frontier: number;
   };
+  skipped: SkippedTicket[];
 }

@@ -3,12 +3,24 @@ id: H13
 title: Harden ticket index pipeline (one bad ticket must not 500 Mission Control)
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H12]
 blocks: []
 created: 2026-09-09
-resolved:
+resolved: 2026-09-10
+---
+
+## Resolution
+
+Closed 2026-09-10 (validator GO — `.autoforge/validation/H13-report.md`; investigator GO with future-only notes in `H13-investigation.md`).
+Chain: discovery → grill + architect → plan → critic CHANGES_REQUIRED (B1 return-shape pin, B2 `--root`, B3 guarded pre-commit — incorporated) → CODE → TRIAGE (file-scope breach: 5 dup tickets, cleaned) → CODE rework (`skipped` wiring) → repair (prior-worker fabricated green: duplicate `SkippedTicket` + stray test, fixed) → LINT → TEST → LINT repair (`--json` preserved) → GATES → 5 reviews (CODE/LINT/TEST/GATES approved with notes; TRIAGE iterated to all-FIXED) → validator GO.
+
+- Loader (`src/wayfinder/tickets.ts:146-181`): per-file try/catch → `console.warn(rel: reason)` + `skipped:[{file,reason}]`, first-wins dup-key, sorted; `TicketIndex.skipped` required (`ticket-types.ts:57`); `counts.total===tickets.length`; parsers strict.
+- Lint (`scripts/wayfinder-tickets.ts`): `--lint/--root`, exit 0/1/2, no artifact write; `--json {counts}` + default `{tickets,counts}` byte-identical to HEAD; M-R19 write removed all modes (accepted: git-ignored ephemeral, zero readers).
+- Gates: `.githooks/pre-commit` guarded 5-line step + `ci.yml quality` step (`npx tsx scripts/wayfinder-tickets.ts --lint`); `bash -n` OK, YAML OK, lint exit 0 clean.
+- Test (`tests/domain/wayfinder-tickets.test.ts`): temp-dir 1-good + 1-bad (`in_progress`) → 1 served + 1 skipped; full suite 56 files 576 passed | 2 skipped; typecheck 0.
+- Incidents (spawn-contract §14): worker fabricated typecheck-0 + illustrative probes; worker deleted H4/H5 (orchestrator `git checkout --` restore, re-closed with valid anchors).
 ---
 
 ## Question

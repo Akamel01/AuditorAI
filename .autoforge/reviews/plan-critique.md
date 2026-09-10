@@ -1,152 +1,86 @@
-# Plan Critique — Vault Memory Update (vault-state determinism + 2 gotcha settlements)
+# Plan Critique — H13 Leniency + H1–H6 Triage Closures
 
-**Reviewer:** autoforge-reviewer (independent, read-only, ponytail, least-privilege)  
-**Date:** 2026-09-02  
-**Scope:** `.autoforge/plans/plan.md` (237 lines verbatim) + `.autoforge/execution/work-order.json` (140 lines verbatim) vs `.autoforge/discovery/tracker-index.md` (2 lines verbatim) + `.autoforge/discovery/report.md` (14 lines) + `.autoforge/requirements/grilling.md` (60 lines, Q1–Q10 R1–R6) + `.autoforge/architecture/report.md` (270 lines §1–§9) + `decisions.md` (112 lines AD-01–AD-10) + `vault/CHARTER.md:18-20,64-71` + `scripts/vault-sync.mjs:16-44` + `state/vault-notes.json:4,7-35`  
-**Mode:** planning-only; no dispatch; read-only; 80k tok cap inherit `opencode/muse-spark-1.2-contributor-free 1M*0.30` respected  
-**Skills:** `code-review` (two-axis), `ponytail` (ladder), `lean-build` smallest-diff, `codebase-design` seams
+**Reviewer:** autoforge-reviewer (independent, read-only)  
+**Date:** 2026-09-10  
+**Scope:** `.autoforge/plans/plan.md` (95 lines) + `.autoforge/execution/work-order.json` (5 modules) vs `.autoforge/discovery/tracker-index.md` (7 open frontier: H13, H1–H6) + `.autoforge/architecture/H13.md` (117 lines, Alt A) + `workflow/wayfinder/maps/ai-harvest-stream/tickets/H13-ticket-index-leniency.md`  
+**Mode:** read-only; 80k tok cap respected (5 plan-side files + 7 current-code probes, well under cap)  
+**Skills:** `code-review` (standards + spec axes), ponytail ladder
 
 ## Verdict
 
-**APPROVED_WITH_NOTES**
-
-Plan is complete, architecturally consistent, and safe to hold as planning-only. Enumeration covers both frontier tickets once, DAG is minimal and acyclic (`VG-01,VG-02 → VG-SYNC`), vault determinism guard (`scripts/vault-sync.mjs:16-44` HEAD worktree) is correctly isolated to VG-SYNC, staging hygiene and front-matter contract enforced, ponytail ceilings explicit. One hazard-normalization note (file-level disjoint guard) and one staging/documentation polish remain before parallel scheduler dispatch — neither blocks planning approval, neither is exploitable today (VG-01/VG-02 are the only prose writers, VG-SYNC is sole state writer, Phase 0 `vault-sync --check` currently green). No frozen-doctrine, irreversible, or speculative defect.
+**CHANGES_REQUIRED** — 3 blocking rows below (B1–B3), each paired with a verbatim quote from a CURRENT file with path:line. All other dimensions PASS or carry non-blocking notes (N1–N5, auto-incorporable by orchestrator).
 
 ---
 
-## 1. Enumeration completeness — PASS
+## Blocking findings
 
-- **Counting proof holds:** `tracker-index.md:1-2` `wc -l`=2 verified; `state/vault-notes.json:4` `note_count:25` with `notes[0] vault/gotchas/journal-deletions-and-tz.md status:"open" :12` and `notes[1] vault/gotchas/opencode-api-key-invocation.md status:"open" :26` (verified via `python3 -c` at review time). `discovery/report.md:7` confirms 2 open gotchas at `state/vault-notes.json:7-13,22-28`. `architecture/report.md:§1` counts same 2.
-- **Plan enumerates 2 frontier modules + 1 infra closure:** `plan.md:20-23` table rows VG-01, VG-02 map 1:1 to tracker lines `tracker-index.md:1` and `:2` with verbatim citations; `plan.md:25` `2 frontier tickets = 2 frontier modules (VG-01, VG-02) + 1 infra closure module (VG-SYNC)` and `work-order.json:13` `tracker_count:2` + `work-order.json:19-73` modules `[VG-01,VG-02,VG-SYNC]` match. Notation `VG-SYNC — infra closure — not a frontier ticket` at `plan.md:107` and `work-order.json:58-60` correctly distinguishes machine-canonical compilation from frontier prose.
-- **No merge, no omission, no invention:** Distinct operational domains cited — filesystem/append-only+TZ forensics (VG-01) vs keychain/eval invocation (VG-02) at `plan.md:25`; quoting front-matter vs journal bodies differ; dedup would fail. First-item-only failure mode explicitly called out at `plan.md:25` `First-item-only would be VG-01 alone → failure`.
-- **Shared-state note correct:** `plan.md:27` `note_count:25` → single `state/vault-notes.json` serialized under `vault-state-single-writer` (AD-09) + tracker-index downstream mirror must co-commit (grilling Q4–Q5 `grilling.md:19-21`, arch `report.md:§6` hazard table). VG-SYNC is that co-committer.
+### B1 — M-H13-CODE leaves the loader return type ambiguous (two incompatible contracts) — PIN ONE
 
-## 2. Dependency ordering (DAG) — PASS
+- **Problem:** Plan allows `loadTicketsFromTree` to return "`{tickets, skipped}` (or `tickets` + out-param per impl choice — arch prefers `{tickets, skipped}`)". An out-param variant is a different interface from the `{tickets, skipped}` object that M-H13-LINT and M-H13-TEST are specified against (`skipped` shape, `skipped.length`, `skipped[0].file`). Two workers could ship two contracts; downstream modules cannot be built against "impl choice".
+- **Current evidence (not plan text):**
+  - `src/wayfinder/tickets.ts:144` — `export function loadTicketsFromTree(root = process.cwd()): WayfinderTicket[] {`
+  - `src/wayfinder/tickets.ts:191-192` — `export function indexWayfinderTickets(root = process.cwd()): TicketIndex {` / `return buildTicketIndex(loadTicketsFromTree(root));`
+  - `src/wayfinder/ticket-types.ts:36-51` — `export interface TicketIndex {` … `counts: {` … `};` `}` (no `skipped` field today; any shape change must propagate through the single call site at `tickets.ts:192` or `route.ts` breaks).
+- **Required change:** Pin `loadTicketsFromTree(root): { tickets: WayfinderTicket[]; skipped: SkippedTicket[] }` and `buildTicketIndex(tickets, skipped = [])` / `TicketIndex.skipped?: SkippedTicket[]` exactly as arch H13 §3.1–3.2 specifies. Delete the "(or … out-param per impl choice)" escape clause from M-H13-CODE Outputs. M-H13-LINT/M-H13-TEST then build against the pinned shape with no further decision.
+- **Why blocking:** Interface ambiguity is the one thing a 3-module chain (CODE→LINT, CODE→TEST) cannot absorb — it forks the contract every downstream acceptance depends on.
 
-- **DAG minimal and acyclic:** `plan.md:134-140` diagram `VG-01 ──┐ ├──► VG-SYNC / VG-02 ──┘` + `plan.md:142-143` edges `VG-01→VG-SYNC`, `VG-02→VG-SYNC`; `work-order.json:75-78` edges with reason `prose must be in HEAD before HEAD worktree compile can reflect settled (vault-sync.mjs:17 worktree from HEAD)`; `work-order.json:79-84` `DAG.nodes [VG-01,VG-02,VG-SYNC] edges [[VG-01,VG-SYNC],[VG-02,VG-SYNC]] topological_order [[VG-01,VG-02],[VG-SYNC]]`. No edge `VG-01→VG-02` (`plan.md:144`, `work-order.json:83`).
-- **Hazard vs semantic separation correct:** `plan.md:145` `No other DAG edges. All other overlaps are resource hazards serialized by vault-state-single-writer, not semantic DAG. blocked_by:[] for VG-01/VG-02 means hazard-only per grilling.md:14-15`. Matches `architecture/report.md:§6` sequencing `discovery→grilling→architect→settlement PRs→vault-sync→CI` where only data dependency is prose→HEAD→compile. No false `VG-01→VG-02` chain.
-- **Phase gating correct:** `plan.md:47-52` Phase 0 baseline `--check` green else `vault-sync, commit, push`; Phase 1 P prose parallel, Phase 2 S determinism closure blocked by 1, Phase 3 proof gates `--check` + `git diff --exit-code` + `typecheck`. Verified at review time `node scripts/vault-sync.mjs --check` → `committed vault state matches HEAD compilation` exit 0, `git diff --exit-code -- vault/views state/vault-notes.json` exit 0 — gate satisfied, no pre-dispatch refresh needed before plan hold.
+### B2 — M-H13-LINT acceptance "against temp tree" is unexecutable: CLI is cwd-bound with no `--root` and no `--lint` parsing today — SPECIFY THE PROBE
 
-## 3. Architecture consistency — PASS
+- **Problem:** M-H13-LINT acceptance requires "Against temp tree with 1 bad file → exit `1`, stderr contains bad filename + reason". The CLI as it exists today takes no root argument and parses no flags, so there is no specified mechanism to point `--lint` at a temp dir. A worker cannot pass this acceptance without either (a) inventing an undocumented `--root` flag (scope creep), (b) mutating `process.cwd()` (explicitly forbidden as parallel-unsafe by M-H13-TEST's own rule), or (c) writing a bad file into the real tree (dangerous, pollutes the repo under test).
+- **Current evidence:**
+  - `scripts/wayfinder-tickets.ts:12` — `const idx = indexWayfinderTickets();` (no root forwarded; `indexWayfinderTickets(root)` seam exists but CLI does not use it)
+  - `scripts/wayfinder-tickets.ts:18` — `const jsonOnly = process.argv.includes("--json");` (only flag parsed; no `--lint`, no `--root`/`--dir` handling anywhere in the 42-line file)
+  - `src/wayfinder/tickets.ts:191` — `export function indexWayfinderTickets(root = process.cwd()): TicketIndex {` (the DI seam exists at the library layer, but the plan does not wire it to the CLI layer).
+- **Required change (pick one, smallest first):** (a) Add optional `--root <dir>` (or `--dir`) to the `--lint` contract and rewrite the acceptance as `npx tsx scripts/wayfinder-tickets.ts --lint --root <tmp>; echo $?` → `1`; or (b) keep CLI cwd-bound and rewrite the acceptance to probe via `node -e`/`tsx -e` importing `indexWayfinderTickets(<tmp>)` directly (no CLI temp-tree probe), with the CLI exit-code probe running only against the clean real tree. Either closes the gap; the current text (temp-tree probe through a CLI with no dir parameter) does not.
+- **Why blocking:** An acceptance criterion the worker cannot execute as written is a certain review-loop failure, not a polish item.
 
-- **Three zones locked:** `plan.md:9-10` cites `vault/CHARTER.md:18-20` zones + front-matter contract `scripts/lib/frontmatter.mjs:78-109` + `vault-sync.mjs:16-44` determinism + `CHARTER.md:82-85` amendment — matches `architecture/report.md:§1` and `decisions.md:AD-01` (Prose/Views/Registries), `AD-02` (HEAD worktree ONLY), `AD-03` (append-only per-session), `AD-04` (gotcha `open→settled` + journal), `AD-05` (wholesale `rmSync`), `AD-07` (front-matter seam).
-- **Seams reuse, not invention:** `plan.md:39` ponytail `Reuse frontmatter.mjs + paths.mjs + yaml already installed; stdlib (fs,path,crypto,child_process); no new deps, no new generic facade, no ORM, wholesale regen O(n) n=161 stays` matches `architecture/report.md:§2` seam inventory (front-matter parser `frontmatter.mjs:3-133`, vault-import `vault-import.mjs:14-90` sorted `path.localeCompare :79`, vault-export `vault-export.mjs:45-96` `sha :14-16` + `rmSync :46`, vault-sync `vault-sync.mjs:14-52` worktree+symlink+Buffer.equals `:31`). No `DistLockService`, no incremental patch, no `compileTrackerIndex()` — deferred per `decisions.md:AD-08` until n>10/1k.
-- **Determinism invariant pinned:** `plan.md:34-35` guardrail `Never node scripts/vault-import.mjs / vault-export.mjs bare before commit. Only node scripts/vault-sync.mjs (sync) or --check` cites `scripts/vault-sync.mjs:2-6` `AGENTS.md:15-18` `decisions.md:AD-02`; `plan.md:35` byte-identical `sorted by path.localeCompare at vault-import.mjs:79, JSON stringify+"\n" at :88; views source_hash: sha(stateJSON).slice(0,12) at vault-export.mjs:14-16; CI git diff --exit-code -- vault/views state/vault-notes.json` matches `vault-sync.mjs:28-31` `Buffer.equals` and `ci.yml:50`. Verified `vault-sync.mjs:17` `git worktree add --detach ${tmp} HEAD`, `:19` symlink `node_modules`, `:21-22` compile-in-tmp, `:28-31` --check compare, `:42` sync `fs.writeFileSync(live,compiled)`, `:45-52` finally cleanup.
-- **Least-privilege & ownership:** `plan.md:232` mapping human owns `vault/decisions|research-notes|gotchas` bodies (`CHARTER.md:66-67` agents propose, owner applies — but `owner:agent` here so agent may settle with journal proof at `plan.md:90`), agent may append journal only (`:18,64`), machines own `vault/views/**` + `state/*.json` — matches `decisions.md:AD-09` locks. Wayfinder deferred at `plan.md:61` `wayfinder only if frontier >10 (not now; kept hand-edited per AD-08)` — correct per `architecture/report.md:§8` Speculative tracker-index.
+### B3 — M-H13-GATES "one-line step" under `set -e` will exit silently without the guarded pattern — PRESCRIBE THE INSERTION FORM
 
-## 4. Touches overlap guard — PASS_WITH_NOTE
-
-- **VG-01 vs VG-02 disjoint prose:** `plan.md:72` `touches: [vault/gotchas/journal-deletions-and-tz.md, vault/journal/*.md]` vs `plan.md:92` `touches: [vault/gotchas/opencode-api-key-invocation.md, vault/journal/*.md]` — distinct gotcha files, no shared file. `work-order.json:25` vs `:43` mirror. Good.
-- **Journal directory overlap is file-level disjoint by convention:** Both `hazard_touches: [vault/journal/**]` at `plan.md:73,93` and `work-order.json:26,44` intersect at directory level. Plan marks `parallel_safe: true` with `parallel_notes: disjoint touches ... distinct journal filename` at `work-order.json:31,49` and `plan.md:76` `Wave: P — parallel_safe: true ... intersecting vault/journal/** only at directory level, not file level — guard is filename` plus `plan.md:85` `ponytail: global file-per-session ceiling; per-file lock deferred` and `architecture/report.md:§6` `per-session file level; no lock if naming holds`. Guard `plan.md:158` `disjoint touches (distinct gotcha file + distinct journal filename); no shared lock; may dispatch same turn as two Task calls` relies on scheduler enforcing distinct filenames (`vault/journal/YYYY-MM-DD-journal-deletions-settled.md` at `plan.md:79` vs `vault/journal/YYYY-MM-DD-opencode-key-settled.md` at `plan.md:91`).
-- **VG-SYNC is sole state/views writer:** `plan.md:112` `touches: [state/vault-notes.json, vault/views/**, vault/views/evidence/**, .autoforge/discovery/tracker-index.md]` + `hazard_touches: [state/**, vault/views/**, .autoforge/discovery/tracker-index.md]` `blocked_by: [VG-01, VG-02]` `Wave: S — parallel_safe: false` + `work-order.json:61-72` locks `vault-state-single-writer modules [VG-SYNC] mode sequential` — correct. No concurrent `state/**` writer. Overlap with VG-01/VG-02 is read-only at compile time (worktree reads HEAD), not write-write — serialized by DAG, not lock.
-- **Note N1 (non-blocking):** A strict `hazard_touches` glob scheduler would see `vault/journal/** ∩ vault/journal/**` and serialize VG-01↔VG-02 despite `parallel_safe:true`. Plan's escape is the filename guard. Before dispatch, normalize either (a) narrow `hazard_touches` to file-specific globs (`vault/journal/*-journal-deletions-*` vs `vault/journal/*-opencode-*`) or (b) keep directory glob but add explicit scheduler annotation `parallel_safe true iff journal filenames differ — enforce distinct slugs`. Current working-tree `work-order.json:113-116` shared_state_guard already documents file-level disjoint, so this is a normalization polish, not a blocking defect. No CHANGES_REQUIRED, but reviewer requires the note to be honored at dispatch.
-
-## 5. Testability via `vault-sync --check` — PASS
-
-Each module defines machine gates, not prose-only checkmarks:
-
-- **Per-module dry check (VG-01/VG-02):** `plan.md:83,100` `parseFrontMatter` at `frontmatter.mjs:15-27` + `validateNoteFrontMatter` at `:78-109` must not throw; `plan.md:82,102` `rg -n "status: open"` →0; `plan.md:81` `No state/vault-notes.json or vault/views/** edited` (VG-SYNC owns it). Verified at review time both gotchas `status:open` parse correctly via `node --input-type=module` import — will flip to `settled` and remain valid per `frontmatter.mjs:99-106` `status:open|settled|superseded` required for `type:gotcha`.
-- **VG-SYNC determinism gate (authoritative):** `plan.md:118-123` `node scripts/vault-sync.mjs --check → committed matches HEAD compilation at vault-sync.mjs:38` (exit 0) / `node scripts/vault-sync.mjs → refreshed` at `:42` + `git diff --exit-code -- vault/views state/vault-notes.json` green + CI `vault compile determinism (V2) at ci.yml:35-50 would pass` + `jq '.notes[] | select(.path=="vault/gotchas/...") | .status' → "settled"` + `jq '.note_count' = 25 + journals added` + `notes sorted localeCompare at vault-import.mjs:79` + `tracker-index drift 0` (`rg "journal-deletions-and-tz|opencode-api-key" tracker-index.md →0`) + `vault/views/graph-overview.md source_hash sha(gs).slice(0,12) at vault-export.mjs:85` + `evidence-index source_hash at :63` + `evidence/EV-*.md count 161`. All concrete, runnable with `jq`, `rg`, `git diff`.
-- **Global proof before handoff:** `plan.md:174` `vault-sync --check pass + git diff --exit-code -- vault/views state/vault-notes.json pass + jq open-set empty + tracker alignment` — must be in every module's DoD. Currently both gates pass on working tree (verified exit 0).
-- **Frozen doctrine not violated by gates:** Thresholds/judge prompts `docs/validation/eval-gates.md` frozen (`plan.md:41`, `AGENTS.md:eval gates`) — no CTR/quality change in this lane.
-
-## 6. Parallel safety — PASS_WITH_NOTE
-
-- **Waves correct:** `plan.md:155-160` `Wave P — prose parallel [VG-01,VG-02] parallel safe — may be dispatched same turn as two Task calls — disjoint touches + no state write` and `Wave S — state serial [VG-SYNC] sequential — holds vault-state-single-writer; blocked_by [VG-01,VG-02]`. `work-order.json:108-116` `parallel_safe_groups [[VG-01,VG-02]] sequential_groups [[VG-01,VG-02],[VG-SYNC]]` matches. Scheduler guidance `plan.md:162-164` `VG-SYNC blocked until both P members committed to HEAD (worktree reads HEAD at vault-sync.mjs:17). VG-SYNC never parallel with any other state/views writer`.
-- **Resource locks minimal:** `work-order.json:85-106` `vault-state-single-writer modules [VG-SYNC] mode sequential`, `evidence-registry-single-writer [] read-only at vault-import.mjs:30-39`, `graph-state-single-writer [] subsumed at vault-export.mjs:78-95` — correct per `decisions.md:AD-09`. No over-locking; prose journals per-file append require no lock if names disjoint (`decisions.md:AD-09` hazard table).
-- **Recommended schedule respects HEAD worktree:** `plan.md:168-172` `Baseline: --check → Turn P: dispatch VG-01+VG-02 parallel → Commit P: git add vault/gotchas/*.md vault/journal/*.md → Turn S: dispatch VG-SYNC single worker: node scripts/vault-sync.mjs → git diff → git add state/vault-notes.json vault/views .autoforge/discovery/tracker-index.md → verify jq settled + tracker drift 0 → commit` — correct ordering; VG-SYNC reads HEAD, so P must be committed first.
-- **Staging poison guard:** `plan.md:41,148` `Explicit git add <paths> only; never git add -A` at `AGENTS.md:21-23` + VG-SYNC acceptance `plan.md:124` explicit `git add vault/gotchas/... vault/journal/... state/vault-notes.json vault/views .autoforge/discovery/tracker-index.md` — prevents foreign lane journal leak (discovery-ledger hazard seen in prior ops loop). Verified `git status --porcelain` currently clean for vault views/state.
-- **Note N1 carries to parallelism:** See §4 N1 — scheduler must honor file-level disjoint, not directory glob, for P-wave parallelism. Wave P is safe today (distinct gotcha files + distinct journal slugs), but a lock-only scheduler honoring only `locks`+`hazard_touches` directory globs would incorrectly serialize P. Annotate before dispatch; no code change required.
-
-## 7. Ponytail ladder — PASS
-
-Ladder enforced per `plan.md:3` `Ponytail ladder enforced` and `plan.md:39,61,85,105,128` ceilings:
-
-- **Rung 2 (reuse codebase):** `frontmatter.mjs` + `paths.mjs` + `yaml` already installed (`frontmatter.mjs:1` `parseYaml`) — cited at `plan.md:39` and `architecture/report.md:§2,§8` seams. No new helper invented.
-- **Rung 3/4 (stdlib/native):** `fs,path,crypto,child_process` (`vault-sync.mjs:7-10`), `yaml` reuse — no new dep. `work-order.json:123` confirms.
-- **Rung 6 (one line):** VG-01/VG-02 `one-line status edit + one journal file` at `plan.md:85,105` + `work-order.json:36,54`.
-- **Rung 7 (minimum code):** Wholesale `rmSync` at `vault-export.mjs:46` `O(n) n=161` kept (`plan.md:85,128` `ponytail: wholesale regen O(n) n=161 ceiling until n>1k measurable`); tracker-index stays hand-edited while n=2 (`plan.md:128` `ponytail: ... compileTrackerIndex() deferred until frontier >10 per arch §8`); worktree+symlink `worktree+symlink ceiling; per-journal lock deferred` at `plan.md:85`.
-- **What was skipped, when to add:** explicitly per module — FS immutable flag / pre-commit hook / new watcher code deferred until second deletion incident (`plan.md:85`), keychain helper / tsx wrapper deferred until latency >60s or rotation automation (`plan.md:105`), incremental view patch + `compileTrackerIndex()` deferred until n>10/1k (`plan.md:128`, `work-order.json:72`). Ceilings tagged with `ponytail:` comment pattern at `plan.md:85,105,128`.
-- **Boundaries respected:** No abstraction with one implementation, no factory, no config for constant, no scaffolding for later — honest `plain paragraph` prose diff only.
-
-## 8. Rollback / Failure handling — PASS
-
-- **Vault poison rollback:** `plan.md:211` parallel journal poison → enforce `vault-sync.mjs:16-44` path, CI `--check` `:27-37`, `git diff` fails loud. Recovery is `node scripts/vault-sync.mjs` then commit — idempotent, no destructive migration.
-- **Journal deletion bypass:** `plan.md:211` `rm` still possible → recovery runbook `stat`+`shasum` vs `git show HEAD:<path>` then `git restore` + deterrent `watch-vault-journal.sh` at `:40-44` logged outside repo (`plan.md:90` + `gotcha:journal-deletions-and-tz.md:40-44`). No FS immutable flag — deferred ceiling.
-- **Orphan worktree/tmp:** `plan.md:215` `finally at vault-sync.mjs:45-52 best-effort worktree remove --force + rmSync(tmp)` WARN on catch (follow-on) — `ponytail: best-effort worktree cleanup ceiling` at `plan.md:128`.
-- **Evidence_ids unresolvable:** fail-fast `vault-import.mjs:52-54` throws; pre-check `state/evidence-registry.json` exists at `:35` — `plan.md:213`.
-- **Tracker drift:** `plan.md:215` `VG-SYNC co-commits state/vault-notes.json + tracker-index.md atomically; drift check jq … select(.status=="open") vs rg` — mitigates `plan.md:27,41` `tracker-index drift` risk.
-- **Secret leak:** `plan.md:216` VG-02 body contains only `security find-generic-password` retrieval command, never key value; validator `rg -i "OPENCODE_API_KEY.*=[A-Za-z0-9]{20,}" vault/ →0` at `plan.md:125` — correct per `AGENTS.md:Secrets`.
-- **No irreversible migration:** settlement is reversible: flip `status: settled → open` + add corrective journal; wholesale views `rmSync` is discard-by-design but regeneratable via `vault-export.mjs`.
-
-## 9. Risks & mitigations — PASS
-
-All `grilling.md:Q1–Q10` + `architecture/report.md:§7` risks carried into `plan.md:208-218`:
-
-| Risk | Plan mitigation | Cite |
-|---|---|---|
-| Parallel journal poison | `vault-sync.mjs:16-44` + `--check` `:27-37` + `AGENTS.md:15-17` + `git diff` | `plan.md:210` |
-| Journal deletion | `git restore` runbook + `watch-vault-journal.sh` deterrent | `plan.md:211` `gotcha:journal-deletions-and-tz.md:19` |
-| TZ confusion | `date -u`, `TZ=... date` at `:35-36`; VG-SYNC logs UTC | `plan.md:212` |
-| Evidence_ids unresolvable | fail-fast at `:53-54` + registry exists `:35` | `plan.md:213` |
-| Hand-edit views lost | charter `68-71` + `rmSync` `:46` + `generated:true` + CI diff `:50` | `plan.md:214` |
-| Tracker-index drift | co-commit + `jq` vs `rg` drift check | `plan.md:215` |
-| Staging poison | explicit `git add <paths>` only | `plan.md:216` |
-| Orphan tmp | `finally` best-effort + WARN | `plan.md:217` |
-| Key paste | retrieve-only command, never value | `plan.md:218` |
-
-No unmitigated high-severity risk; ceilings explicit.
-
-## 10. Modularity — PASS
-
-One module per frontier ticket (VG-01, VG-02) smallest diff, no bundling (filesystem vs keychain concerns kept separate per `decisions.md:AD-08` `one adapter = hypothetical`); infra closure VG-SYNC is separate module but may be batched as follow-up turn after P commits (`plan.md:61` `module boundary ≠ child-session boundary`). Touches scoped ≤2 files per VG plus distinct journal, ≤4 per VG-SYNC; reads via HEAD worktree. Wayfinder deferred at `plan.md:61` not needed at n=2.
-
-## 11. Scope — PASS
-
-Planning-only output per `plan.md:3` `planning-only. No product code dispatched, no tracker/map/ADR/state mutation.` Honored: `git diff HEAD --stat` shows plan/discovery/architecture/grilling tracked changes plus `state/discovery-ledger.json` (harvest side-effect, not vault lane) — no `vault/` or `state/vault-notes.json` or `vault/views` mutation beyond curated plan. Frozen doctrine preserved (`plan.md:41` + `work-order.json:123`).
-
-## 12. Acceptance — PASS
-
-Acceptance boxes concrete and testable (`plan.md:77-82,97-102,117-126`, `work-order.json:32,50,68`):
-
-- VG-01: `status open→settled` preserves `title:"Journal deletions..." type:gotcha date:2026-08-23 owner:agent`, body unchanged except optional settlement note, new journal `type:journal status null owner:agent links.evidence_ids [] or resolves`, `parseFrontMatter+validateNoteFrontMatter` pass, no `state/views` edit, `rg status:open →0`.
-- VG-02: same with `title:"OPENCODE_API_KEY handling..." date:2026-08-22`, body cites `security find-generic-password -a "$USER" -s auditorai/opencode -w` + `npx tsx scripts/run-eval.ts` + length check, no secret pasted.
-- VG-SYNC: `--check` exit 0, `jq` both settled, `note_count` =25+delta (expected 27), sorted `localeCompare`, byte-identical, `source_hash` matches `sha(state)` at `vault-export.mjs:85,63`, tracker drift 0, explicit staging, `rg` secret 0, `typecheck/lint/build` green. Global proof `plan.md:174` enforced.
-
-## 13. Vault-sync + git diff twin invariants — PASS
-
-- `scripts/vault-sync.mjs:16-44` HEAD worktree compilation verified pass at review time (`vault-sync --check` exit 0, `git diff --exit-code -- vault/views state/vault-notes.json` exit 0, `note_count 25`, 23 journals, 161 evidence notes, `source_hash bcd420...` / `a5b0e44...` consistent).
-- `work-order.json:118-124` `global_guardrails vault_determinism: node scripts/vault-sync.mjs --check` + `evidence_byte_identity: sorted keys + sha12` both preserved; VG-SYNC is the only writer that preserves byte-identity via `vault-import.mjs:79` sort + `vault-export.mjs:14-16` sha.
-- No worker scheduled to mutate `state/vault-notes.json` concurrently without `vault-state-single-writer`; VG-01/VG-02 are read-only for state at compile time.
+- **Problem:** Plan specifies "one-line step in `.githooks/pre-commit` beside `lint`" but does not prescribe the guarded form. Under the hook's `set -e`, a bare failing `npx tsx … --lint` line exits the hook immediately with no diagnostic (and a bare passing line is fine, but the failure path — the entire point of the gate — is silent). The repo's own precedent for exactly this situation is the guarded `harvest-verify --mock` block.
+- **Current evidence:**
+  - `.githooks/pre-commit:5` — `set -e`
+  - `.githooks/pre-commit:47-51` — `node scripts/harvest-verify.mjs --mock >/dev/null 2>&1` / `if [ $? -ne 0 ]; then` / `echo "[pre-commit] FAIL harvest-verify --mock"` / `exit 1` / `fi`
+  - `.github/workflows/ci.yml:74` — `      - run: npm run lint` (the anchor line the `quality`-job insertion follows; a bare `- run: npx tsx scripts/wayfinder-tickets.ts --lint` line is correct in YAML, but the pre-commit side needs the guard).
+- **Required change:** Prescribe the pre-commit insertion as the guarded 5-line form matching `:47-51` (run, `if [ $? -ne 0 ]`, `echo "[pre-commit] FAIL wayfinder-tickets --lint …"`, `exit 1`, `fi`), placed after the `lint` block for fastest-fail ordering; keep the ci.yml side as a single `- run:` line after `npm run lint` (`ci.yml:74`). Also state the hook must still `sh -n` clean and pass on a clean tree (already in acceptance — keep).
+- **Why blocking:** The gate's failure path IS the feature (fail fast with a human-readable pointer). An unguarded line under `set -e` delivers the exit code with none of the diagnosability the hook's own convention (`FAIL … — run: …`) provides, and a worker following "one-line" literally will ship exactly that.
 
 ---
 
-## Required changes before execution
+## Passing dimensions (with evidence)
 
-All are directly resolvable, no `need-human.md` required (non-destructive, planning-only, gated by existing locks). None block `APPROVED` status — carry as dispatch notes.
+| # | Dimension | Verdict | Current-file evidence |
+|---|---|---|---|
+| 1 | Enumeration completeness (7/7) | **PASS** | `.autoforge/discovery/tracker-index.md:3-9` lists H13 + H1–H6 (7 lines); `work-order.json` `ticket_coverage: [H13,H1…H6]` covers all 7; H1–H6 `status: open` confirmed at review time (`H1…:6`, `H2…:6`, `H3…:6`, `H4…:6`, `H5…:6`, `H6…:6` all read `status: open`) |
+| 2 | CODE↔TRIAGE disjointness | **PASS** | CODE touches `src/wayfinder/*` (throw sites verified: `src/wayfinder/tickets.ts:158` `readFileSync`, `:159-160` parse calls, `:161` `if (seen.has(ticket.key)) throw new Error(…duplicate ticket key…)`); TRIAGE touches only `workflow/**` (6 ticket files + MAP.md). No shared file. Real disjointness, not asserted |
+| 3 | LINT∥TEST parallel safety | **PASS** | `scripts/wayfinder-tickets.ts` vs `tests/domain/wayfinder-tickets.test.ts` — disjoint touches; both `blocked_by: [M-H13-CODE]` only; no shared mutable state between them |
+| 4 | TEST seam exists | **PASS** | `src/wayfinder/tickets.ts:191` — `export function indexWayfinderTickets(root = process.cwd()): TicketIndex {` (DI seam real; temp-dir test needs no signature change, no MemoryStore, no `process.cwd()` mutation — as specified) |
+| 5 | TEST backward-compat claim | **PASS** | `tests/domain/wayfinder-tickets.test.ts:146` — `buildTicketIndex([` (single-arg caller; defaulted second param keeps it green); `:151-160` asserts `counts` via `toEqual` (counts object unaffected by additive `skipped`); `src/app/dev/mission-control/_components/ticket-board.tsx:36` — `TicketBoard({ index }: { index: TicketIndex })` reads `index.tickets` (`:39`), `index.counts` (`:49-57`), `index.maps` (`:49`), `index.source` (`:60`) — never constructs a `TicketIndex`, so additive optional `skipped` cannot break it |
+| 6 | Route-unchanged claim | **PASS** | `src/app/api/dev/tickets/route.ts:10` — `return NextResponse.json(indexWayfinderTickets());` (full-index serialization; `skipped` rides free once the index carries it); `:13-15` `ENOENT` fallback stays for whole-dir-missing; `:16` `serverError` stays for truly unexpected faults. No route edit needed — verified |
+| 7 | Arch consistency (Alt A) | **PASS** | Per-file try/catch covering `:158-162`, parsers stay strict (`parseTicketFrontMatter` `:44-46` throws, `ticketFromFields` `:96-100` throws, `parseStatus` `:83-89` throws — interfaces unchanged), dup first-wins on sorted enumeration (`:138-141` maps sorted, `:151` names sorted), `counts.total === tickets.length` invariant, `file: reason` (not `file:line`) deviation documented with ponytail rationale. Matches H13 ticket acceptance (skipped+warn, non-zero lint, temp-dir 1+1, strict parsers) with one intentional strengthening (BOTH gates vs ticket's "and/or" — see N4) |
+| 8 | `tsx` availability assumption | **PASS** | `package.json:41` — `"tsx": "^4.23.12"` in devDeps; `package.json:16-19` precedent (`tsx scripts/run-eval.ts`, etc.). No new dep — verified |
+| 9 | Vault determinism | **PASS** | No module touches `state/**`, `vault/**`, or `.autoforge/explanation/` as a committed artifact (LINT explicitly skips the M-R19 write in lint mode: `scripts/wayfinder-tickets.ts:27-39` is the write to suppress). `vault-sync --check` unaffected by construction |
+| 10 | H1 live-ness citations | **PASS (spot-checked)** | `src/discovery/providers/ai-search.ts:31` `readonly id = "ai-search";` + `:125,129` `registerProvider("ai-search", …)` + `src/discovery/providers/index.ts:11` `import "./ai-search";` — registered, not deleted. Full H1–H6 citation set (H2–H6 line refs) is the TRIAGE worker's to verify with `rg` at execution time; plan correctly scopes that check as read-only (H10 CLOSED, no live runs) |
 
-### N1 — Hazard guard normalization for P-wave (file-level disjoint) — polish before dispatch
+## Non-blocking notes (resolvable by orchestrator, no human escalation)
 
-- **What:** Keep `work-order.json:26,44` `hazard_touches: ["vault/journal/**"]` as-is OR narrow to file-specific globs, but ensure scheduler annotation is honored. Current `work-order.json:115` `shared_state_guard: VG-01 and VG-02 touch vault/journal/** at directory level but file-level disjoint → parallel_safe true` and `plan.md:76` `parallel_safe: true ... guard is filename` correctly override directory overlap. Before dispatch, add one-line scheduler note to `plan.md:158` wave guard and `work-order.json:31,49` `parallel_notes`: `parallel_safe true iff journal slugs differ (journal-deletions-settled vs opencode-key-settled) — directory glob collision ignored at file level per CHARTER file-per-session §27`.
-- **Why:** Strict `hazard_touches` intersect = sequential per instruction would serialize P-wave despite disjoint files. Architecture `report.md:§6` and `decisions.md:AD-03` explicitly allow per-file parallelism if naming holds. Annotate so a lock-only scheduler does not incorrectly serialize.
-- **Lean fix:** No code, one-line comment. Alternatively set `hazard_touches` to `["vault/journal/*journal-deletions*"]` and `["vault/journal/*opencode*"]` to make glob-disjoint and remove the need for the annotation — either is acceptable; keep the annotation as minimum.
+- **N1 — Rollback per module is unspecified.** Add one line per module: CODE/LINT/TEST/GATES revert is `git checkout -- <touched files>` pre-commit (workers never `add/commit` per spawn-contract §14 — commit-time `git add <paths>` only); TRIAGE revert is re-flipping `status: closed` → `open` + dropping the `## Resolution` note (no code to unwind). No irreversible migration exists in this plan (all changes additive or docs-only), so this is a one-line addition, not a redesign.
+- **N2 — TRIAGE verification has a latent read-dependency on CODE.** TRIAGE acceptance allows `npx tsx scripts/wayfinder-tickets.ts --json (post-H13-CODE)` as a probe, but the DAG lists TRIAGE `blocked_by: []` (parallel with CODE). Pre-CODE, `--json` emits only `{ counts }` — current evidence `scripts/wayfinder-tickets.ts:20` (`console.log(JSON.stringify({ counts: idx.counts }, null, 2));`, no `skipped`). Resolution: when dispatched parallel with CODE, TRIAGE verification MUST use the `rg -n "^status:"` probe (CODE-independent); the `--json` probe is valid only when run after CODE lands. One parenthetical in the DAG note fixes it.
+- **N3 — H3 closure carries known residual risk; plan handles it correctly.** `workflow/wayfinder/maps/ai-harvest-stream/tickets/H9-start-continuous-ui.md:56` (`H3 stays open … remaining items outside H9 touches`) and `MAP.md:28` (`H3 stays open (non-intersecting)`) mean the default "close H3 as done-in-code" requires the worker to produce explicit H9-delta evidence or take the documented-hold path. The plan already encodes this branch ("close only with explicit H9-delta evidence or leave open with reason"). No change needed — flagging so the validator holds the worker to the branch condition and does not accept a bare close.
+- **N4 — Both-gates wiring intentionally strengthens the ticket ("and/or" → AND).** Ticket acceptance §2 says "wired into `pre-commit` and/or `ci.yml`"; plan/arch require BOTH (defense against `--no-verify` bypass + silent rot, arch §5). Endorse the strengthening; note it raises GATES cost by one line and makes `sh -n` + YAML-parse + 2-hit `rg` the correct acceptance (already specified).
+- **N5 — LINT `--json` + `skipped` contract needs one pinned sentence.** After B1 lands, state: `--json` emits `{ counts, skipped }` (superset of today's `{ counts }`), `--lint --json` emits the same shape with `skipped` populated; empty tree → exit `0` with `skipped: []`. Prevents a worker from "fixing" the temp-tree gap by changing the JSON shape.
 
-### N2 — Prose settlement lock documentation — informational
+## Scope / risks / testability summary
 
-- **What:** `work-order.json:85-90` `vault-state-single-writer modules [VG-SYNC]` excludes VG-01/VG-02 who do write `vault/gotchas/**`. No fix needed because VG-SYNC does not write `vault/gotchas/**` and waves are sequential (`VG-01,VG-02 → VG-SYNC`), so no write-write race. Document at `plan.md:149` locks table: `vault-state-single-writer members in this lane: VG-SYNC only (prose gotcha edits are file-disjoint and wave-serialized before S; if future lane adds concurrent gotcha writers on same file, add to lock)`.
-- **Why:** Aligns `decisions.md:AD-09` hazard `vault/gotchas/** settlement` under same lock family without over-locking today's disjoint P-wave. Keeps ponytail ceiling honest.
+- **Scope:** H13 hardening (loader + lint + 2 gates + 1 test) plus docs-only H1–H6 closures; `route.ts` untouched, parsers strict, no threshold/live-monitor changes, no new deps. Matches H13 "Out of scope" (board UI, statuses, H10 monitor). Single-module TRIAGE correctly avoids MAP.md write contention (all 7 docs files under one writer).
+- **Risks carried correctly:** silent rot (both gates + `skipped` in 200 payload), dup-key determinism (sorted-first-wins, map-scoped `ticketKey`), `console.warn` operator-channel vs `skipped` user-channel split, `serverError` quieting as intended, additive-shape ripple. No unmitigated high-severity risk once B1–B3 land.
+- **Testability:** CODE (typecheck + untouched suite green), LINT (exit-code probes — executable after B2), GATES (grep + `sh -n` + YAML parse via `yaml`, verified importable at review time), TEST (temp-dir 1+1 + dup first-wins, no cwd mutation), TRIAGE (grep + `file:line` citation check, read-only). Full `npm run ci:local` correctly deferred to validator, not to M-H13-GATES.
 
-### Optional polish (not gating)
+## References (current-file grounding for every blocking row)
 
-- Keep `plan.md:199` `node --input-type=module -e "import{parseFrontMatter...` form (correct ESM) and update `plan.md:80` legacy `require(...)` example to same ESM import to avoid confusion — trivial doc fix.
-
-No irreversible, ambiguous, or doctrine-violating defect found. No `need-human.md`.
-
-## References
-
-- Vault determinism & byte-identity verified `vault-sync --check` pass, `git diff --exit-code -- vault/views state/vault-notes.json` pass at 2026-09-02 review time; `state/vault-notes.json:4 note_count:25` baseline; `state/graph-state.json` → `vault/views/graph-overview.md:2-5` `source_hash:bcd4207749e4` at `vault-export.mjs:85`; `state/evidence-registry.json` (161 records) → `vault/views/evidence-index.md:5` `source_hash:a5b0e4409061` at `:63`.
-- Thresholds/judge/E5 frozen per `docs/validation/eval-gates.md:8-12`; ponytail ladder, no new deps; model budget `80k tok inherit muse-spark-1.2 1M*0.30 capped` — inputs sized `plan 237 + work-order 140 + tracker-index 2 + grilling 60 + report 270 + decisions 112` within cap.
-- Architecture seams `scripts/lib/frontmatter.mjs:78-109` status contract, `vault-import.mjs:14-90` zone routing + sorted emit, `vault-export.mjs:45-96` wholesale + sha12, `vault-sync.mjs:16-44` HEAD worktree + symlink + Buffer.equals.
+- B1: `src/wayfinder/tickets.ts:144`, `:191-192`; `src/wayfinder/ticket-types.ts:36-51`
+- B2: `scripts/wayfinder-tickets.ts:12`, `:18`; `src/wayfinder/tickets.ts:191`
+- B3: `.githooks/pre-commit:5`, `:47-51`; `.github/workflows/ci.yml:74`
+- Passes: `src/wayfinder/tickets.ts:158-162,138-141,151,44-46,83-100`; `src/app/api/dev/tickets/route.ts:10,13-16`; `src/app/dev/mission-control/_components/ticket-board.tsx:36,39,49-60`; `tests/domain/wayfinder-tickets.test.ts:146,151-160`; `package.json:41`; `workflow/wayfinder/maps/ai-harvest-stream/MAP.md:28`; `…/tickets/H9-start-continuous-ui.md:56`; `…/tickets/H{1..6}-*.md:6` (`status: open` × 6 at review time)
 
 ---
-*Reviewer: independent, least-privilege read-only; no speculative vault implementation proposed; E5/judge/threshold frozen; vault determinism and evidence byte-identity preserved; ponytail ladder respected.*
+*Reviewer: independent, read-only; no source/test/config edited; no git operations performed; artifact is this file only. No irreversible, missing-auth, or conflicting-owner condition found — B1–B3 are ordinary plan-text fixes within planner authority, no human escalation per protocol §16.*

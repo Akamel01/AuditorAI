@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import {
   buildTicketIndex,
   classifyTickets,
@@ -158,5 +161,54 @@ describe("indexWayfinderTickets (repo tree)", () => {
       ready_without_owner: 1,
       hitl_frontier: 1,
     });
+  });
+});
+
+// M-H13-TEST: temp-dir leniency unit test for indexWayfinderTickets
+// Creates a temporary workflow/wayfinder/maps/<m>/tickets/ with one valid ticket and
+// one invalid status ticket. Expects 1 ticket served, 1 skipped, and total count == 1.
+describe("M-H13-TEST: temp-dir leniency", () => {
+  it("indexes one good ticket and one bad ticket using a temp dir without mutating cwd", () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "aud-wf-test-"));
+    try {
+      const mapsRoot = path.join(tmpRoot, "workflow", "wayfinder", "maps");
+      const map = "mvp";
+      const ticketsDir = path.join(mapsRoot, map, "tickets");
+      fs.mkdirSync(ticketsDir, { recursive: true });
+
+      // Good ticket
+      const goodPath = path.join(ticketsDir, "R3.md");
+      fs.writeFileSync(
+        goodPath,
+        `---\nid: R3\ntitle: Regression tests\nstatus: open\n---\nbody\n`,
+        "utf8",
+      );
+
+      // Bad ticket with invalid status
+      const badPath = path.join(ticketsDir, "R4.md");
+      fs.writeFileSync(
+        badPath,
+        `---\nid: R4\ntitle: Bad status\nstatus: in_progress\n---\nbody\n`,
+        "utf8",
+      );
+
+      // Execute
+      const index = indexWayfinderTickets(tmpRoot);
+
+      // Validate expectations
+      expect(index.tickets.length).toBe(1);
+      expect(index.skipped.length).toBe(1);
+      expect(index.counts.total).toBe(1);
+      // The skipped file should be the relative path used by the loader
+      const expectedRel = `workflow/wayfinder/maps/${map}/tickets/${path.basename(badPath)}`.replaceAll("\\", "/");
+      expect(index.skipped[0].file).toBe(expectedRel);
+    } finally {
+      // Cleanup temp dir
+      try {
+        fs.rmSync(tmpRoot, { recursive: true, force: true });
+      } catch {
+        // ignore
+      }
+    }
   });
 });

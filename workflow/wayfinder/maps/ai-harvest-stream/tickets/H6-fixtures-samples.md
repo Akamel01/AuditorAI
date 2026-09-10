@@ -3,12 +3,12 @@ id: H6
 title: Fixtures and samples for AI harvest obtaining finding documents
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H1]
 blocks: []
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -33,3 +33,10 @@ How do we prove the AI harvesting obtains and finds documents, fixtures, and sam
 - [ ] `npm run typecheck` + `npm run lint` + `vitest` 20+ tests pass
 
 **Out of scope:** Cost/latency budget, vault sync.
+
+## Resolution
+- Evidence anchors:
+- tests/domain/ai-harvest.test.ts (2 hits → 1 in_scope → 1 matched → 1 acquired → 1 package → provenance → quality = 1)
+- tests/domain/ai-harvest.test.ts lines 37-63 show gating and acquisition flow
+- src/discovery/pipeline.ts:339 runDiscoveryPipeline (D01..D10 integration in tests)
+- tests/fixtures/ai-harvest/uk-s1-rsa.json (2-hit fixture)

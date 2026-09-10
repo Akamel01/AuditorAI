@@ -1,0 +1,23 @@
+M-H13-LINT - Implement lint flag and root option for scripts/wayfinder-tickets.ts
+- Status: Replaced the previous dynamic wrapper with a static-import based CLI surface that:
+  - Supports --lint with optional --root <dir>
+  - Uses loadTicketsFromTree(root) for lint mode; prints per-file reasons to stderr and exits 1 if any skipped
+  - Exits 0 when clean; 2 on IO/usage error
+  - In non-lint mode, emits a canonical JSON shape: { tickets, counts } by default, and { counts } when --json is supplied
+  - Removes any M-R19 artifact writes entirely
+- Probes (real runs):
+  - a) temp-dir leniency: create 1 valid + 1 invalid ticket; run: `npx tsx scripts/wayfinder-tickets.ts --lint --root /tmp/...`
+    - Exit: 1
+    - Stderr contains the invalid file path and reason
+  - b) repo root lint: `npx tsx scripts/wayfinder-tickets.ts --lint`
+    - Exit: 0
+  - c) json output: `npx tsx scripts/wayfinder-tickets.ts --json`
+    - Exit: 0
+    - stdout contains { counts: { ... } }
+- Evidence:
+  - Script: scripts/wayfinder-tickets.ts (static-import surface, main())
+  - Execution record: .autoforge/execution/M-H13-LINT.md updated with real outputs
+
+- Artifacts:
+  - Script: scripts/wayfinder-tickets.ts
+  - Execution log: .autoforge/execution/M-H13-LINT.md

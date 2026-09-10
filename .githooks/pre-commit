@@ -12,6 +12,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# 1.5) lint gate (M-H13-GATES) — ensure lint tickets pass static lint gate
+echo "[pre-commit] lint gate..."
+npx tsx scripts/wayfinder-tickets.ts --lint
+if [ $? -ne 0 ]; then
+  echo "[pre-commit] FAIL lint gate — invalid tickets found"
+  exit 1
+fi
+
 # 2) typecheck (catches API wiring before push)
 echo "[pre-commit] typecheck..."
 npm run typecheck --silent

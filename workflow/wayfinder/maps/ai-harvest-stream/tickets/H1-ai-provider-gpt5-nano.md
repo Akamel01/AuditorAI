@@ -3,13 +3,22 @@ id: H1
 title: AI provider gpt-5-nano web search (continuous harvest source)
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: []
 blocks: [H2, H5, H6]
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
+
+## Resolution
+Evidence anchors:
+- src/discovery/providers/ai-search.ts:30-33 (AiSearchProvider class · id="ai-search" · source_type="search-engine")
+- src/discovery/providers/ai-search.ts:34-36 (discover implementation signature)
+- src/discovery/providers/ai-search.ts:123-130 (registration path for ai-search)
+- src/discovery/providers/agent-reach-search.ts:149-152 (AgentReachSearchProvider class · id="agent-reach-search")
+- src/discovery/providers/index.ts:11-12 (imports for ai-search and agent-reach-search)
+- src/discovery/providers/agent-reach-search.ts:241 (registerProvider("agent-reach-search") — canonical provider registration)
 
 ## Question
 
@@ -30,10 +39,12 @@ Current harvest has two live sources: `seed-portals` (offline curated) `src/disc
 - `src/discovery/provider-types.ts` `registerProvider`
 
 **Acceptance:**
-- [ ] `DISCOVERY_AI_ENABLED=true` enables `ai-search` in `listProviderIds()`, `false` (default) keeps current behavior (no new hits, no cost)
-- [ ] `ai-search` returns `DiscoveryHit[]` with `hit_id`, `url`, `title_hint`, `jurisdiction_guess`, `licence_hint: unknown`, `source_type: search-engine`, `provider_id: ai-search`
-- [ ] Respects `query.jurisdictions`, `query.themes`, `query.limit` (max 10)
-- [ ] Uses `withHostBudget` per host, handles 402/429 like `brave-search` (empty on quota, retry on 429)
-- [ ] Unit test with `MemoryStore` and mocked `AiAdapter` proves 2 Jurisdictions → hits
+ - [x] `DISCOVERY_AI_ENABLED=true` enables `ai-search` in `listProviderIds()`, `false` (default) keeps current behavior (no new hits, no cost)
+ - [x] `ai-search` returns `DiscoveryHit[]` with `hit_id`, `url`, `title_hint`, `jurisdiction_guess`, `licence_hint: unknown`, `source_type: search-engine`, `provider_id: ai-search`
+ - [x] Respects `query.jurisdictions`, `query.themes`, `query.limit` (max 10)
+ - [x] Uses `withHostBudget` per host, handles 402/429 like `brave-search` (empty on quota, retry on 429)
+ - [x] Unit test with `MemoryStore` and mocked `AiAdapter` proves 2 Jurisdictions → hits
 
 **Out of scope:** Replacing brave/seed, final determinations.
+
+(End of file - total 39 lines)

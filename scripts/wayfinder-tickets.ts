@@ -1,42 +1,55 @@
 #!/usr/bin/env ts-node
-// Lightweight CLI to emit Wayfinder ticket index and counts.
-// - Reuses indexWayfinderTickets() seam from src/wayfinder/tickets.ts
-// - Writes a local markdown canonical file for traceability
-// - Supports --json flag to output only counts JSON for automation
+// Lightweight, strictly-typed wrapper for the Wayfinder ticket index.
+// - Restores a static import surface and a main() entry point
+// - Supports --lint with optional --root <dir> to validate a tree (uses loadTicketsFromTree)
+// - On --lint: prints invalid files to STDERR as: <file>: <reason>, exits 1 if any
+// - On non-lint: prints either { counts } or { tickets, counts } depending on --json
+// - No artifact writes in lint mode; preserves original JSON shape in non-lint mode
+// - Uses the canonical loader surface from src/wayfinder/tickets
 
-import { indexWayfinderTickets } from "../src/wayfinder/tickets";
-import * as fs from 'fs';
-import * as path from 'path';
+import { indexWayfinderTickets, loadTicketsFromTree } from "../src/wayfinder/tickets";
 
-function main() {
-  const idx = indexWayfinderTickets();
-  const out = {
-    tickets: idx.tickets,
-    counts: idx.counts,
-  };
-
-  const jsonOnly = process.argv.includes("--json");
-  if (jsonOnly) {
-    console.log(JSON.stringify({ counts: idx.counts }, null, 2));
-  } else {
-    console.log(JSON.stringify(out, null, 2));
-  }
-
-  // Write a local-markdown canonical artifact for auditability
-  try {
-    const mdDir = path.resolve(process.cwd(), '.autoforge', 'explanation');
-    if (!fs.existsSync(mdDir)) fs.mkdirSync(mdDir, { recursive: true });
-    const mdPath = path.join(mdDir, 'M-R19-ticket-index.md');
-    const frontmatter = `---
-title: M-R19 Wayfinder tickets index
-date: ${new Date().toISOString()}
----
-`;
-    const body = `Total: ${idx.counts.total}\nFrontier: ${idx.counts.frontier}\nReady: ${idx.counts.ready_without_owner}\nHitL: ${idx.counts.hitl_frontier}\n`;
-    fs.writeFileSync(mdPath, frontmatter + "\n" + body, 'utf8');
-  } catch {
-    // best-effort; do not fail CLI if markdown write fails
-  }
+function printCountsOnly(idx: ReturnType<typeof indexWayfinderTickets>) {
+  console.log(JSON.stringify({ counts: idx.counts }, null, 2));
 }
 
-main();
+function printFull(idx: ReturnType<typeof indexWayfinderTickets>) {
+  console.log(JSON.stringify({ tickets: idx.tickets, counts: idx.counts }, null, 2));
+}
+
+(async function main() {
+  try {
+    const argv = process.argv.slice(2);
+    const lint = argv.includes("--lint");
+    const rootIdx = argv.indexOf("--root");
+    const root = rootIdx !== -1 ? (argv[rootIdx + 1] ?? process.cwd()) : process.cwd();
+
+    if (lint) {
+      try {
+        const { skipped } = loadTicketsFromTree(root as string);
+        if (Array.isArray(skipped) && skipped.length > 0) {
+          for (const s of skipped) {
+            console.error(`${s.file ?? "<unknown>"}: ${s.reason ?? "invalid"}`);
+          }
+          process.exit(1);
+        } else {
+          process.exit(0);
+        }
+      } catch {
+        process.exit(2);
+      }
+      return;
+    }
+
+    // Non-lint path: produce the canonical shape
+    const idx = indexWayfinderTickets(root);
+    if (argv.includes("--json")) {
+      // Keep the historical shape requested for automation: { counts }
+      printCountsOnly(idx);
+    } else {
+      printFull(idx);
+    }
+  } catch {
+    process.exit(2);
+  }
+})();

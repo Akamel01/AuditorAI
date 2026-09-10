@@ -10,6 +10,7 @@ import {
   type TicketIndex,
   type TicketStatus,
   type WayfinderTicket,
+  type SkippedTicket,
 } from "./ticket-types";
 
 export {
@@ -19,6 +20,7 @@ export {
   type TicketLane,
   type TicketStatus,
   type WayfinderTicket,
+  type SkippedTicket,
 } from "./ticket-types";
 
 const TERMINAL: ReadonlySet<string> = new Set(["closed", "resolved", "out-of-scope"]);
@@ -141,8 +143,9 @@ function listMapSlugs(root: string): string[] {
     .sort();
 }
 
-export function loadTicketsFromTree(root = process.cwd()): WayfinderTicket[] {
+export function loadTicketsFromTree(root = process.cwd()): { tickets: WayfinderTicket[]; skipped: SkippedTicket[] } {
   const tickets: WayfinderTicket[] = [];
+  const skipped: SkippedTicket[] = [];
   const seen = new Set<string>();
   for (const map of listMapSlugs(root)) {
     const dir = path.join(root, WAYFINDER_MAPS_DIR, map, "tickets");
@@ -155,18 +158,32 @@ export function loadTicketsFromTree(root = process.cwd()): WayfinderTicket[] {
     for (const name of names) {
       const rel = path.join(WAYFINDER_MAPS_DIR, map, "tickets", name);
       const abs = path.join(root, rel);
-      const text = readFileSync(abs, "utf8");
-      const fields = parseTicketFrontMatter(text, rel);
-      const ticket = ticketFromFields(fields, map, rel);
-      if (seen.has(ticket.key)) throw new Error(`${rel}: duplicate ticket key ${ticket.key}`);
-      seen.add(ticket.key);
-      tickets.push(ticket);
+      try {
+        const text = readFileSync(abs, "utf8");
+        const fields = parseTicketFrontMatter(text, rel);
+        const ticket = ticketFromFields(fields, map, rel);
+        if (seen.has(ticket.key)) {
+          // Lazy: skip duplicates and record as skipped
+          skipped.push({ file: rel, reason: `duplicate ticket key ${ticket.key}` });
+          continue;
+        }
+        seen.add(ticket.key);
+        tickets.push(ticket);
+      } catch (err) {
+        // Per-file, warn and record as skipped
+        const reason = err instanceof Error ? err.message : String(err);
+        console.warn(`${rel}: ${reason}`);
+        skipped.push({ file: rel, reason });
+      }
     }
   }
-  return tickets;
+  return { tickets, skipped };
 }
 
-export function buildTicketIndex(tickets: WayfinderTicket[]): TicketIndex {
+export function buildTicketIndex(
+  tickets: WayfinderTicket[],
+  skipped: SkippedTicket[] = [],
+): TicketIndex {
   const indexed = classifyTickets(tickets);
   const maps = [...new Set(indexed.map((t) => t.map))].sort();
   const counts = {
@@ -185,9 +202,11 @@ export function buildTicketIndex(tickets: WayfinderTicket[]): TicketIndex {
     maps,
     tickets: indexed.sort((a, b) => a.key.localeCompare(b.key)),
     counts,
+    skipped,
   };
 }
 
 export function indexWayfinderTickets(root = process.cwd()): TicketIndex {
-  return buildTicketIndex(loadTicketsFromTree(root));
+  const { tickets, skipped } = loadTicketsFromTree(root);
+  return buildTicketIndex(tickets, skipped);
 }

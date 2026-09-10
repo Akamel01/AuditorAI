@@ -3,12 +3,12 @@ id: H4
 title: Monitoring and visualization UI for AI harvest stream
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H3]
 blocks: []
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -34,3 +34,11 @@ How do we let a developer control (start, pause, stop), monitor, operate, and vi
 - [ ] No new deps, reuse `adminApi`, `withHostBudget` already, `ponytail:` for polling ceiling
 
 **Out of scope:** Final audit UI, vault sync UX.
+
+## Resolution
+Evidence anchors:
+- src/app/dev/mission-control/page.tsx:21-23 (AiHarvestControl import)
+- src/app/dev/mission-control/page.tsx:44-46 (ai-harvest Segment present)
+- src/app/dev/mission-control/page.tsx:72-79 (AiHarvestTab definition)
+- src/app/dev/mission-control/_components/ai-harvest-control.tsx:9-12 (Stream type)
+- src/app/dev/mission-control/page.tsx:413 (AiHarvestTab mounted in ai-harvest segment)

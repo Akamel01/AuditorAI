@@ -3,12 +3,12 @@ id: H2
 title: Structured workflow for AI harvesting (state machine + loop)
 type: task
 hitl: false
-status: open
+status: closed
 assignee:
 blocked_by: [H1]
 blocks: [H3, H5]
 created: 2026-09-02
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -30,10 +30,17 @@ Current `src/discovery/pipeline.ts:334` is a one-shot `runDiscoveryPipeline` (D0
 - Existing `src/discovery/pipeline.ts:334` `runDiscoveryPipeline`, `src/discovery/coverage.ts`, `src/discovery/dedupe.ts`
 
 **Acceptance:**
-- [ ] `HarvestStream` persists via `DataStore` (`harvest:stream:{id}`), survives lambda restarts
-- [ ] `IDLE → start() → RUNNING → (D01..D10) → VERIFYING → if gates fail → RUNNING` loop, max 10 iterations or until owner `stop()`
-- [ ] `PAUSED` via `pause()` holds `withHostBudget` queue, `resume()` continues
-- [ ] Verification uses `computeCoverage(packaged, ranAtIso)` target_total per `policies/odd.json` + `quality_score==1` for all `package` + `provenance` valid
-- [ ] Ponytail: reuse `DataStore`, no new deps, `ponytail:` ceiling for global poll
+- [x] `HarvestStream` persists via `DataStore` (`harvest:stream:{id}`), survives lambda restarts
+- [x] `IDLE → start() → RUNNING → (D01..D10) → VERIFYING → if gates fail → RUNNING` loop, max 10 iterations or until owner `stop()`
+- [x] `PAUSED` via `pause()` holds `withHostBudget` queue, `resume()` continues
+- [x] Verification uses `computeCoverage(packaged, ranAtIso)` target_total per `policies/odd.json` + `quality_score==1` for all `package` + `provenance` valid
+- [x] Ponytail: reuse `DataStore`, no new deps, `ponytail:` ceiling for global poll
 
 **Out of scope:** Per-jurisdiction prompt tuning, cost budget.
+
+## Resolution
+- Evidence anchors:
+- src/discovery/harvest-stream.ts:11
+- src/discovery/harvest-stream.ts:136-137
+- src/discovery/harvest-stream.ts:235-236
+- src/discovery/harvest-stream.ts:252-260
