@@ -188,9 +188,30 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     // Prepare delta payloads for verification and persistence
     const newPkgs = (state.package as unknown[]) ?? [];
     const newQuals = (state.quality as unknown[]) ?? [];
-    // Update stream with pipeline results — append new items and cap history at 50
-    stream.packages = [...(stream.packages ?? []), ...newPkgs].slice(-50);
-    stream.quality = [...(stream.quality ?? []), ...newQuals].slice(-50);
+    // H10: append unique-verdict packages only — re-discovered dupes are logged
+    // and counted, never accumulated (else continuous streams fill cap-50 with
+    // the same docs and package counts lie). Two layers: same package_id already
+    // held (cross-tick re-yield — checkDuplicate deliberately ignores self-matches,
+    // so identity is enforced here), and dupe-of-another verdicts from D08.
+    const uniqueStatus = new Map(
+      (newQuals as Array<{ package_id: string; dedupe_status: string }>).map((q) => [q.package_id, q.dedupe_status]),
+    );
+    const seenIds = new Set(
+      ((stream.packages ?? []) as Array<{ package_id?: string }>).map((p) => p?.package_id),
+    );
+    const uniquePkgs = (newPkgs as Array<{ package_id: string }>).filter((p) => {
+      if (!p?.package_id || seenIds.has(p.package_id)) return false;
+      if (uniqueStatus.get(p.package_id) !== "unique") return false;
+      seenIds.add(p.package_id);
+      return true;
+    });
+    const uniqueQuals = (newQuals as Array<{ package_id: string }>).filter(
+      (q) => uniqueStatus.get(q.package_id) === "unique",
+    );
+    const dupesSkipped = newPkgs.length - uniquePkgs.length;
+    // Update stream with pipeline results — append new UNIQUE items, cap history at 50
+    stream.packages = [...(stream.packages ?? []), ...uniquePkgs].slice(-50);
+    stream.quality = [...(stream.quality ?? []), ...uniqueQuals].slice(-50);
     stream.coverage = (state.coverage as unknown) ?? null;
     // pipeline returns dedupe via ctx.dedupeIndex when available (otherwise keep current)
     if ((state as { dedupe?: DedupeIndexDoc }).dedupe) {
@@ -198,17 +219,12 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     }
     // H10: persist cross-tick dedupe — d08Quality claims into a per-run clone that
     // the pipeline never returns, so without this every tick re-discovers the same
-    // docs as unique and continuous streams accumulate duplicates. Claim only
-    // unique-verdict packages (dupes must not seed canonical mappings).
+    // docs as unique. uniquePkgs (above) already holds the unique-verdict subset.
     try {
-      const quals = new Map(
-        ((state.quality as Array<{ package_id: string; dedupe_status: string }>) ?? []).map((q) => [q.package_id, q.dedupe_status]),
-      );
       const bundles = new Map(
         ((state.acquired as Array<{ match_id: string }>) ?? []).map((b) => [b.match_id, b]),
       );
-      for (const pkg of newPkgs as Array<{ package_id: string; match_id: string }>) {
-        if (quals.get(pkg.package_id) !== "unique") continue;
+      for (const pkg of uniquePkgs as Array<{ package_id: string; match_id: string }>) {
         const bundle = bundles.get(pkg.match_id) as Parameters<typeof claimFingerprints>[1] | undefined;
         if (bundle) claimFingerprints(pkg as Parameters<typeof claimFingerprints>[0], bundle, stream.dedupeIndex);
       }
@@ -219,18 +235,24 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     stream.status = "VERIFYING";
     appendLog(stream, "STREAM", `iteration ${stream.iteration} done packages=${stream.packages.length}`);
 
-    // delta verify: cumulative evidence kept; transition uses per-iteration verdict
+    // delta verify: unique-only appends; steady-state (0 new uniques on a
+    // non-empty stream) passes explicitly so settled ticks don't log failure.
     // invariant: continuous:true → DONE unreachable here, maxIterations ignored; single-shot falls through to DONE/FAILED
-    const v = verifyStream({
-      ...stream,
-      packages: newPkgs,
-      quality: newQuals,
-      coverage: stream.coverage,
-    } as HarvestStream);
+    const v =
+      uniquePkgs.length > 0
+        ? verifyStream({
+            ...stream,
+            packages: uniquePkgs,
+            quality: uniqueQuals,
+            coverage: stream.coverage,
+          } as HarvestStream)
+        : (stream.packages ?? []).length > 0
+          ? { passed: true, reasons: ["steady-state: no new unique documents"] }
+          : verifyStream({ ...stream, packages: [], quality: [], coverage: stream.coverage } as HarvestStream);
     if (v.passed) {
       if (stream.continuous) {
         stream.status = "RUNNING";
-        appendLog(stream, "STREAM", `continuous next ${logLabel}`);
+        appendLog(stream, "STREAM", `continuous next ${logLabel}${dupesSkipped > 0 ? ` (dupes skipped ${dupesSkipped})` : ""}`);
       } else {
         stream.status = "DONE";
         appendLog(stream, "STREAM", `verified — DONE`);

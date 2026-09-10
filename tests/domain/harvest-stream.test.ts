@@ -175,4 +175,19 @@ describe('harvest-stream deterministic residual tests (b/c/d)', () => {
     // Newest entry should not be a marker (i.e., a real package is present at the tail)
     expect((last as any)?.marker).not.toBe(true);
   });
+
+  it('(e) second tick over same docs appends no duplicates (unique-only)', async () => {
+    const { createStream, tickStream } = await import('../../src/discovery/harvest-stream');
+    const s: any = createStream('uk:PRELIMINARY_DESIGN', false, true);
+    s.status = 'RUNNING';
+    const localStore = new MemoryStore();
+    await saveStream(s, localStore as any);
+    const t1 = await tickStream(s.id, localStore as any);
+    const n1 = t1?.packages?.length ?? 0;
+    expect(n1).toBeGreaterThanOrEqual(1);
+    const t2 = await tickStream(s.id, localStore as any);
+    // same seed docs re-discovered as dupes via persisted dedupe → skipped, never re-appended
+    expect(t2?.packages?.length).toBe(n1);
+    for (const q of (t2?.quality ?? []) as any[]) expect(q?.dedupe_status).toBe('unique');
+  });
 });
