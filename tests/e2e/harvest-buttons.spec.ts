@@ -16,7 +16,7 @@ async function gotoMissionControl(page: import("@playwright/test").Page) {
     await page.getByRole("button", { name: "Save & reload" }).click();
     await page.waitForLoadState("networkidle").catch(() => {});
   }
-  await expect(page.getByText("MISSION CONTROL")).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByRole("heading", { name: "Mission Control", exact: true })).toBeVisible({ timeout: 10_000 });
 }
 
 async function switchTo(page: import("@playwright/test").Page, label: string) {

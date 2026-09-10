@@ -32,6 +32,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Refresh evidence head
+        run: node scripts/refresh-evidence-head.mjs
+
       - name: run discovery harvest
         env:
           DISCOVERY_BRAVE_API_KEY: ${{ secrets.DISCOVERY_BRAVE_API_KEY }}
@@ -58,7 +61,8 @@ jobs:
           fi
           git config user.name "auditorai-bot"
           git config user.email "bot@auditorai.local"
-          git add state/discovery-ledger.json state/dedupe-index.json state/odd-coverage.json || true
+          git add state/discovery-ledger.json state/dedupe-index.json state/odd-coverage.json \
+            .autoforge/validation/ops-loop-evidence.json stages/07_validate/output/ops-loop-evidence.json || true
           git diff --cached --quiet && exit 0
           git commit -m "data(discovery): harvest $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
           git push

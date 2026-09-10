@@ -80,6 +80,8 @@ jobs:
   e2e:
     name: browser e2e (playwright)
     runs-on: ubuntu-latest
+    env:
+      ADMIN_KEY: test-admin-key-0123456789abcdef
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

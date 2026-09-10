@@ -25,10 +25,13 @@ test("full audit path: create → inputs → run → adjudicate → report", asy
   await page.locator("select").first().selectOption("UK");
   await page.locator("#stage-select").selectOption("uk:S2");
   await page.getByRole("button", { name: /create project/i }).click();
-  await expect(page.getByText("Playwright Corridor")).toBeVisible();
+  // Narrow to the first matching link to avoid duplicates in UI
+  const firstLink = page.locator('a', { hasText: 'Playwright Corridor' }).first();
+  await expect(firstLink).toBeVisible();
 
   // ---- Open project -------------------------------------------------------
-  await page.locator("li", { hasText: "Playwright Corridor" }).locator("a").click();
+  // Use first() to avoid strict mode multiple-match issue in dynamic lists
+  await page.locator("li", { hasText: "Playwright Corridor" }).locator("a").first().click();
   await expect(page.getByText(/Stage 2 \(completion of detailed design\)/i)).toBeVisible();
   await expect(page.getByText("DETAILED_DESIGN")).toBeVisible();
   await expect(page.getByText(/confidence · authoritative/i)).toBeVisible();
@@ -114,8 +117,9 @@ test("M2: paste image → thumbnail → persists across reload (KV-backed)", asy
   await page.locator("select").first().selectOption("UK");
   await page.locator("#stage-select").selectOption("uk:S1");
   await page.getByRole("button", { name: /create project/i }).click();
-  await expect(page.getByText("Playwright Attachments")).toBeVisible();
-  await page.locator("li", { hasText: "Playwright Attachments" }).locator("a").click();
+  // Ensure we target the first matching item to avoid nondeterministic matches
+  await expect(page.getByText("Playwright Attachments").first()).toBeVisible();
+  await page.locator("li", { hasText: "Playwright Attachments" }).locator("a").first().click();
   await expect(page.getByText(/Stage 1 \(completion of preliminary design\)/i)).toBeVisible();
 
   // Provide one input so the attach affordances render.
