@@ -32,7 +32,12 @@ Watches the same backend the buttons hit, proving gap-targeted vs gap-aware.
   API harvest-stream (AI Harvest Stream, polls 2s GET /api/dev/harvest-stream/:id):
     ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest-stream [--cellKey <cellKey>] --live --monitor
     ADMIN_KEY=... node scripts/harvest-verify.mjs --api harvest-stream --cellKey uk:PRELIMINARY_DESIGN --live --monitor
-    # dry (seed-only):  --api harvest-stream --cellKey usa:PRELIMINARY_DESIGN  (omit --live)
+  # dry (seed-only):  --api harvest-stream --cellKey usa:PRELIMINARY_DESIGN  (omit --live)
+
+  HV10: monitor flags (M1) – new harness options
+    --continuous FORM or FORM=VALUE to enable continuous monitor; acceptable values: true|false
+    --maxTicks=N where N is an integer; loud error on invalid values
+    --stop enables STOPPED exit path for the harvest-stream harness (when supported)
 
   Dry (seed-only, no brave quota, deterministic):
     ADMIN_KEY=test-admin-key-... node scripts/harvest-verify.mjs --dry --api gap --cellKey usa:PRELIMINARY_DESIGN --monitor
@@ -64,14 +69,51 @@ function parseArgs(argv) {
     return i !== -1 ? args[i+1] : undefined;
   };
   const has = (flag) => args.includes(flag);
+  // HV10: continuous mode parsing (equals and space forms)
+  let continuousVal;
+  const contEqIndex = args.findIndex(a => a.startsWith('--continuous='));
+  if (contEqIndex !== -1) continuousVal = args[contEqIndex].split('=')[1];
+  const contIndex = args.indexOf('--continuous');
+  if (contIndex !== -1) {
+    if (contIndex + 1 < args.length) continuousVal = args[contIndex + 1];
+    else { console.error('Invalid usage: --continuous requires a value'); process.exit(1); }
+  }
+  let continuous;
+  if (continuousVal !== undefined) {
+    const v = String(continuousVal).toLowerCase();
+    if (v === 'true' || v === '1') continuous = true;
+    else if (v === 'false' || v === '0') continuous = false;
+    else { console.error(`Invalid value for --continuous: ${continuousVal}`); process.exit(1); }
+  }
+  // HV10: maxTicks parsing (equals and space forms)
+  let maxTicksVal;
+  const maxEqIndex = args.findIndex(a => a.startsWith('--maxTicks='));
+  if (maxEqIndex !== -1) maxTicksVal = args[maxEqIndex].split('=')[1];
+  const maxIndex = args.indexOf('--maxTicks');
+  if (maxIndex !== -1) {
+    if (maxIndex + 1 < args.length) maxTicksVal = maxTicksVal ?? args[maxIndex + 1];
+    else { console.error('Invalid usage: --maxTicks requires a number'); process.exit(1); }
+  }
+  let maxTicks;
+  if (maxTicksVal !== undefined) {
+    const n = parseInt(maxTicksVal, 10);
+    if (Number.isNaN(n)) {
+      console.error(`Invalid value for --maxTicks: ${maxTicksVal}`);
+      process.exit(1);
+    }
+    maxTicks = n;
+  }
   return {
-    api: get('--api'), // gap | harvest
+    api: get('--api'), // gap | harvest | harvest-stream
     cellKey: get('--cellKey'),
     jobId: get('--jobId'),
     live: has('--live'),
     dry: has('--dry'),
     monitor: has('--monitor'),
     baseUrl: get('--baseUrl') || process.env.HARVEST_BASE_URL || 'http://localhost:3000',
+    continuous,
+    maxTicks,
+    stop: has('--stop'),
   };
 }
 
@@ -193,6 +235,7 @@ async function main() {
     const live = opts.dry ? false : !!opts.live;
     const body = { live };
     if (opts.cellKey) body.cellKey = opts.cellKey;
+    body.continuous = opts.continuous ?? true;
     console.log(`[harvest-verify] POST /api/dev/harvest-stream ${JSON.stringify(body)}`);
     const res = await apiPost(baseUrl, '/api/dev/harvest-stream', body, adminKey);
     if (!res.ok) {
@@ -207,14 +250,22 @@ async function main() {
       return 1;
     }
     console.log(`[harvest-verify] streamId=${streamId}`);
+    const maxTicks = opts.maxTicks ?? 6;
+    const wantContinuous = opts.continuous ?? true;
     const started = Date.now();
     const timeoutMs = 180000;
     const ticks = [];
     let status = res.json.stream?.status ?? 'RUNNING';
     let stream = res.json.stream ?? null;
+    let prevIter = null;
+    let prevPkgs = 0;
+    let prevUrls = new Set();
+    let stoppedByUs = false;
+    let didP3 = false;
     while (true) {
       const elapsed = Date.now() - started;
       if (elapsed > timeoutMs) { console.error('[harvest-verify] harvest-stream timeout 180s'); status='timeout'; break; }
+      if (ticks.length >= maxTicks) { console.log(`[harvest-verify] maxTicks ${maxTicks} reached at status ${status}`); break; }
       await new Promise(r => setTimeout(r, 2000));
       const r = await apiGet(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}`, adminKey);
       if (!r.ok) {
@@ -223,6 +274,8 @@ async function main() {
       }
       stream = r.json.stream ?? r.json;
       status = stream?.status ?? status;
+      // Terminal states break BEFORE per-tick asserts — a clean DONE/FAILED is not an assert violation.
+      if (status === 'DONE' || status === 'FAILED' || status === 'CANCELLED') break;
       const snap = await snapshot(baseUrl, adminKey);
       ticks.push({
         at: new Date().toISOString(),
@@ -232,9 +285,82 @@ async function main() {
         dedupeSha: snap.discovery?.dedupe?.sha256Entries ?? null,
         healthAt: snap.health?.harvestHealth?.lastRunAt ?? null,
       });
+      // H10 per-tick asserts (non-terminal ticks only) — named failure, exit 1.
+      if (status !== 'RUNNING' && status !== 'VERIFYING') {
+        console.error(`[harvest-verify] ASSERT status ${status} not RUNNING/VERIFYING`);
+        return 1;
+      }
+      const iter = stream?.iteration ?? null;
+      if (prevIter !== null && iter !== null && iter < prevIter) {
+        console.error(`[harvest-verify] ASSERT iteration went backwards (${prevIter} -> ${iter})`);
+        return 1;
+      }
+      if (iter !== null) prevIter = iter;
+      const pkgs = Array.isArray(stream?.packages) ? stream.packages : [];
+      if (pkgs.length < prevPkgs) {
+        console.error(`[harvest-verify] ASSERT packages decreased (${prevPkgs} -> ${pkgs.length})`);
+        return 1;
+      }
+      const urls = new Set(
+        pkgs
+          .flatMap((p) => [p?.url, ...(Array.isArray(p?.urls) ? p.urls : []), ...(Array.isArray(p?.source_urls) ? p.source_urls : []), ...(Array.isArray(p?.metadata?.source_urls) ? p.metadata.source_urls : [])])
+          .filter((u) => typeof u === 'string'),
+      );
+      const newUrls = [...urls].filter(u => !prevUrls.has(u));
+      if (pkgs.length > prevPkgs && !newUrls.some(u => /^https?:\/\//.test(u))) {
+        console.error('[harvest-verify] ASSERT packages grew without a new http(s) url');
+        return 1;
+      }
+      prevUrls = urls;
+      prevPkgs = pkgs.length;
+      const logText = Array.isArray(stream?.logs) ? stream.logs.map(l => `${l.node} ${l.message}`).join('\n') : '';
+      // tickStream logs `continuous next` on every completed continuous tick — its
+      // absence means ticks are wedging. (Provider-trace markers are warn-only:
+      // the pipeline never logs provider ids into stream.logs, so requiring them
+      // would fail healthy seed/dry ticks.)
+      if (wantContinuous && prevIter !== null && !/continuous next/i.test(logText)) {
+        console.error('[harvest-verify] ASSERT missing continuous-next in stream logs');
+        return 1;
+      }
+      if (live && !/exa|jina|agent-reach/i.test(logText + ' ' + pkgs.map(p => p?.provider_id ?? '').join(' '))) {
+        console.warn('[harvest-verify] note: no agent-reach trace yet (seed-only ticks have none)');
+      }
       const line = `[${(elapsed/1000).toFixed(1)}s] ${status} stream=${stream?.id ?? streamId} logs=${(stream?.logs?.length)||0} pkgs=${(stream?.packages?.length)||0}`;
       console.log(line);
-      if (status === 'DONE' || status === 'FAILED' || status === 'CANCELLED' || status === 'timeout') break;
+      // H10 P3 (continuous only): after 2 good ticks, prove pause→PAUSED + resume→RUNNING.
+      if (wantContinuous && !didP3 && ticks.length >= 2) {
+        didP3 = true;
+        const pp = await apiPost(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}/pause`, {}, adminKey);
+        const paused = pp.json?.stream ?? pp.json;
+        if (paused?.status !== 'PAUSED') {
+          console.error(`[harvest-verify] ASSERT pause did not yield PAUSED (got ${paused?.status})`);
+          return 1;
+        }
+        const rs = await apiPost(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}/resume`, {}, adminKey);
+        const resumed = rs.json?.stream ?? rs.json;
+        // resume returns the stream; re-GET fresh (no stale-status gate).
+        const rg = await apiGet(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}`, adminKey);
+        const rst = rg.json?.stream?.status ?? resumed?.status;
+        if (rst !== 'RUNNING' && rst !== 'VERIFYING') {
+          console.error(`[harvest-verify] ASSERT resume did not yield RUNNING (got ${rst})`);
+          return 1;
+        }
+        console.log('[harvest-verify] P3 pause→PAUSED + resume→RUNNING ok');
+      }
+    }
+    // H10 --stop: terminate the stream ourselves; STOPPED is the expected terminal.
+    if (opts.stop && (status === 'RUNNING' || status === 'VERIFYING')) {
+      const sr = await apiPost(baseUrl, `/api/dev/harvest-stream/${encodeURIComponent(streamId)}/stop`, {}, adminKey);
+      const sst = sr.json?.stream?.status ?? sr.json?.status ?? null;
+      if (sst === 'FAILED') {
+        stoppedByUs = true;
+        status = 'FAILED';
+        stream = sr.json?.stream ?? stream;
+        console.log('[harvest-verify] stopped by monitor → FAILED (stopped by operator)');
+      } else {
+        console.error(`[harvest-verify] ASSERT stop did not yield FAILED (got ${sst})`);
+        return 1;
+      }
     }
     const after = await snapshot(baseUrl, adminKey);
     const afterLedgerTotal = after.discovery?.ledgerTotal ?? after.files?.ledger?.entries?.length ?? 0;
@@ -244,7 +370,7 @@ async function main() {
     const hv5 = hv5PassFail({ gapTargeted: !!opts.cellKey, ledgerDelta, dedupeDelta: afterDedupe - beforeDedupe, packagesLen, healthAdvanced: true, haveTotalDelta: 0, gapsRecomputed: true, jobStatus: status, isDegraded: false, isBusy: false });
     const outDir = path.join(ROOT, 'state', 'harvest-verify');
     await fs.mkdir(outDir, { recursive: true });
-    const outPath = path.join(outDir, `stream-${streamId}.json`);
+    const outPath = path.join(outDir, `HV10-stream_${streamId}.json`);
     const bundle = {
       meta: { streamId, ranAtIso: stream?.updatedAt ?? null, cellKey: opts.cellKey||null, gapTargeted: !!opts.cellKey, live, dry: !!opts.dry, baseUrl, generated_at: new Date().toISOString(), note: 'HV4 harvest-stream harness (POST /api/dev/harvest-stream {live,cellKey} -> streamId, poll 2s)' },
       before: { ledgerTotal: beforeLedgerTotal, dedupeSha: beforeDedupe },
@@ -257,12 +383,26 @@ async function main() {
       snapshots: { before, after },
     };
     await fs.writeFile(outPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
+    // HV4 contract: also keep the stream-<id>.json name alongside the HV10 alias.
+    const streamPath = path.join(outDir, `stream-${streamId}.json`);
+    await fs.writeFile(streamPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
     const streamLatestPath = path.join(outDir, `harvest-stream-latest.json`);
     await fs.writeFile(streamLatestPath, JSON.stringify(bundle, null, 2) + '\n', 'utf8');
 
     console.log(`\n[harvest-verify] ${hv5.verdict.toUpperCase()} — stream ${streamId} status ${status} ledger+${ledgerDelta} dedupe+${(afterDedupe - beforeDedupe) ?? 0} pkgs ${packagesLen}`);
     console.log(`[harvest-verify] evidence → ${path.relative(ROOT, outPath)}`);
+    console.log(`[harvest-verify] also → ${path.relative(ROOT, streamPath)}`);
     console.log(`[harvest-verify] also → ${path.relative(ROOT, streamLatestPath)}`);
+    // H10 terminal outcomes: stopped-by-us, P2 single-shot FAILED-at-cap, and
+    // single-shot DONE are all EXPECTED — exit 0. Anything else terminal is real failure.
+    const stopErr = String(stream?.error ?? '');
+    if (stoppedByUs && status === 'FAILED') return 0;
+    if (!wantContinuous && status === 'FAILED' && /max iterations/i.test(stopErr)) return 0;
+    if (!wantContinuous && status === 'DONE') return 0;
+    if (wantContinuous && !opts.stop && (status === 'RUNNING' || status === 'VERIFYING')) {
+      console.log('[harvest-verify] maxTicks reached, stream left running (continuous, no --stop)');
+      return 0;
+    }
     if (hv5.verdict==='fail') return 1;
     return 0;
   }

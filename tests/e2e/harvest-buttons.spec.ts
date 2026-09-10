@@ -57,9 +57,9 @@ test("@harvest gap via UI — Run this gap (Live) posts cellKey and polls 1.5s",
       // gap-aware would have cellKey null; gap must echo the clicked cellKey
       if (body.cellKey !== undefined) expect(body.cellKey).toBe(cellKey);
       // After POST 202 the UI creates gadget state `gapRun` and polls 1.5s — surfaced as gap-detail + polling badge
-      await expect(page.getByText("polling 1.5s").first()).toBeVisible({ timeout: 5_000 }).catch(() => {});
+      await expect(page.getByText("polling 1.5s").first()).toBeVisible({ timeout: 5_000 });
       // Active button disables to Running… while queued/running
-      await expect(gapBtn).toBeDisabled().catch(() => {});
+      await expect(gapBtn).toBeDisabled();
     }
   }
 
@@ -152,6 +152,19 @@ test("@harvest ai harvest stream via UI — Start posts harvest-stream and polls
       // Verify the continuous badge appears when continuous is true
       await expect(page.getByText(/continuous — Stop to end/)).toBeVisible();
       await expect(page.getByText(/^continuous$/)).toBeVisible();
+      // Observe at least 2 RUNNING polls before stopping (bounded retry, then hard assert).
+      let runningPolls = 0;
+      for (let i = 0; i < 6 && runningPolls < 2; i++) {
+        if (await page.getByText("RUNNING").first().isVisible().catch(() => false)) runningPolls++;
+        await page.waitForTimeout(2000);
+      }
+      expect(runningPolls).toBeGreaterThanOrEqual(2);
+      // Unconditional Stop, then hard terminal assert (auto-retry, no catch):
+      // the server-side stop-race guard guarantees FAILED persists once stopped.
+      const stopBtn = page.getByRole("button", { name: "Stop", exact: true });
+      await expect(stopBtn).toBeVisible({ timeout: 20_000 });
+      await stopBtn.click();
+      await expect(page.locator("text=/FAILED|stopped/i").first()).toBeVisible({ timeout: 20_000 });
     }
   }
   await expect(startBtn).toBeAttached();
