@@ -3,12 +3,12 @@ id: H10
 title: Verify continuous reach-out (monitor + e2e + gates)
 type: task
 hitl: false
-status: open
-assignee:
+status: closed
+assignee: harvest-verifier
 blocked_by: [H9]
 blocks: []
 created: 2026-09-09
-resolved:
+resolved: 2026-09-10
 ---
 
 ## Question
@@ -35,3 +35,22 @@ How do we prove continuous reach-out runs till Stop, with no URL-invention and n
 - [ ] Legacy FAILED-at-cap live pin (carried from H8 GO_WITH_NOTES 2026-09-09): single-shot (`continuous:false`) stream against a 0-yield cell/provider state reaches FAILED with max-iterations reason — H8 unit test covers DONE-fallback only, so this closes the pin where 0-yield is natural.
 
 **Out of scope:** New thresholds; daemon/cron keep-alive is documented, not gated.
+
+## Resolution
+
+Closed 2026-09-10 (GO_WITH_NOTES — `.autoforge/validation/H10-final.md`).
+Chain: architect → planner → worker-code → reviewer CHANGES_REQUIRED → fix →
+re-review (6 findings) → acceptance seesaw → probe PROVED a real app race →
+orchestrator stop-race guard (+reviewer 2 nits, fixed) → validators (one
+destructive — evidence recovered from git; one stale-NO-CLOSE overruled with
+current evidence in H10-final) → live M4/M5/M6 → close.
+
+- Monitor: `--maxTicks/--stop/--continuous` (both forms, loud errors), per-tick
+  asserts (correct polarity), P3 hard asserts, `HV10-stream_<id>.json` (+
+  `stream-` alias + latest), exit-0 semantics; `--mock` untouched.
+- Product findings fixed + verified: stop-race guard (+ interleave test),
+  cross-tick dedupe persist + unique-only append + steady-state (+ test (e)).
+- Live prod: M4 exit 0 (6 ticks, zero dupes, P3 ok, stopped), M5 honest DONE
+  exit 0, M6 e2e 28.4s green; orphans clean, secrets zero; unit 14/14, gates green.
+- Carries: FAILED-at-cap live pin (see H10-final), foreign RUNNING streams ops
+  note, H13 leniency still open. BaseURL seam ready for prod e2e (used live).
