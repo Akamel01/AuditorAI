@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RSA Corpus Catalog Record",
+  "type": "object",
+  "properties": {
+    "jurisdiction": {
+      "type": "string",
+      "enum": ["UK", "USA", "CA", "AE", "INT"]
+    },
+    "ca_province": {
+      "type": ["string", "null"],
+      "enum": ["BC", "AB", "ON", "QC", "MB", "NB", "NL", "NS", "PE", "SK", "YT", "NT", "NU"]
+    },
+    "stage": {
+      "type": "string",
+      "enum": ["PRELIMINARY_DESIGN", "DETAILED_DESIGN", "FEASIBILITY_CONCEPT"]
+    },
+    "doc_type": {
+      "type": "string",
+      "enum": ["guide", "case-study", "complete-RSA", "prompt-list", "policy", "toolkit", "presentation", "correspondence"]
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["T0", "T1", "T2", "T3", "T4"]
+    },
+    "anchors": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    }
+  },
+  "required": ["jurisdiction", "stage", "doc_type", "tier"],
+  "if": {
+    "properties": {"jurisdiction": {"const": "CA"}}
+  },
+  "then": {
+    "required": ["ca_province"]
+  },
+  "additionalProperties": true,
+  "examples": [
+    {
+      "jurisdiction": "UK",
+      "stage": "PRELIMINARY_DESIGN",
+      "doc_type": "guide",
+      "tier": "T3",
+      "anchors": {"UNB Route 1000": "T3"}
+    },
+    {
+      "jurisdiction": "USA",
+      "stage": "DETAILED_DESIGN",
+      "doc_type": "case-study",
+      "tier": "T1",
+      "anchors": {"TAC": "T1-aggregated"}
+    }
+  ],
+  "description": "JSON Schema for an RSA corpus catalog record."
+}

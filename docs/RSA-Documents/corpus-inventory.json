@@ -1,0 +1,2870 @@
+{
+ "generated_by": "scripts/build-inventory.py (C1)",
+ "files": [
+  {
+   "path": ".DS_Store",
+   "bytes": 38916,
+   "ext": "(none)",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".rsa_collected_urls.txt",
+   "bytes": 89847,
+   "ext": ".txt",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".rsa_pid.txt",
+   "bytes": 6,
+   "ext": ".txt",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".rsa_progress.log",
+   "bytes": 109596,
+   "ext": ".log",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "COLLECTION_INDEX.md",
+   "bytes": 14789,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "FOIA_TEMPLATE.md",
+   "bytes": 13009,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "HARVESTING_PLAN.md",
+   "bytes": 7236,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "LICENSE-REGISTER.md",
+   "bytes": 1150,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-download-log.tsv",
+   "bytes": 787,
+   "ext": ".tsv",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".autoforge/execution/canadian-rsa.md",
+   "bytes": 1705,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".autoforge/execution/rsa-downloader.md",
+   "bytes": 793,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": ".autoforge/execution/summary-update.md",
+   "bytes": 479,
+   "ext": ".md",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-01-ON-MTO.md",
+   "bytes": 1240,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-02-BC-MoTI.md",
+   "bytes": 1103,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-03-AB-Transp.md",
+   "bytes": 983,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-04-QC-MTQ-FR.md",
+   "bytes": 1275,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-05-MB-MTI.md",
+   "bytes": 948,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/ATIP-06-SK-Highways.md",
+   "bytes": 997,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/README.md",
+   "bytes": 1990,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "atip-package/atip-tracking.csv",
+   "bytes": 584,
+   "ext": ".csv",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/101%20Road%20Safety%20Review%20Report.pdf",
+   "bytes": 3146679,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/104%20Road%20Safety%20Review%20Report.pdf",
+   "bytes": 3335945,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/105_Road_Safety_Review_Report.pdf",
+   "bytes": 2277035,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/180628tsc1211.pdf",
+   "bytes": 5517478,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/2004%20-%20June%20-%20Ch%2009%20-%20Road%20Safety.pdf",
+   "bytes": 338540,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/2004-rsa-guidelines-final-report.pdf",
+   "bytes": 83448,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/2004-rsa-implementation-plan-final-report.pdf",
+   "bytes": 152695,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/200901rci13.pdf",
+   "bytes": 7535887,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/210722tscinfo2.pdf",
+   "bytes": 6622533,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/240709rc1561.pdf",
+   "bytes": 9946941,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/BC_MoT_RSA_Guidelines_T02-04.pdf",
+   "bytes": 167752,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/CR_2025_R248.pdf",
+   "bytes": 1787572,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/DRSP_PPAS_ActeColloqueInternationnal.pdf",
+   "bytes": 1216083,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/DSBRT_PDBC.pdf",
+   "bytes": 9323737,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/HD_19-03_EN.pdf",
+   "bytes": 365249,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/January-2025-Monitoring-Report-WEB.pdf",
+   "bytes": 7628034,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/Manitoba-Road-Safety-Plan_2022-Update_FINAL.pdf",
+   "bytes": 719278,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/OC%20Transpo%20Transitway%20Road%20Safety%20Audit.pdf",
+   "bytes": 6566655,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/OC_Transpo_Transitway_RSA.pdf",
+   "bytes": 5977941,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/PAC+18-29+Highways+and+Infrastructure+status+update+Feb+8%252c+2021.pdf",
+   "bytes": 124267,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/PMD-07-cadre-intervention.pdf",
+   "bytes": 1352118,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/ProspectAve_RSA_Report_FINAL.pdf",
+   "bytes": 1658700,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/Session-1-CCMTA-Yukon-Google-Glass-for-In-Service-Road-Safety-Reviews.pdf",
+   "bytes": 3178603,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/TAC_RSA_Pre_Opening_Lessons_Learned.pdf",
+   "bytes": 1412110,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/TC-QMM-107783.pdf",
+   "bytes": 7020986,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/TLPA-Schedule%2015-2%20Part%202%20-%20Civil%20and%20Guideway%20-%20Appendix%20D%20(Redacted)-AODA.pdf",
+   "bytes": 179855,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/UFOR_401_Melfa%20Road%20Walk%20N%E2%80%99%20Roll%20Tactical%20Urbanism%20Interventions_FinalReport.pdf",
+   "bytes": 5981596,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/UNB_Canadian_RSA_Guidelines_with_Case_Studies.pdf",
+   "bytes": 3505854,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/VGQ_nov2023_web.pdf",
+   "bytes": 8927868,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/VG_Rapport2024_Presentation.pdf",
+   "bytes": 2610986,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/backgroundfile-223941.pdf",
+   "bytes": 1293073,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/corridor-management-safety-review-guidelines.pdf",
+   "bytes": 69008,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/lenters.pdf",
+   "bytes": 909945,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/lo.pdf",
+   "bytes": 463751,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/pour-ameliorer-le-bilan-routier.pdf",
+   "bytes": 1275459,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/pth1-pth5-in-service-road-safety-review-exec-summary.pdf",
+   "bytes": 1417779,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/pth_1_pth5_intersection_information_bulletin-jan-2024.pdf",
+   "bytes": 639280,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/road-safety-audit-guidance-document.pdf",
+   "bytes": 411526,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/shresthas_-_traffic_safety_studies_.pdf",
+   "bytes": 456905,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/t02-94_watermarked.pdf",
+   "bytes": 1911272,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/trafficimpact.pdf",
+   "bytes": 64826,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian/trans-traffic-impact-assessment-guidelines-2021-02.pdf",
+   "bytes": 413980,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/0000243802",
+   "bytes": 72522,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/0000323442",
+   "bytes": 76068,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/0081-26phm-clearing-sections-of-route-1-route-2-route",
+   "bytes": 161211,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/0aa8e47867394156ba45f7b83d17ed5c",
+   "bytes": 336073,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/1.0424323",
+   "bytes": 22623,
+   "ext": ".0424323",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/1360590",
+   "bytes": 52676,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/1754911",
+   "bytes": 54437,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/2",
+   "bytes": 22267,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/2009%20-%20Full%20-%20NSOAG%20Report.pdf",
+   "bytes": 12434609,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/2021-2022_dti_annual_report.pdf",
+   "bytes": 5108071,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/2025-26%252BBusiness%252BPlan%252B-%252BHighways.pdf",
+   "bytes": 555098,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/210208Minutes-PAC.pdf",
+   "bytes": 71924,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/24252_carberry-report-080124.pdf",
+   "bytes": 4940846,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/31994-en-Review%20of%20Global%20Road%20SafetyAudit%20Guidelines%20%E2%80%93%20With%20Specific%20Consideration%20for%20Low-%20and%20Middle-IncomeCountries%20-%20Technical%20Report",
+   "bytes": 114046,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/43787-en-Road%20Safety%20Audits%20Guidelines%20for%20Road%20Projects%20-%20A%20PIARC%20Technical%20Report",
+   "bytes": 111392,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/576843",
+   "bytes": 51920,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/6352704-rfp-road-safety-audit-at-college-drive-and-wiggins-avenue&find_loc=-S7N-0B3",
+   "bytes": 2054905,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects",
+   "bytes": 108507,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/753",
+   "bytes": 507837,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/840076",
+   "bytes": 52266,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/84295-road-safety-audit-rsa-guidelines-of-selected-nations-a-comparative-review",
+   "bytes": 412075,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/911200d523e34eaf9a4c52c3a98678d9",
+   "bytes": 347987,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/93f3b8e7-483b-4782-8e4c-1f709213198f",
+   "bytes": 504475,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/AG-AnnualReport-June2017.pdf",
+   "bytes": 1822772,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/Auditor-Generals-Report-on-Outstanding-Performance-Audit-Recommendations.pdf",
+   "bytes": 4675559,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/Highways%252BBusiness%252BPlan%252B2024-25.pdf",
+   "bytes": 526084,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/OC_Transpo_Transitway_Road_Safety_Audit.pdf",
+   "bytes": 5977941,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/Plan%202014_15.pdf",
+   "bytes": 6089001,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/Road-Safety-Audit-Guidelines-FHWA_SA_06_06.pdf",
+   "bytes": 5291796,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/Road_safety_audit",
+   "bytes": 64861,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/alberta-transportation-road-safety-audit-guidelines",
+   "bytes": 56263,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/alberta-transportation-road-safety-audit-implementation-plan",
+   "bytes": 56744,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/ameliorer-et-valider-un-outil-de-planification-urbaine-base-sur-les-risques-de-danger-lies-a-la-circulation-en-consultation-avec-les-groupes-vulnerables",
+   "bytes": 616947,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/audit-risk-based-business-planning-safety-security",
+   "bytes": 151063,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/bc-community-road-safety-toolkit-clone-60607",
+   "bytes": 280404,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/bike-lane-audit-has-cyclists-worried",
+   "bytes": 213265,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/campagne-plan-action-securite-routiere",
+   "bytes": 476882,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/canada-recreational-lakeside-re-development-project-feasibility-state-road-safety-audit",
+   "bytes": 72212,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/canada-sea-sky-highway-improvement-project-evaluation-methods",
+   "bytes": 71876,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/carberry-deadly-bus-crash-upgrade-1.7566890",
+   "bytes": 448528,
+   "ext": ".7566890",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/consultant-services",
+   "bytes": 110193,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/death-of-highway-twinning-did-not-hurt-safety-expert",
+   "bytes": 351013,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/devoilement-du-plan-daction-en-securite-routiere-2023-2028",
+   "bytes": 72153,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/en",
+   "bytes": 167102,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/engineering-audits-and-in-service-reviews",
+   "bytes": 150346,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/ensuring-application",
+   "bytes": 88820,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/evaluation-of-the-road-safety-audit-initiative-on-alberta-highways",
+   "bytes": 129916,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/evaluation-road-safety-programs",
+   "bytes": 177996,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/full",
+   "bytes": 470977,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/highway-safety",
+   "bytes": 125534,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/hildebrand.pdf",
+   "bytes": 1412110,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/jurisdictional-scan-surveys-road-safety",
+   "bytes": 160210,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/laudit-des-pistes-cyclables-de-montreal-interpelle-les-adeptes-des-deux-roues",
+   "bytes": 233795,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/le-plan-daction-en-securite-routiere-2023-2028-devoile-par-la-caq",
+   "bytes": 191699,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/m-ncppc-pedestrian-audit-toolkit",
+   "bytes": 172777,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/manitobas-pilot-in-service-road-safety-review-program",
+   "bytes": 141851,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/montreal-bike-lanes-deemed-unsafe-could-be-removed-mayoral-candidate-soraya-martinez-ferrada-says",
+   "bytes": 224111,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/montreal-mayoral-candidate-vows-to-audit-possibly-remove-bike-lanes",
+   "bytes": 246049,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/montreal-reevaluera-plusieurs-pistes-cyclables.php",
+   "bytes": 343987,
+   "ext": ".php",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/montreal-reviewing-four-bikes-paths",
+   "bytes": 117068,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/multimodal-road-safety-program-oversight-program-description-delivery-fiscal-year-2025-2026",
+   "bytes": 53486,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/mx-443930528752",
+   "bytes": 59422,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/new-brunswick-has-highest-road-death-rate-in-the-country-report",
+   "bytes": 371102,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/nr230045.htm",
+   "bytes": 113311,
+   "ext": ".htm",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/overview-of-the-piarc-road-safety-manual-carl-belanger-ppt-presentation-553695",
+   "bytes": 91968,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/pathways-to-highway-safety-what-we-heard-report",
+   "bytes": 125534,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/pei-government-putting-in-roundabout-at-major-intersection-in-oyster-bed-bridge-196243",
+   "bytes": 241701,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/pei-roundabout-revolution",
+   "bytes": 283835,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/piarc-road-safety-audit-guidelines",
+   "bytes": 131708,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/plan-action-securite-routiere",
+   "bytes": 56785,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/plan-daction-en-securite-routiere-2023-2028-lancement-de-la-premiere-semaine-nationale-de-sensibilisation-a-la-securite-des-travailleurs-routiers-56545",
+   "bytes": 51679,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/plan-securite-routiere-ecole-chantiers-quebec",
+   "bytes": 681719,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "fr",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/planning-design-operation",
+   "bytes": 81154,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/prince-edward-island-to-enhance-safety-on-troubled-route-2-segment",
+   "bytes": 67197,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/proactive-identification",
+   "bytes": 153906,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/ptm-crsag-e",
+   "bytes": 375001,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/ptm-inservice-e",
+   "bytes": 376063,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/ptm-rshandbook-e",
+   "bytes": 375788,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/publications",
+   "bytes": 125134,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/questions-mount-over-e-scooter-rules-as-provincial-road-safety-consultations-end-thursday",
+   "bytes": 99857,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/reamenagement-avenue-du-parc-chantier-reflexion",
+   "bytes": 623699,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/reeves-street-s-safety-st-tudy",
+   "bytes": 58786,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/road-safety",
+   "bytes": 86144,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/road-safety-audit-guidelines",
+   "bytes": 138851,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/road-safety-audit-pdf-125-mb",
+   "bytes": 188873,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/road-safety-audits",
+   "bytes": 333476,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/road-safety-data-new-brunswick-9.7072706",
+   "bytes": 146088,
+   "ext": ".7072706",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/rsa-guidelines.pdf",
+   "bytes": 3505854,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/safety-audits",
+   "bytes": 149864,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/safety-reviews-ppt-presentation-582069",
+   "bytes": 92467,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/safetyandspeedreview",
+   "bytes": 281595,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/strategy-to-lower-worst-road-death-rate-wont-be-ready-till-2028",
+   "bytes": 363376,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/survey-seeks-public-input-on-10-year-road-safety-strategy",
+   "bytes": 125534,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/t02-04c.pdf",
+   "bytes": 167752,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/tie_annual_report_2020-2021.pdf",
+   "bytes": 5500472,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/transportation-and-infrastructure-renewal-1146",
+   "bytes": 230613,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/transportation_infrastructure_annual_report_2023-2024.pdf",
+   "bytes": 2979939,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/update-evaluation-transport-canada-s-road-safety-transfer-payments-program-rstpp",
+   "bytes": 128942,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-html-quarantine/vers-l-amelioration-de-la-securite-routiere-pour-tous-5734320",
+   "bytes": 173616,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/5_PIARC-and-ROAD-SAFETY.pdf",
+   "bytes": 1266001,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/6C-Steel_Development-of-a-Road-Safety-Audit-Network-Screening-Tool.pdf",
+   "bytes": 1626690,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/BC-Transit-Infrastructure-Design-Guide-2026.pdf",
+   "bytes": 3634438,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/DS-27_BRT_Architecture_Design_Standard.pdf",
+   "bytes": 12325755,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/SA7-King-20240123-1.pdf",
+   "bytes": 1977693,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/bus_infrastructure_design_guidelines-sept_2018.pdf",
+   "bytes": 9780462,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/cmfs_for_bc_2008.pdf",
+   "bytes": 12612873,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/dsbrt_epr_appendixa2_stopsarchitecture_0322_gkgf35.pdf",
+   "bytes": 4624487,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/guide_transportation_safety.pdf",
+   "bytes": 4411664,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/kwan.pdf",
+   "bytes": 2160118,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/nabavi-niaki13method.pdf",
+   "bytes": 1388370,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-methodology/tableau-synthese-des-actions-du-PASR-2023-2028.pdf",
+   "bytes": 158072,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/.download-log.tsv",
+   "bytes": 1982,
+   "ext": ".tsv",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/0975119.pdf",
+   "bytes": 91235,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/180628tsc1211pres.pdf",
+   "bytes": 927653,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/1_-_ICBC-City_of_Richmond_Road68731.pdf",
+   "bytes": 1006952,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/2020-08-17-Dundas-BRT-IBC-Final-Draft.pdf",
+   "bytes": 4048528,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/2021_02_03_QueenStreetBRT_IBCReport.pdf",
+   "bytes": 19789458,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/47736.md",
+   "bytes": 5282,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/84587.pdf",
+   "bytes": 227444,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Appendix%20D-4%20-%20Vision%20Zero%20Assessment.pdf",
+   "bytes": 324176,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Appendix%20D.pdf",
+   "bytes": 335141,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/CR_2019-R119.pdf",
+   "bytes": 780974,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/DRSP_PPAS_FeuilletSailliesTrottoir.pdf",
+   "bytes": 162173,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/DRSP_PPAS_QuartierSanteCHUM.pdf",
+   "bytes": 1433799,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/ICBC-City_of_Richmond_Road_Safety_Improvement_Program_Update_202679416.pdf",
+   "bytes": 1072356,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/MORCOAR%20User%20Guide.pdf",
+   "bytes": 408931,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/NS_Road_Safety_Survey_2010.pdf",
+   "bytes": 1185664,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/PDF",
+   "bytes": 1155820,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Pathways%20to%20Highway%20Safety%20What%20We%20Heard%20Report_2025.pdf",
+   "bytes": 1793969,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Plan_action_securite_routiere_2023-2028.pdf",
+   "bytes": 687561,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Polytechnique_Project_Proposal_framework.pdf",
+   "bytes": 73060,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Queen-St-Hwy-7-BRT-IBC-Final.pdf",
+   "bytes": 15354203,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Road-Safety-Audits-PDF",
+   "bytes": 133473,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/STR_summaryreport.pdf",
+   "bytes": 221308,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Safety%20Review%20Presentation%20Final.pdf",
+   "bytes": 1040346,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Strat%C3%A9gie%20de%20s%C3%A9curit%C3%A9%20routi%C3%A8re%202025-2029.pdf",
+   "bytes": 6166453,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/Team-Gushue-Highway-Connection-Final-Report-Rev2-ITC-Jan-17-2022.pdf",
+   "bytes": 25551717,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/approche_integree_securite_routiere.fr-CA.pdf",
+   "bytes": 8677029,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/arteres_fiche1.pdf",
+   "bytes": 953602,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/attachment-1-road-safety-strategy.pdf",
+   "bytes": 4920363,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/backgroundfile-222933.pdf",
+   "bytes": 164215,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/backgroundfile-238895.pdf",
+   "bytes": 443472,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/backgroundfile-239521.pdf",
+   "bytes": 204360,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/backgroundfile-240266.pdf",
+   "bytes": 451749,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/bcrss_2025_final.pdf",
+   "bytes": 3427228,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/brt-phase-2-engagement-summary.pdf",
+   "bytes": 6964903,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/c7f9e509-7146-75b5-1c41-39c8a7d15d8d",
+   "bytes": 435311,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/cos_stsap_finalsummaryreport_october2013.pdf",
+   "bytes": 759800,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/cosbrt_draft_mae_final_march_2018.pdf",
+   "bytes": 625787,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/document_constitutif.pdf",
+   "bytes": 1133429,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/download",
+   "bytes": 11848304,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/filestream.ashx",
+   "bytes": 144422,
+   "ext": ".ashx",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/gateway.aspx",
+   "bytes": 775159,
+   "ext": ".aspx",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/liu.pdf",
+   "bytes": 616142,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/modalites-PAFFSR-2022-2025.pdf",
+   "bytes": 304380,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/mouldss_-_highway_11_and_16.pdf",
+   "bytes": 3169568,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/ngieng.pdf",
+   "bytes": 3751479,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/plan_action_securite_travaux_2023-2026.pdf",
+   "bytes": 1456270,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/presentation-ssrt.pdf",
+   "bytes": 2020861,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/prog-report-rs22a.pdf",
+   "bytes": 3131043,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/pth1_5_-_r2b_storyboards_-_en.pdf",
+   "bytes": 10748230,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/pth1_5_r3_storyboards.pdf",
+   "bytes": 17524387,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/report-trafalgar-road-corridor-oakville-(3)",
+   "bytes": 9509032,
+   "ext": "(none)",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/resource-kit-community-road-safety-toolkit-module3.pdf",
+   "bytes": 4558253,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/rip-evaluation-report.pdf",
+   "bytes": 1692135,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/scott.pdf",
+   "bytes": 1019678,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/strategie-prevention-securite-routiere-2021-2025.pdf",
+   "bytes": 4617385,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-not-audit/whiteley.pdf",
+   "bytes": 666356,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/.download-log.tsv",
+   "bytes": 1389,
+   "ext": ".tsv",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/02_Volume_2.pdf",
+   "bytes": 1563356,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/1032147.pdf",
+   "bytes": 1941490,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/191125.pdf",
+   "bytes": 19840389,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/613794_bb0b5964f1ee4e2f805eba4441826d11.pdf",
+   "bytes": 8034252,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/Burlington-City-Route-130-PRSA.pdf",
+   "bytes": 19485677,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/Coordinating Road Safety Reviews with Bicycle and Pedestrian Project Prioritization.pdf",
+   "bytes": 640704,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/Newfoundland-and-Labrador-2016-Roadside-Litter-Audit-Reduced.pdf",
+   "bytes": 2474362,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/SafetyAudit.pdf",
+   "bytes": 2376566,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/Webinar_PBIC_102323.pdf",
+   "bytes": 6690095,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/bike_safety_audit.pdf",
+   "bytes": 26856719,
+   "ext": ".pdf",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/manifest.json",
+   "bytes": 880,
+   "ext": ".json",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/safety-reviews-and-audits.md",
+   "bytes": 93791,
+   "ext": ".md",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/sources-angles.txt",
+   "bytes": 574,
+   "ext": ".txt",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "canadian-quarantine-v2/urls_2026-09-07.txt",
+   "bytes": 525,
+   "ext": ".txt",
+   "jurisdiction_hint": "CA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-FLH-10-0011_RSA_Toolkit_FLMA_Tribal.pdf",
+   "bytes": 2043952,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-FLH-10-05_Federal_Tribal_Lands_RSA_8_RSA.pdf",
+   "bytes": 95464,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-PL-98-008_Study_Tour_RSA_Part1.pdf",
+   "bytes": 3304921,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-PL-98-009_Study_Tour_RSA_Part2_Case_Studies_Checklists_1997.pdf",
+   "bytes": 3568275,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-06-006_RSA_Guidelines_2005.pdf",
+   "bytes": 2277152,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-06-06_RSA_Guidelines.pdf",
+   "bytes": 2277152,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-06-17_RSA_Case_Studies_10_RSA.pdf",
+   "bytes": 1458660,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-06-17_RSA_Case_Studies_Full.pdf",
+   "bytes": 1458660,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-07-007_Pedestrian_RSA_Guidelines_Prompt_Lists.pdf",
+   "bytes": 1941490,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-08-005_Tribal_RSA_Case_Studies_4_RSA.pdf",
+   "bytes": 925397,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-10-005_Focusing_RSA_on_Intersections.pdf",
+   "bytes": 315307,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-10-019_RSA_Peer_Assistance_Brochure.pdf",
+   "bytes": 713272,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-12-018_Bicycle_RSA_Guidelines_Prompt_Lists.pdf",
+   "bytes": 26856719,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-12-037_RSA_Evaluation_Programs_Projects.pdf",
+   "bytes": 4948586,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-13-016_CMF_Intro.pdf",
+   "bytes": 204876,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-13-xxx_Alternatives_Value_Eng_CMF.pdf",
+   "bytes": 954490,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-13-xxx_Design_Decisions_Exceptions_CMF.pdf",
+   "bytes": 1867223,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-13-xxx_Quantifying_Safety_Roadway_Mgmt.pdf",
+   "bytes": 581745,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-14-003_3D_Visualization_RSA_4_RSA.pdf",
+   "bytes": 1152879,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-14-071_IHSDM_RSA_3_RSA.pdf",
+   "bytes": 1340473,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-14-075_High_Risk_Rural_Roads_Manual.pdf",
+   "bytes": 2873695,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-14-xxx_Model_RSA_Policy.pdf",
+   "bytes": 647949,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-16-026_Motorcycle_RSA_3_RSA.pdf",
+   "bytes": 1941490,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-16-120_Transit_Access_RSA_4_RSA.pdf",
+   "bytes": 14473016,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-17-011_IHSDM_Guide.pdf",
+   "bytes": 1160881,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-20-042_Ped_Bike_RSA_Guide_Prompt_Lists.pdf",
+   "bytes": 8034252,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA-SA-21-048_Proven_Safety_Countermeasures_RSA.pdf",
+   "bytes": 225803,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA_Bicycle_RSA_Guidelines.pdf",
+   "bytes": 2679745,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA_Quantifying_Safety_in_RSA_Process.pdf",
+   "bytes": 6558381,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA_RSA_Peer_to_Peer_Program.pdf",
+   "bytes": 641008,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/FHWA_RSA_Software_Guide.pdf",
+   "bytes": 3869882,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/MPC-98-96B_Adapting_RSA_Local_Rural_Roads.pdf",
+   "bytes": 2885773,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/ODOT_US97_RSA.pdf",
+   "bytes": 70138,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/PA_SR3011_Keyser_Ave_RSA.pdf",
+   "bytes": 3537065,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "fhwa-case-studies/SD2007-06-F_Local_Rural_RSA_Guidelines_12_RSA.pdf",
+   "bytes": 8529790,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/BRTB_Safety_Audits_RFP_2026.pdf",
+   "bytes": 362687,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/BrowardMPO_OffSystem_RSA_Framework_2023.pdf",
+   "bytes": 3232616,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/DVRPC_RSA_Program.html",
+   "bytes": 5020,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/Fairfax_Blake_Lane_Ped_RSA_2024.pdf",
+   "bytes": 12487899,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/MORPC_Ohio_RSA_Guide.pdf",
+   "bytes": 784237,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/MRMPO_Lead_Coal_Avenues_RSA_2022.pdf",
+   "bytes": 2692659,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/NIRPC_RSA_RFP_2026.pdf",
+   "bytes": 360814,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/NRPC_UPWP_2026_2027.pdf",
+   "bytes": 808725,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/OldColonyMPO_RSA_Program.html",
+   "bytes": 198763,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/SEMCOG_RSA_Overview_2023.pdf",
+   "bytes": 372711,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/SEMCOG_RSA_Program_2024.pdf",
+   "bytes": 2159341,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/SEMCOG_RSA_Program_FAQ_2025.pdf",
+   "bytes": 329843,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "local-mpo/Tacoma_S_Tacoma_Way_RSA_2024.pdf",
+   "bytes": 5304489,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/CAREC_RSA_Case_Study_1.pdf",
+   "bytes": 262049,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/CAREC_RSA_Case_Study_2.pdf",
+   "bytes": 187180,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/CAREC_RSA_Case_Study_3_Roadworks_Stage.pdf",
+   "bytes": 93289,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/CAREC_RSA_Case_Study_4.pdf",
+   "bytes": 165149,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf",
+   "bytes": 1698225,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Australia_Safe_System_Audit.html",
+   "bytes": 72083,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Canada_Recreational_Lakeside_Feasibility_RSA.html",
+   "bytes": 72212,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Catalogue_Case_Studies_2019.html",
+   "bytes": 110663,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Iran_Qom_Garmsar_Freeway_Pre_Opening_RSA.html",
+   "bytes": 72164,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Kazakhstan_1062km_RSA.html",
+   "bytes": 71621,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_RSA_Guidelines_2011.html",
+   "bytes": 108507,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_RSA_Guidelines_2023.html",
+   "bytes": 111392,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Review_Global_RSA_Guidelines_LMICs.html",
+   "bytes": 114046,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_South_Africa_Net_Safe.html",
+   "bytes": 71903,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_South_Africa_Tshwane_Community_RSA.html",
+   "bytes": 70797,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/PIARC_Specific_Issues_LMICs_Case_Studies.html",
+   "bytes": 111547,
+   "ext": ".html",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "piarc-irf/World_Bank_GRSF_Kiribati_Multi_Stage_RSA_Case_Study.pdf",
+   "bytes": 2202369,
+   "ext": ".pdf",
+   "jurisdiction_hint": "INT",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/batch_download.sh",
+   "bytes": 4864,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/build-inventory.py",
+   "bytes": 3846,
+   "ext": ".py",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/discover.sh",
+   "bytes": 804,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_additional_fhwa.sh",
+   "bytes": 3188,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_ct_mpo_rsa.sh",
+   "bytes": 4569,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_fhwa_rsa.sh",
+   "bytes": 2713,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_final_rosap.sh",
+   "bytes": 1495,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_more_rosap.sh",
+   "bytes": 1381,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_more_state_rsa.sh",
+   "bytes": 3289,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_piarc_international.sh",
+   "bytes": 3205,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_remaining.sh",
+   "bytes": 3630,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_rosap.sh",
+   "bytes": 5045,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/download_state_dots.sh",
+   "bytes": 2581,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/run_rsa_downloader.sh",
+   "bytes": 3431,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "scripts/verify_pdfs.sh",
+   "bytes": 298,
+   "ext": ".sh",
+   "jurisdiction_hint": "sys",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/AZDOT_RSA_Program.html",
+   "bytes": 5496,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_Bristol_Route72_RSA_2017.pdf",
+   "bytes": 8800558,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_Haddam_Route154_RSA_2023.pdf",
+   "bytes": 3590173,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_Madison_US1_RSA_2024.pdf",
+   "bytes": 9757169,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_RSA_Reports_Index.html",
+   "bytes": 103,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_RSA_Reports_Page.html",
+   "bytes": 21893,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_Salisbury_US44_CT41_RSA_2025.pdf",
+   "bytes": 5159742,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/CTDOT_Torrington_RSA_2023.pdf",
+   "bytes": 17098829,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/FDOT_SR60_Barber_Bridge_RSA_2015.pdf",
+   "bytes": 4108292,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/ITD_RSA_Manual.pdf",
+   "bytes": 2376566,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/KYTC_RSA_Program.html",
+   "bytes": 703,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_Hwy55_RSA_2021.pdf",
+   "bytes": 6513341,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_TH14_NewUlm_NorthMankato_RSAR_2012.pdf",
+   "bytes": 2967573,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_TH3_Farmington_RSA.pdf",
+   "bytes": 1946422,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_Twin_Ports_Work_Zone_Safety_Audit.pdf",
+   "bytes": 3736394,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_US12_RSA_Briefing_Book.pdf",
+   "bytes": 76808192,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_US12_RSA_Post_Audit_Presentation.pdf",
+   "bytes": 35951771,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/MnDOT_US12_RSA_Technical_Report.pdf",
+   "bytes": 25259596,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NCDOT_Ped_Bike_RSA_Guide_2018.pdf",
+   "bytes": 640704,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NCDOT_SS08-94-202_Signal_Installation_Evaluation.pdf",
+   "bytes": 350528,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NCDOT_SS09-20-2875_All_Way_STOP_Evaluation.pdf",
+   "bytes": 740361,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NCDOT_SS12-06-205_Shoulder_Installation_Evaluation.pdf",
+   "bytes": 310532,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NCDOT_SS14-13-209_Left_Turn_Lane_Evaluation.pdf",
+   "bytes": 1608331,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/NJDOT_RSA_Program.html",
+   "bytes": 558193,
+   "ext": ".html",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/ODOT_OR211_RSA_2022.pdf",
+   "bytes": 4169259,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/UDOT_Moab_Grand_County_UTMP_2022.pdf",
+   "bytes": 29437772,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  },
+  {
+   "path": "state-dots/VDOT_RSA_Manual.pdf",
+   "bytes": 876641,
+   "ext": ".pdf",
+   "jurisdiction_hint": "USA",
+   "lang_hint": "en",
+   "status": "ok"
+  }
+ ],
+ "drifts": [
+  {
+   "refs": [
+    "docs/RSA-Documents/COLLECTION_INDEX.md"
+   ],
+   "note": "Count stale: index claims 73 documents, tree holds 352 files (~4.8x)"
+  },
+  {
+   "refs": [
+    "docs/RSA-Documents/COLLECTION_INDEX.md"
+   ],
+   "note": "Size stale: index claims 331MB, measured 928.2MB"
+  },
+  {
+   "refs": [
+    "docs/RSA-Documents/COLLECTION_INDEX.md",
+    "canadian",
+    "canadian-download-log.tsv",
+    "canadian-html-quarantine",
+    "canadian-methodology"
+   ],
+   "note": "Coverage stale: index covers US baseline only; omits ~318 files across canadian*/state-dots/local-mpo/piarc-irf/fhwa-case-studies"
+  },
+  {
+   "refs": [
+    "docs/RSA-Documents/canadian-staging",
+    "docs/RSA-Documents/fha-case-studies",
+    "docs/RSA-Documents/templates"
+   ],
+   "note": "Empty dirs with unknown purpose, unindexed: ['canadian-staging', 'fha-case-studies', 'templates']"
+  },
+  {
+   "refs": [
+    "docs/RSA-Documents/fha-case-studies",
+    "docs/RSA-Documents/fhwa-case-studies"
+   ],
+   "note": "Naming near-collision: fha-case-studies (empty) vs fhwa-case-studies (35 files) \u2014 C4 must disambiguate"
+  },
+  {
+   "refs": [
+    "docs/RSA-Documents/state-dots/MnDOT_US12_RSA_Briefing_Book.pdf",
+    "docs/RSA-Documents/state-dots/MnDOT_US12_RSA_Post_Audit_Presentation.pdf",
+    "docs/RSA-Documents/state-dots/UDOT_Moab_Grand_County_UTMP_2022.pdf",
+    "docs/RSA-Documents/canadian-quarantine-v2/bike_safety_audit.pdf",
+    "docs/RSA-Documents/fhwa-case-studies/FHWA-SA-12-018_Bicycle_RSA_Guidelines_Prompt_Lists.pdf"
+   ],
+   "note": "Size outliers (top5): [('state-dots/MnDOT_US12_RSA_Briefing_Book.pdf', 76.8), ('state-dots/MnDOT_US12_RSA_Post_Audit_Presentation.pdf', 36.0), ('state-dots/UDOT_Moab_Grand_County_UTMP_2022.pdf', 29.4), ('canadian-quarantine-v2/bike_safety_audit.pdf', 26.9), ('fhwa-case-studies/FHWA-SA-12-018_Bicycle_RSA_Guidelines_Prompt_Lists.pdf', 26.9)] MB"
+  }
+ ]
+}
