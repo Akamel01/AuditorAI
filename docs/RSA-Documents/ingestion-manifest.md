@@ -1,9 +1,12 @@
 # C9 Ingestion Manifest (STAGED — registration + judged run pending owner)
 
 Status: STAGED 2026-09-12. Promotion line (owner signs before ANY `state/sample-corpus.json` edit):
-`PROMOTE-TO-CORPUS: ________ DATE: ________`
+`PROMOTE-TO-CORPUS: owner via chat 2026-09-13 (5 CLEAR USA samples ONLY; 2 CA RESTRICTED held)`
 Judge line (owner-run `--dry-run`/full eval needs OPENCODE_API_KEY + spend approval):
-`JUDGE-RUN-APPROVED: ________ DATE: ________`
+`JUDGE-RUN-APPROVED: owner via chat 2026-09-13`
+2026-09-13 ATTEMPT: full judged `run-eval.ts` ran but Zen gateway returned HTTP 401 on all
+fixtures (Keychain `auditorai/opencode` rejected; zero spend; bad archive removed, 09-08 restored).
+Judged dry-run now needs a VALID OPENCODE_API_KEY — single remaining input.
 Lineage: E3-sample-projects-from-corpus, ADR-0007 split policy, vault/journal/2026-08-23-phase2-sample-corpus.md (linked, not copied).
 
 ## Proposed new sample projects (NOT registered — zero live-corpus mutation)

@@ -1,7 +1,7 @@
 # MOVE_MANIFEST (C4) — PROPOSED, moves pending owner signature
 
 Status: PROPOSED 2026-09-12. Approval line (owner signs in-file before ANY move):
-`APPROVED-BY: ________ DATE: ________`
+`APPROVED-BY: owner via chat 2026-09-13`
 
 Rule: every catalog record maps to exactly one shelf (dry-run: 327/327 mapped —
 usa 75, canada 62, intl 17, quarantine 169, _system 4 root entry files; zero unmapped).
@@ -49,3 +49,15 @@ Lookup rule: bare basename → catalog record → new path. Measured 2026-09-12:
 
 1. Owner signs above. 2. Migrate per shelf + write per-folder CONTEXT.md + root CLAUDE.md (<60 lines).
 3. Re-run walk test post-move. 4. Record redirect notes for old paths.
+
+## Migration EXECUTED 2026-09-13 (signed above)
+
+- usa/{fhwa-case-studies,state-dots,local-mpo}, canada/{canadian,canadian-methodology,atip-package},
+  intl/piarc-irf, quarantine/{canadian-html-quarantine,canadian-quarantine-v2,canadian-not-audit};
+  fha-case-studies/ removed (verified empty pre-move); root .rsa_* logs → _archive/;
+  canadian-staging/, templates/ stay (adopted); CONTEXT.md ×5 + root CLAUDE.md written.
+- Loss-proof: all 351 pre-move content files present post-move (basename audit, 0 missing).
+- Post-move walk: where-am-I PASS (router + contracts), stage contracts PASS (shelves enforce
+  jurisdiction/license/quarantine), status-by-scanning PASS (build-catalog rerun byte-identical
+  `8c4f310d…`, 333 records 1:1 with dedupe-index; inventory refreshed 376 files/6 drifts).
+- Pack/manifest path note: gf-quote-pack.md File: lines updated harvest→usa/ (quote texts unchanged).

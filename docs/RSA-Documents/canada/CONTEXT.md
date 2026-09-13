@@ -1,0 +1,1 @@
+# CONTEXT.md — canada/ shelf. License RESTRICTED (Crown copyright / ATIP terms). Read allowed; mining/pack/eval outputs need owner clearance per LICENSE-REGISTER.md. Subdirs: canadian, canadian-methodology, atip-package.

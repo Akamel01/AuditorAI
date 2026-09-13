@@ -23,7 +23,8 @@ GitHub: `gh issue list --state open` → 0 open (exit 0, empty).
 [wayfinder:ops-residual] R17-evidence-reconciliation-automation — CLOSED 2026-09-11 (verify APPROVED_WITH_NOTES + flip CONFIRMED: checker exit 0 commit==HEAD ccec57d, twins identical)
 [wayfinder:ops-residual] R18-bento-verification — CLOSED 2026-09-11 (static + render smoke, re-review APPROVED_WITH_NOTES)
 [wayfinder:ops-residual] R19-wayfinder-plumbing-traceability — CLOSED 2026-09-11 (counts + propagation, review APPROVED_WITH_NOTES)
-[wayfinder:v2] F1-quote-bearing-baselines — OPEN GATED (zero code until OWNER_GF_SOURCE_AND_ACCEPTANCE)
+[wayfinder:v2] F1-quote-bearing-baselines — OPEN (assignee orchestrator): GATE OPENED 2026-09-13 via 20/20 chat ratification; annexes in 09-08 GF-6..10.md; journal filed. Fresh Tier-1 BLOCKED: Zen judge 401 (key rejected, no spend). Needs valid OPENCODE_API_KEY → rerun → tier1-archive --rebase --topup → verify → close. F4 still needs OWNER_ASSIST_SCHEMA.
+[wayfinder:rsa-corpus] C9-eval-ingestion — CLOSED (+PROMOTION EXECUTED 2026-09-13: 5 CLEAR → sample-corpus 83; judged leg 401-blocked)
 [wayfinder:v2] F2-blob-storage-escape-hatch — OPEN GATED FOG (zero code until BLOB_LIMIT_TRIGGER)
 [wayfinder:v2] F3-vault-sync-conflict-ux — OPEN GATED (zero code until real divergence + owner trigger)
 [wayfinder:v3] F1-candidate-findings-review-ux — OPEN GATED (zero code until FLAG_2)

@@ -8,15 +8,16 @@ OUT = os.path.join(ROOT, "corpus-inventory.json")
 INDEX_CLAIM = {"docs": 73, "mb": 331}  # COLLECTION_INDEX.md header claims
 
 def jurisdiction(rel):
-    top = rel.split("/")[0]
-    if top in ("canadian", "canadian-methodology", "canadian-not-audit",
-               "canadian-html-quarantine", "canadian-quarantine-v2",
-               "canadian-staging", "atip-package"):
-        return "CA"
-    if top in ("fhwa-case-studies", "fha-case-studies", "state-dots", "local-mpo"):
+    parts = rel.split("/")
+    top = parts[0]
+    if top == "usa":
         return "USA"
-    if top == "piarc-irf":
+    if top == "canada":
+        return "CA"
+    if top == "intl":
         return "INT"
+    if top == "quarantine":
+        return "CA"  # all quarantine dirs are canadian-origin
     return "sys"
 
 FR = re.compile(r"quebec|francais|francophone|_fr[._-]", re.I)
@@ -51,8 +52,7 @@ by_top = {}
 for e in files:
     t = e["path"].split("/")[0]
     a = by_top.setdefault(t, [0, 0]); a[0] += 1; a[1] += e["bytes"]
-non_us = sum(c for d, (c, _) in by_top.items()
-             if d.startswith("canadian") or d in ("state-dots", "local-mpo", "piarc-irf", "fhwa-case-studies"))
+non_us = sum(1 for e in files if not e["path"].startswith("usa/fhwa-case-studies/"))
 empties = sorted(d for d in os.listdir(ROOT)
                  if os.path.isdir(os.path.join(ROOT, d)) and not os.listdir(os.path.join(ROOT, d)))
 
@@ -66,8 +66,8 @@ drifts = [
      "note": f"Coverage stale: index covers US baseline only; omits ~{non_us} files across canadian*/state-dots/local-mpo/piarc-irf/fhwa-case-studies"},
     {"refs": [f"docs/RSA-Documents/{d}" for d in empties] or ["docs/RSA-Documents/"],
      "note": f"Empty dirs with unknown purpose, unindexed: {empties or 'none'}"},
-    {"refs": ["docs/RSA-Documents/fha-case-studies", "docs/RSA-Documents/fhwa-case-studies"],
-     "note": "Naming near-collision: fha-case-studies (empty) vs fhwa-case-studies (35 files) — C4 must disambiguate"},
+    {"refs": ["docs/RSA-Documents/MOVE_MANIFEST.md"],
+     "note": "RESOLVED 2026-09-13: fha-case-studies/ (empty) removed per signed manifest; fhwa-case-studies/ lives at usa/fhwa-case-studies/"},
     {"refs": [f"docs/RSA-Documents/{e['path']}" for e in big],
      "note": f"Size outliers (top5): {[(e['path'], round(e['bytes']/1e6,1)) for e in big]} MB"},
 ]

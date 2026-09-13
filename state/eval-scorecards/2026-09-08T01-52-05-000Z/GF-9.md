@@ -19,3 +19,7 @@
 - **jurisdiction_correctness:** 2 — Stays within PIARC international preliminary-design semantics, frames the checklist prompts as support for a categorically distinct safety_concern rather than a compliance finding, and keeps design-stage scope explicit.
 - **recommendation_quality:** 2 — Specific and viable: apply thematic VRU audit, use Walkability Checklist/CQSI to design controlled or grade-separated crossings at each path/ramp interface, and signalise named terminal crossings — actionable at preliminary design with feasible options.
 - **vru_coverage:** 2 — Pedestrians and cyclists are the explicit focus throughout — exposure, crossing control needs, and continuity impacts are fully considered, exceeding the acknowledgment threshold.
+
+## Ratified corpus-quote annex (2026-09-13, owner ratification - v2 F1 gate OPEN)
+Approved quote IDs (texts + provenance in docs/RSA-Documents/gf-quote-pack.md, proof 20/20): G9-1 , G9-2 , G9-3 , G9-4 , G9-5 , G9-6 , G9-7 , G9-8
+Status: ANALOG support (US-practice CLEAR sources; see pack GAP notes). Supplements existing EV-IN baselines. Unratified lines: none (20/20 approved, 0 struck).
