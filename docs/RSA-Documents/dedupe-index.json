@@ -1,0 +1,2291 @@
+[
+{
+"path": "COLLECTION_INDEX.md",
+"sha256": "e6655011fdaea5a1045c00698fa637986b11ac445eaff3ed22f124b23a8b0499",
+"bytes": 14789,
+"canonical_id": "C-0001",
+"exact_dup_group": null
+},
+{
+"path": "FOIA_TEMPLATE.md",
+"sha256": "69bc87ed5e0160118f6124aea65494c317e2e4456fb9adb6fd80caaa809ff530",
+"bytes": 13009,
+"canonical_id": "C-0002",
+"exact_dup_group": null
+},
+{
+"path": "HARVESTING_PLAN.md",
+"sha256": "4161a5c01f44a2c8d7d817385201a3bf327ddd667095a23519d0fb185c9d31f5",
+"bytes": 7236,
+"canonical_id": "C-0003",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-01-ON-MTO.md",
+"sha256": "2e923e15719bf49db3bba5eaa34026cd06e1114d2f4743584db07258ebd30348",
+"bytes": 1240,
+"canonical_id": "C-0004",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-02-BC-MoTI.md",
+"sha256": "d692afbce62b87435dc756cd032bf24766cc64b787da5ae26bea9694be974c62",
+"bytes": 1103,
+"canonical_id": "C-0005",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-03-AB-Transp.md",
+"sha256": "bf64f60e2973348fc3684908c3100df5d8a50976db505f9a2ae6c5c00aae1c66",
+"bytes": 983,
+"canonical_id": "C-0006",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-04-QC-MTQ-FR.md",
+"sha256": "90244a5f280ed74536f0818f7cb14c57cc023a526890f976dbe01ca061938e3e",
+"bytes": 1275,
+"canonical_id": "C-0007",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-05-MB-MTI.md",
+"sha256": "edbbeaab522ae209489bc77b242d9884b7ede2391fd605360744b583ef09f45e",
+"bytes": 948,
+"canonical_id": "C-0008",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/ATIP-06-SK-Highways.md",
+"sha256": "913df1ae1cb2214ba83aadec887fca8a34e7917494ec77c395a6189d37e4975f",
+"bytes": 997,
+"canonical_id": "C-0009",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/README.md",
+"sha256": "64c85b78c37dd15e7a3b0b6aa0b294326c9227551601f462a20041191fbbe708",
+"bytes": 1990,
+"canonical_id": "C-0010",
+"exact_dup_group": null
+},
+{
+"path": "atip-package/atip-tracking.csv",
+"sha256": "aede5879cb8c6f357ef40c39736f3a24d1c88285f3b14f994934c9195c78b948",
+"bytes": 584,
+"canonical_id": "C-0011",
+"exact_dup_group": null
+},
+{
+"path": "canadian-download-log.tsv",
+"sha256": "63f6fe49731467cd5eabaebdd3c7b79b247c406324b7b0591c74231886875993",
+"bytes": 787,
+"canonical_id": "C-0012",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/0000243802",
+"sha256": "9481d504176a61b429760bb477e8bd2b1dc5a9843b11723ac4169fc1b62cc8c7",
+"bytes": 72522,
+"canonical_id": "C-0013",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/0000323442",
+"sha256": "d33be3b0d4b6dbc2a3f4b6c6504967063e66a9459584cf0aeb575a8387029ecd",
+"bytes": 76068,
+"canonical_id": "C-0014",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/0081-26phm-clearing-sections-of-route-1-route-2-route",
+"sha256": "b8593daea08fc08174db1d6665e86c5337619b69fa78bbaef471e32bc6f56b61",
+"bytes": 161211,
+"canonical_id": "C-0015",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/0aa8e47867394156ba45f7b83d17ed5c",
+"sha256": "2ef88073b2c7dd8e240a978b60f9ba5e13f9634fdb8a7d730a76a2cca5d1ca8a",
+"bytes": 336073,
+"canonical_id": "C-0016",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/1.0424323",
+"sha256": "1d5f828c9a9040e4f86809c5e21c96b9e3bfa516cf0b661fd13fc56a3dee68bc",
+"bytes": 22623,
+"canonical_id": "C-0017",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/1360590",
+"sha256": "047f959ef1eee7f02a498c689ad8e2349ddb903a30d2cafae07b47ca00efd6b6",
+"bytes": 52676,
+"canonical_id": "C-0018",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/1754911",
+"sha256": "ba3838a552b85b1afda6047963221b4d283227d892fa81dfcc8f312a3471cd82",
+"bytes": 54437,
+"canonical_id": "C-0019",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/2",
+"sha256": "3103c38a3c574b0584c5c3068783ae165587bdbde2f6831f98749f376bf12129",
+"bytes": 22267,
+"canonical_id": "C-0020",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/2009%20-%20Full%20-%20NSOAG%20Report.pdf",
+"sha256": "283741a2d9c2dd336fe0fdf9c1a70addecd81c080081859582e5cf11eed52f3f",
+"bytes": 12434609,
+"canonical_id": "C-0021",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/2021-2022_dti_annual_report.pdf",
+"sha256": "19e230554f7162288057a7f4dc9dae79b67b599b43ff35b39e680b11912d9a28",
+"bytes": 5108071,
+"canonical_id": "C-0022",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/2025-26%252BBusiness%252BPlan%252B-%252BHighways.pdf",
+"sha256": "7a07d85f927e23243829e8f17b9b50932539f556d0ad019be7354a59afd85508",
+"bytes": 555098,
+"canonical_id": "C-0023",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/210208Minutes-PAC.pdf",
+"sha256": "4eb4ee09286d681ec634527ee1642935e78c621516d8d94058a2cca05421fe15",
+"bytes": 71924,
+"canonical_id": "C-0024",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/24252_carberry-report-080124.pdf",
+"sha256": "0175fd192458bce6a940497bc7f6cc6ab74d5d8ba85f40559a60bf51d8ea80fc",
+"bytes": 4940846,
+"canonical_id": "C-0025",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/31994-en-Review%20of%20Global%20Road%20SafetyAudit%20Guidelines%20%E2%80%93%20With%20Specific%20Consideration%20for%20Low-%20and%20Middle-IncomeCountries%20-%20Technical%20Report",
+"sha256": "ac2fe1b19bbd440a058029014f60f82e68ac3d2acbe0e067b4e758064327b3e2",
+"bytes": 114046,
+"canonical_id": "C-0026",
+"exact_dup_group": "ac2fe1b19bbd"
+},
+{
+"path": "canadian-html-quarantine/43787-en-Road%20Safety%20Audits%20Guidelines%20for%20Road%20Projects%20-%20A%20PIARC%20Technical%20Report",
+"sha256": "b0dd9d8d54acec2a3a4948141e38b004b25d8c626fc5934caf47f72a1ef8b9bd",
+"bytes": 111392,
+"canonical_id": "C-0027",
+"exact_dup_group": "b0dd9d8d54ac"
+},
+{
+"path": "canadian-html-quarantine/576843",
+"sha256": "15dff52d903f00c88b490b4b5bc3ecce27a11676f63a4c36f69d40be274d3129",
+"bytes": 51920,
+"canonical_id": "C-0028",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/6352704-rfp-road-safety-audit-at-college-drive-and-wiggins-avenue&find_loc=-S7N-0B3",
+"sha256": "c0dbd94d5a6ebb38c36e4079dfaf2b71e1e546d578a798d4e41f5ff385a80e37",
+"bytes": 2054905,
+"canonical_id": "C-0029",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/6851-en-Road%20safety%20audit%20guidelines%20for%20safety%20checks%20of%20new%20road%20projects",
+"sha256": "f8ab2ad7dea3109d85b6997c435f0905a1db0441d60f6c2e929ccf067cd06581",
+"bytes": 108507,
+"canonical_id": "C-0030",
+"exact_dup_group": "f8ab2ad7dea3"
+},
+{
+"path": "canadian-html-quarantine/753",
+"sha256": "8ed6ffe0b0bc0dfb48238202281e57f9b4801cd86573d642d353fe639dcb1547",
+"bytes": 507837,
+"canonical_id": "C-0031",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/840076",
+"sha256": "cae4e8c27805cb4a1be0479c1a88c639fd4ed565a665617b1247e0d628f3688d",
+"bytes": 52266,
+"canonical_id": "C-0032",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/84295-road-safety-audit-rsa-guidelines-of-selected-nations-a-comparative-review",
+"sha256": "6a1a2aefd64165cbe25bfc8643d7d4026c0d00727f0ed6c4aaeae242b09788aa",
+"bytes": 412075,
+"canonical_id": "C-0033",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/911200d523e34eaf9a4c52c3a98678d9",
+"sha256": "027e59e583aa383348c2840b3c018d001c7b078cd596f950cf5b520db2790bdc",
+"bytes": 347987,
+"canonical_id": "C-0034",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/93f3b8e7-483b-4782-8e4c-1f709213198f",
+"sha256": "86b43a05e543f312af2396df8b94cc4806667769b35bdfbc61a3ad019dd01273",
+"bytes": 504475,
+"canonical_id": "C-0035",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/AG-AnnualReport-June2017.pdf",
+"sha256": "ad4da2f00b94e8b0784816b0b2040fcd4fabf78563eb7cc6f8165b6a1073807c",
+"bytes": 1822772,
+"canonical_id": "C-0036",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/Auditor-Generals-Report-on-Outstanding-Performance-Audit-Recommendations.pdf",
+"sha256": "6ada4e0c34f7a0613d31c18625588c3117d98193979c87c361f6d8607fb9b09b",
+"bytes": 4675559,
+"canonical_id": "C-0037",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/Highways%252BBusiness%252BPlan%252B2024-25.pdf",
+"sha256": "e4d9cea55e997d8c7c4acbf34b8a5c1370d9ebf560c3f35ba27af208009f8f69",
+"bytes": 526084,
+"canonical_id": "C-0038",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/OC_Transpo_Transitway_Road_Safety_Audit.pdf",
+"sha256": "a24707c6081a279fa899064bc95dba02d1664993f3b8c7b6491654f20b74789d",
+"bytes": 5977941,
+"canonical_id": "C-0039",
+"exact_dup_group": "a24707c6081a"
+},
+{
+"path": "canadian-html-quarantine/Plan%202014_15.pdf",
+"sha256": "a7d101864cdef1c9b5c8b59cb95ca8de9ecc5cb27dd107ee70ee29a53566d2eb",
+"bytes": 6089001,
+"canonical_id": "C-0040",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/Road-Safety-Audit-Guidelines-FHWA_SA_06_06.pdf",
+"sha256": "522f65ef7ecc675a6eef180153cee40ceb7000db2d8e8245bc40fd3d4bd6d3d8",
+"bytes": 5291796,
+"canonical_id": "C-0041",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/Road_safety_audit",
+"sha256": "f70ccafd1f2d4c60d1818a0f07647632a6a8c936b2b57e25c65303543a5e2795",
+"bytes": 64861,
+"canonical_id": "C-0042",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/alberta-transportation-road-safety-audit-guidelines",
+"sha256": "9da741681382bb488f6b74ebadc111cb6eec7fa4cbf9235849ccf4945de6e6e9",
+"bytes": 56263,
+"canonical_id": "C-0043",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/alberta-transportation-road-safety-audit-implementation-plan",
+"sha256": "060ea4b9d2aba5de25721cdaed3315098ca7da0e89b3ca95d3508c1d4350361f",
+"bytes": 56744,
+"canonical_id": "C-0044",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/ameliorer-et-valider-un-outil-de-planification-urbaine-base-sur-les-risques-de-danger-lies-a-la-circulation-en-consultation-avec-les-groupes-vulnerables",
+"sha256": "6d66ce2a6c8c4302384149788da7ea95eea4a945ba58adb76c529c3749dafdd9",
+"bytes": 616947,
+"canonical_id": "C-0045",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/audit-risk-based-business-planning-safety-security",
+"sha256": "ba12d240854114785834f1a1593d09d816177e7fd18f10825fd3e9ae401feb0e",
+"bytes": 151063,
+"canonical_id": "C-0046",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/bc-community-road-safety-toolkit-clone-60607",
+"sha256": "eafe92d4c32acd695eb876cf8b1610c541cd5c3389be5257f7e8e431946660e0",
+"bytes": 280404,
+"canonical_id": "C-0047",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/bike-lane-audit-has-cyclists-worried",
+"sha256": "dbad0187100c3ee32f5757beb2f6c5e7d3c6ed85da4330df3be3cca1bc22bc9d",
+"bytes": 213265,
+"canonical_id": "C-0048",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/campagne-plan-action-securite-routiere",
+"sha256": "7a40171a462c827b79ea3a704f60fd67573dd3e41540f31308503a67fa433768",
+"bytes": 476882,
+"canonical_id": "C-0049",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/canada-recreational-lakeside-re-development-project-feasibility-state-road-safety-audit",
+"sha256": "df3e6c3290479ee94b946ddd744f3e2b084b7794472856d90c057cef9de800ba",
+"bytes": 72212,
+"canonical_id": "C-0050",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/canada-sea-sky-highway-improvement-project-evaluation-methods",
+"sha256": "396829206d1a6b6c1dcd90757cbf0daa742db803725e558196b75dc9c0a7f35c",
+"bytes": 71876,
+"canonical_id": "C-0051",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/carberry-deadly-bus-crash-upgrade-1.7566890",
+"sha256": "bff60927baed608df6f0fb0c35605d5c33ef072bc09733f2751ef45c5d2bddc5",
+"bytes": 448528,
+"canonical_id": "C-0052",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/consultant-services",
+"sha256": "2ea0276c44ba4f3cb9fbf7685d50cf5a2b3489dd8069a21cf907ea64197d4cc5",
+"bytes": 110193,
+"canonical_id": "C-0053",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/death-of-highway-twinning-did-not-hurt-safety-expert",
+"sha256": "0d5366b99bd4f1c96ff9a055f2ef2ac4e13e0044b57288da6a3a31f0d2e83ce2",
+"bytes": 351013,
+"canonical_id": "C-0054",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/devoilement-du-plan-daction-en-securite-routiere-2023-2028",
+"sha256": "22d31432de3454990fc2755aad6ac11d46ed130f6b1965c44e370173c0b8a172",
+"bytes": 72153,
+"canonical_id": "C-0055",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/en",
+"sha256": "ac37f460c50039a2154cd0bcecc5f306a16650e36225b4b87930af729a235430",
+"bytes": 167102,
+"canonical_id": "C-0056",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/engineering-audits-and-in-service-reviews",
+"sha256": "a6f69cfc9b4b8deea128c7bca4470196519c04f321a4fe536cd6f5bc50d43f37",
+"bytes": 150346,
+"canonical_id": "C-0057",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/ensuring-application",
+"sha256": "d8c8304c9b39162646496b6166db1af92a846e105248a73a3061a99c7aea98f2",
+"bytes": 88820,
+"canonical_id": "C-0058",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/evaluation-of-the-road-safety-audit-initiative-on-alberta-highways",
+"sha256": "56641244a641fbba5b492771768fc81f093d3554aaf4a7340e626b48c9a1bb14",
+"bytes": 129916,
+"canonical_id": "C-0059",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/evaluation-road-safety-programs",
+"sha256": "04ab819f9ab3767ee3f4d195d14a073522e40b280ccd82429143513192e23978",
+"bytes": 177996,
+"canonical_id": "C-0060",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/full",
+"sha256": "b5ac30a9738559128fd5efb2b2e128dea3ccbfaed2b20c666937c1685cb2c65d",
+"bytes": 470977,
+"canonical_id": "C-0061",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/highway-safety",
+"sha256": "f21f080584cd04c38fc2bc71df7a15107c909f4f1ae862385aa21e560b64f410",
+"bytes": 125534,
+"canonical_id": "C-0062",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/hildebrand.pdf",
+"sha256": "433b3bdc53815225f5d37c60e8bdebd86ec8491a920da0cd853d0b7d50956834",
+"bytes": 1412110,
+"canonical_id": "C-0063",
+"exact_dup_group": "433b3bdc5381"
+},
+{
+"path": "canadian-html-quarantine/jurisdictional-scan-surveys-road-safety",
+"sha256": "d67317f732b623bd2374bdde5e9277453d890721f120dd0ad49973e2944e9293",
+"bytes": 160210,
+"canonical_id": "C-0064",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/laudit-des-pistes-cyclables-de-montreal-interpelle-les-adeptes-des-deux-roues",
+"sha256": "3b3a59052a174dc6ac0f6c8516bed1cf8ced2e74a8b202b5eac0d4033ec5e334",
+"bytes": 233795,
+"canonical_id": "C-0065",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/le-plan-daction-en-securite-routiere-2023-2028-devoile-par-la-caq",
+"sha256": "aeaf92c37ea1cb72d13366e566ddebe0df8dbcdab670676a4a0851e266b1a962",
+"bytes": 191699,
+"canonical_id": "C-0066",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/m-ncppc-pedestrian-audit-toolkit",
+"sha256": "1cbe86d8b58801c2fa25d1e808120c0ba0a96f7d586141990ed28d1b58e0ff4b",
+"bytes": 172777,
+"canonical_id": "C-0067",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/manitobas-pilot-in-service-road-safety-review-program",
+"sha256": "cdf90d5da887790a7a23525097c12d338192ef3d408e4de57faeae2a8398b627",
+"bytes": 141851,
+"canonical_id": "C-0068",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/montreal-bike-lanes-deemed-unsafe-could-be-removed-mayoral-candidate-soraya-martinez-ferrada-says",
+"sha256": "bb3d63c7f6fc8015e1e7822140d1496479d5b9de31452143ffc3743bcad2d3b1",
+"bytes": 224111,
+"canonical_id": "C-0069",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/montreal-mayoral-candidate-vows-to-audit-possibly-remove-bike-lanes",
+"sha256": "43ac1a80265fcafa8ad037c03d788c4d80617ec689d4039a52fa8353f53317f8",
+"bytes": 246049,
+"canonical_id": "C-0070",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/montreal-reevaluera-plusieurs-pistes-cyclables.php",
+"sha256": "36608f0d32603167dcd4d7eb2c86708803cb16e8292123a140f7025c4013c8a3",
+"bytes": 343987,
+"canonical_id": "C-0071",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/montreal-reviewing-four-bikes-paths",
+"sha256": "5610660a7259a5254fa39ea44a2732ede15c0c1fe3a2449a039ac2f336583744",
+"bytes": 117068,
+"canonical_id": "C-0072",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/multimodal-road-safety-program-oversight-program-description-delivery-fiscal-year-2025-2026",
+"sha256": "cd2521997023335fbc52d9392c0248c4960fa7cd72eb3a1a9604a4bf93e01fd6",
+"bytes": 53486,
+"canonical_id": "C-0073",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/mx-443930528752",
+"sha256": "4df734b2680ef288efaf73af381f40678c263667e4ce65058e993ce0ffd94c5b",
+"bytes": 59422,
+"canonical_id": "C-0074",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/new-brunswick-has-highest-road-death-rate-in-the-country-report",
+"sha256": "736f2d4b722cc0ff5dd669d1dad8773e02f1136ddf2ebcdd0f592d6d69bbc0b7",
+"bytes": 371102,
+"canonical_id": "C-0075",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/nr230045.htm",
+"sha256": "e3d3dde38d4fdc5bfeeb852e90e7e388294a77528c5285c8cd133c9d4d0a241d",
+"bytes": 113311,
+"canonical_id": "C-0076",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/overview-of-the-piarc-road-safety-manual-carl-belanger-ppt-presentation-553695",
+"sha256": "d53250d3f7f6c3c073797ad2691afd5075d20af7332387bde8d00e78ff7156f8",
+"bytes": 91968,
+"canonical_id": "C-0077",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/pathways-to-highway-safety-what-we-heard-report",
+"sha256": "9084284e96986db974f892c72f9e97ef301e590d45d17bacc597e5d942b14739",
+"bytes": 125534,
+"canonical_id": "C-0078",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/pei-government-putting-in-roundabout-at-major-intersection-in-oyster-bed-bridge-196243",
+"sha256": "15ad7e10c892fdc8e0447639252a116cdfd814a1c63d56cb49a381b8dffbc735",
+"bytes": 241701,
+"canonical_id": "C-0079",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/pei-roundabout-revolution",
+"sha256": "adb55ea7ee6f3d68642f53a4c32550dfe4609a4ab6d8e47f1c93287f4a71f8e6",
+"bytes": 283835,
+"canonical_id": "C-0080",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/piarc-road-safety-audit-guidelines",
+"sha256": "960f2b9b0e029e9796b35bb3694868987512b498db1ba9d06936b6cc7409f842",
+"bytes": 131708,
+"canonical_id": "C-0081",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/plan-action-securite-routiere",
+"sha256": "3e3b8d70ab29dc1405f01b553239de97024d0924ca86d7e8ab834163ad2c7b6c",
+"bytes": 56785,
+"canonical_id": "C-0082",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/plan-daction-en-securite-routiere-2023-2028-lancement-de-la-premiere-semaine-nationale-de-sensibilisation-a-la-securite-des-travailleurs-routiers-56545",
+"sha256": "83b8b344132a932ca403ed969eb3d97030929ca8ac3fb7bc25f5f8ab69411ab1",
+"bytes": 51679,
+"canonical_id": "C-0083",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/plan-securite-routiere-ecole-chantiers-quebec",
+"sha256": "246665b82c889c7a9f9b27160d9e016b0e98b0ffde07e87c52b43c4fab33c317",
+"bytes": 681719,
+"canonical_id": "C-0084",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/planning-design-operation",
+"sha256": "fb7a2efb967863731269e1fe5f3331610fc6f12f1b1dbdec5bc70824f43709e2",
+"bytes": 81154,
+"canonical_id": "C-0085",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/prince-edward-island-to-enhance-safety-on-troubled-route-2-segment",
+"sha256": "59ff6e9b42638a85edc7569e313bdeebdc19329df7b3ea1925e2aab82617bc11",
+"bytes": 67197,
+"canonical_id": "C-0086",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/proactive-identification",
+"sha256": "53082f3e5eea121ddda8a8fb731c9d32dd5c67abe2fc50e2c45358e8a21d0ce6",
+"bytes": 153906,
+"canonical_id": "C-0087",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/ptm-crsag-e",
+"sha256": "6339cd03e9aa91ba70d13c3733d62fe86b6d4aad55b09fad2ac92e00b5f7c223",
+"bytes": 375001,
+"canonical_id": "C-0088",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/ptm-inservice-e",
+"sha256": "b8a0ef44cc676aef0d2dc5a8303f582572bc502a043d82e8746335a967d3e71d",
+"bytes": 376063,
+"canonical_id": "C-0089",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/ptm-rshandbook-e",
+"sha256": "9a7e17d93afdfb3df452ac631a395a4e52c12ad1afe9278b4c82f1f31e53266a",
+"bytes": 375788,
+"canonical_id": "C-0090",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/publications",
+"sha256": "bbd6da3539cf1a0319c1eaf9dabc8cd9bb7baca2a08384acf582427ac4000cf8",
+"bytes": 125134,
+"canonical_id": "C-0091",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/questions-mount-over-e-scooter-rules-as-provincial-road-safety-consultations-end-thursday",
+"sha256": "4990d20049cdeaee90735f4d51051cbe78e2ce9b77140154c95436da605a18c1",
+"bytes": 99857,
+"canonical_id": "C-0092",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/reamenagement-avenue-du-parc-chantier-reflexion",
+"sha256": "491c4d8e0fe031663ccf4f001354ab1dfcc10691f9dde983eff83299f885ead8",
+"bytes": 623699,
+"canonical_id": "C-0093",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/reeves-street-s-safety-st-tudy",
+"sha256": "2ce5d407020cc593ee1dc33b7a417f6702fa12eb51d476305cd20a9117a3d635",
+"bytes": 58786,
+"canonical_id": "C-0094",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/road-safety",
+"sha256": "acd2b943ce33d8b91813deee5fc54dc00e1b0199ada939b9e9cbf47f26a914db",
+"bytes": 86144,
+"canonical_id": "C-0095",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/road-safety-audit-guidelines",
+"sha256": "166abc7768b336829e1283aec1d4fae7fa6e221b29ff96e1af9bd550444bcbc5",
+"bytes": 138851,
+"canonical_id": "C-0096",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/road-safety-audit-pdf-125-mb",
+"sha256": "15e64ee7fb2c45660a568e8882b626bd22b337828ff9367d2489c03dc160a8e2",
+"bytes": 188873,
+"canonical_id": "C-0097",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/road-safety-audits",
+"sha256": "3ba2951e19c7f2666a742ab2746fb3f4ed5d1dbb93efa3de56754a3a243ea74f",
+"bytes": 333476,
+"canonical_id": "C-0098",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/road-safety-data-new-brunswick-9.7072706",
+"sha256": "f4d94619647a8618031cd340622daa13f7a1bfcf6fc1150b1c49f0ec67fc2c18",
+"bytes": 146088,
+"canonical_id": "C-0099",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/rsa-guidelines.pdf",
+"sha256": "a04c48f4ef339e7d8168e9ed3e230077e9db1c29f2f7e7c0410237bc716c3ced",
+"bytes": 3505854,
+"canonical_id": "C-0100",
+"exact_dup_group": "a04c48f4ef33"
+},
+{
+"path": "canadian-html-quarantine/safety-audits",
+"sha256": "aba7ca263ff0f8b846614c4703ffbea86d4f40e18e83cce2ef190904fec23fdc",
+"bytes": 149864,
+"canonical_id": "C-0101",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/safety-reviews-ppt-presentation-582069",
+"sha256": "d2c0049cb8e965a1a529dcac0ba64929683069f553cf2fc701705d6c77ab1aa1",
+"bytes": 92467,
+"canonical_id": "C-0102",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/safetyandspeedreview",
+"sha256": "52648c47a49ae23ddf1c99b6f39708716fc66a4e0a32f9d260189f6e0ccbe93d",
+"bytes": 281595,
+"canonical_id": "C-0103",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/strategy-to-lower-worst-road-death-rate-wont-be-ready-till-2028",
+"sha256": "e72dc6da088059296448e2b38f9865775300d173b0dafc74b54c8907af3af826",
+"bytes": 363376,
+"canonical_id": "C-0104",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/survey-seeks-public-input-on-10-year-road-safety-strategy",
+"sha256": "c574d42ae0648dc1cd171ccc7a7751245fbbe87a2728e9f27a87ffaaed7c59ba",
+"bytes": 125534,
+"canonical_id": "C-0105",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/t02-04c.pdf",
+"sha256": "75645c0e6de990fbc2db08decd6a04b1569cd1e81e94405f9b57b5978c1bfa48",
+"bytes": 167752,
+"canonical_id": "C-0106",
+"exact_dup_group": "75645c0e6de9"
+},
+{
+"path": "canadian-html-quarantine/tie_annual_report_2020-2021.pdf",
+"sha256": "24301fa34bb3b83360c77a6fb6e9bd1b24c98c4ee681c04ce82889b2aaf6114c",
+"bytes": 5500472,
+"canonical_id": "C-0107",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/transportation-and-infrastructure-renewal-1146",
+"sha256": "db9feb20dff4bb08488c43368c9a08f94fb91a7b80f9b604d257d93e63b8b229",
+"bytes": 230613,
+"canonical_id": "C-0108",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/transportation_infrastructure_annual_report_2023-2024.pdf",
+"sha256": "ec392580ee28167cef6ca66f77a9479a4d531b31a9f483829514a0c47b214f7a",
+"bytes": 2979939,
+"canonical_id": "C-0109",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/update-evaluation-transport-canada-s-road-safety-transfer-payments-program-rstpp",
+"sha256": "018fe7a56c7f99e6770a78a6dd36f45eb8fc8827e5482255611ac204dccf3b37",
+"bytes": 128942,
+"canonical_id": "C-0110",
+"exact_dup_group": null
+},
+{
+"path": "canadian-html-quarantine/vers-l-amelioration-de-la-securite-routiere-pour-tous-5734320",
+"sha256": "66a8b3474603328528229b184eade1bd0fc7c0f6db451e1c35d9b829ad58f885",
+"bytes": 173616,
+"canonical_id": "C-0111",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/5_PIARC-and-ROAD-SAFETY.pdf",
+"sha256": "573c02f966e5e5620b9d2fba2850812b63ccdd7ea4ae5fa0f5d099a015cbe753",
+"bytes": 1266001,
+"canonical_id": "C-0112",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/6C-Steel_Development-of-a-Road-Safety-Audit-Network-Screening-Tool.pdf",
+"sha256": "2e563482bbf8ea28dc487293d48fb8a7cebd06ad94f932a4a1be4c7c2e92e2fa",
+"bytes": 1626690,
+"canonical_id": "C-0113",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/BC-Transit-Infrastructure-Design-Guide-2026.pdf",
+"sha256": "0c0ac208d8f1d61ee23c29ececf6067b07393b8670bb463cecc00fc3325c3f2c",
+"bytes": 3634438,
+"canonical_id": "C-0114",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/DS-27_BRT_Architecture_Design_Standard.pdf",
+"sha256": "de5bfa180ce1b381b3e2b09bcb5f79c09ea3c752eb5cc75e71a3030e321f4709",
+"bytes": 12325755,
+"canonical_id": "C-0115",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/SA7-King-20240123-1.pdf",
+"sha256": "6cdd08eb32faa63db716926e485a5f30140221dfc6d5a726c1a38fb5b4a4de09",
+"bytes": 1977693,
+"canonical_id": "C-0116",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/bus_infrastructure_design_guidelines-sept_2018.pdf",
+"sha256": "e382ef2e08e64053be2206c4c583892fc674a4dbed007365bf7a8291cbfe8092",
+"bytes": 9780462,
+"canonical_id": "C-0117",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/cmfs_for_bc_2008.pdf",
+"sha256": "0bece75fa292f7d97a822dfac5895be9bd318aeaf37e070d874691d88fad7dab",
+"bytes": 12612873,
+"canonical_id": "C-0118",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/dsbrt_epr_appendixa2_stopsarchitecture_0322_gkgf35.pdf",
+"sha256": "327866e6e9bb07f4c0023f0ff8aa929bc44758fbdf6564ff51da7b105146a84f",
+"bytes": 4624487,
+"canonical_id": "C-0119",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/guide_transportation_safety.pdf",
+"sha256": "4df89906c42f85ebc5c9559a3702a8c749696b25ea880e9c52d5440df5689a8a",
+"bytes": 4411664,
+"canonical_id": "C-0120",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/kwan.pdf",
+"sha256": "25b53cd56c62bbcd5fa164763963417dd604cc056e9be4bd218768c6a65edef6",
+"bytes": 2160118,
+"canonical_id": "C-0121",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/nabavi-niaki13method.pdf",
+"sha256": "2cc25653df18292a8327b6a100110e3ddf0ec1d680d8850ccf5453281678ba5a",
+"bytes": 1388370,
+"canonical_id": "C-0122",
+"exact_dup_group": null
+},
+{
+"path": "canadian-methodology/tableau-synthese-des-actions-du-PASR-2023-2028.pdf",
+"sha256": "c56a71c3fc41b520fb9cd6fd0c45ed994038279037cec32efc05384fe612e970",
+"bytes": 158072,
+"canonical_id": "C-0123",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/0975119.pdf",
+"sha256": "c0d3a29c8b336ae9c56510b5de190fd4338864223fef86e8cca0de5bb54951a9",
+"bytes": 91235,
+"canonical_id": "C-0124",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/180628tsc1211pres.pdf",
+"sha256": "03ddc3f1c64dcf93197de9017f69227bef93584ffbe30224aad00dd912570ad2",
+"bytes": 927653,
+"canonical_id": "C-0125",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/1_-_ICBC-City_of_Richmond_Road68731.pdf",
+"sha256": "dd437846bfb21c5758c846ff2fc428db7bfbe617cb606837d4de6b91bff7ef60",
+"bytes": 1006952,
+"canonical_id": "C-0126",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/2020-08-17-Dundas-BRT-IBC-Final-Draft.pdf",
+"sha256": "ca7eae18acb48b9f6246a72850975cdb1a24d80c7cc0c5fc5cbb0903848264ff",
+"bytes": 4048528,
+"canonical_id": "C-0127",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/2021_02_03_QueenStreetBRT_IBCReport.pdf",
+"sha256": "4539cde0b9d22eac604c4b797d679f6a8029566a9ddc182b11df584d79be3ff5",
+"bytes": 19789458,
+"canonical_id": "C-0128",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/47736.md",
+"sha256": "a995904d9cbbf931686c20457fa535bdf8650a09c0f5a144133acb764dc6e2c4",
+"bytes": 5282,
+"canonical_id": "C-0129",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/84587.pdf",
+"sha256": "02ddb524db456667dce01c458806c5068aff7e7726c2d4d6267a9c259cc87bf9",
+"bytes": 227444,
+"canonical_id": "C-0130",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Appendix%20D-4%20-%20Vision%20Zero%20Assessment.pdf",
+"sha256": "e6c8f3f294914a2bae0352408b03cb137afa811b901ff7f4421c428e48f5b6f0",
+"bytes": 324176,
+"canonical_id": "C-0131",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Appendix%20D.pdf",
+"sha256": "94dbd73a456ad1eea82392c4fc00b3b3ce1a7946207979c81d349d15b67e7169",
+"bytes": 335141,
+"canonical_id": "C-0132",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/CR_2019-R119.pdf",
+"sha256": "18614f44c3af12b1e1ade77c69d7879ce28fa8182250d677c354c7e208ad6001",
+"bytes": 780974,
+"canonical_id": "C-0133",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/DRSP_PPAS_FeuilletSailliesTrottoir.pdf",
+"sha256": "87e45f0a6a6293d7d404d799801d81e17137c0925f2d9e90e6b98451ff13c93c",
+"bytes": 162173,
+"canonical_id": "C-0134",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/DRSP_PPAS_QuartierSanteCHUM.pdf",
+"sha256": "f15966a3794b37e6f29bddd167764f4dd22f186a5b8b7beaf5084400818e03f5",
+"bytes": 1433799,
+"canonical_id": "C-0135",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/ICBC-City_of_Richmond_Road_Safety_Improvement_Program_Update_202679416.pdf",
+"sha256": "ed642037bbe2e09f713fe105cf0339d3b6e8dee342e6e66d147bebecaa8de4a4",
+"bytes": 1072356,
+"canonical_id": "C-0136",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/MORCOAR%20User%20Guide.pdf",
+"sha256": "4ba0cf7a24bf00a1305ea18500e136a42b37a15e1dc6a8cef3ec1cb9839dc3e2",
+"bytes": 408931,
+"canonical_id": "C-0137",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/NS_Road_Safety_Survey_2010.pdf",
+"sha256": "596fa23fb2b158b9540943384ca641c8c11c1213535847006ed929f113ae56d7",
+"bytes": 1185664,
+"canonical_id": "C-0138",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/PDF",
+"sha256": "625cd43638893bf3028cd0242c5a406cecfb4fb63e2084f02583f5441d7d65a6",
+"bytes": 1155820,
+"canonical_id": "C-0139",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Pathways%20to%20Highway%20Safety%20What%20We%20Heard%20Report_2025.pdf",
+"sha256": "989ba1f4c257e81e82daa90ced2a5c0200579a50893fd7cf58ad720f76c7cbe9",
+"bytes": 1793969,
+"canonical_id": "C-0140",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Plan_action_securite_routiere_2023-2028.pdf",
+"sha256": "e7ec676b563cbee5c84c69e1822f4a69a0b2bb9f2cfd292e8d22745b722dfb01",
+"bytes": 687561,
+"canonical_id": "C-0141",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Polytechnique_Project_Proposal_framework.pdf",
+"sha256": "8974edb485d6a6193a4438b1dcff69587c04dde35ae513e2fd004c4ce6ce712b",
+"bytes": 73060,
+"canonical_id": "C-0142",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Queen-St-Hwy-7-BRT-IBC-Final.pdf",
+"sha256": "c8c99241d8301faf0fef0c1aadee40243292add37bde98592029ac4dfbce40eb",
+"bytes": 15354203,
+"canonical_id": "C-0143",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Road-Safety-Audits-PDF",
+"sha256": "24c5aa8bb2270d2aaf79a1de49597b2dd071e9bbf12f27b61e4c122d8f51c06e",
+"bytes": 133473,
+"canonical_id": "C-0144",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/STR_summaryreport.pdf",
+"sha256": "772eab0fcbd122a23574f8150613f461aab2adb8e9b0f368ed641f03973031b7",
+"bytes": 221308,
+"canonical_id": "C-0145",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Safety%20Review%20Presentation%20Final.pdf",
+"sha256": "c3ca1f26293287389234192c3c1dc6cb775873e8a0b007e751a40e9e38cf0c60",
+"bytes": 1040346,
+"canonical_id": "C-0146",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Strat%C3%A9gie%20de%20s%C3%A9curit%C3%A9%20routi%C3%A8re%202025-2029.pdf",
+"sha256": "77c4e95be02c1a1678ec98cf5cf777cdc4806f3f94a773c489d4d046e36a2a18",
+"bytes": 6166453,
+"canonical_id": "C-0147",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/Team-Gushue-Highway-Connection-Final-Report-Rev2-ITC-Jan-17-2022.pdf",
+"sha256": "b24a4af5e7e6370c8b463b789c4d576ea3ab294b39c0dbe24ce2bb8f34d19d44",
+"bytes": 25551717,
+"canonical_id": "C-0148",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/approche_integree_securite_routiere.fr-CA.pdf",
+"sha256": "95d707bb28b8be09bd4819186bc279b17e5ca744460c25211d77e0ba5b0afa51",
+"bytes": 8677029,
+"canonical_id": "C-0149",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/arteres_fiche1.pdf",
+"sha256": "e494e48530a92b3d69f37c51022fdc0bc03167e0628e768fc0ac6b7e2ad2a056",
+"bytes": 953602,
+"canonical_id": "C-0150",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/attachment-1-road-safety-strategy.pdf",
+"sha256": "4996aca3f48abdd02082dcbc6eb627b96aebacb5b66cc7f332f1d983c89a3f70",
+"bytes": 4920363,
+"canonical_id": "C-0151",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/backgroundfile-222933.pdf",
+"sha256": "eee9a2e1b35d4b06d22f38689b00b51d71a260aafc52eedd0550a763ca700d63",
+"bytes": 164215,
+"canonical_id": "C-0152",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/backgroundfile-238895.pdf",
+"sha256": "042bf3566cfb7c3d7aa00e0878a94cf82d101d38056d3ad332053a251a142a6d",
+"bytes": 443472,
+"canonical_id": "C-0153",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/backgroundfile-239521.pdf",
+"sha256": "7db0ef99d7c6b20d30e96918aacc1d071d230369384bce8e56190c77d01026ee",
+"bytes": 204360,
+"canonical_id": "C-0154",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/backgroundfile-240266.pdf",
+"sha256": "c2118e213f61aba72578573dc088da93228266444ec654d284a8c65ae042d5e8",
+"bytes": 451749,
+"canonical_id": "C-0155",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/bcrss_2025_final.pdf",
+"sha256": "4a6a8689f70e8b7579883f8b9da5525707eebf030c3515adcfc8bbe9461823e5",
+"bytes": 3427228,
+"canonical_id": "C-0156",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/brt-phase-2-engagement-summary.pdf",
+"sha256": "ee1408c0153cfea88c1f7d453f13f40d687fcecae5c1d58a1e9d288143c41bda",
+"bytes": 6964903,
+"canonical_id": "C-0157",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/c7f9e509-7146-75b5-1c41-39c8a7d15d8d",
+"sha256": "97a71f697930bfdbe76cc745fa834e885e95588e1e94bb77ac40e41e14a79922",
+"bytes": 435311,
+"canonical_id": "C-0158",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/cos_stsap_finalsummaryreport_october2013.pdf",
+"sha256": "f02d120639b76f1cb21ab99652a393c7e5f27918e0c763be7084be662ff18cad",
+"bytes": 759800,
+"canonical_id": "C-0159",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/cosbrt_draft_mae_final_march_2018.pdf",
+"sha256": "62680bf90b107ef82d0aa52fbb92f33683be3b4dc7d0164891d0c3a706e349d9",
+"bytes": 625787,
+"canonical_id": "C-0160",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/document_constitutif.pdf",
+"sha256": "465afbb2a5c13ef97ac0fd43f2a213227ea4dd175f465eff50ffed4ecc841976",
+"bytes": 1133429,
+"canonical_id": "C-0161",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/download",
+"sha256": "2f6a2041dcf8036cbe4af99df34c1edebbd327978d20f9515bf081c838375cba",
+"bytes": 11848304,
+"canonical_id": "C-0162",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/filestream.ashx",
+"sha256": "4de534e520dd417ea747ee7c8e7c4ce69676ae73c8483c4e6b6c20c2a1b38fe1",
+"bytes": 144422,
+"canonical_id": "C-0163",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/gateway.aspx",
+"sha256": "046369e94f4a848fe163d2112af94d1bf742608b83cbea4d4bf574135865a803",
+"bytes": 775159,
+"canonical_id": "C-0164",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/liu.pdf",
+"sha256": "4b4e5cb044f7f56c0931737587204d6a7479fb2788513ecb34d74fa77f376983",
+"bytes": 616142,
+"canonical_id": "C-0165",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/modalites-PAFFSR-2022-2025.pdf",
+"sha256": "81c94cb5e7124d9d21b221fe5c6b62676164474198d175bf31a13b5c6a8032f4",
+"bytes": 304380,
+"canonical_id": "C-0166",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/mouldss_-_highway_11_and_16.pdf",
+"sha256": "aa342dc4e3a4ceed583f0ab2d00a4299e68773154838fa8a0694ce54eff4ba12",
+"bytes": 3169568,
+"canonical_id": "C-0167",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/ngieng.pdf",
+"sha256": "199e995b82224d9a287a700f7285d2a251918e3cfbae64c685140005f209603f",
+"bytes": 3751479,
+"canonical_id": "C-0168",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/plan_action_securite_travaux_2023-2026.pdf",
+"sha256": "4a12806ad43abf22ee65830875ed091614ea8270ecf220ea7f5859fd286fca01",
+"bytes": 1456270,
+"canonical_id": "C-0169",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/presentation-ssrt.pdf",
+"sha256": "ca24986479baf206d13fd1ff8b2ad016435ce23c8702744499d7e34bb0a46acb",
+"bytes": 2020861,
+"canonical_id": "C-0170",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/prog-report-rs22a.pdf",
+"sha256": "8a1e6cea5f8c0ea79d09ba48ec12b0e7478590a55052d2c9e342fc9f47df1b38",
+"bytes": 3131043,
+"canonical_id": "C-0171",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/pth1_5_-_r2b_storyboards_-_en.pdf",
+"sha256": "92cae3fe20867b8dff65eacf442d8dbc8e79b5d3e76bfc50aeadf3a4236c2231",
+"bytes": 10748230,
+"canonical_id": "C-0172",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/pth1_5_r3_storyboards.pdf",
+"sha256": "ccef63c258f14f287d6cb05fd3c25e1d99ff681cd23a93324a479b2afc90c2f3",
+"bytes": 17524387,
+"canonical_id": "C-0173",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/report-trafalgar-road-corridor-oakville-(3)",
+"sha256": "a61b3bc2c8ba653dcb18d6f1cbd8c65cd2bdbd6e4351039aa1e4f52362e57fdd",
+"bytes": 9509032,
+"canonical_id": "C-0174",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/resource-kit-community-road-safety-toolkit-module3.pdf",
+"sha256": "884c1b227ae16861b2b2f8df0ebbf399206a37d154b193929b213fadb33eb390",
+"bytes": 4558253,
+"canonical_id": "C-0175",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/rip-evaluation-report.pdf",
+"sha256": "a0d58428e8a2da9219a4737469e0a6920b4a50aea4ad8b8cbe047f7b6d591959",
+"bytes": 1692135,
+"canonical_id": "C-0176",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/scott.pdf",
+"sha256": "230b48884d26400923b012d52f80c7e5c31e15ac9b0fc4f5635debfb1dcf244e",
+"bytes": 1019678,
+"canonical_id": "C-0177",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/strategie-prevention-securite-routiere-2021-2025.pdf",
+"sha256": "c6a2730d8abc97cfca12e389fa7a49bf1af1f9919cf1a304be96c629348ef74b",
+"bytes": 4617385,
+"canonical_id": "C-0178",
+"exact_dup_group": null
+},
+{
+"path": "canadian-not-audit/whiteley.pdf",
+"sha256": "960b8e563e9a54e6a37a064e4801faf4ced97aa419b3ebf67026e19359afaccf",
+"bytes": 666356,
+"canonical_id": "C-0179",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/02_Volume_2.pdf",
+"sha256": "59d11786dcf059e3a046016191030a236af035d09e2f83f3ec57d57c09141893",
+"bytes": 1563356,
+"canonical_id": "C-0180",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/1032147.pdf",
+"sha256": "399bc1f511e450864c0f25e7480ef3c088ea6ec3e5eb345445d88c4fae628d2d",
+"bytes": 1941490,
+"canonical_id": "C-0181",
+"exact_dup_group": "399bc1f511e4"
+},
+{
+"path": "canadian-quarantine-v2/191125.pdf",
+"sha256": "ee9e609982fb1c646b0ef25e3d33ac6f80b908fe8daf44627aec6cf024e26a66",
+"bytes": 19840389,
+"canonical_id": "C-0182",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/613794_bb0b5964f1ee4e2f805eba4441826d11.pdf",
+"sha256": "7d00421462dcdbc9053577957e56e972c234421c8a76eee1bd78e16de53e79e5",
+"bytes": 8034252,
+"canonical_id": "C-0183",
+"exact_dup_group": "7d00421462dc"
+},
+{
+"path": "canadian-quarantine-v2/Burlington-City-Route-130-PRSA.pdf",
+"sha256": "ea4579b08870f07505480f58ad78acfd585f93015763d40d635738f3ccb57aaf",
+"bytes": 19485677,
+"canonical_id": "C-0184",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/Coordinating Road Safety Reviews with Bicycle and Pedestrian Project Prioritization.pdf",
+"sha256": "a7af771e7279353f70f312c45455a38897446f914751a1630df1a5ad48ef2f69",
+"bytes": 640704,
+"canonical_id": "C-0185",
+"exact_dup_group": "a7af771e7279"
+},
+{
+"path": "canadian-quarantine-v2/Newfoundland-and-Labrador-2016-Roadside-Litter-Audit-Reduced.pdf",
+"sha256": "5e8714e70a0893ac41d5d69b79c7a6eb2350a1900e0cdbee56515fb277df09be",
+"bytes": 2474362,
+"canonical_id": "C-0186",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/SafetyAudit.pdf",
+"sha256": "e52c60ba3ab6d4bae1eae7ae4225f655692f235aa7349269e8ada51d1c9a8d31",
+"bytes": 2376566,
+"canonical_id": "C-0187",
+"exact_dup_group": "e52c60ba3ab6"
+},
+{
+"path": "canadian-quarantine-v2/Webinar_PBIC_102323.pdf",
+"sha256": "dce638f47cc75d529385c67cbbcfc7a7152168ae5a1d9ba604999bfb2e351efa",
+"bytes": 6690095,
+"canonical_id": "C-0188",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/bike_safety_audit.pdf",
+"sha256": "b1af7f0e39e17d5036ac4f3e2039db0cc1b25483b019b9cd0e4338de454b5cd1",
+"bytes": 26856719,
+"canonical_id": "C-0189",
+"exact_dup_group": "b1af7f0e39e1"
+},
+{
+"path": "canadian-quarantine-v2/manifest.json",
+"sha256": "e0b75b7a1d296d36b22cbb3b2dae94d50ca0f08d436d604dbd1acf20e3cefa4e",
+"bytes": 880,
+"canonical_id": "C-0190",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/safety-reviews-and-audits.md",
+"sha256": "8ded162ac764ae6f4f7e32e0199341d37813e3721eb1cb86112ef5de51503b0b",
+"bytes": 93791,
+"canonical_id": "C-0191",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/sources-angles.txt",
+"sha256": "0298cae20730ba2f983a74ed76e29b0b4195417998862fd04a3f75bacc62cba0",
+"bytes": 574,
+"canonical_id": "C-0192",
+"exact_dup_group": null
+},
+{
+"path": "canadian-quarantine-v2/urls_2026-09-07.txt",
+"sha256": "af2a75e68b469d71b69c85655c521995e04d14a2e730470a8375743f1fb35602",
+"bytes": 525,
+"canonical_id": "C-0193",
+"exact_dup_group": null
+},
+{
+"path": "canadian/101%20Road%20Safety%20Review%20Report.pdf",
+"sha256": "7e245a767447a4e3d1065636d22163f8a760a99fa9fa19e4d04a8827ddf50571",
+"bytes": 3146679,
+"canonical_id": "C-0194",
+"exact_dup_group": null
+},
+{
+"path": "canadian/104%20Road%20Safety%20Review%20Report.pdf",
+"sha256": "6c1e621ab7ec8f922bff09e598f8879a1cf151ac2de3e0210baec37cce978e8f",
+"bytes": 3335945,
+"canonical_id": "C-0195",
+"exact_dup_group": null
+},
+{
+"path": "canadian/105_Road_Safety_Review_Report.pdf",
+"sha256": "3a9d98257710ee834ada61880ef44b7fa157bb3f6654e38f81e4b2712baea27b",
+"bytes": 2277035,
+"canonical_id": "C-0196",
+"exact_dup_group": null
+},
+{
+"path": "canadian/180628tsc1211.pdf",
+"sha256": "fe62886d5c072ed987bf6b4773522ce37f8a157809b60ca7cbba2b28a371e86a",
+"bytes": 5517478,
+"canonical_id": "C-0197",
+"exact_dup_group": null
+},
+{
+"path": "canadian/2004%20-%20June%20-%20Ch%2009%20-%20Road%20Safety.pdf",
+"sha256": "0a99c1806e9db0f6dee3fadccb40ec23c1ef70b414172ccbf06d55cb167db19a",
+"bytes": 338540,
+"canonical_id": "C-0198",
+"exact_dup_group": null
+},
+{
+"path": "canadian/2004-rsa-guidelines-final-report.pdf",
+"sha256": "8b12c2b41ed50c54b7a732f3050265d000b86f55ff98a43733be3bf8c39013fb",
+"bytes": 83448,
+"canonical_id": "C-0199",
+"exact_dup_group": null
+},
+{
+"path": "canadian/2004-rsa-implementation-plan-final-report.pdf",
+"sha256": "6177283b61030fe65044a84b83566ddb947c5201a77d8b2d5c75b84d1d0441ab",
+"bytes": 152695,
+"canonical_id": "C-0200",
+"exact_dup_group": null
+},
+{
+"path": "canadian/200901rci13.pdf",
+"sha256": "8988bc86a7b8b808c1c808f933b4389ac61e1f8ec45eadd6567223ef33454c90",
+"bytes": 7535887,
+"canonical_id": "C-0201",
+"exact_dup_group": null
+},
+{
+"path": "canadian/210722tscinfo2.pdf",
+"sha256": "a865cd1a8513b38ed8c0ad867a54966bd7b1276ec1045b55af01c0340593a9bf",
+"bytes": 6622533,
+"canonical_id": "C-0202",
+"exact_dup_group": null
+},
+{
+"path": "canadian/240709rc1561.pdf",
+"sha256": "064f77f4f4916da7e4f0e6474fcc8326803e4502a1729dfc3798d370b1108910",
+"bytes": 9946941,
+"canonical_id": "C-0203",
+"exact_dup_group": null
+},
+{
+"path": "canadian/BC_MoT_RSA_Guidelines_T02-04.pdf",
+"sha256": "75645c0e6de990fbc2db08decd6a04b1569cd1e81e94405f9b57b5978c1bfa48",
+"bytes": 167752,
+"canonical_id": "C-0106",
+"exact_dup_group": "75645c0e6de9"
+},
+{
+"path": "canadian/CR_2025_R248.pdf",
+"sha256": "e3b7b3c091888c53162cf74117a94af8d8e67bc7d54c0b0a783c7796f0f5aea1",
+"bytes": 1787572,
+"canonical_id": "C-0204",
+"exact_dup_group": null
+},
+{
+"path": "canadian/DRSP_PPAS_ActeColloqueInternationnal.pdf",
+"sha256": "889cd7c772398801e03307de978149c668922a3fc7dd35091076cbed94101d90",
+"bytes": 1216083,
+"canonical_id": "C-0205",
+"exact_dup_group": null
+},
+{
+"path": "canadian/DSBRT_PDBC.pdf",
+"sha256": "f7733da0e06c1674f2f8cfdb294fed4ee661ac152f04cf9ff215c09898c6e235",
+"bytes": 9323737,
+"canonical_id": "C-0206",
+"exact_dup_group": null
+},
+{
+"path": "canadian/HD_19-03_EN.pdf",
+"sha256": "b5ae43a21b2e527b8dbe06683ffd418ecf1709f6e53c6de19306ecb5f7329235",
+"bytes": 365249,
+"canonical_id": "C-0207",
+"exact_dup_group": null
+},
+{
+"path": "canadian/January-2025-Monitoring-Report-WEB.pdf",
+"sha256": "79c1a449a993971dd8676ccbaaf4b662524ed00237a8a7e3e334e1c93c3500ad",
+"bytes": 7628034,
+"canonical_id": "C-0208",
+"exact_dup_group": null
+},
+{
+"path": "canadian/Manitoba-Road-Safety-Plan_2022-Update_FINAL.pdf",
+"sha256": "87af3eb0e29febfac456c207ecc0ff32a42003b0d85dc5706aae346dd75dffb2",
+"bytes": 719278,
+"canonical_id": "C-0209",
+"exact_dup_group": null
+},
+{
+"path": "canadian/OC%20Transpo%20Transitway%20Road%20Safety%20Audit.pdf",
+"sha256": "b28c45bf100bb713a419a1d234e256e671e969e44ac01e4e80a0228fc3d4959c",
+"bytes": 6566655,
+"canonical_id": "C-0210",
+"exact_dup_group": null
+},
+{
+"path": "canadian/OC_Transpo_Transitway_RSA.pdf",
+"sha256": "a24707c6081a279fa899064bc95dba02d1664993f3b8c7b6491654f20b74789d",
+"bytes": 5977941,
+"canonical_id": "C-0039",
+"exact_dup_group": "a24707c6081a"
+},
+{
+"path": "canadian/PAC+18-29+Highways+and+Infrastructure+status+update+Feb+8%252c+2021.pdf",
+"sha256": "53b3c39f22628e5fabb892cdc41e322b975000794199f77f3be2c218707d1f15",
+"bytes": 124267,
+"canonical_id": "C-0211",
+"exact_dup_group": null
+},
+{
+"path": "canadian/PMD-07-cadre-intervention.pdf",
+"sha256": "5f60c79e8dd1aa25b5763864d75118fcd8ef06e4cc5b303a46c0a07fad3514c4",
+"bytes": 1352118,
+"canonical_id": "C-0212",
+"exact_dup_group": null
+},
+{
+"path": "canadian/ProspectAve_RSA_Report_FINAL.pdf",
+"sha256": "5034988c8b42e3564f6ccb7d96fddf228bc83c2ed895f9a9979c1a7f2711233d",
+"bytes": 1658700,
+"canonical_id": "C-0213",
+"exact_dup_group": null
+},
+{
+"path": "canadian/Session-1-CCMTA-Yukon-Google-Glass-for-In-Service-Road-Safety-Reviews.pdf",
+"sha256": "f3d2064ac3f4acfc6d144109b0eb2f0e037439e8db4c4be97c05ac778f6bc62f",
+"bytes": 3178603,
+"canonical_id": "C-0214",
+"exact_dup_group": null
+},
+{
+"path": "canadian/TAC_RSA_Pre_Opening_Lessons_Learned.pdf",
+"sha256": "433b3bdc53815225f5d37c60e8bdebd86ec8491a920da0cd853d0b7d50956834",
+"bytes": 1412110,
+"canonical_id": "C-0063",
+"exact_dup_group": "433b3bdc5381"
+},
+{
+"path": "canadian/TC-QMM-107783.pdf",
+"sha256": "c8476e3de585578769ab4948429a774231043a04fc70dfcd7818cd2bfa8a52e0",
+"bytes": 7020986,
+"canonical_id": "C-0215",
+"exact_dup_group": null
+},
+{
+"path": "canadian/TLPA-Schedule%2015-2%20Part%202%20-%20Civil%20and%20Guideway%20-%20Appendix%20D%20(Redacted)-AODA.pdf",
+"sha256": "317686360c9bf49bea709c04262f68e8f2d43fa213572fc5b837cf8e16fa2553",
+"bytes": 179855,
+"canonical_id": "C-0216",
+"exact_dup_group": null
+},
+{
+"path": "canadian/UFOR_401_Melfa%20Road%20Walk%20N%E2%80%99%20Roll%20Tactical%20Urbanism%20Interventions_FinalReport.pdf",
+"sha256": "b7ad7bb3b6afe8ad26cc11c90bccac03a80d93467ab576bd116c10d484a002ba",
+"bytes": 5981596,
+"canonical_id": "C-0217",
+"exact_dup_group": null
+},
+{
+"path": "canadian/UNB_Canadian_RSA_Guidelines_with_Case_Studies.pdf",
+"sha256": "a04c48f4ef339e7d8168e9ed3e230077e9db1c29f2f7e7c0410237bc716c3ced",
+"bytes": 3505854,
+"canonical_id": "C-0100",
+"exact_dup_group": "a04c48f4ef33"
+},
+{
+"path": "canadian/VGQ_nov2023_web.pdf",
+"sha256": "13ecffb76bd673983e2f69d93d6a20c1c43ad136627e18f8170988e690647dfe",
+"bytes": 8927868,
+"canonical_id": "C-0218",
+"exact_dup_group": null
+},
+{
+"path": "canadian/VG_Rapport2024_Presentation.pdf",
+"sha256": "d03a27a519f075b66cfc9e62376e1dbde46185485197bc843af4f3cb81fd4c5c",
+"bytes": 2610986,
+"canonical_id": "C-0219",
+"exact_dup_group": null
+},
+{
+"path": "canadian/backgroundfile-223941.pdf",
+"sha256": "a42b7084878b3859d7ae221e1568d05813d23f0897d922fd63a617218abe5ff8",
+"bytes": 1293073,
+"canonical_id": "C-0220",
+"exact_dup_group": null
+},
+{
+"path": "canadian/corridor-management-safety-review-guidelines.pdf",
+"sha256": "3f5430573d57294a7d65f2d420ff49fe087ab85e800251af19225585647036c8",
+"bytes": 69008,
+"canonical_id": "C-0221",
+"exact_dup_group": null
+},
+{
+"path": "canadian/lenters.pdf",
+"sha256": "3cd0618f51a12a63206ac001879fbd7751fc474d030728ddbc88909bec1542e5",
+"bytes": 909945,
+"canonical_id": "C-0222",
+"exact_dup_group": null
+},
+{
+"path": "canadian/lo.pdf",
+"sha256": "0c537f5cc90b7496031d490a5b75c88ce7ebbc9de2d058b9fff17a01c2f7f28e",
+"bytes": 463751,
+"canonical_id": "C-0223",
+"exact_dup_group": null
+},
+{
+"path": "canadian/pour-ameliorer-le-bilan-routier.pdf",
+"sha256": "9f64664c4ed9e78109e8d22372d033b401b9542c445b815465dc9d4a43aa2d74",
+"bytes": 1275459,
+"canonical_id": "C-0224",
+"exact_dup_group": null
+},
+{
+"path": "canadian/pth1-pth5-in-service-road-safety-review-exec-summary.pdf",
+"sha256": "6b67c5ed28662f6ccca46ce2ac233311a4c8459918357cd0a701b3c47a62be8c",
+"bytes": 1417779,
+"canonical_id": "C-0225",
+"exact_dup_group": null
+},
+{
+"path": "canadian/pth_1_pth5_intersection_information_bulletin-jan-2024.pdf",
+"sha256": "7d06f88c523efc4614e92879508052a13ec9f60c4822a0316648ce20158e30c5",
+"bytes": 639280,
+"canonical_id": "C-0226",
+"exact_dup_group": null
+},
+{
+"path": "canadian/road-safety-audit-guidance-document.pdf",
+"sha256": "af698a7d64c8b46e8d1c57ab30203aa0094acd229666d6668f7b21ebf0768230",
+"bytes": 411526,
+"canonical_id": "C-0227",
+"exact_dup_group": null
+},
+{
+"path": "canadian/shresthas_-_traffic_safety_studies_.pdf",
+"sha256": "68a750fb29af6bf2a932abc0278fe0243d14d132d01a532e6ee5433573c4275e",
+"bytes": 456905,
+"canonical_id": "C-0228",
+"exact_dup_group": null
+},
+{
+"path": "canadian/t02-94_watermarked.pdf",
+"sha256": "44991ba78cca45619af702216782668239e95b29bad39a64c57adc7af7c4ad1d",
+"bytes": 1911272,
+"canonical_id": "C-0229",
+"exact_dup_group": null
+},
+{
+"path": "canadian/trafficimpact.pdf",
+"sha256": "b78cb5a38bc3749fd43a5e70e8ee729f0bd8815798d518ed4abb8c9d86ab34ca",
+"bytes": 64826,
+"canonical_id": "C-0230",
+"exact_dup_group": null
+},
+{
+"path": "canadian/trans-traffic-impact-assessment-guidelines-2021-02.pdf",
+"sha256": "5388af71960533fa38e023f9f73ed5ce2a59cc1c973e57c374eb0739fa87eba4",
+"bytes": 413980,
+"canonical_id": "C-0231",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-FLH-10-0011_RSA_Toolkit_FLMA_Tribal.pdf",
+"sha256": "1b37cf8dc1d9a6c2ffa653264f55ea9a0cea2a61b393ce13f53d33a6d20e487b",
+"bytes": 2043952,
+"canonical_id": "C-0232",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-FLH-10-05_Federal_Tribal_Lands_RSA_8_RSA.pdf",
+"sha256": "248b5306e173d9e9b1b6795259fb13252b76ce85deaa0dea1ad71bfd41e747f9",
+"bytes": 95464,
+"canonical_id": "C-0233",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-PL-98-008_Study_Tour_RSA_Part1.pdf",
+"sha256": "f7db1569a98f9dd3cc3d9aeef06a0534d49775361a608a862c82bbad06ccf997",
+"bytes": 3304921,
+"canonical_id": "C-0234",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-PL-98-009_Study_Tour_RSA_Part2_Case_Studies_Checklists_1997.pdf",
+"sha256": "21795e5d96e23af96667b8971437d19a1ff6ee59ed28035751df6e4ce78999c5",
+"bytes": 3568275,
+"canonical_id": "C-0235",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-06-006_RSA_Guidelines_2005.pdf",
+"sha256": "acace427a08c2ed710336e9f858bb22f79f13b003a2d1267ac22cea0b5fc81ae",
+"bytes": 2277152,
+"canonical_id": "C-0236",
+"exact_dup_group": "acace427a08c"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-06-06_RSA_Guidelines.pdf",
+"sha256": "acace427a08c2ed710336e9f858bb22f79f13b003a2d1267ac22cea0b5fc81ae",
+"bytes": 2277152,
+"canonical_id": "C-0236",
+"exact_dup_group": "acace427a08c"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-06-17_RSA_Case_Studies_10_RSA.pdf",
+"sha256": "de87eee1d7f22c7b1ab8994612bf1041bf3c784b5385801e81239209018e3406",
+"bytes": 1458660,
+"canonical_id": "C-0237",
+"exact_dup_group": "de87eee1d7f2"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-06-17_RSA_Case_Studies_Full.pdf",
+"sha256": "de87eee1d7f22c7b1ab8994612bf1041bf3c784b5385801e81239209018e3406",
+"bytes": 1458660,
+"canonical_id": "C-0237",
+"exact_dup_group": "de87eee1d7f2"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-07-007_Pedestrian_RSA_Guidelines_Prompt_Lists.pdf",
+"sha256": "399bc1f511e450864c0f25e7480ef3c088ea6ec3e5eb345445d88c4fae628d2d",
+"bytes": 1941490,
+"canonical_id": "C-0181",
+"exact_dup_group": "399bc1f511e4"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-08-005_Tribal_RSA_Case_Studies_4_RSA.pdf",
+"sha256": "bdce758e64358a6773ef12f1632141261a3bd8b519242077f8cecfc9677afe52",
+"bytes": 925397,
+"canonical_id": "C-0238",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-10-005_Focusing_RSA_on_Intersections.pdf",
+"sha256": "c37a29ddec99ed2d4c2ee6319e79a0eff90cade83e9aeb5b4872d62d43353d56",
+"bytes": 315307,
+"canonical_id": "C-0239",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-10-019_RSA_Peer_Assistance_Brochure.pdf",
+"sha256": "e298296f7be5b8de231ec611b29db638ff404d12b7e2c86af1db82789a585804",
+"bytes": 713272,
+"canonical_id": "C-0240",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-12-018_Bicycle_RSA_Guidelines_Prompt_Lists.pdf",
+"sha256": "b1af7f0e39e17d5036ac4f3e2039db0cc1b25483b019b9cd0e4338de454b5cd1",
+"bytes": 26856719,
+"canonical_id": "C-0189",
+"exact_dup_group": "b1af7f0e39e1"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-12-037_RSA_Evaluation_Programs_Projects.pdf",
+"sha256": "d5280ff5aa5b724e957b059cc96579222d8ccfac9ab4c0300ce7cc253c987ec9",
+"bytes": 4948586,
+"canonical_id": "C-0241",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-13-016_CMF_Intro.pdf",
+"sha256": "9ed452f32659a9fbe63500b869bf34242c392697f8269a6d69599b5395ce6eeb",
+"bytes": 204876,
+"canonical_id": "C-0242",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-13-xxx_Alternatives_Value_Eng_CMF.pdf",
+"sha256": "6cdda38219f7d4fc72f9e103531b3b13781b3dfcbcd5266cfa5777f39927c55b",
+"bytes": 954490,
+"canonical_id": "C-0243",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-13-xxx_Design_Decisions_Exceptions_CMF.pdf",
+"sha256": "d99e8031586dc02f5efaa1ae239c395cea756ec82c7cbcbac9d520d5ac185c26",
+"bytes": 1867223,
+"canonical_id": "C-0244",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-13-xxx_Quantifying_Safety_Roadway_Mgmt.pdf",
+"sha256": "0ec9d83e09f64801e9529238d4f70b24c64da9c4ab9bc4ea0d9ac3e24ea5b2e9",
+"bytes": 581745,
+"canonical_id": "C-0245",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-14-003_3D_Visualization_RSA_4_RSA.pdf",
+"sha256": "7aa77e87ac984a66dc52808db3664f438b9e85f9bb376fca84c742498a86bb17",
+"bytes": 1152879,
+"canonical_id": "C-0246",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-14-071_IHSDM_RSA_3_RSA.pdf",
+"sha256": "e9c879e299f5ef75ba4a843613e9137115ec871cf73e2955a04ebdeeacd92042",
+"bytes": 1340473,
+"canonical_id": "C-0247",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-14-075_High_Risk_Rural_Roads_Manual.pdf",
+"sha256": "453ed3f27d8afe06c78311f526becffc3a9165aa8d2700758b452d2231bb8907",
+"bytes": 2873695,
+"canonical_id": "C-0248",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-14-xxx_Model_RSA_Policy.pdf",
+"sha256": "562e6c800a81b92af4d862d89d847eb8a586fb935d05b497c328a6d2f6b93ff1",
+"bytes": 647949,
+"canonical_id": "C-0249",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-16-026_Motorcycle_RSA_3_RSA.pdf",
+"sha256": "399bc1f511e450864c0f25e7480ef3c088ea6ec3e5eb345445d88c4fae628d2d",
+"bytes": 1941490,
+"canonical_id": "C-0181",
+"exact_dup_group": "399bc1f511e4"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-16-120_Transit_Access_RSA_4_RSA.pdf",
+"sha256": "c4b56f8ff508abd361aceb0fa2dcf47a27ba994b81f884e689f5799b54bf1480",
+"bytes": 14473016,
+"canonical_id": "C-0250",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-17-011_IHSDM_Guide.pdf",
+"sha256": "cd6e448e6984d5d3a3369b212ff24e8ffdae970107b602a969a2eb840525d273",
+"bytes": 1160881,
+"canonical_id": "C-0251",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-20-042_Ped_Bike_RSA_Guide_Prompt_Lists.pdf",
+"sha256": "7d00421462dcdbc9053577957e56e972c234421c8a76eee1bd78e16de53e79e5",
+"bytes": 8034252,
+"canonical_id": "C-0183",
+"exact_dup_group": "7d00421462dc"
+},
+{
+"path": "fhwa-case-studies/FHWA-SA-21-048_Proven_Safety_Countermeasures_RSA.pdf",
+"sha256": "3497c8a95a69331c8f93249f543373216d2ee7aea61d412b8805266b4377fefb",
+"bytes": 225803,
+"canonical_id": "C-0252",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA_Bicycle_RSA_Guidelines.pdf",
+"sha256": "4d6fee28663b660de9e109a7378e5efc392340046ae0ad4d0e08cbc0292d6c5e",
+"bytes": 2679745,
+"canonical_id": "C-0253",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA_Quantifying_Safety_in_RSA_Process.pdf",
+"sha256": "2db06318e73cfc2ffe334f7ab3858b9c6cee115f156db40866f1bb1da9350fd2",
+"bytes": 6558381,
+"canonical_id": "C-0254",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA_RSA_Peer_to_Peer_Program.pdf",
+"sha256": "f510977e806d2b83b108372a3dd1f1dca025a97a1a6b6450220ec011e2aeae76",
+"bytes": 641008,
+"canonical_id": "C-0255",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/FHWA_RSA_Software_Guide.pdf",
+"sha256": "84cf222d71764d09c43b51fc9cc02cb29aeb08bfe9a2256b66a7703f7ca8f8d8",
+"bytes": 3869882,
+"canonical_id": "C-0256",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/MPC-98-96B_Adapting_RSA_Local_Rural_Roads.pdf",
+"sha256": "9f99cb152d2db96db09dc243be7218d8f7b1aa59a3152c12ffe80ad234e3211b",
+"bytes": 2885773,
+"canonical_id": "C-0257",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/ODOT_US97_RSA.pdf",
+"sha256": "9e381f570c4135c329778824f151ba88dbfbf85b86a908d28434474610e8a309",
+"bytes": 70138,
+"canonical_id": "C-0258",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/PA_SR3011_Keyser_Ave_RSA.pdf",
+"sha256": "de0769148bde0b9a908d8df09fe9e45b175a6c5432ba64f8010644fa34fc2ed8",
+"bytes": 3537065,
+"canonical_id": "C-0259",
+"exact_dup_group": null
+},
+{
+"path": "fhwa-case-studies/SD2007-06-F_Local_Rural_RSA_Guidelines_12_RSA.pdf",
+"sha256": "baf9808fd3eb83d67829bd37c6edad5c155e09ff054216609e08bee60bfd919c",
+"bytes": 8529790,
+"canonical_id": "C-0260",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/BRTB_Safety_Audits_RFP_2026.pdf",
+"sha256": "aeb2c908c824c31ae71385d9fd753e53c076816a8a99d4fa047190febe36f992",
+"bytes": 362687,
+"canonical_id": "C-0261",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/BrowardMPO_OffSystem_RSA_Framework_2023.pdf",
+"sha256": "0917aea0a80c673561782964e791c8f02117da812b43f3e2e037627c0ddf651b",
+"bytes": 3232616,
+"canonical_id": "C-0262",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/DVRPC_RSA_Program.html",
+"sha256": "34a0799580d9541afc5f83ee794c58c9093d00062a6d9f6b64108de5439faec5",
+"bytes": 5020,
+"canonical_id": "C-0263",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/Fairfax_Blake_Lane_Ped_RSA_2024.pdf",
+"sha256": "6208cc21e1ac71b652b7c5654e75f36da6e4964b6a803d652fe5477f03108ad9",
+"bytes": 12487899,
+"canonical_id": "C-0264",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/MORPC_Ohio_RSA_Guide.pdf",
+"sha256": "54766c7f1272518471190d4efdebba5e2df6e701dd337697e41cad72afd5025b",
+"bytes": 784237,
+"canonical_id": "C-0265",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/MRMPO_Lead_Coal_Avenues_RSA_2022.pdf",
+"sha256": "2ec4723af572383df946523f87e04d238da1192e1e483abece9e78d8d54b4b16",
+"bytes": 2692659,
+"canonical_id": "C-0266",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/NIRPC_RSA_RFP_2026.pdf",
+"sha256": "b4b7078a378a558891b794caf8817928cc7266a5d00eac593002047762df1c60",
+"bytes": 360814,
+"canonical_id": "C-0267",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/NRPC_UPWP_2026_2027.pdf",
+"sha256": "9d23f95b3e72d6d1124da46503c17515bb5933a60342bb5bf6ac084b0c7497bd",
+"bytes": 808725,
+"canonical_id": "C-0268",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/OldColonyMPO_RSA_Program.html",
+"sha256": "87ebb33b9cf49505255563007457970459651ae2963471122a8cb9140adbd8e3",
+"bytes": 198763,
+"canonical_id": "C-0269",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/SEMCOG_RSA_Overview_2023.pdf",
+"sha256": "b6d9befef1814071823732208ad0ec8b788793cdf8b9d163c48d5e70b586bbfd",
+"bytes": 372711,
+"canonical_id": "C-0270",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/SEMCOG_RSA_Program_2024.pdf",
+"sha256": "6f86945126c7ac48f458cdb7f5ee5040ec469fd97c8e1abd225909e265980522",
+"bytes": 2159341,
+"canonical_id": "C-0271",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/SEMCOG_RSA_Program_FAQ_2025.pdf",
+"sha256": "b96e594a63dadd7e6225032cfe3a9b5855dfe55efd46834c087146bafd0a6f83",
+"bytes": 329843,
+"canonical_id": "C-0272",
+"exact_dup_group": null
+},
+{
+"path": "local-mpo/Tacoma_S_Tacoma_Way_RSA_2024.pdf",
+"sha256": "f2de4452eeb72b72f8179a7e70b5b77ffd43c7f91ebe60852eb607aaa57c43cd",
+"bytes": 5304489,
+"canonical_id": "C-0273",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/CAREC_RSA_Case_Study_1.pdf",
+"sha256": "e2075e251d876d164d4b0fb7aa7bd6cfe72fa26da79e5b7e660424d31f67932a",
+"bytes": 262049,
+"canonical_id": "C-0274",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/CAREC_RSA_Case_Study_2.pdf",
+"sha256": "ad2b6848012386974f3012a6be4abff0bd30ab47044a7c521ff28ad3ccfc5ad3",
+"bytes": 187180,
+"canonical_id": "C-0275",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/CAREC_RSA_Case_Study_3_Roadworks_Stage.pdf",
+"sha256": "28e1f78e8432d218d7c257f30c2b8413c05f4415e4363d82e250c79c65373012",
+"bytes": 93289,
+"canonical_id": "C-0276",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/CAREC_RSA_Case_Study_4.pdf",
+"sha256": "1fc8582e3bffe8931fa2ed6364fd7f0fb29e5f1a137b9a367431b6291ca87308",
+"bytes": 165149,
+"canonical_id": "C-0277",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf",
+"sha256": "b4be4daffbf122e3dc1d2610dd820d9d6faf0c7817253260c1f60cce52797fcb",
+"bytes": 1698225,
+"canonical_id": "C-0278",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Australia_Safe_System_Audit.html",
+"sha256": "125b8af244e4515d1cbd1db96015004c220dd3ed448910aecf1d90d31caa87ea",
+"bytes": 72083,
+"canonical_id": "C-0279",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Canada_Recreational_Lakeside_Feasibility_RSA.html",
+"sha256": "029f8c3534e67e463ab43cc9046aa08cb4609d8cfb40931ac6cb5b679b36c461",
+"bytes": 72212,
+"canonical_id": "C-0280",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Catalogue_Case_Studies_2019.html",
+"sha256": "827095c10b39d99cad7a27c0eda6e0d15bdbe29ed4fb51509d4690e18aff24b4",
+"bytes": 110663,
+"canonical_id": "C-0281",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Iran_Qom_Garmsar_Freeway_Pre_Opening_RSA.html",
+"sha256": "d8ef06a0602726e6176eb7ad1e912ed4ef120c1297fc57db8fc29b8ecadbf8cd",
+"bytes": 72164,
+"canonical_id": "C-0282",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Kazakhstan_1062km_RSA.html",
+"sha256": "e704943f1ae41bfbe09a44be9d5449c5c4ed28693125dfba3ba5c17c8ae1ab09",
+"bytes": 71621,
+"canonical_id": "C-0283",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_RSA_Guidelines_2011.html",
+"sha256": "f8ab2ad7dea3109d85b6997c435f0905a1db0441d60f6c2e929ccf067cd06581",
+"bytes": 108507,
+"canonical_id": "C-0030",
+"exact_dup_group": "f8ab2ad7dea3"
+},
+{
+"path": "piarc-irf/PIARC_RSA_Guidelines_2023.html",
+"sha256": "b0dd9d8d54acec2a3a4948141e38b004b25d8c626fc5934caf47f72a1ef8b9bd",
+"bytes": 111392,
+"canonical_id": "C-0027",
+"exact_dup_group": "b0dd9d8d54ac"
+},
+{
+"path": "piarc-irf/PIARC_Review_Global_RSA_Guidelines_LMICs.html",
+"sha256": "ac2fe1b19bbd440a058029014f60f82e68ac3d2acbe0e067b4e758064327b3e2",
+"bytes": 114046,
+"canonical_id": "C-0026",
+"exact_dup_group": "ac2fe1b19bbd"
+},
+{
+"path": "piarc-irf/PIARC_South_Africa_Net_Safe.html",
+"sha256": "e861f41a6c86a6c4df4317348e7b923f6c738f2ded4f15684a589d32fbd1f125",
+"bytes": 71903,
+"canonical_id": "C-0284",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_South_Africa_Tshwane_Community_RSA.html",
+"sha256": "b355809c788b082340e15cba8f40d2a84ec854281bfb8aaaaaced323e663e9ec",
+"bytes": 70797,
+"canonical_id": "C-0285",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/PIARC_Specific_Issues_LMICs_Case_Studies.html",
+"sha256": "91a163c1edc685ef7444a3f1ecc5581fea88a5f6dd5c30488f1b9c3d05843551",
+"bytes": 111547,
+"canonical_id": "C-0286",
+"exact_dup_group": null
+},
+{
+"path": "piarc-irf/World_Bank_GRSF_Kiribati_Multi_Stage_RSA_Case_Study.pdf",
+"sha256": "769cc602c8b916de501a55a8ff27d33027a049f055c6b9528455e601ff4dba77",
+"bytes": 2202369,
+"canonical_id": "C-0287",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/AZDOT_RSA_Program.html",
+"sha256": "70bf917a40cfbecfa5466377f245a5b5c11532e50bdf2405e2a2247e7b7a99df",
+"bytes": 5496,
+"canonical_id": "C-0288",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_Bristol_Route72_RSA_2017.pdf",
+"sha256": "4bc6cd2a68b95905c451cd0c8b38ef2f1f5382da0a1b13514084d981c0065ac5",
+"bytes": 8800558,
+"canonical_id": "C-0289",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_Haddam_Route154_RSA_2023.pdf",
+"sha256": "55d69362afdbfddcd99b847a10a331a87fd5bbbfd33c7db3ede240596199a1df",
+"bytes": 3590173,
+"canonical_id": "C-0290",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_Madison_US1_RSA_2024.pdf",
+"sha256": "657176f6293bb7c857ccb858a758cb3f7d271eac93db03faff93e834ccc15cd0",
+"bytes": 9757169,
+"canonical_id": "C-0291",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_RSA_Reports_Index.html",
+"sha256": "90b2d35cd5e08370ed20db81197dd9da1a4dbb421f71293fd5733ea49eb7b3e1",
+"bytes": 103,
+"canonical_id": "C-0292",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_RSA_Reports_Page.html",
+"sha256": "0498b93875da0e7a83e33c2e9f104ab20b64a6d38b6b4f8ae57e6ed5edbb92c6",
+"bytes": 21893,
+"canonical_id": "C-0293",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_Salisbury_US44_CT41_RSA_2025.pdf",
+"sha256": "25268a65bf1400201bc29407298556f8fa5cc68f40ac8afb65c4543761e9b660",
+"bytes": 5159742,
+"canonical_id": "C-0294",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/CTDOT_Torrington_RSA_2023.pdf",
+"sha256": "24836968b83240cd3eac36b642c4ba043c0c54ef13f86d977775818f367f2f79",
+"bytes": 17098829,
+"canonical_id": "C-0295",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/FDOT_SR60_Barber_Bridge_RSA_2015.pdf",
+"sha256": "c6b2e504ff37089efb359ad23ef4d6e1c1ea05955aa333570f80ac9f25d7dfa9",
+"bytes": 4108292,
+"canonical_id": "C-0296",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/ITD_RSA_Manual.pdf",
+"sha256": "e52c60ba3ab6d4bae1eae7ae4225f655692f235aa7349269e8ada51d1c9a8d31",
+"bytes": 2376566,
+"canonical_id": "C-0187",
+"exact_dup_group": "e52c60ba3ab6"
+},
+{
+"path": "state-dots/KYTC_RSA_Program.html",
+"sha256": "3134480edb348c6d60b95dfb3c868da317cdbe84d8bad26076b77c0eb5bc8e7d",
+"bytes": 703,
+"canonical_id": "C-0297",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_Hwy55_RSA_2021.pdf",
+"sha256": "9cfdec81d71eda343c7b18b333ccb0961414ea8faf718b55411081668a8865b9",
+"bytes": 6513341,
+"canonical_id": "C-0298",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_TH14_NewUlm_NorthMankato_RSAR_2012.pdf",
+"sha256": "2c62f8c88c0f93f1f338fb0cfcae03d599e64aef148c8ea7f1fd1e2d74155faa",
+"bytes": 2967573,
+"canonical_id": "C-0299",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_TH3_Farmington_RSA.pdf",
+"sha256": "bfeac26e635ef985504981930220aef2cfff91620769cef8029aa32577318ebf",
+"bytes": 1946422,
+"canonical_id": "C-0300",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_Twin_Ports_Work_Zone_Safety_Audit.pdf",
+"sha256": "f287b0c6dd16a4e171dbee1736f22eb1814f997015f3befa52029332bd498755",
+"bytes": 3736394,
+"canonical_id": "C-0301",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_US12_RSA_Briefing_Book.pdf",
+"sha256": "1866d18da53cad56fbcc4e2bd05036df643ccbec940c467f0dd3f16572080614",
+"bytes": 76808192,
+"canonical_id": "C-0302",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_US12_RSA_Post_Audit_Presentation.pdf",
+"sha256": "0606260f82e20517d096374e031d16e3c4544c50abad13b684bac8eaa1ffc52d",
+"bytes": 35951771,
+"canonical_id": "C-0303",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/MnDOT_US12_RSA_Technical_Report.pdf",
+"sha256": "7f332844e6b03c3a672374e1c724d3de495dafd5ce5cff480d6535b5786ac46b",
+"bytes": 25259596,
+"canonical_id": "C-0304",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/NCDOT_Ped_Bike_RSA_Guide_2018.pdf",
+"sha256": "a7af771e7279353f70f312c45455a38897446f914751a1630df1a5ad48ef2f69",
+"bytes": 640704,
+"canonical_id": "C-0185",
+"exact_dup_group": "a7af771e7279"
+},
+{
+"path": "state-dots/NCDOT_SS08-94-202_Signal_Installation_Evaluation.pdf",
+"sha256": "ba7b09cda966dadb2a40055980a5eb0797edf34107b6771684bbcc9985d2d7a7",
+"bytes": 350528,
+"canonical_id": "C-0305",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/NCDOT_SS09-20-2875_All_Way_STOP_Evaluation.pdf",
+"sha256": "abd940de1b4c3fabc3d9cdc84d9648da63a45dcd1db5909b95f04887a26d4eef",
+"bytes": 740361,
+"canonical_id": "C-0306",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/NCDOT_SS12-06-205_Shoulder_Installation_Evaluation.pdf",
+"sha256": "c017a8b028d3062cc86bd638338eea1c52d5d323cff958b6bb279399fc889a7b",
+"bytes": 310532,
+"canonical_id": "C-0307",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/NCDOT_SS14-13-209_Left_Turn_Lane_Evaluation.pdf",
+"sha256": "5f4a1f9174781609d430846aa2a1c2db7f1a242d9966a3561e611403a508c188",
+"bytes": 1608331,
+"canonical_id": "C-0308",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/NJDOT_RSA_Program.html",
+"sha256": "ca78d02ad5303bd4b957b353fb3ec8e8fec453c57fe73a01b94bf3d1caacc7b5",
+"bytes": 558193,
+"canonical_id": "C-0309",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/ODOT_OR211_RSA_2022.pdf",
+"sha256": "8f9e73b8947c5cce6e113dade30c1220ef4b28b4a1b1fdaac33654a52878b01c",
+"bytes": 4169259,
+"canonical_id": "C-0310",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/UDOT_Moab_Grand_County_UTMP_2022.pdf",
+"sha256": "3f3be28122e0c619268046654d36458bdeb3ecf78b2dc7202492628e3cd8e873",
+"bytes": 29437772,
+"canonical_id": "C-0311",
+"exact_dup_group": null
+},
+{
+"path": "state-dots/VDOT_RSA_Manual.pdf",
+"sha256": "9d3e35fcbb282f61cc07f245356c6b700a16c864a4db0f50c91780265060f6c8",
+"bytes": 876641,
+"canonical_id": "C-0312",
+"exact_dup_group": null
+}
+]
