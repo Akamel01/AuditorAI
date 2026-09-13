@@ -19,3 +19,7 @@
 - **jurisdiction_correctness:** 2 — Correctly framed as a GG 119 Stage 1 exception-check/compliance question seeking confirmation rather than asserting an unverified problem, keeping compliance querying distinct from a declared safety concern.
 - **recommendation_quality:** 2 — Specific and actionable: re-run large-vehicle swept-path analysis on as-adjusted stop-line positions with a clear Stage 2 deadline; viable and directly testable.
 - **vru_coverage:** 1 — Pedestrians and cyclists, refuges, and desire lines across the A4019 are explicitly acknowledged with recorded provisions, but no VRU impact is considered as the question is scoped solely to large-vehicle swept paths.
+
+## Ratified corpus-quote annex (2026-09-13, owner ratification - v2 F1 gate OPEN)
+Approved quote IDs (texts + provenance in docs/RSA-Documents/gf-quote-pack.md, proof 20/20): G6-1 , G6-2 , G6-3
+Status: ANALOG support (US-practice CLEAR sources; see pack GAP notes). Supplements existing EV-IN baselines. Unratified lines: none (20/20 approved, 0 struck).

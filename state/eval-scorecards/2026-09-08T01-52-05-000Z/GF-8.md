@@ -19,3 +19,7 @@
 - **jurisdiction_correctness:** 2 — Correctly framed as a safety_concern asking for verification of design assumptions rather than asserting a MUTCD compliance violation; no conflation of compliance and safety categories.
 - **recommendation_quality:** 2 — Reprogramming clearance intervals at all six named sites using a reduced assumed walking speed is specific, actionable, and viable at final-design stage, though citing a numeric walking speed would strengthen it.
 - **vru_coverage:** 2 — Vulnerable road users are central to the finding: pedestrians and elderly pedestrians are named road users and the scenario explicitly addresses their exposure during the clearance phase.
+
+## Ratified corpus-quote annex (2026-09-13, owner ratification - v2 F1 gate OPEN)
+Approved quote IDs (texts + provenance in docs/RSA-Documents/gf-quote-pack.md, proof 20/20): G8-1 , G8-2 , G8-3
+Status: ANALOG support (US-practice CLEAR sources; see pack GAP notes). Supplements existing EV-IN baselines. Unratified lines: none (20/20 approved, 0 struck).

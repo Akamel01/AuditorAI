@@ -1,0 +1,1 @@
+# CONTEXT.md — quarantine/ shelf. EXCLUDED from mining/packs/evals until C3 re-verdict (see QUARANTINE.md). canadian-not-audit additionally C10-BLOCKED. Subdirs: canadian-html-quarantine, canadian-quarantine-v2, canadian-not-audit.

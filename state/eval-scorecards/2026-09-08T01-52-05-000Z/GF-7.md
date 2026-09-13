@@ -19,3 +19,7 @@
 - **jurisdiction_correctness:** 2 — Correctly framed as a safety_concern/check under FHWA RSA semantics, keeping the safety issue categorically distinct from any compliance assertion.
 - **recommendation_quality:** 2 — Recommendation is specific and actionable for preliminary design (coordinate adjacent signals, install Do Not Block Intersection signs, upgrade signing/display conspicuity) and is a viable, standard mitigation package.
 - **vru_coverage:** 1 — Pedestrians and cyclists are explicitly acknowledged with reasoned scoping to vehicle occupants, but no VRU-specific impact analysis is provided, matching the 'not applicable but acknowledged' tier.
+
+## Ratified corpus-quote annex (2026-09-13, owner ratification - v2 F1 gate OPEN)
+Approved quote IDs (texts + provenance in docs/RSA-Documents/gf-quote-pack.md, proof 20/20): G7-1 , G7-2 , G7-3
+Status: ANALOG support (US-practice CLEAR sources; see pack GAP notes). Supplements existing EV-IN baselines. Unratified lines: none (20/20 approved, 0 struck).
