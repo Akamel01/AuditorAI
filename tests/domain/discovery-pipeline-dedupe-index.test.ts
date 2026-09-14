@@ -1,17 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it } from "vitest";
-import Ajv from "ajv/dist/2020.js";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { runDiscoveryPipeline } from "@/discovery/pipeline";
 import type { DiscoveryCtx } from "@/discovery/pipeline";
 import type { MatchAssignment } from "@/discovery/types";
-import { MemoryStore } from "@/lib/persistence/store";
 
 // Lightweight fixture similar to existing tests
 function fixtureCtx(overrides: Partial<DiscoveryCtx> = {}): DiscoveryCtx {
-  const mk = (name: string, jur: string, stage: string, text: string): Uint8Array =>
-    new TextEncoder().encode(`%PDF-1.4 fixture ${jur} ${stage} ${name}\n${text}`);
   // Seed a minimal environment; providers are wired in the test via overrides
   return {
     ranAtIso: new Date(0).toISOString(),

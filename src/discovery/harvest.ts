@@ -3,7 +3,7 @@
 // and after() fire-and-forget. This module owns query derivation, provider
 // resolution, coverage/dedupe reads, fixtureDocsFor, and the executeJob loop.
 // DataStore seam injection via optional store param (MemoryStore for tests).
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { listProviderIds as defaultListProviderIds, providerEnabled as defaultProviderEnabled, resolveProvider as defaultResolveProvider } from "@/discovery/providers";
 import "@/discovery/providers";
 import { DISCOVERY_NODE_IDS } from "@/discovery/types";
@@ -255,8 +255,8 @@ export async function executeJob(
     if (s.coverage && typeof s.coverage === "object") {
       const covPath = path.join(process.cwd(), "state", "odd-coverage.json");
       const covDir = path.dirname(covPath);
-      if (!require("node:fs").existsSync(covDir)) require("node:fs").mkdirSync(covDir, { recursive: true });
-      require("node:fs").writeFileSync(covPath, JSON.stringify(s.coverage, null, 2) + "\n", "utf8");
+      if (!existsSync(covDir)) mkdirSync(covDir, { recursive: true });
+      writeFileSync(covPath, JSON.stringify(s.coverage, null, 2) + "\n", "utf8");
     }
   } catch {}
   } // end VITEST/NODE_ENV persist gate

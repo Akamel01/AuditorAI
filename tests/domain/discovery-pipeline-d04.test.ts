@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { runDiscoveryPipeline } from '@/discovery/pipeline';
 import type { DiscoveryProvider, FetchResult, DiscoverQuery } from '@/discovery/providers/provider-types';
 import type { DiscoveryHit } from '@/discovery/types';

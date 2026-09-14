@@ -135,7 +135,6 @@ function d03Match(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResult {
 
 async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promise<NodeResult> {
   const bundles: AcquisitionBundle[] = [];
-  let seq = 0;
   for (const match of state.matched ?? []) {
     let docs: RawDocument[] = [];
     if (ctx.acquireDocs) {
@@ -191,7 +190,7 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
               docs = [];
             }
           }
-        } catch (e) {
+        } catch {
           // Fallback to legacy fetch path if provider fetch throws or is unavailable
           const { withHostBudget } = await import("@/discovery/ratelimit");
           try {
@@ -223,7 +222,6 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
     const processor = getDrawingProcessor();
     const acquiredDocs = [] as AcquisitionBundle["documents"];
     for (const doc of docs) {
-      seq += 1;
       let page_count = 0;
       let text_sha256: string | null = null;
       let engine = "passthrough";
@@ -336,7 +334,7 @@ function d08Quality(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResult 
   if (!ctx.dedupeIndex) {
     // Attach the newly created index to the context so it propagates to callers
     // and can be returned by the DiscoveryRunOutcome.
-    (ctx as any).dedupeIndex = index;
+    ctx.dedupeIndex = index;
   }
   const verdicts: QualityVerdictRecord[] = [];
   const bundleByMatch = new Map((state.acquired ?? []).map((b) => [b.match_id, b]));
