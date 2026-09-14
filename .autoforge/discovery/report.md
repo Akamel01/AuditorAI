@@ -1,41 +1,23 @@
-H13 ticket-index leniency discovery report
+# Discovery Report — loop 3 (2026-09-14)
 
-Open tickets and blockers (status/frontier):
-- H13: open blocked_by=[H12] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H13-ticket-index-leniency.md) 6: status: open; 8: blocked_by: [H12]
-- H1: open blocked_by=[] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H1-ai-provider-gpt5-nano.md) 6: status: open; 8: blocked_by: []
-- H2: open blocked_by=[H1] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H2-structured-workflow.md) 6: status: open; 8: blocked_by: [H1]
-- H3: open blocked_by=[H2] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H3-control-api.md) 6: status: open; 8: blocked_by: [H2]
-- H4: open blocked_by=[H3] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H4-ui-monitoring.md) 6: status: open; 8: blocked_by: [H3]
-- H5: open blocked_by=[H2] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H5-verification-loop.md) 6: status: open; 8: blocked_by: [H2]
-- H6: open blocked_by=[H1] frontier (source: workflow/wayfinder/maps/ai-harvest-stream/tickets/H6-fixtures-samples.md) 6: status: open; 8: blocked_by: [H1]
+Objective: proceed with all open/remaining tickets + open new tickets for improved codebase architecture.
+Method: read-only refresh of all wayfinder ticket front-matter + prior tracker-index + GitHub state.
 
-Evidence of H13 leniency approach (summary and gate integration):
-- H13 front-matter notes the lenient-load design and the lint gate requirement (skip-invalid-front-matter; log reason) and cites the target interfaces (src/wayfinder/tickets.ts, scripts/wayfinder-tickets.ts, pre-commit, ci.yml): see H13 doc lines 25-29 and 34-35 for acceptance mechanics and gate surface. See: workflow/wayfinder/maps/ai-harvest-stream/tickets/H13-ticket-index-leniency.md:25-29, 34-35.
-  - citations: H13:25-29; H13:34-35
+## Open-ticket states (all 8 verified by file read 2026-09-14)
+- v2 F1 OPEN (F1-quote-bearing-baselines.md:6), blocks F1→F4 (:9), ## Progress gate-OPEN + Tier-1 blocked on judge 401.
+- v2 F2 OPEN (:6), blocked_by [] (:8), trigger absent (:22).
+- v2 F3 OPEN (:6), blocked_by [] (:8), trigger absent (:22); vault-sync --check exit 0 (prior run).
+- v2 F4 OPEN (:6), blocked_by [F1] (:8), needs assist-schema + fresh Tier-1 (:22).
+- v3 F1 OPEN hitl (:6), blocked_by [] (:8), needs FLAG_2 (:22).
+- v3 F2 OPEN hitl (:6), blocked_by [] (:8), needs FLAG_1 (:22).
+- v3 F3 OPEN (:6), blocked_by [] (:8), needs measurable target (:22).
+- v3 F4 OPEN hitl (:6), blocked_by [] (:8), needs PHASE_3 authority (:22).
+- GitHub: 0 open. Closed maps: ai-harvest-stream, harvest-verification, mvp, ops-residual, rsa-corpus.
 
-Throw sites identified in H13 (exact locations and conditions where errors are raised):
-- missing front-matter block (parseTicketFrontMatter): H13 mentions this front-matter error; evidence in code: parseTicketFrontMatter throws when missing front-matter (parseTicketFrontMatter: 46).  See: H13 doc lines 46; code: src/wayfinder/tickets.ts:44-58.
-- missing id/title: ticketFromFields requires id and title and will throw if missing (lines 96-100). See: H13 doc line 98-100; code: src/wayfinder/tickets.ts:96-100.
-- invalid status: parseStatus throws if status is not in known set (lines 83-87). See: H13 doc line 83-87; code: src/wayfinder/tickets.ts:83-89.
-- duplicate key: duplicate ticket key error (lines 161-164). See: H13 doc line 161-164; code: src/wayfinder/tickets.ts:161-165.
+## Key finding for planning
+Zero open tickets are agent-executable: 4 need owner product decisions (v2 F1-judge-key, v3 F1/F2 flags, v2 F4 assist-schema), 4 need real-world triggers (F2 blob limits, F3 vault conflict, v3 F3 target, v3 F4 phase-3). The executable work this loop = NEW architecture-improvement tickets from the improve-codebase-architecture skill (architect phase), scoped to code hot spots, producing proposal tickets — implementation only where acceptance is self-verifiable without owner gates.
 
-Lint gate and gating integration (lint gate surface):
-- Lint gate and CI gating surface are described in H13 acceptance: lint gate (CI or pre-commit) that fails-fast on invalid front-matter; see H13 doc lines 28-29. Evidence of gates in repo: .githooks/pre-commit (lint/typecheck/vault checks) and .github/workflows/ci.yml quality job (lint/typecheck/test/build). See: .githooks/pre-commit:7-13; ci.yml:65-77.
-
-Open vs closed status in this slice (evidence snapshot):
-- H12 is closed; the chain note shows the splitter causing H13 to be necessary. See H12-ci-green.md:6-9 (status: closed; blocked_by: []), and 42-58 describing the chain context. See: workflow/wayfinder/maps/ai-harvest-stream/tickets/H12-ci-green.md:6-9; 42-58.
-
-Done-in-code verdicts for H1-H6 (evidence that changes exist in code):
-- H1: AI search provider wired in code (src/discovery/providers/ai-search.ts) with gating via DISCOVERY_AI_ENABLED and OPENCODE_API_KEY; provider is registered when enabled. See: src/discovery/providers/ai-search.ts:30-39, 31-33, 40-46, 123-130.
-- H2: HarvestStream state machine implemented (src/discovery/harvest-stream.ts) with IDLE→RUNNING, etc., and tick loop. See: src/discovery/harvest-stream.ts:1-3, 11-15, 136-138, 181-186, 235-259.
-- H3: API routes for start/pause/resume/stop exist (src/app/api/dev/harvest-stream/route.ts). See: route.ts:29-36, 7-12.
-- H4: Monitoring UI pieces exist in UI sources (src/app/dev/mission-control/_components/ai-harvest-control.tsx). See: ai-harvest-control.tsx: Start button with continuous label (lines 144-147), continuous badge (lines 186-199).
-- H5: Verification gates implemented in HarvestStream.verifyStream and tickStream gating; see verifyStream (src/discovery/harvest-stream.ts:113-128) and tickStream (lines 131-159, 235-259).
-- H6: Fixtures/tests for ai-harvest exist (tests/domain/ai-harvest.test.ts) showing 2-hit scenario and verification flow. See: tests/domain/ai-harvest.test.ts:7-15, 37-45, 98-111.
-
-Notes
-- This report reflects evidence as of the current repository snapshot; live streams were not re-run per H10 guidance. See H10-final.md verdict (CLOSE) for reference: .autoforge/validation/H10-final.md:60.
-
-Artifacts referenced
-- tracker: .autoforge/discovery/tracker-index.md
-- report: .autoforge/discovery/report.md
+## Risks/constraints for downstream phases
+- Worktree dirty with foreign parallel-session edits (incl. T2 resolved flip) — workers must use explicit `touches` allow-lists, never git mutations, never touch state/vault-notes.json or foreign files.
+- Judge spend needs valid OPENCODE_API_KEY (current Keychain value 401s) — no judged eval work plannable until owner provides key.
+- wayfinder-tickets.test.ts:143 expects T2 blocked; worktree T2 resolved — owning session's commit will need the test update; do not touch tests/ for this.

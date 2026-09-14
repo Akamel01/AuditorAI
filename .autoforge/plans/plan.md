@@ -1,96 +1,160 @@
-# Plan — H13 Leniency + H1–H6 Triage Closures
+# Plan — Loop 3: 8 gated tripwires (monitor-only) + v4-harvest-deepening A1–A5 + ticket creation
 
-Date: 2026-09-10. Source: `.autoforge/discovery/tracker-index.md` (7 open frontier: H13, H1–H6),
-`.autoforge/discovery/report.md`, `.autoforge/requirements/grilling.md`,
-.autoforge/architecture/H13.md` (Alt A, per-file try/catch). H10 CLOSED — no live prod work.
+Date: 2026-09-14. Scope: `/Users/akamel/Documents/AuditorAI`.
+Sources: `.autoforge/discovery/tracker-index.md` (8 open, all gated), `.autoforge/discovery/report.md`
+(loop-3 refresh), `.autoforge/requirements/grilling.md` (all 8 non-executable, ungating conditions),
+`.autoforge/architecture/report.md` + `decisions.md` (A1–A5, map `v4-harvest-deepening`).
+Skills: `codebase-design` (module/interface/seam/adapter/depth vocabulary; hypothetical-seam rule used for A4).
+Worktree (read-only `git status --porcelain` 2026-09-14): dirty — foreign parallel-session edits in
+`src/discovery/harvest.ts`, `dedupe-persist.ts`, `health-aggregate.ts`, `pipeline.ts`,
+`src/app/api/dev/health/route.ts`, `tests/domain/discovery-harvest.test.ts`,
+`tests/domain/wayfinder-tickets.test.ts`, `scripts/tier1-archive.mjs`, plus `.autoforge/*` staging.
+Every code module carries collision guards below. No child touches `state/vault-notes.json`, runs git
+mutations, or edits foreign regions. Stdlib only, no new deps.
 
-## Module list
+## Coverage — every tracker-index open entry → module
 
-### M-H13-CODE — lenient loader + index shape (H13 core)
-- **Objective:** one bad ticket file → `console.warn` + `skipped[]` entry; valid tickets still served; `counts.total === tickets.length` preserved.
-- **Inputs (B1):** The loader now returns a single object containing both `tickets` and `skipped` (i.e. `{ tickets, skipped }`). The index is built via `buildTicketIndex(tickets, skipped = [])` so `skipped` is defaulted to an empty array when not provided. Parsers and ordering remain unchanged; duplicate-key behavior remains first-wins. The previous `{tickets,skipped}-or-out-param` escape variant is removed.
-- **Outputs:** `loadTicketsFromTree` returns `{ tickets, skipped }`; new `SkippedTicket { file, reason }` alongside `TicketIndex`. `TicketIndex.skipped` remains optional/defaulted. Dup-key handling follows existing rules; `counts.total` stays in sync with `tickets.length`.
-- **touches:** `["src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts"]`
-- **Dependencies:** none (root of H13 chain).
-- **Acceptance:**
-  - `npm run typecheck` passes; existing `tests/domain/wayfinder-tickets.test.ts` green untouched (optional `skipped` / defaulted arg keeps `buildTicketIndex([...])` caller at `:146` and `TicketBoard` reads-only-`counts`/`maps` green).
-  - Manual: temp tree with 1 good + 1 `status: in_progress` → `tickets.length===1`, `skipped.length===1`, `counts.total===1`.
-- **Tests:** existing suite `npx vitest run tests/domain/wayfinder-tickets.test.ts` (must stay green); new coverage in M-H13-TEST.
-- **Agent role:** builder. **Reviewer:** needs arch H13 §§1–3 + throw-site table.
-- **Ticket:** H13.
+| # | Tracker entry | Gate | Module | Action |
+|---|---|---|---|---|
+| 1 | v2 F1-quote-bearing-baselines (blocks F4; judge 401) | owner GF source + Tier-1 + key | M-GATED-V2 | monitor-only |
+| 2 | v2 F2-blob-storage-escape-hatch | BLOB_LIMIT_TRIGGER absent | M-GATED-V2 | monitor-only |
+| 3 | v2 F3-vault-sync-conflict-ux | VAULT_CONFLICT_TRIGGER absent | M-GATED-V2 | monitor-only |
+| 4 | v2 F4-report-generation-assists (blocked_by F1) | assist schema + fresh Tier-1 | M-GATED-V2 | monitor-only |
+| 5 | v3 F1-candidate-findings-review-ux | FLAG_2 decision | M-GATED-V3 | monitor-only |
+| 6 | v3 F2-audit-history-retention-policy | FLAG_1 authority | M-GATED-V3 | monitor-only |
+| 7 | v3 F3-rsc-initial-page-data | measurable target absent | M-GATED-V3 | monitor-only |
+| 8 | v3 F4-postgres-adapter | PHASE_3 authority | M-GATED-V3 | monitor-only |
+| — | T2 note (worktree-resolved vs HEAD-blocked) | foreign lane owns | — | explicitly deferred: owning session commits + updates `wayfinder-tickets.test.ts:143`; no module touches it |
+| — | A1 ledger-run-persist (Strong) | — | M-A1 | implement |
+| — | A2 ctx-builder (Strong) | — | M-A2 | implement |
+| — | A3 dedupe-index-return (Strong, DO FIRST) | — | M-A3 | implement |
+| — | A4 provider-fetch-routing (Worth-exploring) | grill pre-decided below | M-A4 | implement |
+| — | A5 health-bridge-consolidation (Worth-exploring) | foreign bridge lane | M-A5 | lane-gated implement-or-dup-close |
+| — | 5 ticket files + MAP.md for v4-harvest-deepening | orchestrator-side, post-approval | M-TICKETS | docs-only |
 
--### M-H13-LINT — `--lint` flag on CLI (H13 gate surface)
-- **Objective:** `scripts/wayfinder-tickets.ts --lint` calls same lenient loader, prints `<file>: <reason>` per skipped entry to stderr, exits `0` clean / `1` invalid / `2` usage-IO; no M-R19 write in any mode; `--json` gains `skipped` array.
-- **Inputs (B2):** M-H13-CODE `skipped` shape. CLI now supports a `--root <dir>` argument to probe a temporary tree at a non-CWD location; the underlying probe remains cwd-bound by default, but `--root` enables tests and staging in other directories without changing production code.
-- **Outputs:** lint-mode branch in `scripts/wayfinder-tickets.ts`, no new deps (`tsx` already in devDeps).
-- **touches:** `["scripts/wayfinder-tickets.ts"]`
-- **Dependencies:** blocked by M-H13-CODE.
-- **Acceptance:**
-  - `npx tsx scripts/wayfinder-tickets.ts --lint; echo $?` → `0` on clean tree.
-- Against temp tree with 1 bad file → exit `1`, stderr contains bad filename + reason; no `.autoforge/explanation/M-R19-ticket-index.md` write in any mode.
-  - `npx tsx scripts/wayfinder-tickets.ts --lint --json` emits parseable JSON with `skipped` array.
-- **Tests:** CLI exit-code probes above (no vitest needed).
-- **Agent role:** builder. **Reviewer:** needs H13 §3.4 (exit-code contract) + §5 silent-rot note.
-- **Ticket:** H13.
+## Modules
 
-### M-H13-GATES — pre-commit + CI wiring (H13 defense in depth)
-- **Objective:** same lint command in both gates, fail-fast, no new job.
-- **Inputs:** M-H13-LINT exit contract.
-- **Outputs:** one-line step in `.githooks/pre-commit` beside `lint` (fastest-fail ordering per `:7` comment; precedent `harvest-verify --mock` at `:47`); one-line step in `ci.yml` `quality` job after `npm run lint` (`ci.yml:74`).
-- **touches:** `[".githooks/pre-commit", ".github/workflows/ci.yml"]`
-- **Dependencies:** blocked by M-H13-LINT.
-- **Acceptance:**
-  - `sh -n .githooks/pre-commit` passes; YAML parses: `node -e "import('yaml').then(m=>{import('node:fs').then(f=>m.default.parse(f.readFileSync('.github/workflows/ci.yml','utf8')))})"` (or repo's existing YAML one-liner from pre-commit step 4).
-  - Grep proves same command both places: `rg -n "wayfinder-tickets.*--lint" .githooks/pre-commit .github/workflows/ci.yml` → 2 hits.
-  - Pre-commit hook still passes on clean tree (`npm run lint --silent` unaffected).
-- **Tests:** gate-presence grep + YAML parse; full `npm run ci:local` is validator's job, not this module's.
-- **Agent role:** builder. **Reviewer:** needs AGENTS.md hook/YAML-quote rules.
-- **Ticket:** H13.
+### M-GATED-V2 — monitor v2 F1–F4 (zero code)
+- Objective: re-verify each v2 ticket still gated; record evidence; change nothing.
+- Scope: read ticket front-matter + gate signals only (judge key still 401? BLOB trigger absent?
+  `vault-sync --check` exit? F1→F4 edge intact?). Output brief `.autoforge/execution/M-GATED-V2.md`.
+- touches: `["workflow/wayfinder/maps/v2-agentic-platform/tickets/*", ".autoforge/execution/M-GATED-V2.md"]`
+- blocked_by: `[]`. Type: verify-only. Role: executor, zero questions.
+- Acceptance: brief lists F1–F4 with gate state + one evidence line each; zero prod-file diffs
+  (`git status --porcelain` shows no new src/tests modifications by this worker).
+- Reviewer: orchestrator read-only (brief + empty diff).
 
-### M-H13-TEST — temp-dir leniency unit test (H13 proof)
-- **Objective:** MemoryStore-free temp-dir test via existing `indexWayfinderTickets(root)` DI seam (no signature change for testability).
-- **Inputs:** M-H13-CODE shape.
-- **Outputs:** new `describe` block in `tests/domain/wayfinder-tickets.test.ts`: build `<tmp>/workflow/wayfinder/maps/<map>/tickets/{good.md,bad.md}` via `fs.mkdtempSync(os.tmpdir())` + `mkdirSync recursive`; good = valid front-matter, bad = `status: in_progress` (site 3) or missing `title` (site 2); assert `tickets.length===1`, `skipped.length===1`, `skipped[0].file` contains bad filename, `counts.total===1`; dup-key case: two files same `id` → first-wins + 1 skipped. No `process.cwd()` mutation (parallel-safe).
-- **touches:** `["tests/domain/wayfinder-tickets.test.ts"]`
-- **Dependencies:** blocked by M-H13-CODE. Parallel-safe with M-H13-LINT and M-TRIAGE (disjoint touches).
-- **Acceptance:**
-  - `npx vitest run tests/domain/wayfinder-tickets.test.ts` → all pass (old + new).
-  - `npm run lint && npm run typecheck` clean for the test file.
-- **Agent role:** builder. **Reviewer:** needs arch H13 §6.
-- **Ticket:** H13.
+### M-GATED-V3 — monitor v3 F1–F4 (zero code)
+- Objective/scope: same as M-GATED-V2 for v3 map (FLAG_1/FLAG_2/target/PHASE_3 still absent?).
+  Output `.autoforge/execution/M-GATED-V3.md`.
+- touches: `["workflow/wayfinder/maps/v3-architecture-deepening/tickets/*", ".autoforge/execution/M-GATED-V3.md"]`
+- blocked_by: `[]`. Type: verify-only. Role: executor, zero questions.
+- Acceptance: brief lists F1–F4 with gate state + evidence; zero prod-file diffs.
+- Reviewer: orchestrator read-only.
 
-### M-TRIAGE — H1–H6 docs closures, single module (MAP.md contention guard)
-- **Objective:** close H1–H6 as done-in-code / superseded-with-evidence by doc-only edits (front-matter `status: open` → `closed`, `resolved: 2026-09-10`, append `## Resolution` with code citations). NO prod code changes, NO live runs (H10 CLOSED). Single module owns ALL six ticket files + MAP.md so no two writers contend on MAP.md.
-- **Inputs:** discovery report §§H1–H6 verdicts (report.md:28-34), grilling Q1/Q2 + R1/R5/R6, MAP.md decisions (H7/H11/H8/H9/H12/H10 closed), code:
--   - H1 live-ness check (read-only, inside this module): `src/discovery/providers/ai-search.ts:31` (registered), `provider-types.ts:56-61` (gated live when `DISCOVERY_AI_ENABLED=true` + key), `providers/index.ts:11` (imported), `harvest-stream.ts:153` (tick filter includes any `providerEnabled(p)`, only `google-cse` in `DEPRECATED_PROVIDERS` per `harvest.ts:18` — ai-search NOT deprecated), H7 ticket `:40` ("Keep `ai-search` registered (no delete this slice)"). Verdict: **H1 live-legacy (gated), H7 additive — close H1 done-in-code with supersede-note, do NOT delete**.
-- **Outputs (per ticket):** status/resolved/resolution-note. Cross-map for grilling R6: H1→H7 (additive, both registered), H2→H8 (continuous loop closed), H3→H9 (H9 notes "H3 stays open (non-intersecting)" — if H3 still non-intersecting-open per H9, close only with explicit H9-delta evidence or leave open with reason; default per tracker-index is close-as-done-in-code, flag gap if H9 delta unproven), H4→H9/H11, H5/H6→H10 (verify closed 2026-09-10).
-- **touches:** `["workflow/wayfinder/maps/ai-harvest-stream/tickets/H1-ai-provider-gpt5-nano.md", "workflow/wayfinder/maps/ai-harvest-stream/tickets/H2-structured-workflow.md", "workflow/wayfinder/maps/ai-harvest-stream/tickets/H3-control-api.md", "workflow/wayfinder/maps/ai-harvest-stream/tickets/H4-ui-monitoring.md", "workflow/wayfinder/maps/ai-harvest-stream/tickets/H5-verification-loop.md", "workflow/wayfinder/maps/ai-harvest-stream/tickets/H6-fixtures-samples.md", "workflow/wayfinder/maps/ai-harvest-stream/MAP.md"]`
-- **Dependencies:** none (docs-only; parallel-safe with M-H13-CODE — disjoint touches).
-- **Acceptance:**
-  - `npx tsx scripts/wayfinder-tickets.ts --json` (post-H13-CODE) or `rg -n "^status:" workflow/wayfinder/maps/ai-harvest-stream/tickets/H{1,2,3,4,5,6}-*.md` → all `closed` (or documented hold with gap citation for H3).
-  - Each closed ticket has `## Resolution` with ≥1 `file:line` code citation verifiable by `rg`.
-  - MAP.md Tickets section updated to closed state; `node scripts/vault-sync.mjs --check` unaffected (no `state/**` touched).
-- **Tests:** no vitest; verification is grep + citation check (read-only commands above).
-- **Agent role:** docs-closer. **Reviewer:** needs grilling Q1/Q2/R1/R6 + H7/H9/H10 resolution texts.
-- **Tickets:** H1, H2, H3, H4, H5, H6.
+### M-A3 — pipeline returns claimed dedupe index (DO FIRST)
+- Objective: single claim site — `DiscoveryRunOutcome` carries `dedupeIndex`; delete stream re-claim.
+- Scope: `pipeline.ts:285-313` (d08 clone becomes returned index; outcome type `:342-346`);
+  delete `harvest-stream.ts:220-233` loop AND rewire the consumer: replace the `:216-233` block with
+  `stream.dedupeIndex = outcome.dedupeIndex` (destructure outcome at `:182`, not just `{state}`).
+  A loop deletion without this rewiring freezes `stream.dedupeIndex` and replays H10 (cross-tick dupes).
+  Orchestrators persist via `dedupe-persist` only (R10 untouched,
+  do not edit `dedupe-persist.ts` — foreign lane dirty there); `harvest.ts:227-234` call-site only if
+  needed, prefer no edit. Collision: `pipeline.ts` + `harvest.ts` dirty in worktree → verify-before-edit:
+  `git diff` own regions first; if foreign edits overlap the d08/outcome lines, stop and report, do not overwrite.
+- touches: `["src/discovery/pipeline.ts", "src/discovery/harvest-stream.ts", "src/discovery/harvest.ts", "tests/domain/discovery-pipeline-dedupe-index.test.ts", ".autoforge/execution/M-A3.md"]`
+- blocked_by: `[]`. Skills: codebase-design (claim rule locality in d08). Tests: new through-interface test
+  (pipeline twice, same docs, MemoryStore → second `dedupe_status != unique`, threading the returned index:
+  run2 `ctx.dedupeIndex = run1 outcome.dedupeIndex`); stream test asserting `stream.dedupeIndex` advances
+  across two ticks with zero `claimFingerprints` in stream; `rg claimFingerprints
+  src/discovery/harvest-stream.ts` → 0; dedupe/pipeline suites + typecheck green.
+- Acceptance: per decisions.md AD-A3 §Acceptance (4 checks).
+- Reviewer: read-only diff review (outcome shape + loop deletion) + suite greens.
 
-## Execution Work Order (DAG)
+### M-A1 — ledger run-persist behind the ledger seam
+- Objective: `appendLedgerRun(slices, ranAtIso, store?) → LedgerEntry[]` in `ledger.ts` owns
+  seq + file mirror + KV append + trim; `executeJob` call site becomes one call; zero seq/INDEX_KEY
+  arithmetic left in `harvest.ts`. Guard stays put: VITEST/NODE_ENV gate at `harvest.ts:214` keeps
+  wrapping the one call (moved fn writes unconditionally); coverage-mirror write (`:346-353`) does NOT
+  move — ledger must not own coverage files, move ledger slices only. Collision: `harvest.ts` dirty → verify-before-edit, same protocol as M-A3.
+- touches: `["src/discovery/harvest.ts", "src/discovery/ledger.ts", "tests/domain/discovery-ledger-run.test.ts", ".autoforge/execution/M-A1.md"]`
+- blocked_by: `["M-A3"]` (serializes shared `harvest.ts`; A3 shrinks file first).
+- Skills: codebase-design (KV+file = two adapters, real seam). Tests: adjunct `appendLedgerRun` runs on a
+  shared MemoryStore continue disjoint seqs (r1 max < r2 min, KV tail total 4); mirror confined to tmp via
+  `AUDITORAI_LEDGER_MIRROR` with live-ledger mtime assertion;
+  `rg 'nextSeq|lastSeq|INDEX_KEY' src/discovery/harvest.ts` → 0; ledger-r2 + harvest suites + typecheck.
+  (Deviations recorded: simultaneity not asserted — allocation is read-tail-then-assign inherited from the
+  original; single-writer throws on contention; values ride inline in slices, side-channel module deleted.)
+- Acceptance: per AD-A1 (4 checks). Reviewer: read-only (seam placement + twin-write locality).
 
-```
-M-H13-CODE  (root) ──┬── M-H13-LINT ── M-H13-GATES
-                     └── M-H13-TEST
-M-TRIAGE    (root, docs-only, parallel-safe with CODE)
-```
+### M-A4 — d04Acquire via provider.fetch (%PDF-guard home PRE-DECIDED)
+- Planner grill decision (worker asks zero questions): **%PDF guard stays in `d04Acquire`
+  (caller-side); `provider.fetch` remains byte-transport, unwidened.** Rationale: one consumer's PDF need =
+  hypothetical seam — widening the fetch contract for one adapter fails the two-adapter test and expands
+  blast radius to every provider. Revisit if a second content-type appears.
+- Objective: route d04 live fallback through originating provider's `fetch`; index hits/quals once;
+  remove dead `seq` (`:218`); keep guard in d04. Fallback rule: per-hit try `provider.fetch` → on throw
+  (offline/non-fetching provider, e.g. `seed-portals.fetch` throws by design) fall back to the current
+  direct-fetch path (preserves seed behavior). Budget rule: `withHostBudget` lives INSIDE `provider.fetch`
+  impls — d04 must NOT wrap `provider.fetch` calls (keep wrapper only around the legacy fallback).
+  `provider-types.ts` is READ-ONLY reference for the guard-home check; any diff there fails review.
+  Collision: `pipeline.ts` dirty → verify-before-edit.
+- touches: `["src/discovery/pipeline.ts", "src/discovery/providers/provider-types.ts", "tests/domain/discovery-pipeline-d04.test.ts", ".autoforge/execution/M-A4.md"]`
+- blocked_by: `["M-A3"]` (shared `pipeline.ts`, disjoint nodes d04 vs d08; A3 lands first).
+  Parallel-safe with M-A1 (touches disjoint).
+- Skills: codebase-design. Tests: fake `provider.fetch` non-PDF bytes → empty bundle + warn, zero network;
+  seed-originated-hit test (`provider_id: "seed-portals"` → non-empty bundle via fallback, stubbed global
+  fetch); spy test asserting `provider.fetch` was actually called (not just output shape);
+  bare-fetch `rg` → 0; pipeline suites + typecheck.
+- Acceptance: per AD-A4 (4 checks) + guard-home check (guard present in d04 region, fetch contract unwidened).
+- Reviewer: read-only (transport routing + guard placement).
 
-- Parallel-safe pairs (disjoint touches): M-H13-CODE ∥ M-TRIAGE; M-H13-LINT ∥ M-H13-TEST ∥ M-TRIAGE.
-- Sequential (shared state): M-H13-LINT after M-H13-CODE (needs `skipped` shape); M-H13-GATES after M-H13-LINT (needs exit contract); M-H13-TEST after M-H13-CODE.
-- Shared-state guard: `src/wayfinder/*` vs `workflow/**` vs `scripts/*` vs `tests/**` vs gates are disjoint — no two modules write the same file. `route.ts` is intentionally untouched (no module claims it).
-- Machine-readable: `.autoforge/execution/work-order.json`.
+### M-A2 — single DiscoveryCtx builder
+- Objective: `buildDiscoveryCtx({live, cellKey}, deps?)` in `harvest.ts`; both callers use it;
+  filter policy (incl. agent-reach-search + DEPRECATED) in one place; preserve `UnknownCellKeyError`.
+  Null-cellKey semantics PINNED: builder adopts harvest gaps-aware derivation (`harvest.ts:396-413`) +
+  static fallback; stream no-cellKey ticks thereby gain gaps-awareness (intended — record in M-A2.md brief);
+  `deps?` carries `read`/`cwd` so the tick path stays injectable and the parity test runs hermetic (stub deps).
+- touches: `["src/discovery/harvest.ts", "src/discovery/harvest-stream.ts", "tests/domain/discovery-ctx-builder.test.ts", ".autoforge/execution/M-A2.md"]`
+- blocked_by: `["M-A3", "M-A1"]` (shared files with both; A1 shrinks `harvest.ts` first, A3 edits stream first).
+- Skills: codebase-design (two callers = real seam). Tests: same input both paths → identical
+  providerIds/query; null-cellKey case asserts gaps-aware derivation, NOT the legacy static default;
+  unknown cellKey throws; deprecated excluded live; stream + harvest suites green.
+- Acceptance: per AD-A2 (3 checks). Reviewer: read-only (no inline JUR_MAP/filter left in stream).
 
-## Constraints honored
+### M-A5 — health fallback consolidation (LANE-GATED)
+- Objective: move file-ledger fallback inside `bridgeHarvestHealth`; freeze `HarvestHealthBridge`;
+  thin route to auth + delegate; shape-pinning test. **Step 0: diff against HEAD** — bridge files dirty
+  in worktree (foreign in-flight lane). If lane uncommitted/overlapping: verify-only, record dup-check,
+  change nothing. If lane committed and fallback still in route: implement. If lane covered it: close as dup.
+- touches: `["src/discovery/health-aggregate.ts", "src/app/api/dev/health/route.ts", "tests/domain/harvest-health-bridge.test.ts", ".autoforge/execution/M-A5.md"]`
+- blocked_by: `[]` + lane gate in acceptance (in-ticket, not an edge). Schedulable wave 2.
+- Skills: codebase-design (one served interface). Tests: KV-down + file-present → full 8-field shape;
+  KV-down + no-file → nulls, shape intact; harvest-health suite green. Fix stale field-count comments in
+  passing (`health-aggregate.ts:79-80,:18-21`; `route.ts:134`: "6-field" → 8-field).
+- Acceptance: per AD-A5 (4 checks) + lane verdict recorded. Reviewer: read-only + lane-owner confirm.
 
-- Ponytail smallest diff: Alt A single loop, no mode flag, no new deps, route unchanged, `file: reason` not `file:line` (arch §4 note).
-- Spawn-contract: workers execute real commands; children never `git checkout/stash/reset/add/commit/push`, never delete `state/*`; explicit `git add` paths at commit time per AGENTS.md; plan touches no `state/**` so `vault-sync --check` stays green.
-- No live prod work (H10 closed): M-TRIAGE code check is read-only (`rg`/Read); H13 tests use temp-dir + mocked/invalid front-matter, no keys, no server.
+### M-TICKETS — create v4-harvest-deepening tickets + MAP.md (docs-only, orchestrator-side, post-approval)
+- Objective: write 5 ticket files (A1–A5, front-matter per decisions.md: id/title/map/blocked_by/self-approve)
+  + map MAP.md under `workflow/wayfinder/maps/v4-harvest-deepening/**`. Front-matter encodes grill outcomes:
+  A4 records `grill: resolved-by-planner (guard caller-side, fetch unwidened; revisit on 2nd content-type)`
+  + `self-approve: true` (NOT FALSE — planner already grilled it); A5 records `lane-gate: foreign bridge
+  lane, reviewer = lane owner`. No code, no gate changes.
+- touches: `["workflow/wayfinder/maps/v4-harvest-deepening/**", ".autoforge/execution/M-TICKETS.md"]`
+- blocked_by: `[]`. Type: docs-only. Role: executor, zero questions.
+- Acceptance: 5 files + MAP.md exist with correct front-matter; `to-tickets` edge syntax valid;
+  zero diffs outside the map dir + own brief.
+- Reviewer: orchestrator read-only (front-matter + edges).
 
-(End of file)
+## Execution DAG + parallel groups
+- Wave 0 (parallel, disjoint touches): M-GATED-V2, M-GATED-V3, M-TICKETS, M-A3.
+- Wave 1 (parallel, disjoint): M-A1 (←M-A3), M-A4 (←M-A3).
+- Wave 2 (parallel, disjoint): M-A2 (←M-A3, M-A1), M-A5 (lane-gated).
+- Edges: M-A1←M-A3; M-A4←M-A3; M-A2←M-A3,M-A1. All else root.
+- Shared-file serialization: `harvest-stream.ts` A3→A2; `harvest.ts` A3→A1→A2; `pipeline.ts` A3→A4.
+- Global guards: explicit touches allow-lists; no git add/commit/push; never `state/vault-notes.json`;
+  never edit `tests/domain/wayfinder-tickets.test.ts` or foreign regions; verify-before-edit on all 5 dirty
+  source files; workers EXECUTE (no plans/questions), reviewers read-only.
+- Rollback: GATED/TICKETS/A5-verify-only → nothing to revert (no prod diff). A3/A4/A1/A2 → single-commit
+  `git revert` each (additive outcome field, loop deletion, seam moves — no migrations, no schema/data
+  moves); Wave-2 A2 re-runs stream+harvest suites as its own gate. No irreversible step exists in this plan.

@@ -1,86 +1,159 @@
 {
-  "constraints": [
-    "workers EXECUTE real commands only (spawn-contract §12)",
-    "children NEVER git checkout/stash/reset/add/commit/push, never delete state/* (§14)",
-    "no state/** touches (vault-sync --check stays green)",
-    "H10 CLOSED: no live prod work; triage code check read-only",
-    "ponytail: no new deps; route.ts unchanged"
+ "generated": "2026-09-14",
+ "modules": [
+  {
+   "acceptance": "Brief lists v2 F1-F4 gate states + evidence lines; zero src/tests diffs",
+   "blocked_by": [],
+   "id": "M-GATED-V2",
+   "objective": "Monitor-only re-verify of v2 F1-F4 gates; no code",
+   "role": "executor",
+   "touches": [
+    "workflow/wayfinder/maps/v2-agentic-platform/tickets/*",
+    ".autoforge/execution/M-GATED-V2.md"
+   ],
+   "type": "verify-only",
+   "wave": 0
+  },
+  {
+   "acceptance": "Brief lists v3 F1-F4 gate states + evidence lines; zero src/tests diffs",
+   "blocked_by": [],
+   "id": "M-GATED-V3",
+   "objective": "Monitor-only re-verify of v3 F1-F4 gates; no code",
+   "role": "executor",
+   "touches": [
+    "workflow/wayfinder/maps/v3-architecture-deepening/tickets/*",
+    ".autoforge/execution/M-GATED-V3.md"
+   ],
+   "type": "verify-only",
+   "wave": 0
+  },
+  {
+   "acceptance": "5 ticket files + MAP.md with valid front-matter/edges; diffs confined to map dir + brief; A4 front-matter records grill-resolved-by-planner + self-approve true; A5 records lane-gate + lane-owner reviewer",
+   "blocked_by": [],
+   "id": "M-TICKETS",
+   "objective": "Docs-only: create v4-harvest-deepening tickets + MAP.md (post-approval)",
+   "role": "executor",
+   "touches": [
+    "workflow/wayfinder/maps/v4-harvest-deepening/**",
+    ".autoforge/execution/M-TICKETS.md"
+   ],
+   "type": "docs-only",
+   "wave": 0
+  },
+  {
+   "acceptance": "Outcome carries dedupeIndex; pipeline-twice test greens second-run dup; rg claimFingerprints in stream = 0; dedupe/pipeline suites + typecheck green; stream rewired (stream.dedupeIndex = outcome.dedupeIndex, outcome destructured); pipeline-twice test threads returned index; stream-advance test with zero claimFingerprints in stream",
+   "blocked_by": [],
+   "collision": "pipeline.ts + harvest.ts dirty in worktree: verify-before-edit own regions; stop-and-report on overlap; never touch dedupe-persist.ts",
+   "id": "M-A3",
+   "objective": "Single dedupe claim site: DiscoveryRunOutcome carries dedupeIndex; delete stream re-claim loop",
+   "role": "executor",
+   "touches": [
+    "src/discovery/pipeline.ts",
+    "src/discovery/harvest-stream.ts",
+    "src/discovery/harvest.ts",
+    "tests/domain/discovery-pipeline-dedupe-index.test.ts",
+    ".autoforge/execution/M-A3.md"
+   ],
+   "type": "implement",
+   "wave": 0
+  },
+  {
+   "acceptance": "rg nextSeq|lastSeq|INDEX_KEY in harvest.ts = 0; concurrent appendLedgerRun disjoint seqs; ledger-r2 + harvest suites + typecheck green; VITEST/NODE_ENV guard stays at executeJob call site; coverage-mirror write does NOT move; adjunct runs continue disjoint seqs on shared store (simultaneity out of scope: read-tail-then-assign inherited; mirror tmp-confined, live mtime asserted)",
+   "blocked_by": [
+    "M-A3"
+   ],
+   "collision": "harvest.ts dirty: verify-before-edit; serializes after M-A3",
+   "id": "M-A1",
+   "objective": "Move run-slice persist into ledger.appendLedgerRun; executeJob becomes one call",
+   "role": "executor",
+   "touches": [
+    "src/discovery/harvest.ts",
+    "src/discovery/ledger.ts",
+    "tests/domain/discovery-ledger-run.test.ts",
+    ".autoforge/execution/M-A1.md"
+   ],
+   "type": "implement",
+   "wave": 1
+  },
+  {
+   "acceptance": "Bare-fetch rg = 0; fake provider.fetch non-PDF test green; dead seq removed; %PDF guard in d04, fetch contract unwidened; pipeline suites + typecheck green; per-hit try provider.fetch with direct-fetch fallback on throw (seed-portals offline); no withHostBudget wrap around provider.fetch (wrapper only on legacy fallback); seed-hit test + fetch-called spy test; provider-types.ts zero-diff; d04 test asserts fallback yielded docs (acquired non-empty)",
+   "blocked_by": [
+    "M-A3"
+   ],
+   "collision": "pipeline.ts dirty: verify-before-edit; disjoint nodes d04 vs d08; parallel-safe with M-A1",
+   "grill_decision": "%PDF guard stays caller-side in d04Acquire; provider.fetch unwidened (hypothetical-seam rule)",
+   "id": "M-A4",
+   "objective": "Route d04Acquire live fallback through provider.fetch; index hits/quals once",
+   "role": "executor",
+   "touches": [
+    "src/discovery/pipeline.ts",
+    "src/discovery/providers/provider-types.ts",
+    "tests/domain/discovery-pipeline-d04.test.ts",
+    ".autoforge/execution/M-A4.md"
+   ],
+   "type": "implement",
+   "wave": 1
+  },
+  {
+   "acceptance": "No inline JUR_MAP/filter in stream; ctx parity + UnknownCellKeyError + deprecated-excluded tests green; stream + harvest suites green; null-cellKey pinned to harvest gaps-aware derivation (+static fallback), deps carry read/cwd, parity test hermetic",
+   "blocked_by": [
+    "M-A3",
+    "M-A1"
+   ],
+   "collision": "serializes harvest-stream.ts after M-A3, harvest.ts after M-A1",
+   "id": "M-A2",
+   "objective": "Single buildDiscoveryCtx in harvest.ts used by harvest + stream",
+   "role": "executor",
+   "touches": [
+    "src/discovery/harvest.ts",
+    "src/discovery/harvest-stream.ts",
+    "tests/domain/discovery-ctx-builder.test.ts",
+    ".autoforge/execution/M-A2.md"
+   ],
+   "type": "implement",
+   "wave": 2
+  },
+  {
+   "acceptance": "Step-0 HEAD diff verdict recorded (implement | verify-only-waiting | dup-close); if implement: thin route, 8-field shape tests green, harvest-health suite green; stale 6-field comments fixed in passing (health-aggregate.ts:79-80,:18-21; route.ts:134)",
+   "blocked_by": [],
+   "id": "M-A5",
+   "lane_gate": "BLOCKED until foreign bridge-lane edits in health-aggregate.ts + health/route.ts commit; close-as-dup if lane covered it",
+   "objective": "Consolidate health fallback inside bridgeHarvestHealth; freeze HarvestHealthBridge shape",
+   "role": "executor",
+   "touches": [
+    "src/discovery/health-aggregate.ts",
+    "src/app/api/dev/health/route.ts",
+    "tests/domain/harvest-health-bridge.test.ts",
+    ".autoforge/execution/M-A5.md"
+   ],
+   "type": "implement-lane-gated",
+   "wave": 2
+  }
+ ],
+ "parallel_groups": [
+  [
+   "M-GATED-V2",
+   "M-GATED-V3",
+   "M-TICKETS",
+   "M-A3"
   ],
-  "modules": [
-    {
-      "acceptance": [
-        "npm run typecheck passes",
-        "npx vitest run tests/domain/wayfinder-tickets.test.ts stays green untouched",
-        "temp-tree probe: 1 good + 1 status:in_progress -> tickets 1, skipped 1, counts.total 1"
-      ],
-      "agent_role": "builder",
-      "blocked_by": [],
-      "dependencies": [],
-      "id": "M-H13-CODE",
-      "objective": "Lenient loadTicketsFromTree: per-file try/catch -> console.warn + skipped[]; TicketIndex.skipped optional/defaulted; parsers stay strict; dup first-wins sorted; counts.total===tickets.length",
-      "tests": [
-        "npx vitest run tests/domain/wayfinder-tickets.test.ts",
-        "npm run typecheck"
-      ],
-      "ticket": "H13",
-      "touches": ["src/wayfinder/tickets.ts", "src/wayfinder/ticket-types.ts"]
-    },
-    {
-      "acceptance": [
-        "npx tsx scripts/wayfinder-tickets.ts --lint; echo $? -> 0 on clean tree",
-        "temp tree with 1 bad file -> exit 1, stderr has filename+reason",
-        "lint mode writes no .autoforge/explanation artifact in any mode",
-        "--json emits parseable skipped array"
-      ],
-      "agent_role": "builder",
-      "blocked_by": ["M-H13-CODE"],
-      "dependencies": ["M-H13-CODE"],
-      "id": "M-H13-LINT",
-      "objective": "--lint flag: same lenient loader, stderr file:reason lines, exit 0/1/2, no M-R19 write in any mode, --json gains skipped",
-      "tests": ["npx tsx scripts/wayfinder-tickets.ts --lint; echo $?"],
-      "ticket": "H13",
-      "touches": ["scripts/wayfinder-tickets.ts"]
-    },
-    {
-      "acceptance": [
-        "sh -n .githooks/pre-commit passes",
-        "YAML parse of ci.yml passes",
-        "rg -n wayfinder-tickets.*--lint .githooks/pre-commit .github/workflows/ci.yml -> 2 hits"
-      ],
-      "agent_role": "builder",
-      "blocked_by": ["M-H13-LINT"],
-      "dependencies": ["M-H13-LINT"],
-      "id": "M-H13-GATES",
-      "objective": "Wire same --lint command into pre-commit (beside lint) and ci.yml quality (after npm run lint); no new job",
-      "tests": ["rg -n... (line truncated to 2000 chars)"],
-      "ticket": "H13",
-      "touches": [".githooks/pre-commit", ".github/workflows/ci.yml"]
-    },
-    {
-      "acceptance": [
-        "npx vitest run tests/domain/wayfinder-tickets.test.ts — all pass",
-        "npm run lint && npm run typecheck clean for the test file"
-      ],
-      "agent_role": "builder",
-      "blocked_by": ["M-H13-CODE"],
-      "dependencies": ["M-H13-CODE"],
-      "id": "M-H13-TEST",
-      "objective": "temp-dir leniency unit test (H13 proof)",
-      "tests": ["npx vitest run tests/domain/wayfinder-tickets.test.ts"],
-      "ticket": "H13",
-      "touches": ["tests/domain/wayfinder-tickets.test.ts"]
-    },
-    {
-      "acceptance": ["npx tsx scripts/wayfinder-tickets.ts --json"],
-      "agent_role": "docs-closer",
-      "blocked_by": [],
-      "dependencies": [],
-      "id": "M-TRIAGE",
-      "objective": "H1–H6 docs closures; MAP.md update",
-      "tests": [],
-      "ticket": "MAP",
-      "touches": ["workflow/wayfinder/maps/ai-harvest-stream/tickets/.."]
-    }
+  [
+   "M-A1",
+   "M-A4"
   ],
-  "notes": []
+  [
+   "M-A2",
+   "M-A5"
+  ]
+ ],
+ "policy": {
+  "deps": "stdlib only, no new deps",
+  "forbidden": [
+   "state/vault-notes.json",
+   "git mutations by children",
+   "tests/domain/wayfinder-tickets.test.ts"
+  ],
+  "reviewers": "read-only",
+  "workers": "EXECUTE, no plans/questions"
+ }
 }

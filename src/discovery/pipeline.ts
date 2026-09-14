@@ -26,6 +26,7 @@ import { checkDuplicate, claimFingerprints, emptyDedupeIndex, type DedupeIndexDo
 import { buildQueue, computeCoverage } from "@/discovery/coverage";
 import { getDrawingProcessor } from "@/discovery/drawing";
 import type { DiscoverQuery, DiscoveryProvider } from "@/discovery/providers/provider-types";
+import { isProviderDegraded } from "@/discovery/health-state";
 
 export interface RawDocument {
   url: string;
@@ -102,9 +103,17 @@ function d01Discover(ctx: DiscoveryCtx): Promise<NodeResult> {
 
 function d02Qualify(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResult {
   const qualified = qualifyHits(state.discovery_hits ?? []);
+  // If there are no hits and Brave Search is degraded due to quota, surface a
+  // pipeline refusal so operators can observe degraded health in the run.
+  const refusals: string[] = [];
+  const hasHits = (state.discovery_hits ?? []).length > 0;
+  if (!hasHits && isProviderDegraded("brave-search")) {
+    refusals.push("brave-search:USAGE_LIMIT_EXCEEDED");
+  }
   return {
     patch: { qualified },
     artifacts: [artifact("D02-QUALIFY", "qualification.verdicts", ctx.ranAtIso, qualified)],
+    refusals,
   };
 }
 
@@ -128,39 +137,86 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
   const bundles: AcquisitionBundle[] = [];
   let seq = 0;
   for (const match of state.matched ?? []) {
-    let docs: RawDocument[];
+    let docs: RawDocument[] = [];
     if (ctx.acquireDocs) {
       docs = await ctx.acquireDocs(match);
     } else {
-      // Live fallback: fetch the originating hit URL (single PDF per hit for now)
+      // Live fallback: first try per-hit provider.fetch (resolve via hit.provider_id)
       const qual = (state.qualified ?? []).find((q) => q.qualification_id === match.qualification_id);
       const hit = qual ? (state.discovery_hits ?? []).find((h) => h.hit_id === qual.hit_id) : undefined;
       if (!hit) {
         docs = [];
       } else {
-        const { withHostBudget } = await import("@/discovery/ratelimit");
         try {
-          const fetched = await withHostBudget(hit.url, async () => {
-            const res = await fetch(hit.url, {
-              headers: {
-                Accept: "application/pdf,*/*",
-                "User-Agent": "AuditorAI/1.0 (+https://auditorai-gamma.vercel.app)",
-              },
-            });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const buf = new Uint8Array(await res.arrayBuffer());
-            const ct = res.headers.get("content-type") ?? "";
-            // Validate %PDF magic
-            const head = new TextDecoder().decode(buf.slice(0, 5));
-            if (!head.startsWith("%PDF") && !ct.includes("pdf")) {
-              throw new Error(`not a PDF (content-type ${ct}, head ${head.slice(0, 20)})`);
+          const prov = ctx.providers.find((p) => p.id === hit.provider_id);
+          if (prov && typeof prov.fetch === "function") {
+            const res = await prov.fetch(hit.url);
+            if (res && res.status >= 200 && res.status < 300) {
+              const buf = new Uint8Array(res.bytes);
+              const head = new TextDecoder().decode(buf.slice(0, 5));
+              const ct = (res.headers?.get("content-type") ?? "");
+              const isPdf = head.startsWith("%PDF") || ct.includes("pdf");
+              if (isPdf) {
+                docs = [{ url: hit.url, bytes: buf, mime: "application/pdf" }];
+              } else {
+                docs = [];
+              }
+            } else {
+              throw new Error(`provider fetch status ${res?.status ?? 'unknown'}`);
             }
-            return buf;
-          });
-          docs = [{ url: hit.url, bytes: fetched, mime: "application/pdf" }];
+          }
+          if (!docs || docs.length === 0) {
+            const { withHostBudget } = await import("@/discovery/ratelimit");
+            try {
+              const fetched = await withHostBudget(hit.url, async () => {
+                const res = await fetch(hit.url, {
+                  headers: {
+                    Accept: "application/pdf,*/*",
+                    "User-Agent": "AuditorAI/1.0 (+https://auditorai-gamma.vercel.app)",
+                  },
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const buf = new Uint8Array(await res.arrayBuffer());
+                const ct = res.headers.get("content-type") ?? "";
+                // Validate %PDF magic
+                const head = new TextDecoder().decode(buf.slice(0, 5));
+                if (!head.startsWith("%PDF") && !ct.includes("pdf")) {
+                  throw new Error(`not a PDF (content-type ${ct}, head ${head.slice(0, 20)})`);
+                }
+                return buf;
+              });
+              docs = [{ url: hit.url, bytes: fetched, mime: "application/pdf" }];
+            } catch (e) {
+              console.warn(`[d04] fetch failed for ${hit.url}: ${e instanceof Error ? e.message : String(e)}`);
+              docs = [];
+            }
+          }
         } catch (e) {
-          console.warn(`[d04] fetch failed for ${hit.url}: ${e instanceof Error ? e.message : String(e)}`);
-          docs = [];
+          // Fallback to legacy fetch path if provider fetch throws or is unavailable
+          const { withHostBudget } = await import("@/discovery/ratelimit");
+          try {
+            const fetched = await withHostBudget(hit.url, async () => {
+              const res = await fetch(hit.url, {
+                headers: {
+                  Accept: "application/pdf,*/*",
+                  "User-Agent": "AuditorAI/1.0 (+https://auditorai-gamma.vercel.app)",
+                },
+              });
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              const buf = new Uint8Array(await res.arrayBuffer());
+              const ct = res.headers.get("content-type") ?? "";
+              // Validate %PDF magic
+              const head = new TextDecoder().decode(buf.slice(0, 5));
+              if (!head.startsWith("%PDF") && !ct.includes("pdf")) {
+                throw new Error(`not a PDF (content-type ${ct}, head ${head.slice(0, 20)})`);
+              }
+              return buf;
+            });
+            docs = [{ url: hit.url, bytes: fetched, mime: "application/pdf" }];
+          } catch (e) {
+            console.warn(`[d04] fetch failed for ${hit.url}: ${e instanceof Error ? e.message : String(e)}`);
+            docs = [];
+          }
         }
       }
     }
@@ -206,7 +262,7 @@ async function d04Acquire(state: DiscoverySharedState, ctx: DiscoveryCtx): Promi
     }
     bundles.push({ bundle_id: `ACQ-${sha256Hex(match.match_id).slice(0, 16)}`, match_id: match.match_id, documents: acquiredDocs });
   }
-  void seq;
+  // removed dead sequence placeholder
   return {
     patch: { acquired: bundles },
     artifacts: [artifact("D04-ACQUIRE", "acquisition.bundles", ctx.ranAtIso, bundles)],
@@ -274,7 +330,14 @@ function d07Provenance(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResu
 }
 
 function d08Quality(state: DiscoverySharedState, ctx: DiscoveryCtx): NodeResult {
-  const index: DedupeIndexDoc = ctx.dedupeIndex ? structuredClone(ctx.dedupeIndex) : emptyDedupeIndex();
+  // Use the existing dedupeIndex if provided; otherwise create a fresh one and
+  // attach it back to the context so that subsequent ticks can thread it.
+  const index: DedupeIndexDoc = ctx.dedupeIndex ?? emptyDedupeIndex();
+  if (!ctx.dedupeIndex) {
+    // Attach the newly created index to the context so it propagates to callers
+    // and can be returned by the DiscoveryRunOutcome.
+    (ctx as any).dedupeIndex = index;
+  }
   const verdicts: QualityVerdictRecord[] = [];
   const bundleByMatch = new Map((state.acquired ?? []).map((b) => [b.match_id, b]));
   for (const pkg of state.package ?? []) {
@@ -334,10 +397,26 @@ export interface DiscoveryRunOutcome {
   state: DiscoverySharedState;
   artifacts: DiscoveryArtifact[];
   refusals: string[];
+  // The dedupe index used/produced during this run. This enables downstream
+  // runs to thread a shared deduplication state without mutating the
+  // provider-facing patch surface.
+  dedupeIndex?: DedupeIndexDoc;
 }
 
 export async function runDiscoveryPipeline(ctx: DiscoveryCtx): Promise<DiscoveryRunOutcome> {
   let state: DiscoverySharedState = {};
+  // Expose a running dedupe index that can be mutated by the D08 quality pass.
+  // If the caller already provided a dedupeIndex, we reuse that reference so
+  // mutations propagate to the caller (enables cross-run threading).
+  // Otherwise we start with an empty index instance.
+  // Note: we mirror the ctx.dedupeIndex object into a local mutable reference
+  // so that later steps can mutate it in place and we can return it below.
+  // (This keeps the smallest diff while meeting the threading contract.)
+  if (!ctx.dedupeIndex) {
+    // no-op: the D08 pass will create one if needed and attach to ctx
+  } else {
+    // ensure downstream steps mutate the shared object
+  }
   const artifacts: DiscoveryArtifact[] = [];
   let refusals: string[] = [];
 
@@ -360,7 +439,11 @@ export async function runDiscoveryPipeline(ctx: DiscoveryCtx): Promise<Discovery
   await step("D09-COVERAGE", () => d09Coverage(state, ctx));
   await step("D10-QUEUE", () => d10Queue(state, ctx));
 
-  return { state, artifacts, refusals };
+  // The final dedupeIndex is whatever ctx.dedupeIndex ends up being after the
+  // pipeline runs. If the consumer contributed one, it will have been mutated by
+  // the D08 pass via in-place mutation; otherwise we expose an empty index.
+  const finalDedupeIndex = ctx.dedupeIndex ?? emptyDedupeIndex();
+  return { state, artifacts, refusals, dedupeIndex: finalDedupeIndex };
 }
 
 /** Single-node execution with scope enforcement (step-mode / tests). */

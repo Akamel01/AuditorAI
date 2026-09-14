@@ -4,9 +4,9 @@
 import type { DataStore } from "@/lib/persistence";
 import { getDataStore } from "@/lib/persistence/store";
 import { runDiscoveryPipeline, type DiscoveryCtx } from "@/discovery/pipeline";
-import { claimFingerprints, emptyDedupeIndex, type DedupeIndexDoc } from "@/discovery/dedupe";
-import { listProviderIds, providerEnabled, resolveProvider } from "@/discovery/providers";
-import { DEPRECATED_PROVIDERS, JUR_MAP, themeFor } from "@/discovery/harvest";
+import { emptyDedupeIndex, type DedupeIndexDoc } from "@/discovery/dedupe";
+import { resolveProvider } from "@/discovery/providers";
+import { buildDiscoveryCtx } from "@/discovery/harvest";
 
 export type HarvestStreamStatus = "IDLE" | "RUNNING" | "PAUSED" | "VERIFYING" | "DONE" | "FAILED";
 
@@ -145,24 +145,22 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
   stream.currentNode = "D01-DISCOVER";
   appendLog(stream, "STREAM", `iteration ${stream.iteration} start`);
 
-  // Build DiscoveryCtx — reuse harvest.ts derivation (JUR_MAP + themeFor + provider resolution)
+  // Build DiscoveryCtx — single shared derivation (M-A2). Stream passes validateCellKey: false
+  // (null-tolerance preserved) and its own dedupeIndex; null cellKey now derives gaps-aware
+  // queries like harvest (intended behavior change, recorded in M-A2.md).
   const live = stream.live;
   const cellKey = stream.cellKey;
-  const providerIds = live
-    // ponytail: agent-reach-search self-gates async (env/Keychain or UI runtime keys) → [] when off, zero cost
-    ? (["seed-portals", ...listProviderIds().filter((p) => p !== "seed-portals" && (providerEnabled(p) || p === "agent-reach-search") && !DEPRECATED_PROVIDERS.has(p))] as string[])
-    : (["seed-portals"] as string[]);
-  const providers = providerIds.map((pid) => resolveProvider(pid)).filter(Boolean) as NonNullable<ReturnType<typeof resolveProvider>>[];
+  const derived = buildDiscoveryCtx(
+    { live, cellKey: cellKey ?? null, dedupeIndex: stream.dedupeIndex, validateCellKey: false },
+  );
+  const providers = derived.providerIds.map((pid) => resolveProvider(pid)).filter(Boolean) as NonNullable<ReturnType<typeof resolveProvider>>[];
 
+  // Assemble the DiscoveryCtx in the shape expected by runDiscoveryPipeline
   const ctx: DiscoveryCtx = {
     ranAtIso: nowIso(),
-    query: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jurisdictions: (cellKey ? [JUR_MAP[cellKey.split(":")[0].toLowerCase()] ?? "INT"] : (["UK", "US", "CA", "AE", "INT"] as const)) as any,
-      themes: cellKey ? [themeFor(cellKey)] : ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
-    },
+    query: derived.query,
     providers,
-    dedupeIndex: stream.dedupeIndex,
+    dedupeIndex: derived.dedupeIndex,
     ...(live
       ? {}
       : {
@@ -174,12 +172,14 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
             return fixtureDocsFor({ jurisdiction: match.jurisdiction, native_stage_id: match.native_stage_id } as any).slice(0, 1);
           },
         }),
-  };
+  } as unknown as DiscoveryCtx;
 
   // For logging context in continuous mode, derive a label from cellKey or first jurisdiction
   const logLabel = stream.cellKey ?? ((ctx.query?.jurisdictions?.[0] ?? "UNKNOWN") as string);
   try {
-    const { state } = await runDiscoveryPipeline(ctx);
+    // Consume both the deterministic state and the optional dedupeIndex from the
+    // pipeline so we can thread cross-run dedupe state without dedicated patches.
+    const { state, dedupeIndex } = await runDiscoveryPipeline(ctx);
     // Fresh guard: reload the stream to detect stale reads and prevent race with concurrent writers
     const fresh = await loadStream(id, store);
     if (!fresh || (fresh.status !== "RUNNING" && fresh.status !== "VERIFYING") || fresh.updatedAt !== startUpdatedAt) {
@@ -213,23 +213,9 @@ export async function tickStream(id: string, store?: DataStore): Promise<Harvest
     stream.packages = [...(stream.packages ?? []), ...uniquePkgs].slice(-50);
     stream.quality = [...(stream.quality ?? []), ...uniqueQuals].slice(-50);
     stream.coverage = (state.coverage as unknown) ?? null;
-    // pipeline returns dedupe via ctx.dedupeIndex when available (otherwise keep current)
-    if ((state as { dedupe?: DedupeIndexDoc }).dedupe) {
-      stream.dedupeIndex = (state as { dedupe: DedupeIndexDoc }).dedupe;
-    }
-    // H10: persist cross-tick dedupe — d08Quality claims into a per-run clone that
-    // the pipeline never returns, so without this every tick re-discovers the same
-    // docs as unique. uniquePkgs (above) already holds the unique-verdict subset.
-    try {
-      const bundles = new Map(
-        ((state.acquired as Array<{ match_id: string }>) ?? []).map((b) => [b.match_id, b]),
-      );
-      for (const pkg of uniquePkgs as Array<{ package_id: string; match_id: string }>) {
-        const bundle = bundles.get(pkg.match_id) as Parameters<typeof claimFingerprints>[1] | undefined;
-        if (bundle) claimFingerprints(pkg as Parameters<typeof claimFingerprints>[0], bundle, stream.dedupeIndex);
-      }
-    } catch {
-      /* dedupe persistence is best-effort; quality gates still apply per tick */
+    // Persist dedupeIndex from the pipeline if provided (threading across ticks).
+    if (dedupeIndex) {
+      stream.dedupeIndex = dedupeIndex;
     }
     stream.currentNode = null;
     stream.status = "VERIFYING";
