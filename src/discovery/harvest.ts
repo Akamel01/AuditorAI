@@ -3,16 +3,16 @@
 // and after() fire-and-forget. This module owns query derivation, provider
 // resolution, coverage/dedupe reads, fixtureDocsFor, and the executeJob loop.
 // DataStore seam injection via optional store param (MemoryStore for tests).
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { listProviderIds as defaultListProviderIds, providerEnabled as defaultProviderEnabled, resolveProvider as defaultResolveProvider } from "@/discovery/providers";
 import "@/discovery/providers";
 import { DISCOVERY_NODE_IDS } from "@/discovery/types";
 import { runDiscoveryNode, type DiscoveryCtx, type RawDocument } from "@/discovery/pipeline";
 import type { MatchAssignment } from "@/discovery/types";
 import { appendLog, createJob, setJobDone, setJobError, setJobRunning, updateJob, getJob } from "@/discovery/jobs";
-import { getLedgerTailKV } from "./ledger";
-import type { LedgerEntry } from "./ledger";
+import { appendLedgerRun } from "./ledger";
+import { appendLedgerKV } from "./ledger";
+import path from "node:path";
 import type { DataStore } from "@/lib/persistence";
 
 export const DEPRECATED_PROVIDERS = new Set(["google-cse"]);
@@ -224,22 +224,42 @@ export async function executeJob(
       provenance?: unknown[];
     };
 
-    // Persist ledger and dedupe before marking the job done to avoid
-    // race conditions with visibility-triggered reloads.
+  // Persist ledger and dedupe before marking the job done to avoid
+  // race conditions with visibility-triggered reloads.
+  // Gate restored (M-A1): skip persist under VITEST/NODE_ENV=test, exactly as HEAD
+  // gated persistDiscoveryState — test runs must never touch live state mirrors.
   let persistedEntries: import("./ledger").LedgerEntry[] = [];
   if (process.env.VITEST !== "true" && process.env.NODE_ENV !== "test") {
-    try {
-      persistedEntries = await persistDiscoveryState(s, ranAtIso, store);
-    } catch (e) {
-      await appendLog(jobId, { at: nowIso(), node: "PERSIST-WARN", message: `persist skipped: ${e instanceof Error ? e.message.slice(0, 200) : String(e).slice(0, 200)}` }, store);
-    }
-  }
+  // Persist ledger and dedupe under the ledger seam (values inline, no globals)
+  const slices: [string, string, unknown][] = [
+    ["discovery_hits", "discovery.hitset", s.discovery_hits],
+    ["qualified", "qualification.verdicts", s.qualified],
+    ["matched", "match.assignments", s.matched],
+    ["acquired", "acquisition.bundles", s.acquired],
+    ["classified", "classification.labelsets", s.classified],
+    ["package", "package.assemblies", s.package],
+    ["provenance", "provenance.records", s.provenance],
+    ["quality", "quality.verdicts", s.quality],
+    ["coverage", "coverage.view", s.coverage],
+    ["queue", "queue.items", s.queue],
+  ];
+  const appendedEntries = await appendLedgerRun(slices, ranAtIso, store);
+  persistedEntries = appendedEntries;
   // KV mirror best-effort (survives Vercel lambda) – always attempt with
   // whatever entries we derived, even if FS writes failed
   try {
-    const { appendLedgerKV } = await import("./ledger");
     await appendLedgerKV(persistedEntries, store);
   } catch {}
+  // Preserve coverage-mirror behavior in harvest.ts (do not move to ledger seam)
+  try {
+    if (s.coverage && typeof s.coverage === "object") {
+      const covPath = path.join(process.cwd(), "state", "odd-coverage.json");
+      const covDir = path.dirname(covPath);
+      if (!existsSync(covDir)) mkdirSync(covDir, { recursive: true });
+      writeFileSync(covPath, JSON.stringify(s.coverage, null, 2) + "\n", "utf8");
+    }
+  } catch {}
+  } // end VITEST/NODE_ENV persist gate
     // Dedupe claim-and-merge (B1)
     try {
       const { persistDedupeFromResult } = await import("./dedupe-persist");
@@ -292,96 +312,75 @@ export async function executeJob(
   }
 }
 
-async function persistDiscoveryState(
-  state: Record<string, unknown>,
-  ranAtIso: string,
-  store?: DataStore,
-): Promise<import("./ledger").LedgerEntry[]> {
-  // Derive new ledger entries from in-memory state and persist in a
-  // best-effort way. If the filesystem is read-only, swallow write errors
-  // and still return the derived entries so downstream KV path can proceed.
-  const { readFileSync, writeFileSync, existsSync, mkdirSync } = await import("node:fs");
-  const cwd = process.cwd();
-  const ledgerPath = path.join(cwd, "state", "discovery-ledger.json");
-  const covPath = path.join(cwd, "state", "odd-coverage.json");
-  // Load existing ledger if possible; otherwise start fresh.
-  let ledgerEntries: LedgerEntry[] = [];
-  try {
-    const raw = readFileSync(ledgerPath, "utf8");
-    const parsed = JSON.parse(raw) as { entries: LedgerEntry[] };
-    ledgerEntries = parsed.entries ?? [];
-  } catch {
-    ledgerEntries = [];
-  }
-
-  // Determine a safe starting sequence using the existing ledger tail via KV.
-  let lastSeq = ledgerEntries.length > 0 ? ledgerEntries[ledgerEntries.length - 1].seq : 0;
-  try {
-    const tail = await getLedgerTailKV(50, store);
-    if (tail.total > 0 && tail.entries.length > 0) {
-      const tailLast = tail.entries[tail.entries.length - 1].seq;
-      if (typeof tailLast === "number" && tailLast > lastSeq) lastSeq = tailLast;
-    }
-  } catch {
-    // ignore tail lookup failures
-  }
-  let nextSeq = lastSeq;
-  const kinds: [string, string][] = [
-    ["discovery_hits", "discovery.hitset"],
-    ["qualified", "qualification.verdicts"],
-    ["matched", "match.assignments"],
-    ["acquired", "acquisition.bundles"],
-    ["classified", "classification.labelsets"],
-    ["package", "package.assemblies"],
-    ["provenance", "provenance.records"],
-    ["quality", "quality.verdicts"],
-    ["coverage", "coverage.view"],
-    ["queue", "queue.items"],
-  ];
-  const appended: LedgerEntry[] = [];
-  for (const [slice, kind] of kinds) {
-    const value = state[slice];
-    if (value == null || (Array.isArray(value) && value.length === 0)) continue;
-    if (kind === "coverage.view" && typeof value === "object" && !Array.isArray(value) && Object.keys(value as object).length === 0) continue;
-    nextSeq += 1;
-    const entry: LedgerEntry = { seq: nextSeq, at: ranAtIso, payload_kind: kind, data: value as unknown };
-    ledgerEntries.push(entry);
-    appended.push(entry);
-  }
-  // Best-effort writes
-  try {
-    const dir = path.dirname(ledgerPath);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    // Keep the file mirror in sync when possible
-    const ledgerObj = { entries: ledgerEntries };
-    writeFileSync(ledgerPath, JSON.stringify(ledgerObj, null, 2) + "\n", "utf8");
-  } catch {
-    // swallow FS errors to preserve operation in read-only environments
-  }
-  try {
-    if (state.coverage && typeof state.coverage === "object") {
-      const covDir = path.dirname(covPath);
-      if (!existsSync(covDir)) mkdirSync(covDir, { recursive: true });
-      writeFileSync(covPath, JSON.stringify(state.coverage, null, 2) + "\n", "utf8");
-    }
-  } catch {
-    // swallow
-  }
-  return appended;
-}
+// (M-A1: run-slice persist moved to appendLedgerRun in ./ledger; the orphaned
+// persistDiscoveryState was deleted — single claim site, no duplicated seq logic.)
 
 export async function harvest(input: HarvestInput, deps?: HarvestDeps): Promise<HarvestResult> {
   const LIVE = input.live === true;
   const cellKey = typeof input.cellKey === "string" && input.cellKey.length > 0 ? input.cellKey : null;
 
-  const cwd = resolveCwd(deps);
-  const read = resolveRead(deps);
-  const listIds = deps?.listProviderIds ?? defaultListProviderIds;
-  const isEnabled = deps?.providerEnabled ?? defaultProviderEnabled;
   const resolve = deps?.resolveProvider ?? defaultResolveProvider;
   const nowIso = deps?.nowIso ?? (() => new Date().toISOString());
 
-  if (cellKey) {
+  // M-A2: derivation unified in buildDiscoveryCtx (same code as below pre-move).
+  const derived = buildDiscoveryCtx({ live: LIVE, cellKey }, deps);
+  const providerIds = derived.providerIds;
+  const providers = providerIds
+    .map((id) => resolve(id))
+    .filter((p): p is NonNullable<typeof p> => p !== null);
+
+  const ranAtIso = LIVE ? nowIso() : new Date(0).toISOString();
+
+  const ctx: DiscoveryCtx = {
+    ranAtIso,
+    query: derived.query,
+    providers,
+    dedupeIndex: derived.dedupeIndex,
+    // C1: live → real PDF fetch via pipeline (hit.url + withHostBudget + %PDF guard)
+    // dry-run → deterministic fixtures
+    ...(LIVE ? {} : { acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match).slice(0, 1)) }),
+  };
+
+  const store = deps?.store;
+  const job = await createJob({ live: LIVE, cellKey, providers: providerIds }, store);
+  await appendLog(job.id, { at: nowIso(), node: "D00-QUEUED", message: `job ${job.id} queued live=${LIVE} cellKey=${cellKey ?? "gap-aware"}` }, store);
+
+  return {
+    jobId: job.id,
+    status: "queued",
+    ranAtIso,
+    live: LIVE,
+    cellKey: cellKey ?? null,
+    providers: providerIds,
+    ctx,
+    providerIds,
+  };
+}
+// M-A2: single DiscoveryCtx derivation shared by harvest executeJob + stream ticks.
+// Pins: (1) null-cellKey = gaps-aware derivation from odd-coverage top-3 + static fallback
+// (stream ticks thereby gain gaps-awareness — intended); (2) provider filter = union rule
+// with the agent-reach-search carve-out (it self-gates async at call time; dropping it would
+// break UI-runtime-keyed discovery); (3) cellKey validated via odd.json unless
+// validateCellKey === false (executeJob validates; stream passes false to preserve tolerance).
+export interface CtxBuilderDeps {
+  readFileSync?: (p: string, encoding: string) => string;
+  cwd?: () => string;
+  listProviderIds?: () => string[];
+  providerEnabled?: (id: string) => boolean;
+}
+
+export function buildDiscoveryCtx(
+  opts: { live: boolean; cellKey: string | null; dedupeIndex?: DiscoveryCtx["dedupeIndex"]; validateCellKey?: boolean },
+  deps?: CtxBuilderDeps,
+): { providerIds: string[]; query: DiscoveryCtx["query"]; dedupeIndex: DiscoveryCtx["dedupeIndex"] } {
+  const LIVE = opts.live;
+  const cellKey = opts.cellKey;
+  const read = resolveRead(deps);
+  const cwd = resolveCwd(deps);
+  const listIds = deps?.listProviderIds ?? defaultListProviderIds;
+  const isEnabled = deps?.providerEnabled ?? defaultProviderEnabled;
+
+  if (cellKey && opts.validateCellKey !== false) {
     try {
       const oddRaw = read(path.join(cwd, "policies", "odd.json"), "utf8");
       const odd = JSON.parse(oddRaw) as { cells: { jurisdiction_id: string; canonical_stage: string[] }[] };
@@ -398,13 +397,8 @@ export async function harvest(input: HarvestInput, deps?: HarvestDeps): Promise<
   }
 
   const providerIds = LIVE
-    ? (["seed-portals", ...listIds().filter((p) => p !== "seed-portals" && isEnabled(p) && !DEPRECATED_PROVIDERS.has(p))] as string[])
+    ? (["seed-portals", ...listIds().filter((p) => p !== "seed-portals" && (isEnabled(p) || p === "agent-reach-search") && !DEPRECATED_PROVIDERS.has(p))] as string[])
     : (["seed-portals"] as string[]);
-  const providers = providerIds
-    .map((id) => resolve(id))
-    .filter((p): p is NonNullable<typeof p> => p !== null);
-
-  const ranAtIso = LIVE ? nowIso() : new Date(0).toISOString();
 
   let queryJurs: ("UK" | "US" | "CA" | "AE" | "INT")[] | null = null;
   let queryThemes: string[] | null = null;
@@ -428,39 +422,22 @@ export async function harvest(input: HarvestInput, deps?: HarvestDeps): Promise<
     }
   }
 
-  let dedupeIndex: DiscoveryCtx["dedupeIndex"] | undefined;
-  try {
-    const raw = read(path.join(cwd, "state", "dedupe-index.json"), "utf8");
-    dedupeIndex = JSON.parse(raw) as DiscoveryCtx["dedupeIndex"];
-  } catch {
-    dedupeIndex = undefined;
+  let dedupeIndex = opts.dedupeIndex;
+  if (dedupeIndex === undefined) {
+    try {
+      const raw = read(path.join(cwd, "state", "dedupe-index.json"), "utf8");
+      dedupeIndex = JSON.parse(raw) as DiscoveryCtx["dedupeIndex"];
+    } catch {
+      dedupeIndex = undefined;
+    }
   }
 
-  const ctx: DiscoveryCtx = {
-    ranAtIso,
+  return {
+    providerIds,
     query: {
       jurisdictions: (queryJurs ?? (["UK", "US", "CA", "AE", "INT"] as const)) as unknown as DiscoveryCtx["query"]["jurisdictions"],
       themes: queryThemes ?? ['"road safety audit"', "preliminary design RSA", "stage 1 road safety audit"],
     },
-    providers,
     dedupeIndex,
-    // C1: live → real PDF fetch via pipeline (hit.url + withHostBudget + %PDF guard)
-    // dry-run → deterministic fixtures
-    ...(LIVE ? {} : { acquireDocs: (match: MatchAssignment) => Promise.resolve(fixtureDocsFor(match).slice(0, 1)) }),
-  };
-
-  const store = deps?.store;
-  const job = await createJob({ live: LIVE, cellKey, providers: providerIds }, store);
-  await appendLog(job.id, { at: nowIso(), node: "D00-QUEUED", message: `job ${job.id} queued live=${LIVE} cellKey=${cellKey ?? "gap-aware"}` }, store);
-
-  return {
-    jobId: job.id,
-    status: "queued",
-    ranAtIso,
-    live: LIVE,
-    cellKey: cellKey ?? null,
-    providers: providerIds,
-    ctx,
-    providerIds,
   };
 }

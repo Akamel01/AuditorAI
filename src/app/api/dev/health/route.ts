@@ -7,10 +7,9 @@ import { listProviderIds, providerEnabled, resolveProvider } from "@/discovery/p
 import "@/discovery/providers";
 import { DESCRIPTORS } from "@/domain/pipeline/registry";
 import { DISCOVERY_NODE_IDS } from "@/discovery/types";
-import { aggregateHarvestHealth } from "@/discovery/health-aggregate";
+import { bridgeHarvestHealth } from "@/discovery/health-aggregate";
 import { isAnyProviderDegraded } from "@/discovery/health-state";
-import { withPersistenceSingleWriter } from "@/lib/persistence/single-writer";
-import type { LedgerEntry } from "@/discovery/ledger";
+ 
 
 export async function GET(req: Request) {
   const auth = await requireAdmin(req);
@@ -132,27 +131,19 @@ export async function GET(req: Request) {
         discoveryGraphNodes: DISCOVERY_NODE_IDS.length,
       };
     }
-    // Harvest health snapshot (pure function) derived from the discovery ledger.
-    let harvestHealth: ReturnType<typeof aggregateHarvestHealth> = {
-      lastRunAt: null,
-      lastSuccessAt: null,
-      lastHits: null,
-      degraded: false,
-    };
+    // Harvest health snapshot (bridge → 8 fields) derived from the discovery
+    // ledger via the KV seam when available. Local/dev fallback: ambient store
+    // is an empty MemoryStore without KV env, so read the file ledger here and
+    // pass it as bridge fallback entries (bridge itself does no FS reads).
+    let fileEntries: import("@/discovery/ledger").LedgerEntry[] | null = null;
     try {
-      harvestHealth = await withPersistenceSingleWriter(async () => {
-        try {
-          const raw = readFileSync(path.join(root, "state", "discovery-ledger.json"), "utf8");
-          const doc = JSON.parse(raw) as { entries?: LedgerEntry[] };
-          const entries = Array.isArray(doc.entries) ? (doc.entries as LedgerEntry[]) : [];
-          return aggregateHarvestHealth(entries);
-        } catch {
-          return { lastRunAt: null, lastSuccessAt: null, lastHits: null, degraded: false } as ReturnType<typeof aggregateHarvestHealth>;
-        }
-      });
+      const raw = readFileSync(path.join(root, "state", "discovery-ledger.json"), "utf8");
+      const doc = JSON.parse(raw) as { entries?: import("@/discovery/ledger").LedgerEntry[] };
+      if (Array.isArray(doc.entries) && doc.entries.length > 0) fileEntries = doc.entries;
     } catch {
-      harvestHealth = { lastRunAt: null, lastSuccessAt: null, lastHits: null, degraded: false } as ReturnType<typeof aggregateHarvestHealth>;
+      // keep null — bridge returns KV-derived (possibly null) shape intact
     }
+    const harvestHealth = await bridgeHarvestHealth(undefined, 50, fileEntries);
 
     const healthDegraded = isAnyProviderDegraded();
     return NextResponse.json({
