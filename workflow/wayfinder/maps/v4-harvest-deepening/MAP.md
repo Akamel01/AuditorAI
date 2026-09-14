@@ -13,6 +13,7 @@ Decisions:
   - AD-A3: pipeline dedupe index return (Self-approve: true)
   - AD-A4: d04Acquire via provider.fetch seam (Self-approve: false)
   - AD-A5: health bridge consolidation (Self-approve: false)
+  - CLOSEOUT 2026-09-14: all five implemented + reviewed APPROVED_WITH_NOTES, merged 0e71b69; tickets CLOSED.
 Not-yet-specified: |
   A4 grill pre-resolved by planner (guard caller-side, fetch unwidened; revisit on 2nd content-type). A5 executes only after foreign bridge lane resolves (implement / verify-only / dup-close).
 Out-of-scope: |
