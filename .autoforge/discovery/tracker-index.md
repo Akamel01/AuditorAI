@@ -1,5 +1,8 @@
 # Tracker Index — loop-3 refresh (2026-09-14, orchestrator-written from verified discovery findings)
 
+Loop-3 closeout 2026-09-14: v4-harvest-deepening A1–A5 all CLOSED (implemented + reviewed, merged 0e71b69).
+Open tickets (8, all gated tripwires — unchanged):
+
 GitHub: 0 open issues (prior sweep; discovery re-confirmed).
 Closed maps: ai-harvest-stream (H1–H13), harvest-verification (HV1–HV9), mvp, ops-residual (R1–R19), rsa-corpus (C1–C10).
 
