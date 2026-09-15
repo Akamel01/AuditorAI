@@ -17,6 +17,8 @@ coverage/
 # root configs (next.config.js, playwright.config.js) or scripts/*.js.
 src/**/*.js
 tests/**/*.js
+src/**/*.jsx
+tests/**/*.jsx
 
 # Environment & secrets
 .env
