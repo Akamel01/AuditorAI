@@ -14,6 +14,7 @@ SRC_OF = {
     "Fairfax_Blake_Lane_Ped_RSA_2024": "local-mpo/Fairfax_Blake_Lane_Ped_RSA_2024.pdf",
     "Tacoma_S_Tacoma_Way_RSA_2024": "local-mpo/Tacoma_S_Tacoma_Way_RSA_2024.pdf",
     "FHWA-SA-16-120_Transit_Access_RSA_4_RSA": "fhwa-case-studies/FHWA-SA-16-120_Transit_Access_RSA_4_RSA.pdf",
+    "Karnataka_RSA_Field_Guide_with_Case_Study": "intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf",
 }
 
 def src_key(p):
@@ -55,4 +56,4 @@ for p in pairs:
 print(f"pairs={len(pairs)} train={len(train)} holdout={len(hold)} tiers={tiers} shapes={shapes}")
 print(f"T0 count={[p for p in pairs if p['tier']=='T0'] and len([p for p in pairs if p['tier']=='T0']) or 0}")
 print("split-leak proof: no shared C5 exact-dup group; holdout sources disjoint from train")
-print("license: all pair sources CLEAR per LICENSE-REGISTER (fhwa-case-studies/state-dots/local-mpo)")
+print("license: pair sources CLEAR per LICENSE-REGISTER (fhwa-case-studies/state-dots/local-mpo); GF-9-DIRECT exception (register:20, use cleared 2026-09-15) covers staged PROPOSED piarc-irf pairs only — pairs.json/finetune splits stay CLEAR-only")

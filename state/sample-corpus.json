@@ -931,10 +931,10 @@
   }
  ],
  "counts": {
-  "total": 78,
+  "total": 83,
   "engine_fewshot": 6,
   "judge_calibration": 26,
-  "reserve": 41,
+  "reserve": 46,
   "unassigned": 5
  }
 }
