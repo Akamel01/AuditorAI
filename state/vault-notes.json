@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 37,
+  "note_count": 38,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -557,6 +557,21 @@
         "adr": []
       },
       "body_chars": 1042
+    },
+    {
+      "path": "vault/journal/2026-09-15-loop4-ratification-cleanup.md",
+      "zone": "vault/journal",
+      "title": "Loop-4 v5 wave + GF-9 DIRECT 6/6 ratified + twin cleanups (F1 still judge-blocked)",
+      "type": "journal",
+      "date": "2026-09-15",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1869
     }
   ]
 }
