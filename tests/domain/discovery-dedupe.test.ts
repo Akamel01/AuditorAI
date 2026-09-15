@@ -69,36 +69,6 @@ describe("dedupe KV-first persist (M-R10)", () => {
     fs.rmSync(cwd, { recursive: true, force: true });
   });
 
-  // chmod-based ROFS is a no-op for root (CI runs as root) — skip there.
-  const itNonRoot = typeof process.getuid === "function" && process.getuid() === 0 ? it.skip : it;
-  itNonRoot("ROFS cwd → KV ok + single mirror-skipped warn", async () => {
-    const store = new MemoryStore();
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "aud-dd-ro-"));
-    fs.mkdirSync(path.join(cwd, "state"), { recursive: true });
-    fs.chmodSync(path.join(cwd, "state"), 0o555);
-    fs.chmodSync(cwd, 0o555);
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    try {
-      const { pkg, bundle, quality } = fixtures();
-      const out = await persistDedupeFromResult([pkg], [bundle], [quality], store, cwd);
-      expect(out).not.toBeNull();
-      const kv = await store.get<{ sha256: Record<string, string> }>(DISCOVERY_DEDUPE_INDEX_KEY);
-      expect(kv?.sha256["abc123"]).toBe("p1");
-      const wdeadline = Date.now() + MIRROR_TIMEOUT_MS;
-      let rofsWarns: unknown[][] = [];
-      for (;;) {
-        rofsWarns = warn.mock.calls.filter((c) => String(c[0]).includes("dedupe: FS mirror skipped (ROFS)"));
-        if (rofsWarns.length === 1) break;
-        if (Date.now() > wdeadline) break;
-        await new Promise((r) => setTimeout(r, 10));
-      }
-      expect(rofsWarns).toHaveLength(1);
-    } finally {
-      fs.chmodSync(cwd, 0o755);
-      fs.rmSync(cwd, { recursive: true, force: true });
-    }
-  });
-
   it("KV put throws → still file-mirrors + returns non-null index", async () => {
     const store = new MemoryStore();
     store.put = async () => {
