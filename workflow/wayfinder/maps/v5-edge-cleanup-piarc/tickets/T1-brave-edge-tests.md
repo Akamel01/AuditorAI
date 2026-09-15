@@ -3,12 +3,12 @@ id: T1
 title: brave-edge-tests
 type: task
 hitl: false
-status: open
+status: closed
 assignee: 
 blocked_by: [T4]
 blocks: []
 created: 2026-09-14
-resolved: 
+resolved: 2026-09-14
 grill: 
 lane_gate: 
 reviewer: 
@@ -19,3 +19,7 @@ Summary: Real-provider 402/429/throw paths + pipeline refusal negatives in tests
 Current: Only FakeBraveProvider positive (refusal surfaces) + 2x zero-hit degraded + order; zero fetch mocks for 402/429 (brave-quota.test.ts:32-74).
 Desired: 402->[] + degraded set no-throw; 429->skip no-throw; USAGE_LIMIT_EXCEEDED body w/o 402->degraded []; non-402 error + zero-hits->throw; degraded+with-hits->no refusal; non-degraded+zero-hits->no refusal.
 Contract (grill A/HIGH+A/MED): absolute mkdtemp AUDITORAI_LEDGER_MIRROR + mtime guard; reset degraded AND zeroHitCounters in beforeEach (add resetHealthState export); extensionless @/ imports only; explicit stores, no sleeps.
+
+## Resolution
+
+Implemented + reviewed APPROVED_WITH_NOTES, merged f0d0f19: 6 new tests in brave-quota.test.ts (402/429/body-only/throw + 2 refusal negatives) + resetHealthState export; 9/9 green, lint 0, live ledger untouched.
