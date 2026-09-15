@@ -129,8 +129,46 @@ RSAs seek to enhance safety by identifying potential safety issues affecting all
 ```
 Proposed acceptance: all-users interchange/VRU scope (tightened GF-9-002 direction). File: docs/RSA-Documents/usa/local-mpo/Fairfax_Blake_Lane_Ped_RSA_2024.pdf (CLEAR, USA).
 
+GF-9-DIRECT (PIARC, PROPOSED 2026-09-14 per T5 — owner sign-off for scoped mining; use blocked on OWNER_RATIFICATION):
+
+- [ ] APPROVE / [ ] STRIKE — G9-D1 (DIRECT, prelim-design weave prompt):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+Will all merge, diverge and weaving areas be “safe”?
+```
+Proposed acceptance: pivotal claim (a) weave adequacy at recorded volumes. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.38, Preliminary design stage.
+
+- [ ] APPROVE / [ ] STRIKE — G9-D2 (DIRECT, prelim-design interchange/intersection alignment):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+Will horizontal and vertical alignments be safe and consistent, especially at interchanges and intersections?
+```
+Proposed acceptance: interchange/intersection geometric-consistency prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.38, Preliminary design stage.
+
+- [ ] APPROVE / [ ] STRIKE — G9-D3 (DIRECT, prelim-design interchange features):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+Are all features of the interchange design “safe”?
+```
+Proposed acceptance: interchange-design completeness prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.39, Preliminary design stage (cont.).
+
+- [ ] APPROVE / [ ] STRIKE — G9-D4 (DIRECT, planning-stage interchange type):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+Will the type of interchange be understood by drivers?
+```
+Proposed acceptance: interchange-type comprehensibility prompt at planning stage. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.37, Planning stage.
+
+- [ ] APPROVE / [ ] STRIKE — G9-D5 (DIRECT, prelim-design VRU crossing):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+Are pedestrian needs safely considered? (To cross the road, and to walk along the road?) (Refer to Part C of this field guide).
+```
+Proposed acceptance: pivotal claim (b) uncontrolled VRU crossings at ramp terminals. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.39, Preliminary design stage (cont.).
+
+- [ ] APPROVE / [ ] STRIKE — G9-D6 (DIRECT, all-users scope principle):
+```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
+consider the needs of all road users (including pedestrians especially children, cyclists, and motor-cyclists) in all weathers and lighting conditions
+```
+Proposed acceptance: all-users scope baseline, INT source. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Audit principles p.2.
 GAP (honest): no CLEAR INT interchange-weaving source in corpus; PIARC 2023/2011/LMIC files
 (piarc-irf/, RESTRICTED) are the natural GF-9-DIRECT follow-up once owner clears that batch.
+T5 follow-up 2026-09-14: scoped mining cleared for GF-9-DIRECT candidates only (G9-D1..D6 PROPOSED above); verdict stays RESTRICTED, use blocked on OWNER_RATIFICATION.
 
 ## GF-10 — CA planning fixture (all ANALOG — canadian/* RESTRICTED)
 

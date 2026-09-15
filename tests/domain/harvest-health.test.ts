@@ -1,14 +1,45 @@
 // Harvest health bridge tests — verify 8-field bridge shape on MemoryStore and KV-down fallback
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, beforeAll, afterAll } from "vitest";
+import { mkdtempSync } from "node:fs";
+import { promises as fs } from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { MemoryStore, type DataStore } from "@/lib/persistence";
 import { createJob, setJobDone } from "@/discovery/jobs";
 import { appendLedgerKV } from "@/discovery/ledger";
 import { bridgeHarvestHealth } from "@/discovery/health-aggregate";
+import { HARVEST_LOCK_KEY } from "@/discovery/harvest-lock";
+import { resetHealthState } from "@/discovery/health-state";
+
+// SAFETY: this suite must NEVER touch the real state/discovery-ledger.json
+// (live harvester state). The FS mirror is confined to an absolute mkdtemp
+// path via AUDITORAI_LEDGER_MIRROR, and the live mtime is asserted unchanged.
+const LIVE_LEDGER = path.join(process.cwd(), "state", "discovery-ledger.json");
+let liveMtimeMs = 0;
+let tmpRoot = "";
+let prevMirror: string | undefined;
 
 describe("harvest-health bridge (M-R8)", () => {
   let store: MemoryStore;
 
+  beforeAll(async () => {
+    liveMtimeMs = (await fs.stat(LIVE_LEDGER)).mtimeMs;
+    tmpRoot = mkdtempSync(path.join(os.tmpdir(), "auditorai-ledger-"));
+    const mirror = path.join(tmpRoot, "discovery-ledger.json");
+    if (!path.isAbsolute(mirror)) throw new Error("ledger mirror must be absolute");
+    prevMirror = process.env.AUDITORAI_LEDGER_MIRROR;
+    process.env.AUDITORAI_LEDGER_MIRROR = mirror;
+  });
+
+  afterAll(async () => {
+    if (prevMirror === undefined) delete process.env.AUDITORAI_LEDGER_MIRROR;
+    else process.env.AUDITORAI_LEDGER_MIRROR = prevMirror;
+    await fs.rm(tmpRoot, { recursive: true, force: true });
+    expect((await fs.stat(LIVE_LEDGER)).mtimeMs).toBe(liveMtimeMs);
+  });
+
   beforeEach(() => {
+    resetHealthState();
     store = new MemoryStore();
   });
 
@@ -94,5 +125,54 @@ describe("harvest-health bridge (M-R8)", () => {
     expect(Object.keys(health).sort()).toEqual(
       ["degraded", "indexedEntriesCount", "lastHits", "lastRunAt", "lastRunStatus", "lastSuccessAt", "lockAcquiredAt", "lockHolder"].sort(),
     );
+  });
+
+  it("listJobs-empty on healthy store yields null lastRunStatus with shape intact", async () => {
+    const health = await bridgeHarvestHealth(store, 50);
+    expect(Object.keys(health).sort()).toEqual(
+      ["degraded", "indexedEntriesCount", "lastHits", "lastRunAt", "lastRunStatus", "lastSuccessAt", "lockAcquiredAt", "lockHolder"].sort(),
+    );
+    expect(health.lastRunStatus).toBeNull();
+    expect(health.lockHolder).toBeNull();
+    expect(health.lockAcquiredAt).toBeNull();
+  });
+
+  it("tail-present-but-empty on MemoryStore yields base nulls with indexedEntriesCount 0", async () => {
+    await store.put("discovery:ledger:index", []);
+    const health = await bridgeHarvestHealth(store, 50);
+    expect(Object.keys(health).sort()).toEqual(
+      ["degraded", "indexedEntriesCount", "lastHits", "lastRunAt", "lastRunStatus", "lastSuccessAt", "lockAcquiredAt", "lockHolder"].sort(),
+    );
+    expect(health.lastRunAt).toBeNull();
+    expect(health.lastSuccessAt).toBeNull();
+    expect(health.lastHits).toBeNull();
+    expect(health.degraded).toBe(false);
+    expect(health.indexedEntriesCount).toBe(0);
+  });
+
+  it("empty tail on healthy store backfills base fields from fallback entries", async () => {
+    const at = new Date(0).toISOString();
+    const health = await bridgeHarvestHealth(store, 50, [
+      { seq: 1, at, payload_kind: "discovery.hitset", data: [{}, {}] },
+    ]);
+    expect(health.lastRunAt).toBe(at);
+    expect(health.indexedEntriesCount).toBe(1);
+    expect(Object.keys(health).sort()).toEqual(
+      ["degraded", "indexedEntriesCount", "lastHits", "lastRunAt", "lastRunStatus", "lastSuccessAt", "lockAcquiredAt", "lockHolder"].sort(),
+    );
+  });
+
+  it("holder-<epochMs> lock parses to lockHolder + ISO lockAcquiredAt", async () => {
+    await store.put(HARVEST_LOCK_KEY, "holder-0");
+    const health = await bridgeHarvestHealth(store, 50);
+    expect(health.lockHolder).toBe("holder-0");
+    expect(health.lockAcquiredAt).toBe(new Date(0).toISOString());
+  });
+
+  it("opaque job_ holder sets lockHolder with null lockAcquiredAt", async () => {
+    await store.put(HARVEST_LOCK_KEY, "job_mts44g7x_p7gu2l");
+    const health = await bridgeHarvestHealth(store, 50);
+    expect(health.lockHolder).toBe("job_mts44g7x_p7gu2l");
+    expect(health.lockAcquiredAt).toBeNull();
   });
 });
