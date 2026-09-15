@@ -129,46 +129,45 @@ RSAs seek to enhance safety by identifying potential safety issues affecting all
 ```
 Proposed acceptance: all-users interchange/VRU scope (tightened GF-9-002 direction). File: docs/RSA-Documents/usa/local-mpo/Fairfax_Blake_Lane_Ped_RSA_2024.pdf (CLEAR, USA).
 
-GF-9-DIRECT (PIARC, PROPOSED 2026-09-14 per T5 — owner sign-off for scoped mining; use blocked on OWNER_RATIFICATION):
+GF-9-DIRECT (PIARC, RATIFIED 2026-09-15 — owner APPROVED all 6, 0 struck; scoped-mining exception 2026-09-14, use cleared for GF-9):
 
-- [ ] APPROVE / [ ] STRIKE — G9-D1 (DIRECT, prelim-design weave prompt):
+- [x] APPROVE / [ ] STRIKE — G9-D1 (DIRECT, prelim-design weave prompt):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 Will all merge, diverge and weaving areas be “safe”?
 ```
-Proposed acceptance: pivotal claim (a) weave adequacy at recorded volumes. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.38, Preliminary design stage.
+Proposed acceptance: pivotal claim (a) weave adequacy at recorded volumes. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Checklist p.38, Preliminary design stage.
 
-- [ ] APPROVE / [ ] STRIKE — G9-D2 (DIRECT, prelim-design interchange/intersection alignment):
+- [x] APPROVE / [ ] STRIKE — G9-D2 (DIRECT, prelim-design interchange/intersection alignment):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 Will horizontal and vertical alignments be safe and consistent, especially at interchanges and intersections?
 ```
-Proposed acceptance: interchange/intersection geometric-consistency prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.38, Preliminary design stage.
+Proposed acceptance: interchange/intersection geometric-consistency prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Checklist p.38, Preliminary design stage.
 
-- [ ] APPROVE / [ ] STRIKE — G9-D3 (DIRECT, prelim-design interchange features):
+- [x] APPROVE / [ ] STRIKE — G9-D3 (DIRECT, prelim-design interchange features):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 Are all features of the interchange design “safe”?
 ```
-Proposed acceptance: interchange-design completeness prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.39, Preliminary design stage (cont.).
+Proposed acceptance: interchange-design completeness prompt at prelim design. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Checklist p.39, Preliminary design stage (cont.).
 
-- [ ] APPROVE / [ ] STRIKE — G9-D4 (DIRECT, planning-stage interchange type):
+- [x] APPROVE / [ ] STRIKE — G9-D4 (DIRECT, planning-stage interchange type):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 Will the type of interchange be understood by drivers?
 ```
-Proposed acceptance: interchange-type comprehensibility prompt at planning stage. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.37, Planning stage.
+Proposed acceptance: interchange-type comprehensibility prompt at planning stage. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Checklist p.37, Planning stage.
 
-- [ ] APPROVE / [ ] STRIKE — G9-D5 (DIRECT, prelim-design VRU crossing):
+- [x] APPROVE / [ ] STRIKE — G9-D5 (DIRECT, prelim-design VRU crossing):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 Are pedestrian needs safely considered? (To cross the road, and to walk along the road?) (Refer to Part C of this field guide).
 ```
-Proposed acceptance: pivotal claim (b) uncontrolled VRU crossings at ramp terminals. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Checklist p.39, Preliminary design stage (cont.).
+Proposed acceptance: pivotal claim (b) uncontrolled VRU crossings at ramp terminals. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Checklist p.39, Preliminary design stage (cont.).
 
-- [ ] APPROVE / [ ] STRIKE — G9-D6 (DIRECT, all-users scope principle):
+- [x] APPROVE / [ ] STRIKE — G9-D6 (DIRECT, all-users scope principle):
 ```quote src=Karnataka_RSA_Field_Guide_with_Case_Study.txt
 consider the needs of all road users (including pedestrians especially children, cyclists, and motor-cyclists) in all weathers and lighting conditions
 ```
-Proposed acceptance: all-users scope baseline, INT source. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use blocked on OWNER_RATIFICATION) Audit principles p.2.
-GAP (honest): no CLEAR INT interchange-weaving source in corpus; PIARC 2023/2011/LMIC files
-(piarc-irf/, RESTRICTED) are the natural GF-9-DIRECT follow-up once owner clears that batch.
-T5 follow-up 2026-09-14: scoped mining cleared for GF-9-DIRECT candidates only (G9-D1..D6 PROPOSED above); verdict stays RESTRICTED, use blocked on OWNER_RATIFICATION.
+Proposed acceptance: all-users scope baseline, INT source. File: docs/RSA-Documents/intl/piarc-irf/Karnataka_RSA_Field_Guide_with_Case_Study.pdf (RESTRICTED, INT; GF-9-DIRECT scoped mining per LICENSE-REGISTER.md exception 2026-09-14; use cleared 2026-09-15) Audit principles p.2.
+Cleared 2026-09-15: owner cleared piarc-irf/ for GF-9-DIRECT; G9-D1..D6 above RATIFIED (all 6 APPROVED, 0 struck).
+T5 follow-up 2026-09-14: scoped mining cleared for GF-9-DIRECT candidates only; verdict stays RESTRICTED, use cleared for GF-9-DIRECT only.
 
 ## GF-10 — CA planning fixture (all ANALOG — canadian/* RESTRICTED)
 
@@ -193,5 +192,6 @@ Proposed acceptance: field-review universality baseline. Same file.
 ## Ratification
 
 Owner: check one box per line above, then sign: `RATIFIED-BY: owner via chat 2026-09-13 — all 20 APPROVED, 0 struck`
-Counts: GF-6: 3, GF-7: 3, GF-8: 3, GF-9: 8, GF-10: 3 (20 candidates, 7 distinct source files, all CLEAR).
+`RATIFIED-BY: owner via chat 2026-09-15 — GF-9-DIRECT G9-D1..D6 all 6 APPROVED, 0 struck`
+Counts: GF-6: 3, GF-7: 3, GF-8: 3, GF-9: 14 (8 CLEAR ANALOGs + 6 RATIFIED PIARC DIRECTs), GF-10: 3 (26 candidates, 8 distinct source files; PIARC source RESTRICTED, GF-9-DIRECT use cleared).
 Note: File: paths updated post-C4-migration (2026-09-13) from harvest layout to usa/ shelves; quote texts unchanged from approved version; resolve via corpus-catalog.json basename lookup.
