@@ -195,3 +195,91 @@ Owner: check one box per line above, then sign: `RATIFIED-BY: owner via chat 202
 `RATIFIED-BY: owner via chat 2026-09-15 — GF-9-DIRECT G9-D1..D6 all 6 APPROVED, 0 struck`
 Counts: GF-6: 3, GF-7: 3, GF-8: 3, GF-9: 14 (8 CLEAR ANALOGs + 6 RATIFIED PIARC DIRECTs), GF-10: 3 (26 candidates, 8 distinct source files; PIARC source RESTRICTED, GF-9-DIRECT use cleared).
 Note: File: paths updated post-C4-migration (2026-09-13) from harvest layout to usa/ shelves; quote texts unchanged from approved version; resolve via corpus-catalog.json basename lookup.
+
+## H3b1 — loop-5 mining batch-1 (PROPOSED 2026-09-15, owner ratifies)
+
+Mined from 10 loop-5 PDFs (CTDOT C-0295/C-0296/C-0297/C-0300/C-0301, ODOT C-0316,
+FDOT C-0302, MnDOT C-0305/C-0306, MRMPO C-0286 — all CLEAR usa/, zero quarantine;
+extracted via scripts/extract-corpus.sh to /tmp/c7c8-text only). Page refs are PDF
+pages per pdftotext page breaks (prefixed ~). Unratified lines NEVER enter
+scorecards/journals. IDs continue per-GF numbering.
+
+- [ ] APPROVE / [ ] STRIKE — G6-4 (ANALOG, staged-process precedent):
+```quote src=MRMPO_Lead_Coal_Avenues_RSA_2022.txt
+Perform Field Reviews: June 8-June 9, 2022 5. Analyze and Report on Findings: June 9 (analysis) and August 30, 2022 (report) 6. Present Findings to Owner: June 10 (verbally) and report presented on August 30, 2022 7. Prepare Formal Response: to be determined (by owner) 8. Incorporate Findings: to be determined (by owner)
+```
+Proposed acceptance: 8-step audit-to-response process precedent at scheme scale. File: docs/RSA-Documents/usa/local-mpo/MRMPO_Lead_Coal_Avenues_RSA_2022.pdf (CLEAR, USA) p.~15.
+
+- [ ] APPROVE / [ ] STRIKE — G7-4 (practice-DIRECT, independent-team scope):
+```quote src=CTDOT_Bristol_Route72_RSA_2017.txt
+It is a qualitative review by an independent team experienced in traffic, pedestrian, and bicycle operations and design that considers the safety of all road users and proactively assesses mitigation measures to improve the safe operation of the facility by reducing the potential crash risk frequency or severity.
+```
+Proposed acceptance: independence + all-users + proactive-mitigation baseline. File: docs/RSA-Documents/usa/state-dots/CTDOT_Bristol_Route72_RSA_2017.pdf (CLEAR, USA) p.~5.
+
+- [ ] APPROVE / [ ] STRIKE — G7-5 (practice-DIRECT, VRU-focused review):
+```quote src=CTDOT_Salisbury_US44_CT41_RSA_2025.txt
+An RSA is a quick and high-level safety review, mainly focusing on vulnerable road user safety, intended to decrease the number and severity of roadway crashes by recommending the implementation of safety countermeasures.
+```
+Proposed acceptance: VRU-focused high-level review baseline. File: docs/RSA-Documents/usa/state-dots/CTDOT_Salisbury_US44_CT41_RSA_2025.pdf (CLEAR, USA) p.~3.
+
+- [ ] APPROVE / [ ] STRIKE — G7-6 (practice-DIRECT, independent-team composition):
+```quote src=MnDOT_TH14_NewUlm_NorthMankato_RSAR_2012.txt
+CH2M HILL assembled an independent team of safety experts representing MnDOT, the Federal Highway Administration, the Minnesota State Patrol and the private sector.
+```
+Proposed acceptance: multi-agency independent-team composition precedent. File: docs/RSA-Documents/usa/state-dots/MnDOT_TH14_NewUlm_NorthMankato_RSAR_2012.pdf (CLEAR, USA) p.~3.
+
+- [ ] APPROVE / [ ] STRIKE — G8-4 (practice-DIRECT, evidence factors):
+```quote src=CTDOT_Haddam_Route154_RSA_2023.txt
+These factors include traffic volumes and speeds, topography, roadway geometrics, crash data, roadway inventory (i.e. signage, curbs, bicycle/pedestrian facilities, amenities, safety components), and sidewalks.
+```
+Proposed acceptance: finding-evidence factor checklist baseline. File: docs/RSA-Documents/usa/state-dots/CTDOT_Haddam_Route154_RSA_2023.pdf (CLEAR, USA) p.~3.
+
+- [ ] APPROVE / [ ] STRIKE — G8-5 (practice-DIRECT, crash-history analysis):
+```quote src=ODOT_OR211_RSA_2022.txt
+The selected team assesses the existing crash history of the defned study corridor and suggests potential safety improvement options to reduce the number and severity of crashes.
+```
+Proposed acceptance: crash-history-to-improvement finding pattern (sic "defned" in source). File: docs/RSA-Documents/usa/state-dots/ODOT_OR211_RSA_2022.pdf (CLEAR, USA) p.~7.
+
+- [ ] APPROVE / [ ] STRIKE — G8-6 (practice-DIRECT, written owner response):
+```quote src=MnDOT_TH3_Farmington_RSA.txt
+Mn/DOT is encouraged to consider the report’s recommendations and respond in writing with its plans for implementation of the report’s findings.
+```
+Proposed acceptance: formal written-response obligation baseline. File: docs/RSA-Documents/usa/state-dots/MnDOT_TH3_Farmington_RSA.pdf (CLEAR, USA) p.~2.
+
+- [ ] APPROVE / [ ] STRIKE — G8-7 (practice-DIRECT, recommendation value):
+```quote src=FDOT_SR60_Barber_Bridge_RSA_2015.txt
+The goal of an RSA is to develop recommendations that enhance safety, while minimizing impact, if any, on traffic flow.
+```
+Proposed acceptance: safety-first recommendation-goal baseline. File: docs/RSA-Documents/usa/state-dots/FDOT_SR60_Barber_Bridge_RSA_2015.pdf (CLEAR, USA) p.~4.
+
+- [ ] APPROVE / [ ] STRIKE — G8-8 (practice-DIRECT, findings handoff step):
+```quote src=FDOT_SR60_Barber_Bridge_RSA_2015.txt
+Present audit findings to Project Owner/Design Team
+```
+Proposed acceptance: 8-step process handoff step (Step 6). Same file, p.~6.
+
+- [ ] APPROVE / [ ] STRIKE — G9-9 (ANALOG, all-users field scope):
+```quote src=MRMPO_Lead_Coal_Avenues_RSA_2022.txt
+An RSA team looks at existing conditions at various times of day, considers all road users, and accounts for human factors and road user capabilities.
+```
+Proposed acceptance: all-users + human-factors field-scope pattern. File: docs/RSA-Documents/usa/local-mpo/MRMPO_Lead_Coal_Avenues_RSA_2022.pdf (CLEAR, USA) p.~4.
+
+- [ ] APPROVE / [ ] STRIKE — G9-10 (ANALOG, frequency-severity ranking):
+```quote src=MRMPO_Lead_Coal_Avenues_RSA_2022.txt
+RSA teams assess potential safety issues based on the likely frequency of occurrence and severity of outcome and provide the road agency-owner suggestions on mitigating for each issue identified in the audit.
+```
+Proposed acceptance: risk-rank + per-issue mitigation pattern. Same file, p.~4.
+
+- [ ] APPROVE / [ ] STRIKE — G9-11 (ANALOG, proven-countermeasure status):
+```quote src=MRMPO_Lead_Coal_Avenues_RSA_2022.txt
+RSAs are considered a proven safety countermeasure by the Federal Highway Administration (FHWA), meaning their effectiveness at improving safety has been confirmed through research.
+```
+Proposed acceptance: RSA-effectiveness status baseline. Same file, p.~4.
+
+- [ ] APPROVE / [ ] STRIKE — G10-4 (ANALOG, pre-visit desktop evidence):
+```quote src=CTDOT_Madison_US1_RSA_2024.txt
+Prior to the site visit, area topography, land use characteristics, intersection sight distance concerns, sidewalk locations, parking, and bicycle facilities are examined using available mapping and imagery.
+```
+Proposed acceptance: planning-stage information-gathering premise (desktop before field). File: docs/RSA-Documents/usa/state-dots/CTDOT_Madison_US1_RSA_2024.pdf (CLEAR, USA) p.~3.
+
+H3b1 counts: 13 candidates (GF-6: 1, GF-7: 3, GF-8: 5, GF-9: 3, GF-10: 1) across 9 distinct source files; all CLEAR usa/.
