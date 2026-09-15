@@ -92,8 +92,12 @@ export async function appendLedgerRun(
       // Absolute path wins when set. If not set or not absolute, fall back to default.
       const defaultLedgerPath = path.join(process.cwd(), "state", "discovery-ledger.json");
       const envMirror = process.env.AUDITORAI_LEDGER_MIRROR;
-      if (process.env.VITEST === "true" && !envMirror) return appended;
-      const ledgerPath = envMirror && path.isAbsolute(envMirror) ? envMirror : defaultLedgerPath;
+      // R1: under VITEST a missing OR non-absolute mirror must never resolve to
+      // the live path — skip the FS mirror (tests opt in via absolute tmp path).
+      const mirrorAbsolute = envMirror && path.isAbsolute(envMirror) ? envMirror : null;
+      const skipFsMirror = process.env.VITEST === "true" && !mirrorAbsolute;
+      const ledgerPath = mirrorAbsolute ?? defaultLedgerPath;
+      if (!skipFsMirror) {
       let ledgerEntries: LedgerEntry[] = [];
       try {
         const raw = readFileSync(ledgerPath, "utf8");
@@ -106,6 +110,7 @@ export async function appendLedgerRun(
       const dir = path.dirname(ledgerPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(ledgerPath, JSON.stringify({ entries: ledgerEntries }, null, 2) + "\n", "utf8");
+      }
     } catch {
       // best-effort: ignore FS failures to keep operation non-blocking
     }

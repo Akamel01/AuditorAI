@@ -12,6 +12,12 @@ build/
 # Testing
 coverage/
 
+# Stale .ts twin build output (loop-4 T4): src/tests are TS-only; ignore
+# compiled twins shadowing .ts under vitest/eslint. Scoped — must NOT hide
+# root configs (next.config.js, playwright.config.js) or scripts/*.js.
+src/**/*.js
+tests/**/*.js
+
 # Environment & secrets
 .env
 .env.*

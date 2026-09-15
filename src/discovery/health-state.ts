@@ -32,3 +32,9 @@ export function recordZeroHitOutcome(providerId: string, zeroHit: boolean) {
     zeroHitCounters.set(providerId, 0);
   }
 }
+
+/** Test hook: clear both degraded flags and zero-hit counters. */
+export function resetHealthState(): void {
+  degradedFlags.clear();
+  zeroHitCounters.clear();
+}
