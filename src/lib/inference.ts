@@ -44,6 +44,65 @@ export async function chatComplete(
   return await completeOnce(cfg, messages, true);
 }
 
+/** Zen Responses-API effort map (chat ReasoningEffort → responses reasoning.effort). */
+function toResponsesEffort(effort: ReasoningEffort): string {
+  return effort === "low" ? "minimal" : "high"; // max→high: completes within budget
+}
+
+function messageText(content: ChatContent): string {
+  if (typeof content === "string") return content;
+  return content.map((p) => (p.type === "text" ? p.text : "[image]")).join("\n");
+}
+
+/**
+ * Responses-API transport for Responses-native Zen models (muse-spark-*).
+ * POST {baseUrl}/responses with x-opencode-session; returns assistant text.
+ */
+export async function responsesComplete(
+  cfg: ChatCallConfig & { sessionId?: string; maxOutputTokens?: number },
+  messages: ChatMessage[],
+): Promise<string> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), cfg.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const system = messages.filter((m) => m.role === "system").map((m) => messageText(m.content)).join("\n\n");
+    const input = messages.filter((m) => m.role !== "system").map((m) => `${m.role}: ${messageText(m.content)}`).join("\n\n");
+    const res = await (cfg.fetchImpl ?? fetch)(`${cfg.endpoint.baseUrl}/responses`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${cfg.endpoint.apiKey}`,
+        "Content-Type": "application/json",
+        "x-opencode-session": cfg.sessionId ?? "auditorai-eval-judge",
+      },
+      body: JSON.stringify({
+        model: cfg.model,
+        instructions: system || undefined,
+        input,
+        reasoning: { effort: toResponsesEffort(cfg.effort) },
+        max_output_tokens: cfg.maxOutputTokens ?? 2048,
+        stream: false,
+      }),
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    if (res.status === 429) throw new Error("HTTP 429 rate limited");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = (await res.json()) as {
+      output?: { type?: string; content?: { type?: string; text?: string }[] }[];
+    };
+    const text = json.output
+      ?.filter((o) => o.type === "message")
+      .flatMap((o) => o.content ?? [])
+      .filter((c) => c.type === "output_text" && typeof c.text === "string")
+      .map((c) => c.text as string)
+      .join("");
+    if (!text) throw new Error("response missing output message text");
+    return text;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function completeOnce(
   cfg: ChatCallConfig,
   messages: ChatMessage[],

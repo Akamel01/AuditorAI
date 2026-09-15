@@ -24,3 +24,9 @@ Grilled v6-horizon (owner) on 2026-09-15. `x-preview-f-free` is dead (401s); Zen
 ## Status
 
 Accepted 2026-09-15 (owner grill). Implements as v6 H1–H7.
+
+## Update 2026-09-15 (H7 executed, grill pick superseded)
+
+- `deepseek-v4-flash-free` is retired (`400 Model is unavailable`; maintainer "promotion has ended"); all chat `-free` IDs likewise dead. Grill pick unimplementable.
+- Pinned `muse-spark-1.3-contributor-free` via NEW Responses transport (`POST /zen/v1/responses` + `x-opencode-session`; chat path 500s by design). Default in `scripts/run-eval.ts:56`.
+- No parallel calibration possible (no prior working judge exists) — clean-break baseline recorded at `state/eval-scorecards/2026-09-15T08-44-29-699Z`; future runs compare against its means. Owner-directed (solve-the-judge directive); contributor training-consent terms disclosed.
