@@ -143,7 +143,8 @@ describe("indexWayfinderTickets (repo tree)", () => {
     expect(t2?.frontier).toBe(false);
 
     const f4 = index.tickets.find((t) => t.key === "v2-agentic-platform:F4");
-    expect(f4?.frontier).toBe(false);
+    expect(f4?.status).toBe("open"); // unblocked by F1 closure 2026-09-15; still needs OWNER_ASSIST_SCHEMA
+    expect(f4?.frontier).toBe(true);
   });
 
   it("builds counts from classified tickets", () => {
