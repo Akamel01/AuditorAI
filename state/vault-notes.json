@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "compiled_at_commit_only": true,
-  "note_count": 38,
+  "note_count": 39,
   "notes": [
     {
       "path": "vault/gotchas/journal-deletions-and-tz.md",
@@ -557,6 +557,21 @@
         "adr": []
       },
       "body_chars": 1042
+    },
+    {
+      "path": "vault/journal/2026-09-15-judge-solved-f1-closed.md",
+      "zone": "vault/journal",
+      "title": "Judge transport solved via agent-reach research; F1 CLOSED; e2e 6/6",
+      "type": "journal",
+      "date": "2026-09-15",
+      "status": null,
+      "owner": "agent",
+      "links": {
+        "evidence_ids": [],
+        "issues": [],
+        "adr": []
+      },
+      "body_chars": 1457
     },
     {
       "path": "vault/journal/2026-09-15-loop4-ratification-cleanup.md",

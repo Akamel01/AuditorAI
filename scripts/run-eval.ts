@@ -53,7 +53,7 @@ try {
 }
 
 const ZEN_BASE = process.env.AI_BASE_URL ?? "https://opencode.ai/zen/v1";
-const JUDGE_MODEL = process.env.AI_MODEL ?? "x-preview-f-free";
+const JUDGE_MODEL = process.env.AI_MODEL ?? "muse-spark-1.3-contributor-free"; // H7 2026-09-15: x-preview-f-free dead; spark is Responses-routed in makeZenJudgeComplete
 const JUDGE_EFFORT = "max"; // R7 effort map: judge = max
 const JUDGE_TIMEOUT_MS = Number(process.env.JUDGE_TIMEOUT_MS ?? 150_000);
 

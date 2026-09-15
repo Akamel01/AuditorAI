@@ -134,7 +134,8 @@ describe("indexWayfinderTickets (repo tree)", () => {
     expect(r3?.ready_without_owner).toBe(true);
 
     const f1 = index.tickets.find((t) => t.key === "v2-agentic-platform:F1");
-    expect(f1?.frontier).toBe(true);
+    expect(f1?.status).toBe("closed"); // closed 2026-09-15: fresh judged Tier-1 + archive
+    expect(f1?.frontier).toBe(false);
     expect(f1?.ready_without_owner).toBe(false);
 
     const t2 = index.tickets.find((t) => t.key === "ops-seamless-verify:T2");
@@ -142,7 +143,8 @@ describe("indexWayfinderTickets (repo tree)", () => {
     expect(t2?.frontier).toBe(false);
 
     const f4 = index.tickets.find((t) => t.key === "v2-agentic-platform:F4");
-    expect(f4?.frontier).toBe(false);
+    expect(f4?.status).toBe("open"); // unblocked by F1 closure 2026-09-15; still needs OWNER_ASSIST_SCHEMA
+    expect(f4?.frontier).toBe(true);
   });
 
   it("builds counts from classified tickets", () => {

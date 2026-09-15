@@ -7,7 +7,7 @@
 // single internal computeGateStats() used by both the main loop and topup.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { extractJsonObject, chatComplete, type ChatMessage, type ReasoningEffort } from "@/lib/inference";
+import { extractJsonObject, chatComplete, responsesComplete, type ChatMessage, type ReasoningEffort } from "@/lib/inference";
 import { PROMPT_HASH, PROMPT_VERSION } from "@/lib/ai";
 import {
   DIMENSIONS,
@@ -120,6 +120,22 @@ export function makeZenJudgeComplete(opts: {
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
 }): (messages: ChatMessage[]) => Promise<string> {
+  // Responses-native models (muse-spark-*) 500 on /chat/completions by design —
+  // route them to /responses (Zen docs 2026-09-07; H7 fix 2026-09-15).
+  if (opts.model.startsWith("muse-spark-")) {
+    return (messages) =>
+      responsesComplete(
+        {
+          endpoint: { baseUrl: opts.baseUrl, apiKey: opts.apiKey },
+          model: opts.model,
+          effort: opts.effort,
+          timeoutMs: opts.timeoutMs,
+          fetchImpl: opts.fetchImpl,
+          maxOutputTokens: 8192, // judge inputs are long; high-effort reasoning must not starve the verdict
+        },
+        messages,
+      );
+  }
   return (messages) =>
     chatComplete(
       {
