@@ -69,7 +69,9 @@ describe("dedupe KV-first persist (M-R10)", () => {
     fs.rmSync(cwd, { recursive: true, force: true });
   });
 
-  it("ROFS cwd → KV ok + single mirror-skipped warn", async () => {
+  // chmod-based ROFS is a no-op for root (CI runs as root) — skip there.
+  const itNonRoot = typeof process.getuid === "function" && process.getuid() === 0 ? it.skip : it;
+  itNonRoot("ROFS cwd → KV ok + single mirror-skipped warn", async () => {
     const store = new MemoryStore();
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "aud-dd-ro-"));
     fs.mkdirSync(path.join(cwd, "state"), { recursive: true });
