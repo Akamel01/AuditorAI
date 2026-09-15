@@ -6,6 +6,8 @@ import {
   buildTicketIndex,
   classifyTickets,
   indexWayfinderTickets,
+  isTerminalStatus,
+  loadTicketsFromTree,
   parseTicketFrontMatter,
   ticketFromFields,
   type WayfinderTicket,
@@ -131,10 +133,11 @@ describe("indexWayfinderTickets (repo tree)", () => {
     expect(index.counts.ready_without_owner).toBeGreaterThan(0);
 
     const r3 = index.tickets.find((t) => t.key === "ops-residual:R3");
-    expect(r3?.ready_without_owner).toBe(true);
+    expect(r3?.status).toBe("closed");
 
     const f1 = index.tickets.find((t) => t.key === "v2-agentic-platform:F1");
-    expect(f1?.frontier).toBe(true);
+    expect(f1?.status).toBe("closed"); // closed 2026-09-15: fresh judged Tier-1 + archive
+    expect(f1?.frontier).toBe(false);
     expect(f1?.ready_without_owner).toBe(false);
 
     const t2 = index.tickets.find((t) => t.key === "ops-seamless-verify:T2");
@@ -210,5 +213,77 @@ describe("M-H13-TEST: temp-dir leniency", () => {
         // ignore
       }
     }
+  });
+});
+
+// M-H1: duplicate ticket id within one map → deterministic first-wins + skipped record.
+// (Keys are map:id, so same-key collision can only arise from two files sharing
+// one map+id; readdir is sorted, so the lexicographically-first file wins.)
+describe("M-H1 duplicate ticket key determinism", () => {
+  it("keeps the first file, reports the second in skipped", () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "aud-wf-dup-"));
+    try {
+      const ticketsDir = path.join(tmpRoot, "workflow", "wayfinder", "maps", "mvp", "tickets");
+      fs.mkdirSync(ticketsDir, { recursive: true });
+      const content = `---\nid: R3\ntitle: Regression tests\nstatus: open\n---\nbody\n`;
+      fs.writeFileSync(path.join(ticketsDir, "R3.md"), content, "utf8");
+      fs.writeFileSync(path.join(ticketsDir, "R3-dup.md"), content, "utf8");
+      const { tickets, skipped } = loadTicketsFromTree(tmpRoot);
+      expect(tickets).toHaveLength(1);
+      expect(tickets[0].key).toBe("mvp:R3");
+      // readdir is byte-sorted: "R3-dup.md" ('-' 0x2D) precedes "R3.md" ('.' 0x2E),
+      // so first-wins deterministically keeps R3-dup.md regardless of mtime.
+      expect(tickets[0].path.endsWith("tickets/R3-dup.md")).toBe(true);
+      expect(skipped).toHaveLength(1);
+      expect(skipped[0].file.endsWith("tickets/R3.md")).toBe(true);
+      expect(skipped[0].reason).toContain("duplicate ticket key mvp:R3");
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+});
+
+// M-H2: loadTicketsFromTree consumer shape guard — {tickets, skipped}; malformed
+// front-matter lands in skipped with a reason instead of throwing.
+describe("M-H2 loadTicketsFromTree shape guard", () => {
+  it("returns { tickets, skipped } and skips id-less files with reason", () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "aud-wf-shape-"));
+    try {
+      const ticketsDir = path.join(tmpRoot, "workflow", "wayfinder", "maps", "shape-drift", "tickets");
+      fs.mkdirSync(ticketsDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(ticketsDir, "R9.md"),
+        `---\ntitle: Bad front matter\nstatus: open\n---\nbody\n`,
+        "utf8",
+      );
+      const result = loadTicketsFromTree(tmpRoot);
+      expect(Object.keys(result).sort()).toEqual(["skipped", "tickets"]);
+      expect(result.tickets).toHaveLength(0);
+      expect(result.skipped).toHaveLength(1);
+      expect(result.skipped[0].reason).toContain("missing id");
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+});
+
+// M-H3: terminal-status helper + all-skipped index carries no nulls.
+describe("M-H3 terminal logic and all-skipped seam", () => {
+  it("classifies terminal vs live statuses", () => {
+    expect(isTerminalStatus("closed")).toBe(true);
+    expect(isTerminalStatus("resolved")).toBe(true);
+    expect(isTerminalStatus("out-of-scope")).toBe(true);
+    expect(isTerminalStatus("open")).toBe(false);
+    expect(isTerminalStatus("claimed")).toBe(false);
+    expect(isTerminalStatus("blocked")).toBe(false);
+  });
+
+  it("all-skipped index has empty tickets, preserved skipped, no nulls", () => {
+    const skipped = [{ file: "workflow/wayfinder/maps/mvp/tickets/R3.md", reason: "duplicate ticket key mvp:R3" }];
+    const index = buildTicketIndex([], skipped);
+    expect(index.tickets).toHaveLength(0);
+    expect(index.skipped).toEqual(skipped);
+    expect(index.counts.total).toBe(0);
+    expect(index.tickets.every((t) => t != null)).toBe(true);
   });
 });
