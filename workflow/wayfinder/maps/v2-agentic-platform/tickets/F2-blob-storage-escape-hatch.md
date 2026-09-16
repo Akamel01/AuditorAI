@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v2-agentic-platform/MAP.md:68; workflow/wayfinde
 
 *Pending gates `BLOB_LIMIT_TRIGGER` and `BLOB_OWNER_SECURITY_AND_ROLLBACK`. Absent trigger means no code. If opened, add `src/lib/persistence/attachments/**` adapter behind `Repository`, prove migration/rollback, authorization/expiry/cleanup, and acquire `persistence-single-writer` lock. See M2 in plan.*
 
+## Progress (2026-09-16)
+
+2026-09-16 triage: owner approval grants authority but the trigger is a measured event (fresh limit probe crossing margin) that has not fired (state/project-state.json ~1.4KB vs 500KB caps). Dormant tripwire, stays open by design.

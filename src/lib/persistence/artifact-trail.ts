@@ -103,4 +103,48 @@ export class ArtifactTrail {
     await this.store.delByPrefix(Keys.artifactTrailPrefix(ws, projectId, auditId));
     await this.store.put(Keys.artifactSummaryKey(ws, projectId, auditId), summary);
   }
+
+  // ---- Retention (F2) ------------------------------------------------------
+  // Latest-full/prior-summary is enforced by saveArtifactTrailFor (prune
+  // before write, above). The export below is the pre-prune backup path:
+  // capture the full trail before the next run summarizes it. Summaries are
+  // the retained record and are never purged — no delete API beyond the
+  // rerun prune exists.
+
+  /** Read the retained summary for a pruned run; null when never pruned. */
+  async getArtifactSummary(
+    ws: string,
+    projectId: string,
+    auditId: string,
+  ): Promise<ArtifactSummary | null> {
+    return this.store.get<ArtifactSummary>(Keys.artifactSummaryKey(ws, projectId, auditId));
+  }
+
+  /** Portable backup envelope: the latest full trail plus its prior summary. */
+  async exportArtifactTrail(
+    ws: string,
+    projectId: string,
+    auditId: string,
+  ): Promise<ArtifactTrailExport> {
+    return {
+      format: "artifact-trail/export@1",
+      exported_at: new Date().toISOString(),
+      workspace: ws,
+      project_id: projectId,
+      audit_id: auditId,
+      artifacts: await this.listArtifacts(ws, projectId, auditId),
+      summary: await this.getArtifactSummary(ws, projectId, auditId),
+    };
+  }
+}
+
+/** Portable backup envelope: the latest full trail plus its prior summary. */
+export interface ArtifactTrailExport {
+  format: "artifact-trail/export@1";
+  exported_at: string;
+  workspace: string;
+  project_id: string;
+  audit_id: string;
+  artifacts: AuditArtifact[];
+  summary: ArtifactSummary | null;
 }

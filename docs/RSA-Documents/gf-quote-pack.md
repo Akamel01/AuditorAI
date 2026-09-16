@@ -284,3 +284,80 @@ Prior to the site visit, area topography, land use characteristics, intersection
 Proposed acceptance: planning-stage information-gathering premise (desktop before field). File: docs/RSA-Documents/usa/state-dots/CTDOT_Madison_US1_RSA_2024.pdf (CLEAR, USA) p.~3.
 
 H3b1 counts: 13 candidates (GF-6: 1, GF-7: 3, GF-8: 5, GF-9: 3, GF-10: 1) across 9 distinct source files; all CLEAR usa/.
+
+## H3b2 — loop-5 mining batch-2 (PROPOSED 2026-09-16, owner ratifies)
+
+Mined from 8 loop-5 PDFs (FHWA C-0259/C-0269, VDOT C-0318, BrowardMPO C-0282,
+MORPC C-0285, Tacoma C-0293, MnDOT-US12 C-0310, SEMCOG C-0290 — all CLEAR usa/,
+zero quarantine; extracted via scripts/extract-corpus.sh to /tmp/c7c8-text only;
+none mined in batch-1). Page refs are PDF pages per pdftotext page breaks
+(prefixed ~). Unratified lines NEVER enter scorecards/journals. IDs continue
+per-GF numbering (G6-5, G7-7/8, G8-9..12, G9-12/13, G10-5/6).
+
+- [ ] APPROVE / [ ] STRIKE — G6-5 (ANALOG, early-influence timing):
+```quote src=FHWA-SA-10-005_Focusing_RSA_on_Intersections.txt
+RSAs applied early in the planning and preliminary (functional) design of intersections offer the greatest opportunities for beneficial influence.
+```
+Proposed acceptance: early (planning/prelim) audit-timing premise at intersection scale. File: docs/RSA-Documents/usa/fhwa-case-studies/FHWA-SA-10-005_Focusing_RSA_on_Intersections.pdf (CLEAR, USA) p.~3.
+
+- [ ] APPROVE / [ ] STRIKE — G7-7 (practice-DIRECT, any-phase prelim coverage):
+```quote src=FHWA-SA-10-005_Focusing_RSA_on_Intersections.txt
+RSAs can be used in any phase of project development—from planning and preliminary engineering to design and construction—or as a tool within an overall asset management program.
+```
+Proposed acceptance: prelim-engineering stage-coverage baseline. Same file, p.~1.
+
+- [ ] APPROVE / [ ] STRIKE — G7-8 (practice-DIRECT, independent-team composition):
+```quote src=FHWA-SA-14-xxx_Model_RSA_Policy.txt
+An RSA is conducted by an independent team of qualified professionals who have not previously been directly involved in the project.
+```
+Proposed acceptance: independence-from-design-team baseline. File: docs/RSA-Documents/usa/fhwa-case-studies/FHWA-SA-14-xxx_Model_RSA_Policy.pdf (CLEAR, USA) p.~2.
+
+- [ ] APPROVE / [ ] STRIKE — G8-9 (practice-DIRECT, detailed-design cost-of-change):
+```quote src=FHWA-SA-10-005_Focusing_RSA_on_Intersections.txt
+As a design progresses into detailed design and construction, changes that may improve safety performance typically become more difficult, costly, and time consuming to implement.
+```
+Proposed acceptance: late-stage change-cost premise for final-design audit timing. Same 10-005 file, p.~3.
+
+- [ ] APPROVE / [ ] STRIKE — G8-10 (practice-DIRECT, written owner response):
+```quote src=VDOT_RSA_Manual.txt
+Step 7: Prepare Formal Response Once the owner and/or design team have reviewed the RSA report, they should prepare a written response to its findings.
+```
+Proposed acceptance: formal written-response obligation baseline. File: docs/RSA-Documents/usa/state-dots/VDOT_RSA_Manual.pdf (CLEAR, USA) p.~7.
+
+- [ ] APPROVE / [ ] STRIKE — G8-11 (practice-DIRECT, crash-data evidence window):
+```quote src=BrowardMPO_OffSystem_RSA_Framework_2023.txt
+At least three to five years of crash data should be used under consistent site conditions in safety analysis.
+```
+Proposed acceptance: crash-history evidence-window baseline. File: docs/RSA-Documents/usa/local-mpo/BrowardMPO_OffSystem_RSA_Framework_2023.pdf (CLEAR, USA) p.~11.
+
+- [ ] APPROVE / [ ] STRIKE — G8-12 (practice-DIRECT, formal response content):
+```quote src=MORPC_Ohio_RSA_Guide.txt
+Following the RSA findings presentation, the project owner and stakeholders should prepare a formal response to outline how they intend to address the safety concerns prioritized in the report.
+```
+Proposed acceptance: prioritized-findings response-content baseline. File: docs/RSA-Documents/usa/local-mpo/MORPC_Ohio_RSA_Guide.pdf (CLEAR, USA) p.~32.
+
+- [ ] APPROVE / [ ] STRIKE — G9-12 (ANALOG, prelim-design implementation):
+```quote src=Tacoma_S_Tacoma_Way_RSA_2024.txt
+The S 60th St Improvement Plan related to the Sound Transit station upgrade is currently in preliminary design and can implement additional safety improvements identified through this RSA.
+```
+Proposed acceptance: prelim-design uptake pattern (transit-adjacent corridor). File: docs/RSA-Documents/usa/local-mpo/Tacoma_S_Tacoma_Way_RSA_2024.pdf (CLEAR, USA) p.~5.
+
+- [ ] APPROVE / [ ] STRIKE — G9-13 (ANALOG, merge-conflict spacing):
+```quote src=MnDOT_US12_RSA_Technical_Report.txt
+Spacing of access points should also be considered so that drivers have sufficient space to make turns and merges with minimal conflict.
+```
+Proposed acceptance: merge/conflict-spacing finding pattern. File: docs/RSA-Documents/usa/state-dots/MnDOT_US12_RSA_Technical_Report.pdf (CLEAR, USA) p.~33.
+
+- [ ] APPROVE / [ ] STRIKE — G10-5 (ANALOG, any-phase planning coverage):
+```quote src=SEMCOG_RSA_Overview_2023.txt
+Road safety audits can be used in any phase of project development from planning and preliminary engineering, to design, to construction.
+```
+Proposed acceptance: planning-stage applicability premise (MPO source). File: docs/RSA-Documents/usa/local-mpo/SEMCOG_RSA_Overview_2023.pdf (CLEAR, USA) p.~1.
+
+- [ ] APPROVE / [ ] STRIKE — G10-6 (ANALOG, planning-to-construction pipeline):
+```quote src=BrowardMPO_OffSystem_RSA_Framework_2023.txt
+Once an off-system RSA is complete, the concept plan can be used to advance the project through planning, preliminary engineering, final design, and construction.
+```
+Proposed acceptance: RSA-concept-into-delivery pipeline premise. Same BrowardMPO file, p.~27.
+
+H3b2 counts: 11 candidates (GF-6: 1, GF-7: 2, GF-8: 4, GF-9: 2, GF-10: 2) across 8 distinct source files; all CLEAR usa/.

@@ -27,6 +27,74 @@ export const OUTCOME_SCHEMA_VERSION = "1.0.0";
 /** Retention TTL default: 2 years, purge on auditor request (ADR-0009 §4). */
 export const RETENTION_TTL_DAYS = 730;
 
+// OWED (Flag #1 follow-up — deliberately NOT implemented here): legal-hold
+// exemption and purge-on-request identity scoping (which auditor identity may
+// request purge of whose rows). No hold/request API exists on purpose — a
+// purge path without hold/request rules risks unlawful deletion. Every purge
+// caller must check hold status first once that API lands.
+
+/** F2 per-class retention policy (ADR-0004 lifecycle + ADR-0009 §4).
+ *  Drafts/artifacts prune on rerun (existing overwrite/prune behavior, now
+ *  declared); issued revisions are NEVER purged (no delete API by design);
+ *  outcomes expire by TTL after export. */
+export const RETENTION_POLICY = {
+  drafts: "ephemeral — reruns overwrite the stored draft; retention comes from issuing (ADR-0004)",
+  issues: "never purged — write-once revisions retained permanently (ADR-0004)",
+  artifacts: "latest full trail per audit; prior runs pruned to a summary on rerun",
+  outcomes: "730d TTL per ADR-0009 §4; export before purge",
+} as const;
+
+/** Conservative TTL predicate: expired only when age strictly exceeds the
+ *  TTL. Unparseable timestamps are retained (never purge on bad data). */
+export function isOutcomeExpired(
+  occurred_at: string,
+  nowIso: string,
+  ttlDays: number = RETENTION_TTL_DAYS,
+): boolean {
+  const then = Date.parse(occurred_at);
+  const now = Date.parse(nowIso);
+  if (!Number.isFinite(then) || !Number.isFinite(now)) return false;
+  return now - then > ttlDays * 24 * 60 * 60 * 1000;
+}
+
+/** Split rows into retained vs expired without touching any sink: the caller
+ *  exports the expired set first, then purges. Pure — tests run it over
+ *  memory-sink rows, never over state/. */
+export function partitionOutcomesByTtl(
+  rows: CandidateOutcomeRow[],
+  nowIso: string,
+  ttlDays: number = RETENTION_TTL_DAYS,
+): { retained: CandidateOutcomeRow[]; expired: CandidateOutcomeRow[] } {
+  const retained: CandidateOutcomeRow[] = [];
+  const expired: CandidateOutcomeRow[] = [];
+  for (const row of rows) {
+    (isOutcomeExpired(row.occurred_at, nowIso, ttlDays) ? expired : retained).push(row);
+  }
+  return { retained, expired };
+}
+
+/** Portable pre-purge backup envelope for outcome rows. */
+export interface OutcomeRowsExport {
+  format: "candidate-outcomes/export@1";
+  exported_at: string;
+  schema_version: typeof OUTCOME_SCHEMA_VERSION;
+  rows: CandidateOutcomeRow[];
+}
+
+/** Build the export envelope (JSON-serializable as-is); the caller decides
+ *  where the bytes land. */
+export function exportOutcomeRows(
+  rows: CandidateOutcomeRow[],
+  exportedAtIso: string = new Date().toISOString(),
+): OutcomeRowsExport {
+  return {
+    format: "candidate-outcomes/export@1",
+    exported_at: exportedAtIso,
+    schema_version: OUTCOME_SCHEMA_VERSION,
+    rows,
+  };
+}
+
 export { CONSENT_VERSION, DEFAULT_AUDITOR_PSEUDONYM };
 
 export interface CandidateOutcomeSink {

@@ -22,3 +22,7 @@ Desired: Mine/pack in ratifiable batches (C5 dedupe + C6 ingestion per batch); e
 ## Progress (2026-09-15)
 
 Batch-1 quotes RATIFIED (13/13, owner approval; verify-quotes 39/39); 13 PROPOSED pairs staged in pairs-proposed-h3b1.json (pairs.json/finetune untouched). Remaining: batch-2 mining + pair-ratification.
+
+## Progress (2026-09-16)
+
+Batch-1 pairs RATIFIED + folded (pairs 69/train 55, leak-proof). Batch-2 mined: 11 PROPOSED quotes (verify 50/50), pairs NOT staged (next wave after ratification). Corpus samples still 83; batch-2 promotion after quote-ratification.

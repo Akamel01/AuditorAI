@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v2-agentic-platform/MAP.md:69; workflow/wayfinde
 
 *Pending `VAULT_CONFLICT_TRIGGER_AND_OWNER`. Provide deterministic divergent-path fixture, byte-identical compile, fail-closed instructions, and `node scripts/vault-sync.mjs --check`. Acquire `vault-state-single-writer` lock. See M3.*
 
+## Progress (2026-09-16)
+
+2026-09-16 triage: trigger is a qualifying vault divergence, none recorded (vault-sync --check exit 0). Dormant tripwire, stays open by design.
