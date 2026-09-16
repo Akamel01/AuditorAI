@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v3-architecture-deepening/MAP.md:175-177; .autof
 
 *Pending `FLAG_2_PRODUCT_COMMITMENT` and `LIVE_REVIEW_BOTTLENECK`. When opened, patch `src/app/projects/[projectId]/audits/[auditId]/page.tsx` and `src/domain/audit-workspace.ts` preserving validation/whitelist/consent/provenance. Acquire `page-workspace-single-writer` lock. See M5.*
 
+## Progress (2026-09-16)
+
+2026-09-16: synthetic timing probe (scripts/probe/f1-review-timing.mjs, p50 ~0.3µs noise floor, no signal). UX patch stays blocked on LIVE bottleneck evidence (no live adjudication rows exist); probe does not substitute.

@@ -3,6 +3,7 @@
 // write-once revision semantics (ADR-0004).
 import type { AuditIssue, AuditResult } from "@/domain/types";
 import type { DataStore } from "./store";
+import { withPersistenceSingleWriter } from "./single-writer";
 import * as Keys from "./keys";
 import { artifactSeqOf } from "./keys";
 
@@ -11,6 +12,16 @@ export class IssueRevisionConflictError extends Error {
     super(`issue revision conflict: ${detail}`);
     this.name = "IssueRevisionConflictError";
   }
+}
+
+/** Portable pre-rollback backup envelope for one audit's issue lineage. */
+export interface IssueLineageExport {
+  format: "issue-lineage/export@1";
+  exported_at: string;
+  workspace: string;
+  project_id: string;
+  audit_id: string;
+  issues: AuditIssue[];
 }
 
 export class IssueLedger {
@@ -57,5 +68,58 @@ export class IssueLedger {
     keys.sort((a, b) => artifactSeqOf(a) - artifactSeqOf(b));
     const loaded = await this.store.getMany<AuditIssue>(keys);
     return loaded.filter((i): i is AuditIssue => i !== null);
+  }
+
+  // ---- Retention (F2) ------------------------------------------------------
+  // Issued revisions are NEVER purged: this class exposes no delete API by
+  // design, so no TTL sweep can remove an issue key. Rollback runs through
+  // export/restore below, and restore itself is write-once (an existing
+  // revision that differs aborts instead of overwriting).
+
+  /** Portable pre-rollback backup envelope for one audit's issue lineage. */
+  async exportIssueLineage(
+    ws: string,
+    projectId: string,
+    auditId: string,
+  ): Promise<IssueLineageExport> {
+    return withPersistenceSingleWriter(async () => ({
+      format: "issue-lineage/export@1",
+      exported_at: new Date().toISOString(),
+      workspace: ws,
+      project_id: projectId,
+      audit_id: auditId,
+      issues: await this.listIssues(ws, projectId, auditId),
+    }));
+  }
+
+  /** Roll back an issue lineage from an export envelope. Re-puts missing
+   *  revisions only: byte-identical replays skip, conflicting replays throw
+   *  IssueRevisionConflictError — a restore can never rewrite history. */
+  async restoreIssueLineage(
+    ws: string,
+    backup: IssueLineageExport,
+  ): Promise<{ restored: number; skipped: number }> {
+    if (backup.format !== "issue-lineage/export@1" || backup.workspace !== ws) {
+      throw new Error("issue lineage export does not match this workspace");
+    }
+    return withPersistenceSingleWriter(async () => {
+      let restored = 0;
+      let skipped = 0;
+      for (const issue of backup.issues) {
+        const key = Keys.issueKey(ws, backup.project_id, backup.audit_id, issue.revision);
+        const existing = await this.store.get<AuditIssue>(key);
+        if (existing === null) {
+          await this.store.put(key, issue);
+          restored += 1;
+        } else if (JSON.stringify(existing) === JSON.stringify(issue)) {
+          skipped += 1;
+        } else {
+          throw new IssueRevisionConflictError(
+            `revision ${issue.revision} differs from the stored issue (write-once)`,
+          );
+        }
+      }
+      return { restored, skipped };
+    });
   }
 }

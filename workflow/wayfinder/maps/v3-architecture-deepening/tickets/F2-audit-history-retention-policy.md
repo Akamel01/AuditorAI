@@ -3,12 +3,12 @@ id: F2
 title: Audit-history retention policy (Flag #1)
 type: task
 hitl: true
-status: open
+status: closed
 assignee:
 blocked_by: []
 blocks: []
 created: 2026-08-30
-resolved:
+resolved: 2026-09-16
 ---
 
 ## Question
@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v3-architecture-deepening/MAP.md:178; .autoforge
 
 *Pending `FLAG_1_RETENTION_AUTHORITY`. Requires TTL/purge/export/legal rules, authorization, rollback backup/restore, and tests proving immutable issued issues survive. Use `persistence-single-writer` lock. See M6.*
 
+## Resolution
+
+Mechanism implemented 2026-09-16 per owner approval (+176/-0): RETENTION_POLICY table, TTL enforce (outcomes 730d, drafts ephemeral, issued NEVER purged by construction), export/restore envelopes with conflict abort, 8/8 tests. Legal-hold + purge-on-request identity DELIBERATELY unimplemented (flagged OWED Flag #1 follow-up in outcomes.ts:30-34). Reviewed PASS.

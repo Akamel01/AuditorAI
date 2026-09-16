@@ -1,0 +1,1902 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3000",
+    "n": 20,
+    "network": "Fast-3G",
+    "cpuThrottle": "4x",
+    "at": "2026-09-16T00:30:26.315Z",
+    "readOnly": true
+  },
+  "routes": {
+    "audit": {
+      "path": "/probe/rsc-snapshot",
+      "m1": {
+        "n": 20,
+        "p50": 1005,
+        "p95": 1027
+      },
+      "m3": {
+        "n": 20,
+        "p50": 2256,
+        "p95": 2267
+      },
+      "ttfb": {
+        "n": 20,
+        "p50": 3,
+        "p95": 7
+      },
+      "lcp": {
+        "n": 20,
+        "p50": 808,
+        "p95": 824
+      },
+      "cls": {
+        "n": 20,
+        "p50": 0,
+        "p95": 0
+      },
+      "docBytes": {
+        "n": 20,
+        "p50": 20931,
+        "p95": 20931
+      },
+      "settledCount": 20,
+      "docHashes": [
+        "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+      ],
+      "samples": [
+        {
+          "iter": 0,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1136,
+          "m3_ms": 2514,
+          "settled": true,
+          "ttfb_ms": 16,
+          "lcp_ms": 868,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 1,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1005,
+          "m3_ms": 2248,
+          "settled": true,
+          "ttfb_ms": 4,
+          "lcp_ms": 816,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 2,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1010,
+          "m3_ms": 2252,
+          "settled": true,
+          "ttfb_ms": 7,
+          "lcp_ms": 820,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 3,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 999,
+          "m3_ms": 2163,
+          "settled": true,
+          "ttfb_ms": 6,
+          "lcp_ms": 820,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 4,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1005,
+          "m3_ms": 2257,
+          "settled": true,
+          "ttfb_ms": 3,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 5,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1005,
+          "m3_ms": 2258,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 808,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 6,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1006,
+          "m3_ms": 2263,
+          "settled": true,
+          "ttfb_ms": 4,
+          "lcp_ms": 808,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 7,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1012,
+          "m3_ms": 2161,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 8,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1016,
+          "m3_ms": 2264,
+          "settled": true,
+          "ttfb_ms": 6,
+          "lcp_ms": 824,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 9,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1015,
+          "m3_ms": 2256,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 812,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 10,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1004,
+          "m3_ms": 2055,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 11,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1002,
+          "m3_ms": 2054,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 12,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1004,
+          "m3_ms": 2255,
+          "settled": true,
+          "ttfb_ms": 3,
+          "lcp_ms": 808,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 13,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1004,
+          "m3_ms": 2244,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 812,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 14,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1001,
+          "m3_ms": 2258,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 15,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 998,
+          "m3_ms": 2250,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 800,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 16,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1003,
+          "m3_ms": 2257,
+          "settled": true,
+          "ttfb_ms": 3,
+          "lcp_ms": 816,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 17,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1027,
+          "m3_ms": 2267,
+          "settled": true,
+          "ttfb_ms": 2,
+          "lcp_ms": 796,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 18,
+          "mode": "cold",
+          "ctxReused": false,
+          "m1_ms": 1003,
+          "m3_ms": 2259,
+          "settled": true,
+          "ttfb_ms": 7,
+          "lcp_ms": 804,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        },
+        {
+          "iter": 19,
+          "mode": "warm",
+          "ctxReused": true,
+          "m1_ms": 1005,
+          "m3_ms": 2257,
+          "settled": true,
+          "ttfb_ms": 3,
+          "lcp_ms": 800,
+          "cls": 0,
+          "doc_bytes": 20931,
+          "doc_hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917",
+          "resources": [
+            {
+              "url": "/probe/rsc-snapshot",
+              "status": 200,
+              "bytes": 20931,
+              "hash": "dade1a4077cb5bdfcfff5b185cfef0c36957666057afd50a4e8d0a256c74c917"
+            },
+            {
+              "url": "/_next/static/media/98e207f02528a563-s.p.woff2",
+              "status": 200,
+              "bytes": 10060,
+              "hash": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0"
+            },
+            {
+              "url": "/_next/static/media/d3ebbfd689654d3a-s.p.woff2",
+              "status": 200,
+              "bytes": 10052,
+              "hash": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
+            },
+            {
+              "url": "/_next/static/css/437605b574892270.css",
+              "status": 200,
+              "bytes": 86444,
+              "hash": "878f1fe3a11e50a2c4e6bbf6d0a0aa10e2d4586962cb209c605b4043593e5766"
+            },
+            {
+              "url": "/_next/static/chunks/main-app-36a47994fe097ed3.js",
+              "status": 200,
+              "bytes": 560,
+              "hash": "ff23bea10259316e3b292c65aee4d1c11dd94bbb97b209e8269e3199df8d6a75"
+            },
+            {
+              "url": "/_next/static/chunks/webpack-fb96b695300c34e1.js",
+              "status": 200,
+              "bytes": 3408,
+              "hash": "4400c16394999d3378d7811864952e1ef829c8a7a8b9085cd68ab5500f8cc721"
+            },
+            {
+              "url": "/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+              "status": 200,
+              "bytes": 40240,
+              "hash": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818"
+            },
+            {
+              "url": "/_next/static/chunks/app/probe/rsc-snapshot/page-27b482519593405c.js",
+              "status": 200,
+              "bytes": 5873,
+              "hash": "4208adeb0add97516576a884f39c0a3f22018fbecda1791b08656e5b201911bb"
+            },
+            {
+              "url": "/_next/static/chunks/1255-a20f6c5e797a687b.js",
+              "status": 200,
+              "bytes": 173688,
+              "hash": "a199bcb5c9ea2c2b788effc62f526187484a9fbfccc2c62aeae01bb6ad60dd17"
+            },
+            {
+              "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+              "status": 200,
+              "bytes": 173020,
+              "hash": "51a7146e32f6a18a96676813fd791cd1b0265c675292acb31196720ca9e79726"
+            },
+            {
+              "url": "/_next/static/media/8edf6d3506a17285-s.p.woff2",
+              "status": 200,
+              "bytes": 147060,
+              "hash": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent/issues",
+              "status": 200,
+              "bytes": 13,
+              "hash": "9bf40c18a4b22428c00ae5ddb17ff9e721207f22ebe705fd7dffdfd150749e3b"
+            },
+            {
+              "url": "/api/projects/probe-nonexistent/audits/probe-nonexistent",
+              "status": 404,
+              "bytes": 27,
+              "hash": "36d3dac48460adbfb9ef7bbfa971c342259b600d163c721463d71d64a6ba7a98"
+            }
+          ],
+          "mutation": null
+        }
+      ]
+    }
+  },
+  "mutations": []
+}

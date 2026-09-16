@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v3-architecture-deepening/MAP.md:180; .autoforge
 
 *Pending `PHASE_3_KEY_SCHEME_AND_POSTGRES_AUTHORITY`. Must prove Memory/KV/Postgres contract matrix, schema/index/transaction, backup/restore, and no ORM/silent fallback. Use `persistence-single-writer` lock. See M8.*
 
+## Progress (2026-09-16)
+
+2026-09-16: shared Memory/KV contract matrix landed (8/8). Adapter + live proof stay blocked on driver choice + postgres host (no local binaries, docker out of scope).
