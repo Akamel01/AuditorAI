@@ -10,6 +10,7 @@ import {
   FailoverEndpoint,
   chatComplete,
   extractJsonArray,
+  responsesComplete,
   runInferenceLoop,
   type ChatMessage,
   type ReasoningEffort,
@@ -404,6 +405,246 @@ export class ZenAiAdapter implements AiAdapter {
       `[ai] candidates unavailable (${reason}); consecutive failures=${this.breaker.failureCount}${this.breaker.open ? "; circuit breaker OPEN — deterministic path continues" : ""}`,
     );
   }
+}
+
+// ---- F4 assists pilot (draft-only, OFF default) --------------------------------
+// Typed recommendation/limitations drafts for auditor copy-paste. Assists never
+// enter AuditResult or the canonical report; provenance is stamped by
+// generateAssists post-boundary — adapters can never self-stamp (a `provenance`
+// key fails the boundary schema outright, as does any other extra key).
+
+export const ASSIST_KINDS = ["recommendation_draft", "limitations_draft"] as const;
+export type AssistKind = (typeof ASSIST_KINDS)[number];
+
+/** Producer identity for assists; never the candidate producer (critic defect 4). */
+export const ASSISTS_PRODUCER = "assists-agent";
+
+export const ASSIST_PROPOSED_TEXT_MAX = 1200;
+
+export interface AssistProvenance {
+  adapter_id: string | null;
+  prompt_version: number | null;
+  prompt_hash: string | null;
+}
+
+export interface ReportAssistProposal {
+  kind: AssistKind;
+  /** Draft-only: the only legal status; anything else is rejected at the boundary. */
+  status: "PROPOSED";
+  proposed_text: string;
+  /** Closed-world: every id must occur in the audit's evidence set. */
+  basis_evidence_ids: string[];
+  producer: string;
+  /** Stamped post-boundary by generateAssists; adapters must not send it. */
+  provenance?: AssistProvenance;
+}
+
+/** Separate seam from AiAdapter (which is never widened): draft text only, no findings. */
+export interface AssistAdapter {
+  readonly enabled: boolean;
+  readonly id?: string;
+  generateAssistDrafts(audit: AuditResult): Promise<ReportAssistProposal[]>;
+}
+
+function assistObjectSchema(withEnvelope: boolean): Record<string, unknown> {
+  const properties: Record<string, unknown> = {
+    kind: { enum: ["recommendation_draft", "limitations_draft"] },
+    status: { enum: ["PROPOSED"] },
+    proposed_text: { type: "string", minLength: 1, maxLength: ASSIST_PROPOSED_TEXT_MAX },
+    basis_evidence_ids: { type: "array", minItems: 1, items: { type: "string" } },
+  };
+  const required = ["kind", "status", "proposed_text", "basis_evidence_ids"];
+  if (withEnvelope) {
+    properties.producer = { type: "string" };
+    required.push("producer");
+  }
+  return { type: "object", required, properties, additionalProperties: false };
+}
+
+const validateAssistArray = ajv.compile({
+  type: "array",
+  items: assistObjectSchema(false),
+});
+export const validateAssistAtBoundary = ajv.compile(assistObjectSchema(true));
+
+/** OFF default ANDed with the candidate seam: never assists while candidates are OFF/keyless. */
+export function getAssistsEnabled(): boolean {
+  return process.env.AI_ASSISTS_ENABLED === "true" && getAiAdapter().enabled;
+}
+
+/** Closed-world evidence set for basis grounding (mirrors buildPromptMessages). */
+function collectAuditEvidenceIds(audit: AuditResult): Set<string> {
+  const ids = new Set<string>();
+  for (const m of audit.input_manifest) for (const id of m.evidence_ids) ids.add(id);
+  for (const f of audit.findings) for (const e of f.evidence) ids.add(e.evidence_id);
+  return ids;
+}
+
+function buildAssistMessages(audit: AuditResult): ChatMessage[] {
+  const excerpts: string[] = [];
+  for (const id of [...collectAuditEvidenceIds(audit)].sort()) {
+    try {
+      excerpts.push(`[${id}] ${getEvidence(id).claim}`);
+    } catch {
+      excerpts.push(`[${id}] (unresolved)`);
+    }
+  }
+  const text = [
+    `Audit context: ${audit.jurisdiction} / ${audit.framework_name} / native stage ${audit.native_stage_display_name}.`,
+    "",
+    "Evidence registry excerpts (cite only these ids in basis_evidence_ids):",
+    ...(excerpts.length ? excerpts : ["- (none available)"]),
+    "",
+    "Propose zero to two draft-only report texts (recommendation_draft and/or limitations_draft) for auditor review.",
+    'Return ONLY a JSON array of {kind, status:"PROPOSED", proposed_text (1..1200 chars), basis_evidence_ids}, no prose, no code fences.',
+  ].join("\n");
+
+  if (!activePrompt) {
+    throw new Error("system prompt artifact unavailable; assist generation must fail closed (ADR-0012)");
+  }
+  return [
+    { role: "system", content: activePrompt.body },
+    { role: "user", content: text },
+  ];
+}
+
+export class ZenAssistAdapter implements AssistAdapter {
+  /** ADR-0012 fail-closed: no prompt artifact, no assist generation. */
+  get enabled(): boolean {
+    return activePrompt !== null;
+  }
+  readonly id = "zen-assists";
+  private breaker: CircuitBreaker;
+
+  constructor(private cfg: ZenAiConfig) {
+    this.breaker = new CircuitBreaker(cfg.breakerThreshold ?? 3);
+  }
+
+  async generateAssistDrafts(audit: AuditResult): Promise<ReportAssistProposal[]> {
+    if (this.breaker.open) return [];
+
+    const messages = buildAssistMessages(audit);
+    const model = this.cfg.model ?? DEFAULT_MODEL;
+    const endpoint = { baseUrl: this.cfg.baseUrl ?? DEFAULT_BASE_URL, apiKey: this.cfg.apiKey };
+    // Responses routing mirrors the eval judge (eval-run.ts): Responses-native
+    // muse-spark-* models 500 on /chat/completions, so they go to /responses.
+    const { outcome } = await runInferenceLoop({
+      budget: this.cfg.maxCallsPerRun ?? 3,
+      initialMessages: messages,
+      repairUserMessage: REPAIR_INSTRUCTION,
+      complete: (msgs) =>
+        model.startsWith("muse-spark-")
+          ? responsesComplete(
+              {
+                endpoint,
+                model,
+                effort: this.cfg.effort ?? "high",
+                timeoutMs: this.cfg.timeoutMs,
+                fetchImpl: this.cfg.fetchImpl,
+              },
+              msgs,
+            )
+          : chatComplete(
+              {
+                endpoint,
+                model,
+                effort: this.cfg.effort ?? "high",
+                timeoutMs: this.cfg.timeoutMs,
+                fetchImpl: this.cfg.fetchImpl,
+              },
+              msgs,
+            ),
+      extract: extractJsonArray,
+      validate: (parsed) => {
+        if (!validateAssistArray(parsed)) throw new Error(ajvErrors(validateAssistArray.errors));
+        return (parsed as Omit<ReportAssistProposal, "producer">[]).map((d) => ({
+          ...d,
+          producer: ASSISTS_PRODUCER,
+        }));
+      },
+      onTransportError: () => false,
+    });
+
+    switch (outcome.status) {
+      case "ok":
+        this.breaker.recordSuccess();
+        return outcome.value;
+      case "transport-failed":
+        this.recordFailure(`transport failure: ${outcome.reason}`);
+        return [];
+      case "output-invalid":
+        this.recordFailure(`schema violation after one repair retry: ${outcome.reason}`);
+        return [];
+      case "budget-exhausted":
+        this.recordFailure("call budget exhausted");
+        return [];
+    }
+  }
+
+  private recordFailure(reason: string): void {
+    this.breaker.recordFailure();
+    console.warn(
+      `[ai] assists unavailable (${reason}); consecutive failures=${this.breaker.failureCount}${this.breaker.open ? "; circuit breaker OPEN — deterministic path continues" : ""}`,
+    );
+  }
+}
+
+export interface GenerateAssistsOptions {
+  /** Per-call opt-in; defaults false and ANDs with the env gate. */
+  assists?: boolean;
+  /** Injectable seam for tests; defaults to the env-configured Zen adapter. */
+  adapter?: AssistAdapter;
+}
+
+/** Draft-only assist pilot: per-call opt-in AND env gate AND candidate seam
+ *  must all hold, else [] with zero provider calls. Boundary failures (schema,
+ *  overlong text, unknown evidence, forged provenance) yield [] — the
+ *  deterministic path is unaffected and the input audit is never mutated. */
+export async function generateAssists(
+  audit: AuditResult,
+  opts: GenerateAssistsOptions = {},
+): Promise<ReportAssistProposal[]> {
+  if (opts.assists !== true || !getAssistsEnabled()) return [];
+  const adapter =
+    opts.adapter ??
+    new ZenAssistAdapter({
+      apiKey: process.env.OPENCODE_API_KEY!,
+      baseUrl: process.env.AI_BASE_URL,
+      model: process.env.AI_MODEL,
+      effort: (process.env.AI_EFFORT as ReasoningEffort | undefined) ?? "high",
+    });
+  if (!adapter.enabled) return [];
+
+  let raw: ReportAssistProposal[];
+  try {
+    raw = await adapter.generateAssistDrafts(audit);
+  } catch (e) {
+    console.warn(
+      `[ai] assists unavailable (adapter failure: ${e instanceof Error ? e.message : String(e)}); deterministic path continues`,
+    );
+    return [];
+  }
+
+  const allowed = collectAuditEvidenceIds(audit);
+  for (const item of raw) {
+    if (!validateAssistAtBoundary(item)) {
+      console.warn(
+        `[ai] assists rejected (boundary validation failed: ${ajvErrors(validateAssistAtBoundary.errors)}); deterministic path continues`,
+      );
+      return [];
+    }
+    if (!item.basis_evidence_ids.every((id) => allowed.has(id))) {
+      console.warn("[ai] assists rejected (unknown basis evidence id); deterministic path continues");
+      return [];
+    }
+  }
+  // Post-boundary provenance stamp (adapters can never forge it) + producer re-assertion.
+  const provenance: AssistProvenance = {
+    adapter_id: adapter.id ?? null,
+    prompt_version: PROMPT_VERSION,
+    prompt_hash: PROMPT_HASH,
+  };
+  return raw.map((item) => ({ ...item, producer: ASSISTS_PRODUCER, provenance: { ...provenance } }));
 }
 
 // ---- Adapter registry --------------------------------------------------------

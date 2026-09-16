@@ -56,4 +56,4 @@ for p in pairs:
 print(f"pairs={len(pairs)} train={len(train)} holdout={len(hold)} tiers={tiers} shapes={shapes}")
 print(f"T0 count={[p for p in pairs if p['tier']=='T0'] and len([p for p in pairs if p['tier']=='T0']) or 0}")
 print("split-leak proof: no shared C5 exact-dup group; holdout sources disjoint from train")
-print("license: pair sources CLEAR per LICENSE-REGISTER (fhwa-case-studies/state-dots/local-mpo); GF-9-DIRECT exception (register:20, use cleared 2026-09-15) covers staged PROPOSED piarc-irf pairs only — pairs.json/finetune splits stay CLEAR-only")
+print("license: pair sources CLEAR per LICENSE-REGISTER (fhwa-case-studies/state-dots/local-mpo) + 6 RATIFIED GF-9-DIRECT piarc-irf pairs (register:20 exception, quote+pair use cleared 2026-09-15; G9D-P1..P6)")

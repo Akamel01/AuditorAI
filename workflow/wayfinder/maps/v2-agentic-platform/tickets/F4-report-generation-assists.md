@@ -3,12 +3,12 @@ id: F4
 title: Report-generation and recommendation-drafting LLM assists
 type: task
 hitl: true
-status: open
+status: closed
 assignee:
 blocked_by: [F1]
 blocks: []
 created: 2026-08-30
-resolved:
+resolved: 2026-09-15
 ---
 
 ## Question
@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v2-agentic-platform/MAP.md:70-71; workflow/wayfi
 
 *Pending `OWNER_ASSIST_SCHEMA_AND_QUALITY_INTERPRETATION` and `FRESH_TIER_1_ARCHIVE`, plus F1. Writes `src/lib/ai.ts`, `src/lib/inference.ts`, `src/domain/candidate-review.ts`; must not edit `renderReportMarkdown` or pipeline contracts. Prompt/engine/schema changes require newer Tier-1. See M4.*
 
+## Resolution
+
+Pilot implemented 2026-09-15 per owner approval: AssistKind/Provenance/Proposal types (PROPOSED-only), AssistAdapter (AiAdapter unwidened), OFF gate env+adapter ANDed, post-boundary stamp, assists-agent producer, acceptAssistDraft (never auto-promote); report.ts/pipeline/prompt untouched; 13/13 tests. Schema as implemented = approved-to-proceed; stays OFF default. Reviewed APPROVED.

@@ -21,3 +21,6 @@ Source: workflow/wayfinder/maps/v3-architecture-deepening/MAP.md:179; .autoforge
 
 *Pending `RSC_MEASURABLE_TARGET_AND_RISK_ACCEPTANCE`. Probe must show before/after TTFB/loading/SEO and no Repository divergence. Sequential with M5 via lock. See M7.*
 
+## Progress (2026-09-15)
+
+H5 probe landed (see v6 H5): baseline numbers recorded, P1-P5 targets PROPOSED. No src changes. Awaiting owner numeric confirmation + risk acceptance before spike.
