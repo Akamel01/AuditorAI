@@ -8,6 +8,7 @@
 // fail or corrupt the promotion.
 import { validateRecommendationWording } from "@/domain/pipeline/wording";
 import { buildOutcomeRow, recordCandidateOutcome } from "@/domain/outcomes";
+import { ASSIST_PROPOSED_TEXT_MAX, type AssistKind, type ReportAssistProposal } from "@/lib/ai";
 import type {
   AuditResult,
   CandidateFindingRecord,
@@ -286,4 +287,43 @@ export function unreviewedCandidateLimitation(count: number): string {
   return `${count} AI-generated candidate finding${count === 1 ? " was" : "s were"} not reviewed by the auditor before issuance and ${
     count === 1 ? "is" : "are"
   } not reflected in this issue.`;
+}
+
+/** F4 assists pilot: auditor copy-paste helper (pure domain). Accepting a
+ *  draft returns a detached copy of its text for the auditor to paste
+ *  manually — the input proposal is never mutated and nothing is promoted
+ *  into findings or limitations here (promotion stays auditor-driven). */
+export interface AssistDraftCopy {
+  kind: AssistKind;
+  text: string;
+  basis_evidence_ids: string[];
+}
+
+export function acceptAssistDraft(
+  proposal: ReportAssistProposal,
+): { ok: true; value: AssistDraftCopy } | { ok: false; error: string } {
+  if (proposal.status !== "PROPOSED") {
+    return { ok: false, error: `assist is not a draft (status ${String(proposal.status)})` };
+  }
+  if (proposal.kind !== "recommendation_draft" && proposal.kind !== "limitations_draft") {
+    return { ok: false, error: `unknown assist kind ${String(proposal.kind)}` };
+  }
+  if (
+    typeof proposal.proposed_text !== "string" ||
+    proposal.proposed_text.length === 0 ||
+    proposal.proposed_text.length > ASSIST_PROPOSED_TEXT_MAX
+  ) {
+    return { ok: false, error: `assist text must be 1..${ASSIST_PROPOSED_TEXT_MAX} chars` };
+  }
+  if (!Array.isArray(proposal.basis_evidence_ids)) {
+    return { ok: false, error: "assist basis_evidence_ids must be an array" };
+  }
+  return {
+    ok: true,
+    value: {
+      kind: proposal.kind,
+      text: proposal.proposed_text,
+      basis_evidence_ids: [...proposal.basis_evidence_ids],
+    },
+  };
 }
