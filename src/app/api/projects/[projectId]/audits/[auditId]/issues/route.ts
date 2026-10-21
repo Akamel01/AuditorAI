@@ -9,10 +9,15 @@
 // flight. A draft whose findings cite unresolvable evidence, or that still
 // carry an ADR-0010 auto-flag, is refused unless the Auditor overrides it with
 // a named reviewer claim; the override is then visible in the issued record.
+// G-10: the capability claim is bounded here, at issuance — not only stamped in
+// the report text. A draft whose ODD cell status is not "in", or whose cell's
+// input floor is unsatisfied, is refused: the freeze is a capability claim, so
+// it may not be made outside the claim.
 import { NextResponse } from "next/server";
 import { badRequest, notFound, requireWorkspace, serverError } from "@/lib/api";
 import { unreviewedCandidateLimitation } from "@/domain/candidate-review";
 import { evaluateEvidenceBinding } from "@/domain/evidence-binding";
+import { CapabilityClaimNotIssuableError } from "@/domain/pipeline/constants";
 import type { AuditResult, EvidenceOverride } from "@/domain/types";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
@@ -55,6 +60,16 @@ export async function POST(req: Request, ctx: Ctx) {
     const draft = await auth.repo.getAudit(auth.ws, projectId, auditId);
     if (!draft) return notFound("audit not found");
 
+    // ADR-0005 d5/d8: the freeze carries a capability claim, so it is bounded — a run
+    // outside the ODD cell or below its input floor cannot be issued (G-10, issue #44).
+    // Checked first: no request content can relax the bound, so a draft that cannot
+    // be issued is refused before the body is even read.
+    if (draft.odd_status !== "in" || draft.odd_floor_satisfied === false) {
+      throw new CapabilityClaimNotIssuableError(
+        draft.odd_status !== "in" ? "outside_odd" : "below_floor",
+      );
+    }
+
     const body = await readBody(req);
     if (!body.ok) return badRequest("invalid request body: expected JSON");
 
@@ -76,6 +91,7 @@ export async function POST(req: Request, ctx: Ctx) {
         note: typeof candidate?.note === "string" ? candidate.note : null,
       };
     }
+
 
     // Pending candidates are never members of a formal record (ADR-0006): the
     // snapshot strips them; unreviewed ones speak only through the limitation.
