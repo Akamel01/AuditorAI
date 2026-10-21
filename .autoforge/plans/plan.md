@@ -1,160 +1,109 @@
-# Plan — Loop 3: 8 gated tripwires (monitor-only) + v4-harvest-deepening A1–A5 + ticket creation
+# Plan — Issue #40 "Harvest Track A: fetch the public Canadian RSA documents"
 
-Date: 2026-09-14. Scope: `/Users/akamel/Documents/AuditorAI`.
-Sources: `.autoforge/discovery/tracker-index.md` (8 open, all gated), `.autoforge/discovery/report.md`
-(loop-3 refresh), `.autoforge/requirements/grilling.md` (all 8 non-executable, ungating conditions),
-`.autoforge/architecture/report.md` + `decisions.md` (A1–A5, map `v4-harvest-deepening`).
-Skills: `codebase-design` (module/interface/seam/adapter/depth vocabulary; hypothetical-seam rule used for A4).
-Worktree (read-only `git status --porcelain` 2026-09-14): dirty — foreign parallel-session edits in
-`src/discovery/harvest.ts`, `dedupe-persist.ts`, `health-aggregate.ts`, `pipeline.ts`,
-`src/app/api/dev/health/route.ts`, `tests/domain/discovery-harvest.test.ts`,
-`tests/domain/wayfinder-tickets.test.ts`, `scripts/tier1-archive.mjs`, plus `.autoforge/*` staging.
-Every code module carries collision guards below. No child touches `state/vault-notes.json`, runs git
-mutations, or edits foreign regions. Stdlib only, no new deps.
+Branch `oc/40`. **Scope: this issue only.** The other 18 frontier tickets in `.autoforge/discovery/tracker-index.md` (ops-residual R1–R19 except this one, plus `v2-agentic-platform/F2`) belong to a different wayfinder map (`ops-residual`) and are **out of scope** — not planned here.
 
-## Coverage — every tracker-index open entry → module
+## Objective
 
-| # | Tracker entry | Gate | Module | Action |
-|---|---|---|---|---|
-| 1 | v2 F1-quote-bearing-baselines (blocks F4; judge 401) | owner GF source + Tier-1 + key | M-GATED-V2 | monitor-only |
-| 2 | v2 F2-blob-storage-escape-hatch | BLOB_LIMIT_TRIGGER absent | M-GATED-V2 | monitor-only |
-| 3 | v2 F3-vault-sync-conflict-ux | VAULT_CONFLICT_TRIGGER absent | M-GATED-V2 | monitor-only |
-| 4 | v2 F4-report-generation-assists (blocked_by F1) | assist schema + fresh Tier-1 | M-GATED-V2 | monitor-only |
-| 5 | v3 F1-candidate-findings-review-ux | FLAG_2 decision | M-GATED-V3 | monitor-only |
-| 6 | v3 F2-audit-history-retention-policy | FLAG_1 authority | M-GATED-V3 | monitor-only |
-| 7 | v3 F3-rsc-initial-page-data | measurable target absent | M-GATED-V3 | monitor-only |
-| 8 | v3 F4-postgres-adapter | PHASE_3 authority | M-GATED-V3 | monitor-only |
-| — | T2 note (worktree-resolved vs HEAD-blocked) | foreign lane owns | — | explicitly deferred: owning session commits + updates `wayfinder-tickets.test.ts:143`; no module touches it |
-| — | A1 ledger-run-persist (Strong) | — | M-A1 | implement |
-| — | A2 ctx-builder (Strong) | — | M-A2 | implement |
-| — | A3 dedupe-index-return (Strong, DO FIRST) | — | M-A3 | implement |
-| — | A4 provider-fetch-routing (Worth-exploring) | grill pre-decided below | M-A4 | implement |
-| — | A5 health-bridge-consolidation (Worth-exploring) | foreign bridge lane | M-A5 | lane-gated implement-or-dup-close |
-| — | 5 ticket files + MAP.md for v4-harvest-deepening | orchestrator-side, post-approval | M-TICKETS | docs-only |
+Fetch public, no-login Canadian road-safety-assessment documents over an explicit five-host allowlist, behind a robots + politeness gate, and emit git-safe evidence: an intake manifest, a per-document download log, licence/quarantine/dedupe register rows, a train/test split file, and a per-ODD-cell coverage table. Binaries and text never enter git (R3); only manifests and register rows ship (D6). A human must verify from the PR body alone what was obtained, which cells moved, and which remain unfillable.
 
-## Modules
+## Acceptance criteria → modules
 
-### M-GATED-V2 — monitor v2 F1–F4 (zero code)
-- Objective: re-verify each v2 ticket still gated; record evidence; change nothing.
-- Scope: read ticket front-matter + gate signals only (judge key still 401? BLOB trigger absent?
-  `vault-sync --check` exit? F1→F4 edge intact?). Output brief `.autoforge/execution/M-GATED-V2.md`.
-- touches: `["workflow/wayfinder/maps/v2-agentic-platform/tickets/*", ".autoforge/execution/M-GATED-V2.md"]`
-- blocked_by: `[]`. Type: verify-only. Role: executor, zero questions.
-- Acceptance: brief lists F1–F4 with gate state + one evidence line each; zero prod-file diffs
-  (`git status --porcelain` shows no new src/tests modifications by this worker).
-- Reviewer: orchestrator read-only (brief + empty diff).
+| AC | Requirement (grilling.md) | Satisfied by |
+|---|---|---|
+| AC1 | Coverage table per CA ODD cell: fetched vs target, priority cells called out, per-doc `cell_key` ledger (R11) | M2 (`report`), M4 (`track-a-coverage.md`, manifest) |
+| AC2 | Intake record per doc (9 protocol fields); accepted = sha256 + licence row + dedupe claim + cell assignment; download log; licence register; quarantine; dedupe claims (R4–R9) | M2 (`fetch`, `intake`), M4 (register rows) |
+| AC3 | Split at intake: QC + one prairie province → test only, never train; other provinces → train (R10) | M2 (`splitFor`), M4 (`track-a-split.json`) |
+| AC4 | Unfillable cells listed with reason + named source family (R12) | M3 (dropped families), M4 (`track-a-coverage.md` § unfillable) |
 
-### M-GATED-V3 — monitor v3 F1–F4 (zero code)
-- Objective/scope: same as M-GATED-V2 for v3 map (FLAG_1/FLAG_2/target/PHASE_3 still absent?).
-  Output `.autoforge/execution/M-GATED-V3.md`.
-- touches: `["workflow/wayfinder/maps/v3-architecture-deepening/tickets/*", ".autoforge/execution/M-GATED-V3.md"]`
-- blocked_by: `[]`. Type: verify-only. Role: executor, zero questions.
-- Acceptance: brief lists F1–F4 with gate state + evidence; zero prod-file diffs.
-- Reviewer: orchestrator read-only.
+## Ordered implementation steps
 
-### M-A3 — pipeline returns claimed dedupe index (DO FIRST)
-- Objective: single claim site — `DiscoveryRunOutcome` carries `dedupeIndex`; delete stream re-claim.
-- Scope: `pipeline.ts:285-313` (d08 clone becomes returned index; outcome type `:342-346`);
-  delete `harvest-stream.ts:220-233` loop AND rewire the consumer: replace the `:216-233` block with
-  `stream.dedupeIndex = outcome.dedupeIndex` (destructure outcome at `:182`, not just `{state}`).
-  A loop deletion without this rewiring freezes `stream.dedupeIndex` and replays H10 (cross-tick dupes).
-  Orchestrators persist via `dedupe-persist` only (R10 untouched,
-  do not edit `dedupe-persist.ts` — foreign lane dirty there); `harvest.ts:227-234` call-site only if
-  needed, prefer no edit. Collision: `pipeline.ts` + `harvest.ts` dirty in worktree → verify-before-edit:
-  `git diff` own regions first; if foreign edits overlap the d08/outcome lines, stop and report, do not overwrite.
-- touches: `["src/discovery/pipeline.ts", "src/discovery/harvest-stream.ts", "src/discovery/harvest.ts", "tests/domain/discovery-pipeline-dedupe-index.test.ts", ".autoforge/execution/M-A3.md"]`
-- blocked_by: `[]`. Skills: codebase-design (claim rule locality in d08). Tests: new through-interface test
-  (pipeline twice, same docs, MemoryStore → second `dedupe_status != unique`, threading the returned index:
-  run2 `ctx.dedupeIndex = run1 outcome.dedupeIndex`); stream test asserting `stream.dedupeIndex` advances
-  across two ticks with zero `claimFingerprints` in stream; `rg claimFingerprints
-  src/discovery/harvest-stream.ts` → 0; dedupe/pipeline suites + typecheck green.
-- Acceptance: per decisions.md AD-A3 §Acceptance (4 checks).
-- Reviewer: read-only diff review (outcome shape + loop deletion) + suite greens.
+**S1 — M3: source manifest.** Create `docs/RSA-Documents/track-a-sources.json`: the 5-host allowlist (grilling.md:34) + per-source strategy, licence default, stage/province hints. *Why first:* single source of truth for fetcher and report, fixed before any network call. Verify: `python3 -c "import json;json.load(open('docs/RSA-Documents/track-a-sources.json'))"` and `grep -c '"host"' docs/RSA-Documents/track-a-sources.json` → 5.
 
-### M-A1 — ledger run-persist behind the ledger seam
-- Objective: `appendLedgerRun(slices, ranAtIso, store?) → LedgerEntry[]` in `ledger.ts` owns
-  seq + file mirror + KV append + trim; `executeJob` call site becomes one call; zero seq/INDEX_KEY
-  arithmetic left in `harvest.ts`. Guard stays put: VITEST/NODE_ENV gate at `harvest.ts:214` keeps
-  wrapping the one call (moved fn writes unconditionally); coverage-mirror write (`:346-353`) does NOT
-  move — ledger must not own coverage files, move ledger slices only. Collision: `harvest.ts` dirty → verify-before-edit, same protocol as M-A3.
-- touches: `["src/discovery/harvest.ts", "src/discovery/ledger.ts", "tests/domain/discovery-ledger-run.test.ts", ".autoforge/execution/M-A1.md"]`
-- blocked_by: `["M-A3"]` (serializes shared `harvest.ts`; A3 shrinks file first).
-- Skills: codebase-design (KV+file = two adapters, real seam). Tests: adjunct `appendLedgerRun` runs on a
-  shared MemoryStore continue disjoint seqs (r1 max < r2 min, KV tail total 4); mirror confined to tmp via
-  `AUDITORAI_LEDGER_MIRROR` with live-ledger mtime assertion;
-  `rg 'nextSeq|lastSeq|INDEX_KEY' src/discovery/harvest.ts` → 0; ledger-r2 + harvest suites + typecheck.
-  (Deviations recorded: simultaneity not asserted — allocation is read-tail-then-assign inherited from the
-  original; single-writer throws on contention; values ride inline in slices, side-channel module deleted.)
-- Acceptance: per AD-A1 (4 checks). Reviewer: read-only (seam placement + twin-write locality).
+**S2 — M1: robots gate.** Create `src/discovery/robots.ts` (`parseRobots`, `isAllowed`, `crawlDelayMs`, `robotsFor`) + `tests/discovery/robots.test.ts`. *Why before S3:* the fetcher imports it; the gate must be provable offline before any live request (R1). Verify: `npx vitest run tests/discovery/robots.test.ts` (no network) and `npm run typecheck`.
 
-### M-A4 — d04Acquire via provider.fetch (%PDF-guard home PRE-DECIDED)
-- Planner grill decision (worker asks zero questions): **%PDF guard stays in `d04Acquire`
-  (caller-side); `provider.fetch` remains byte-transport, unwidened.** Rationale: one consumer's PDF need =
-  hypothetical seam — widening the fetch contract for one adapter fails the two-adapter test and expands
-  blast radius to every provider. Revisit if a second content-type appears.
-- Objective: route d04 live fallback through originating provider's `fetch`; index hits/quals once;
-  remove dead `seq` (`:218`); keep guard in d04. Fallback rule: per-hit try `provider.fetch` → on throw
-  (offline/non-fetching provider, e.g. `seed-portals.fetch` throws by design) fall back to the current
-  direct-fetch path (preserves seed behavior). Budget rule: `withHostBudget` lives INSIDE `provider.fetch`
-  impls — d04 must NOT wrap `provider.fetch` calls (keep wrapper only around the legacy fallback).
-  `provider-types.ts` is READ-ONLY reference for the guard-home check; any diff there fails review.
-  Collision: `pipeline.ts` dirty → verify-before-edit.
-- touches: `["src/discovery/pipeline.ts", "src/discovery/providers/provider-types.ts", "tests/domain/discovery-pipeline-d04.test.ts", ".autoforge/execution/M-A4.md"]`
-- blocked_by: `["M-A3"]` (shared `pipeline.ts`, disjoint nodes d04 vs d08; A3 lands first).
-  Parallel-safe with M-A1 (touches disjoint).
-- Skills: codebase-design. Tests: fake `provider.fetch` non-PDF bytes → empty bundle + warn, zero network;
-  seed-originated-hit test (`provider_id: "seed-portals"` → non-empty bundle via fallback, stubbed global
-  fetch); spy test asserting `provider.fetch` was actually called (not just output shape);
-  bare-fetch `rg` → 0; pipeline suites + typecheck.
-- Acceptance: per AD-A4 (4 checks) + guard-home check (guard present in d04 region, fetch contract unwidened).
-- Reviewer: read-only (transport routing + guard placement).
+**S3 — M2: Track-A CLI.** Create `scripts/harvest-track-a.ts` with subcommands `fetch` (network, only with `--live`), `intake`, `report`, `selftest`; export `projectId`, `splitFor`, `verifyPdf`, `dedupeClaim`, `coverage`. Add the off-git rules to `.gitignore` **here**, in the same commit: the module that creates binaries owns the ignore rules, and they must be committed before the first live fetch or `git status --porcelain` shows binary paths (R3). *Why after S1+S2:* consumes the manifest and the robots module; one script, one in-memory record set (architecture report §1). Verify: `npx vitest run tests/discovery/harvest-track-a.test.ts` (7 offline assertions) and `npx tsx scripts/harvest-track-a.ts selftest` → green.
 
-### M-A2 — single DiscoveryCtx builder
-- Objective: `buildDiscoveryCtx({live, cellKey}, deps?)` in `harvest.ts`; both callers use it;
-  filter policy (incl. agent-reach-search + DEPRECATED) in one place; preserve `UnknownCellKeyError`.
-  Null-cellKey semantics PINNED: builder adopts harvest gaps-aware derivation (`harvest.ts:396-413`) +
-  static fallback; stream no-cellKey ticks thereby gain gaps-awareness (intended — record in M-A2.md brief);
-  `deps?` carries `read`/`cwd` so the tick path stays injectable and the parity test runs hermetic (stub deps).
-- touches: `["src/discovery/harvest.ts", "src/discovery/harvest-stream.ts", "tests/domain/discovery-ctx-builder.test.ts", ".autoforge/execution/M-A2.md"]`
-- blocked_by: `["M-A3", "M-A1"]` (shared files with both; A1 shrinks `harvest.ts` first, A3 edits stream first).
-- Skills: codebase-design (two callers = real seam). Tests: same input both paths → identical
-  providerIds/query; null-cellKey case asserts gaps-aware derivation, NOT the legacy static default;
-  unknown cellKey throws; deprecated excluded live; stream + harvest suites green.
-- Acceptance: per AD-A2 (3 checks). Reviewer: read-only (no inline JUR_MAP/filter left in stream).
+**S4 — M2 live fetch + intake.** `npx tsx scripts/harvest-track-a.ts fetch --live --corpus-root docs/RSA-Documents` then `... intake`. Binaries land in `docs/RSA-Documents/canada/<dir>/` (CLEAR) or `.../quarantine/<dir>/` (non-CLEAR). *Why after S3:* ignore rules already committed, so binaries stay off-git. Verify: `npx tsx scripts/harvest-track-a.ts report` regenerates `track-a-coverage.md`; `shasum -a 256` spot-check on one file matches the log row.
 
-### M-A5 — health fallback consolidation (LANE-GATED)
-- Objective: move file-ledger fallback inside `bridgeHarvestHealth`; freeze `HarvestHealthBridge`;
-  thin route to auth + delegate; shape-pinning test. **Step 0: diff against HEAD** — bridge files dirty
-  in worktree (foreign in-flight lane). If lane uncommitted/overlapping: verify-only, record dup-check,
-  change nothing. If lane committed and fallback still in route: implement. If lane covered it: close as dup.
-- touches: `["src/discovery/health-aggregate.ts", "src/app/api/dev/health/route.ts", "tests/domain/harvest-health-bridge.test.ts", ".autoforge/execution/M-A5.md"]`
-- blocked_by: `[]` + lane gate in acceptance (in-ticket, not an edge). Schedulable wave 2.
-- Skills: codebase-design (one served interface). Tests: KV-down + file-present → full 8-field shape;
-  KV-down + no-file → nulls, shape intact; harvest-health suite green. Fix stale field-count comments in
-  passing (`health-aggregate.ts:79-80,:18-21`; `route.ts:134`: "6-field" → 8-field).
-- Acceptance: per AD-A5 (4 checks) + lane verdict recorded. Reviewer: read-only + lane-owner confirm.
+**S5 — M4: outputs + split/coverage assertions.** Generate `canadian-download-log.tsv` (14 cols, no header), `canada-intake-manifest.jsonl`, `track-a-split.json`, `track-a-coverage.md`; append to `dedupe-index.json`, `LICENSE-REGISTER.md`, `QUARANTINE.md`. *Why after S4:* every artefact is derived from the intake manifest, never hand-edited. Verify: row count == manifest line count; `git status --porcelain` shows no binary path; `track-a-split.json` assertions block shows train∩test provinces empty, QC ∉ train, no `project_id` in both splits.
 
-### M-TICKETS — create v4-harvest-deepening tickets + MAP.md (docs-only, orchestrator-side, post-approval)
-- Objective: write 5 ticket files (A1–A5, front-matter per decisions.md: id/title/map/blocked_by/self-approve)
-  + map MAP.md under `workflow/wayfinder/maps/v4-harvest-deepening/**`. Front-matter encodes grill outcomes:
-  A4 records `grill: resolved-by-planner (guard caller-side, fetch unwidened; revisit on 2nd content-type)`
-  + `self-approve: true` (NOT FALSE — planner already grilled it); A5 records `lane-gate: foreign bridge
-  lane, reviewer = lane owner`. No code, no gate changes.
-- touches: `["workflow/wayfinder/maps/v4-harvest-deepening/**", ".autoforge/execution/M-TICKETS.md"]`
-- blocked_by: `[]`. Type: docs-only. Role: executor, zero questions.
-- Acceptance: 5 files + MAP.md exist with correct front-matter; `to-tickets` edge syntax valid;
-  zero diffs outside the map dir + own brief.
-- Reviewer: orchestrator read-only (front-matter + edges).
+## Track A fetch order, expected yield, abort conditions
 
-## Execution DAG + parallel groups
-- Wave 0 (parallel, disjoint touches): M-GATED-V2, M-GATED-V3, M-TICKETS, M-A3.
-- Wave 1 (parallel, disjoint): M-A1 (←M-A3), M-A4 (←M-A3).
-- Wave 2 (parallel, disjoint): M-A2 (←M-A3, M-A1), M-A5 (lane-gated).
-- Edges: M-A1←M-A3; M-A4←M-A3; M-A2←M-A3,M-A1. All else root.
-- Shared-file serialization: `harvest-stream.ts` A3→A2; `harvest.ts` A3→A1→A2; `pipeline.ts` A3→A4.
-- Global guards: explicit touches allow-lists; no git add/commit/push; never `state/vault-notes.json`;
-  never edit `tests/domain/wayfinder-tickets.test.ts` or foreign regions; verify-before-edit on all 5 dirty
-  source files; workers EXECUTE (no plans/questions), reviewers read-only.
-- Rollback: GATED/TICKETS/A5-verify-only → nothing to revert (no prod diff). A3/A4/A1/A2 → single-commit
-  `git revert` each (additive outcome field, loop deletion, seam moves — no migrations, no schema/data
-  moves); Wave-2 A2 re-runs stream+harvest suites as its own gate. No irreversible step exists in this plan.
+Fetch in this order (robots per-path allow first; 1 req/s/host, ≥10 s on CKAN hosts; neutral UA, no AI-agent token):
+
+| # | Source | Strategy | Expected yield |
+|---|---|---|---|
+| 1 | `open.alberta.ca` | CKAN listing (pinned URL) | ~20–40 PDFs (423 hits listed) |
+| 2 | `donnees.montreal.ca` | CKAN `/dataset/<slug>` + atom feed | ~5–15 PDFs |
+| 3 | `www2.gov.bc.ca` | sitemap → doc pages → PDF paths | ~5–15 PDFs |
+| 4 | `www.unb.ca` | known PDF (no listing) | ~1 |
+| 5 | `www.toronto.ca` | sitemap only | ~0–2 |
+
+Yield is a scale hint, never a floor (A5, D8): report actuals and deltas.
+
+**Abort conditions** (each records a `skip_reason`; for a whole source, an unfillable row — never a crash, never a retry storm):
+- **robots disallow** → skip the URL, log it, never fetch a variant path.
+- **JS-only listing** (no server-rendered document links) → source unfillable; no browser.
+- **403** (bot protection, e.g. Québec) → source unfillable; no UA spoofing, no retry.
+- **DNS NXDOMAIN** (MB, SK, MRDC/MUNIAC) → unfillable row, family named.
+- robots 404/410 → allow-all (logged); robots 401/403 → deny-all; robots 5xx/network → deny + `skip_reason`.
+- HTML landing where a PDF is expected → reject as `html-not-pdf`, no binary written.
+
+## Coverage table and the numbers in the PR body
+
+`report` reads `canada-intake-manifest.jsonl` and emits `docs/RSA-Documents/track-a-coverage.md`: `fetched` = distinct `cell_key` in the manifest; `target` = `state/odd-coverage.json` → `cells[].target` (13 / 41 / 41). `have_total` is never reported as fetched (R11). Priority cells (0.9231, 3, 3) are flagged; the §3 descriptor is free-text `priority_cell_note` (A7 — no schema change).
+
+Every PR number comes from exactly one file:
+- fetched docs, per-cell fetched, unfillable cells → `track-a-coverage.md` (from the intake manifest)
+- targets 13/41/41, priority 0.9231/3/3 → `state/odd-coverage.json`
+- sha256 claims → `dedupe-index.json`; train/test counts → `track-a-split.json`
+- licence verdicts per dir → `LICENSE-REGISTER.md`; quarantined count + reasons → `QUARANTINE.md`
+- bytes/sha256 per doc → `canadian-download-log.tsv`
+
+## PR body skeleton
+
+```
+Title: feat(harvest): Track A — public Canadian RSA documents (manifests only)
+
+Closes #40
+
+## Acceptance evidence
+- AC1 coverage: track-a-coverage.md — <cell> fetched <n> / target <t>; cell_key ledger in canada-intake-manifest.jsonl
+- AC2 intake: canada-intake-manifest.jsonl (n records, 9 protocol fields, no T2); log canadian-download-log.tsv (n rows); licence rows in LICENSE-REGISTER.md; dedupe claims in dedupe-index.json; quarantined in QUARANTINE.md
+- AC3 split: track-a-split.json — QC+AB test-only, train∩test provinces = [], no project_id in both splits
+- AC4 unfillable: track-a-coverage.md § "cells Track A cannot fill" (n cells, each with reason + source family)
+
+## Coverage (fetched vs target)
+| cell_key | fetched | target | priority |
+|---|---|---|---|
+| canada:FEASIBILITY_CONCEPT | n | 13 | 0.9231 |
+| canada:PRELIMINARY_DESIGN | n | 41 | 3 |
+| canada:DETAILED_DESIGN | n | 41 | 3 |
+
+## Unfillable cells
+| cell_key | reason | source family |
+|---|---|---|
+
+Built with opencode (opencode-go/minimax-m3.1-flash-free), orchestrated by Claude Code
+```
+
+## Verification sequence (worker)
+
+1. `npm run lint`
+2. `npm run typecheck`
+3. `npm run test`
+4. `npx tsx scripts/harvest-track-a.ts selftest` — offline self-check (R1)
+5. `npx vitest run tests/discovery/robots.test.ts tests/discovery/harvest-track-a.test.ts` — script-level self-checks
+6. `git status --porcelain` → **no** `*.pdf`, `canada/`, `quarantine/` path (R3)
+7. `node scripts/vault-sync.mjs --check` — **NOT required**: no `vault/` file and no `state/vault-notes.json` change. Run only if that changes.
+
+## Commit plan
+
+Small commits, one concern each. Explicit `git add <paths>` — **never** `git add -A`.
+
+1. `feat(discovery): robots.txt gate for Track A fetch` → `src/discovery/robots.ts tests/discovery/robots.test.ts`
+2. `feat(harvest): Track A source manifest` → `docs/RSA-Documents/track-a-sources.json`
+3. `feat(harvest): Track A fetch/intake/report CLI + off-git rules` → `scripts/harvest-track-a.ts tests/discovery/harvest-track-a.test.ts .gitignore`
+4. `docs(harvest): Track A intake artefacts and register rows` → the M4 output files (explicit list)
+
+Never commit `.autoforge/`, `.env*`, or any corpus binary/PDF/text corpus. Stage only the paths listed above.

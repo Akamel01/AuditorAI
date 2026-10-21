@@ -1,159 +1,168 @@
 {
- "generated": "2026-09-14",
- "modules": [
-  {
-   "acceptance": "Brief lists v2 F1-F4 gate states + evidence lines; zero src/tests diffs",
-   "blocked_by": [],
-   "id": "M-GATED-V2",
-   "objective": "Monitor-only re-verify of v2 F1-F4 gates; no code",
-   "role": "executor",
-   "touches": [
-    "workflow/wayfinder/maps/v2-agentic-platform/tickets/*",
-    ".autoforge/execution/M-GATED-V2.md"
-   ],
-   "type": "verify-only",
-   "wave": 0
+  "ticket": "Akamel01/AuditorAI#40",
+  "branch": "oc/40",
+  "objective": "Fetch public, no-login Canadian road-safety-assessment documents over an explicit five-host allowlist behind a robots + politeness gate, and emit git-safe evidence only: an intake manifest, a per-document download log, licence/quarantine/dedupe register rows, a train/test split file and a per-ODD-cell coverage table. Binaries and text never enter git; manifests and register rows ship.",
+  "modules": [
+    {
+      "id": "M1",
+      "title": "Robots.txt gate",
+      "goal": "Pure, offline-testable robots.txt parsing plus a per-path allow decision and Crawl-Delay lookup, so every Track A request is provably permitted before it is made.",
+      "creates": ["src/discovery/robots.ts", "tests/discovery/robots.test.ts"],
+      "modifies": [],
+      "touches": ["src/discovery/robots.ts", "tests/discovery/robots.test.ts"],
+      "blocked_by": [],
+      "context": "Build the only allowed src/ addition (grilling.md:60 'no src/discovery/* surgery beyond the robots helper'). Export exactly four functions: parseRobots(text): RobotsFile (pure), isAllowed(robots, path, ua): boolean, crawlDelayMs(robots, ua): number | null, robotsFor(url): Promise<RobotsFile>. robotsFor must fetch <origin>/robots.txt through withHostBudget from src/discovery/ratelimit.ts:34 (1 req/s per host), cache the result per host, and map status codes: 404/410 -> allow-all; 401/403 -> deny-all; 5xx or network error -> deny-all plus a recorded skip_reason. isAllowed must use longest-match precedence, honour User-agent group matching, and let Allow override Disallow of equal specificity. crawlDelayMs must parse Crawl-Delay (seconds -> ms) and return null when absent. Observed real-world rules that MUST be covered by fixtures (source-feasibility.md:7-10,23,26): Alberta open.alberta.ca disallows /api/, /dataset/rate/, /dataset/*/history and declares Crawl-Delay: 10; Montreal donnees.montreal.ca disallows /api/ and faceted /*?*tags= and declares Crawl-Delay: 10; BC www2.gov.bc.ca disallows /gov/search*, /search*, /en/search/, /query.html* but allows /assets/gov/...; Toronto www.toronto.ca allows * except /wp-admin/ and /legdocs/mmis/*/bgrd/; Manitoba www.gov.mb.ca disallows / for GPTBot/ClaudeBot/CCBot/Scrapy - our neutral UA is unaffected. Write a test file with no network access: fixture strings only, asserting longest-match precedence, each host fixture above, Allow-overrides-Disallow, Crawl-Delay: 10 -> 10000, and 404 -> allow-all. The test MUST NOT make an outbound request.",
+      "acceptance": [
+        "src/discovery/robots.ts exports parseRobots, isAllowed, crawlDelayMs, robotsFor",
+        "robotsFor maps 404/410 -> allow-all, 401/403 -> deny-all, 5xx/network -> deny with skip_reason",
+        "isAllowed uses longest-match precedence and Allow overrides Disallow at equal specificity",
+        "crawlDelayMs returns 10000 for 'Crawl-Delay: 10' and null when absent",
+        "tests/discovery/robots.test.ts runs with no network and covers the Alberta, Montreal, BC, Toronto and Manitoba fixtures",
+        "npm run typecheck passes"
+      ],
+      "verify": ["npx vitest run tests/discovery/robots.test.ts", "npm run typecheck"],
+      "out_of_scope": [
+        "any other change under src/discovery/ (types.ts, ids.ts, dedupe.ts, provenance.ts)",
+        "any change under contracts/ or src/domain/",
+        "UA rotation, proxying, CAPTCHA solving, login/auth flows",
+        "per-host state files - the cache is in-memory per run"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Track A source manifest",
+      "goal": "Hand-authored, machine-readable source of truth for the fetch: allowlist hosts, per-source discovery strategy, licence default, and stage/province/doc_type hints.",
+      "creates": ["docs/RSA-Documents/track-a-sources.json"],
+      "modifies": [],
+      "touches": ["docs/RSA-Documents/track-a-sources.json"],
+      "blocked_by": [],
+      "context": "This file is the source list of record for D1 (grilling.md:34): allowlist = exactly five hosts - open.alberta.ca (CKAN; pin one dataset-listing URL, tolerant regex over '423 results' pagination), donnees.montreal.ca (CKAN; /dataset/<slug> pages plus /feeds/dataset.atom), www2.gov.bc.ca (sitemap at https://www2.gov.bc.ca/sitemap/sitemap_index.xml then doc pages then /assets/gov/... PDF paths - the /search* endpoints are robots-disallowed), www.unb.ca (known PDF https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf - no listing endpoint exists, listing untested per source-feasibility.md:16), www.toronto.ca (sitemap only; /?s= redirects to find.toronto.ca which is JS-driven and search is not usable). Dropped source families that MUST be carried in the manifest as unfillable entries with reason + family name (R12, ca-sources.md:56, source-feasibility.md:13-17): Quebec provincial www.quebec.ca (403 bot protection to our UA), open.ottawa.ca (JS-only SPA; robots 404), pub-ottawa.escribemeetings.com (JS bundle-driven, listing uncertain), Manitoba open data data.gov.mb.ca (DNS NXDOMAIN, portal retired) and www.gov.mb.ca (robots denies AI agents; use neutral UA, treat as low priority), Saskatchewan open.saskatchewan.ca (DNS NXDOMAIN) and www.saskatchewan.ca (open-data path 404), MRDC/MUNIAC www.muniac.ca (DNS NXDOMAIN, entity undefined in repo), Ottawa eScribe agenda PDFs (JS-driven). Per source record: host, family, strategy, listing_url (or null), robots_hint, licence_default verdict + basis + licence_ref, stage_hint, ca_province_hint, doc_type_hint, expected_yield_estimate. Licence defaults: Alberta = Open Government Licence - Alberta, Montreal = OGL-Quebec; fail closed to RESTRICTED for CA Crown works (grilling.md:49, probe.md:15) - only CLEAR feeds train/test. Neutral User-Agent string, no AI-agent tokens, e.g. 'AuditorAI-RSA-Harvest/1.0 (+public documents only)' (source-feasibility.md:3,27). Do not invent a §3 target list, a recovered HARVESTING_PLAN.md, or a source list beyond the five allowlisted hosts (grilling.md:59).",
+      "acceptance": [
+        "File is valid JSON and contains exactly the five allowlisted hosts as fetchable entries",
+        "Every dropped source family appears as an unfillable entry with a non-empty reason and a named family",
+        "Each entry carries host, family, strategy, listing_url, licence_default, stage_hint, ca_province_hint, doc_type_hint",
+        "The UA string contains no AI-agent token (no ClaudeBot/GPTBot/CCBot/Scrapy)",
+        "No HARVESTING_PLAN.md content is fabricated; the file only encodes the ticket-list allowlist"
+      ],
+      "verify": ["python3 -c \"import json;json.load(open('docs/RSA-Documents/track-a-sources.json'))\"", "grep -c '\"host\"' docs/RSA-Documents/track-a-sources.json"],
+      "out_of_scope": [
+        "adding hosts beyond the five in grilling.md:34",
+        "retrying the dropped families (403 / DNS-dead / JS-only)",
+        "recovering or reconstructing HARVESTING_PLAN.md (HITL-1, operator-owned)",
+        "writing ODD coverage targets into the manifest - they live in state/odd-coverage.json"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Track A CLI (fetch / intake / report / selftest)",
+      "goal": "One script with four subcommands that runs the whole pipeline: gated fetch, intake derivation, coverage reporting and an offline self-test.",
+      "creates": ["scripts/harvest-track-a.ts", "tests/discovery/harvest-track-a.test.ts"],
+      "modifies": [".gitignore"],
+      "touches": [
+        "scripts/harvest-track-a.ts",
+        "tests/discovery/harvest-track-a.test.ts",
+        ".gitignore",
+        "docs/RSA-Documents/canada/**",
+        "docs/RSA-Documents/quarantine/**",
+        "docs/RSA-Documents/canada-intake-manifest.jsonl",
+        "docs/RSA-Documents/canadian-download-log.tsv",
+        "docs/RSA-Documents/track-a-split.json"
+      ],
+      "blocked_by": ["M1", "M3"],
+      "context": "CLI shape: tsx scripts/harvest-track-a.ts <sub> [--live] [--corpus-root <path>] [--manifest <file>]. Subcommands: fetch (network, requires --live, mirroring the dry-run write guard at scripts/discovery-run.ts:29-32), intake (no network, derives records from staged binaries), report (no network, writes coverage table + unfillable list from the intake manifest), selftest (no network, offline assertions - this is the R1 check). Export for tests: projectId, splitFor, verifyPdf, dedupeClaim, coverage. Imports from src/: withHostBudget from src/discovery/ratelimit.ts:34, sha256Hex from src/discovery/ids.ts:6, and parseRobots/isAllowed/crawlDelayMs from M1. Use the TS .js import specifier style already used by scripts/discovery-run.ts:16-18 (e.g. '../src/discovery/ratelimit.js') and run via tsx. PRJ- minting lives in the SCRIPT, not in ids.ts (grilling.md:60): format PRJ-<16 hex>, computed as sha256Hex(sourceDir + '|' + projectKey).slice(0,16), mirroring shortHash at ids.ts:16-17 and the PKG- convention at ids.ts:44-46. Split rule is one line: TEST_PROVINCES = new Set(['QC','AB']); split = TEST_PROVINCES.has(province) ? 'test' : 'train' (A2 default: AB is the held-out prairie province - the only prairie province with a live robots-clean portal; MB/SK portals are DNS-dead and MB robots bans AI agents; A3: QC = province Quebec, language is tracked separately as lang). Non-CLEAR licence verdict overrides split to 'quarantine' and is excluded from train/test (D10, R8). Per-request politeness: >=1 req/s per host via withHostBudget, >=10s between requests on the two CKAN hosts (open.alberta.ca, donnees.montreal.ca - Crawl-Delay: 10, source-feasibility.md:26), and robots evaluated per URL path, never per host (architecture report risk 2). Before writing a binary: verify %PDF- magic AND content-type; reject HTML/403 landings with a recorded reason (html-not-pdf) and write no binary. Write binaries to <corpus-root>/canada/<source-dir>/ for CLEAR and <corpus-root>/quarantine/<source-dir>/ for non-CLEAR, default corpus root docs/RSA-Documents/ (operator can point --corpus-root at the corpus box later - HITL-2). Abort/skip behaviour: robots-disallowed path -> skip + log, never fetch a variant path; JS-only listing (no server-rendered document links) -> record the source as unfillable, never drive a browser; 403 -> unfillable, no UA spoofing, no retry; DNS NXDOMAIN -> unfillable row; robots 5xx/network -> deny + skip_reason. A listing parse failure must record the source as unfillable, never crash. .gitignore: add rules for docs/RSA-Documents/canada/*/, docs/RSA-Documents/quarantine/*/ and docs/RSA-Documents/**/*.pdf, and assert afterwards that 'git status --porcelain' shows no binary path (R3). Ownership note: .gitignore lives in THIS module, not in the outputs module, because the rules must be committed before the first live fetch (deviates from architecture report section M4 grouping - sequencing requirement). Offline test file (no network) must assert: (1) split - QC->test, AB->test, BC/ON->train, train and test province sets disjoint, QC not in train, no project_id in both splits; (2) projectId stable across calls, distinct per key, matches /^PRJ-[0-9a-f]{16}$/; (3) verifyPdf accepts a %PDF- buffer and rejects a <!DOCTYPE html> buffer as html-not-pdf; (4) the log sha256 equals sha256 of the bytes; (5) a non-CLEAR doc yields split=quarantine and never train/test; (6) a new sha256 is claimed with project_id+split while a pre-existing sha256 is skipped; (7) coverage zero-fills the three canada:* cells. Do NOT touch src/discovery/ids.ts, src/discovery/types.ts, contracts/, state/odd-coverage.json or state/dedupe-index.json.",
+      "acceptance": [
+        "The four subcommands exist and only 'fetch' performs network IO, and only with --live",
+        "The offline test file passes with zero network access",
+        "npx tsx scripts/harvest-track-a.ts selftest exits 0",
+        "Split rule assigns QC and AB to test, other provinces to train, and non-CLEAR to quarantine",
+        "project_id matches /^PRJ-[0-9a-f]{16}$/ and is stable for the same sourceDir+projectKey",
+        "Only %PDF- binaries with a PDF content-type are written; HTML/403 landings are rejected with a reason",
+        "CKAN hosts are requested no more than once per 10s and other hosts no more than once per second",
+        ".gitignore contains rules for the canada/ and quarantine/ corpus dirs and any PDF under docs/RSA-Documents/",
+        "git status --porcelain shows no .pdf, docs/RSA-Documents/canada/ or docs/RSA-Documents/quarantine/ path after a fetch"
+      ],
+      "verify": [
+        "npx vitest run tests/discovery/harvest-track-a.test.ts",
+        "npx tsx scripts/harvest-track-a.ts selftest",
+        "npm run typecheck",
+        "npm run lint",
+        "git status --porcelain"
+      ],
+      "out_of_scope": [
+        "changing state/odd-coverage.json or flipping any ODD cell status",
+        "changing src/discovery/ids.ts or src/discovery/types.ts",
+        "adding corpus-schema.json fields (A7: no schema change this ticket)",
+        "running the fetch before the .gitignore rules are committed",
+        "Track B (ATIP/FOIA) and Track C",
+        "building training packs or mining usa/ or quarantine/ for training"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Tracked outputs: intake manifest, download log, split, registers, coverage table",
+      "goal": "Produce the reviewable, git-safe artefact set that the PR body cites, derived mechanically from the intake manifest - never hand-edited.",
+      "creates": [
+        "docs/RSA-Documents/canada-intake-manifest.jsonl",
+        "docs/RSA-Documents/canadian-download-log.tsv",
+        "docs/RSA-Documents/track-a-split.json",
+        "docs/RSA-Documents/track-a-coverage.md"
+      ],
+      "modifies": [
+        "docs/RSA-Documents/dedupe-index.json",
+        "docs/RSA-Documents/LICENSE-REGISTER.md",
+        "docs/RSA-Documents/QUARANTINE.md"
+      ],
+      "touches": [
+        "docs/RSA-Documents/canada-intake-manifest.jsonl",
+        "docs/RSA-Documents/canadian-download-log.tsv",
+        "docs/RSA-Documents/track-a-split.json",
+        "docs/RSA-Documents/track-a-coverage.md",
+        "docs/RSA-Documents/dedupe-index.json",
+        "docs/RSA-Documents/LICENSE-REGISTER.md",
+        "docs/RSA-Documents/QUARANTINE.md"
+      ],
+      "blocked_by": ["M2"],
+      "context": "These files are written by the M2 CLI (fetch/intake/report) and committed here. Intake record shape - one JSON object per line in canada-intake-manifest.jsonl, all fields required unless noted: project_id (PRJ-<16 hex>), tier (enum T0,T1,T3,T4 - never T2, A4), stage (FEASIBILITY_CONCEPT|PRELIMINARY_DESIGN|DETAILED_DESIGN per corpus-schema.json:16), missing_side_note (string|null, values from the repo Completeness labels at src/discovery/types.ts:124-129 - no new labels), source_url (absolute), source_host (allowlisted), source_dir, track ('A'), lang (en|fr|unknown), split (train|test|quarantine), licence_verdict (CLEAR|RESTRICTED|BLOCKED per LICENSE-REGISTER.md:9-23), licence_basis, licence_ref (nullable), sha256 (64 hex = bytes), bytes, file_name, retrieved_at (ISO-8601), cell_key (canada:FEASIBILITY_CONCEPT|canada:PRELIMINARY_DESIGN|canada:DETAILED_DESIGN), ca_province (BC,AB,ON,QC,MB,NB,NL,NS,PE,SK,YT,NT,NU per corpus-schema.json:12), doc_type (guide,case-study,complete-RSA,prompt-list,policy,toolkit,presentation,correspondence per corpus-schema.json:20). A record is 'accepted' only when it carries sha256 + a licence row + a dedupe claim + a cell assignment (R4). canadian-download-log.tsv: NO header row, exactly 14 tab-separated columns in this order - source_dir, source_url, file_name, bytes, sha256, project_id, tier, stage, ca_province, lang, licence_verdict, split, cell_key, retrieved_at; row count == fetched count (R6); the sha256 column must equal 'shasum -a 256' of the file on disk. track-a-split.json: {schema_version, generated_at, rule, test_provinces:['QC','AB'], projects:[{project_id, split, provinces[], ca_province, docs, sha256[]}], assertions:{train_test_province_overlap:[], qc_in_train:false, project_in_both_splits:[]}} - the intake record stays authoritative per doc. dedupe-index.json extension: existing row shape {path, sha256, bytes, canonical_id, exact_dup_group} (dedupe-index.json:2-8) plus EXACTLY two new keys project_id and split (train|test|quarantine); append at the array end; path relative to the corpus root; canonical_id continues the C-NNNN sequence; exact_dup_group = null; the 333 pre-existing rows are read-only and never rewritten; re-serialise with JSON.stringify(rows, null, 1) (current 1-space indent) plus a trailing newline so the diff shows only appended rows. Claim only sha256 values absent from the 333 pre-existing rows; a pre-existing sha256 is skipped and reported (R9). LICENSE-REGISTER.md: one 4-column row per fetched source dir, exactly '| dir | VERDICT | basis | date |' (R7) - every fetched source dir must appear. QUARANTINE.md: one bullet per non-CLEAR document with reason and date (R8); zero non-CLEAR documents may appear in train or test. track-a-coverage.md: per canada:* cell, fetched = distinct cell_key present in the intake manifest, target = state/odd-coverage.json cells[].target (13 / 41 / 41); NEVER report the server-side have_total as fetched (ca-cells-split.md:11); flag the priority cells 0.9231 / 3 / 3; carry the section-descriptor gap as free-text priority_cell_note because rural/urban, existing/new and language are not schema axes (A7). Also emit the section 'cells Track A cannot fill': every zero-yield cell with a non-empty reason and a named source family (R12), seeded from the dropped families in M3. Report actual counts and deltas - 60-70 documents is a scale hint, not a floor (A5, D8). T1 rows are reported separately and never count as section-3 coverage. Do not hand-edit any of these files: they are regenerated by the M2 CLI.",
+      "acceptance": [
+        "canada-intake-manifest.jsonl has one line per accepted document and no line with tier T2",
+        "Every manifest line has non-empty project_id, tier, stage, source_url, licence_verdict and lang",
+        "canadian-download-log.tsv has 14 tab-separated columns, no header, and row count == fetched count",
+        "The sha256 in the log equals the sha256 of the bytes on disk (spot-checked with shasum -a 256)",
+        "track-a-split.json shows train and test province sets disjoint, QC absent from train, and no project_id in both splits",
+        "dedupe-index.json contains only appended rows; the 333 pre-existing rows are unchanged; every new row carries project_id and split",
+        "Every fetched source dir has a 4-column row in LICENSE-REGISTER.md",
+        "Every non-CLEAR document has a QUARANTINE.md bullet with reason and date, and none appears in train or test",
+        "track-a-coverage.md reports fetched from distinct manifest cell_key and target from state/odd-coverage.json (13/41/41), and never uses have_total",
+        "Every zero-yield cell has a non-empty reason and a named source family"
+      ],
+      "verify": [
+        "npx tsx scripts/harvest-track-a.ts report",
+        "python3 -c \"import json;[json.loads(l) for l in open('docs/RSA-Documents/canada-intake-manifest.jsonl') if l.strip()]\"",
+        "git diff --stat -- docs/RSA-Documents/dedupe-index.json",
+        "git status --porcelain",
+        "npm run lint && npm run typecheck && npm run test"
+      ],
+      "out_of_scope": [
+        "editing the 333 pre-existing dedupe-index.json rows",
+        "adding a province or language field to corpus-schema.json (A7, A9)",
+        "changing state/odd-coverage.json or flipping any cell status",
+        "state/dedupe-index.json (discovery index) - the corpus index is the claim authority; the discovery index is cross-check only (A9)",
+        "build-finetune.py marker-rule replacement (D5 says: later, once the marker rule can express geography)"
+      ]
+    }
+  ],
+  "integration": {
+    "order": ["M1", "M3", "M2", "M4"],
+    "shared_state": [
+      "docs/RSA-Documents/dedupe-index.json",
+      "docs/RSA-Documents/LICENSE-REGISTER.md",
+      "docs/RSA-Documents/canadian-download-log.tsv"
+    ],
+    "parallel_safe": false,
+    "why": "M2 and M4 both write the shared mutable register/log files, so they must run sequentially; only M1 and M3 (disjoint files: src/robots vs the source manifest) may run in parallel."
   },
-  {
-   "acceptance": "Brief lists v3 F1-F4 gate states + evidence lines; zero src/tests diffs",
-   "blocked_by": [],
-   "id": "M-GATED-V3",
-   "objective": "Monitor-only re-verify of v3 F1-F4 gates; no code",
-   "role": "executor",
-   "touches": [
-    "workflow/wayfinder/maps/v3-architecture-deepening/tickets/*",
-    ".autoforge/execution/M-GATED-V3.md"
-   ],
-   "type": "verify-only",
-   "wave": 0
-  },
-  {
-   "acceptance": "5 ticket files + MAP.md with valid front-matter/edges; diffs confined to map dir + brief; A4 front-matter records grill-resolved-by-planner + self-approve true; A5 records lane-gate + lane-owner reviewer",
-   "blocked_by": [],
-   "id": "M-TICKETS",
-   "objective": "Docs-only: create v4-harvest-deepening tickets + MAP.md (post-approval)",
-   "role": "executor",
-   "touches": [
-    "workflow/wayfinder/maps/v4-harvest-deepening/**",
-    ".autoforge/execution/M-TICKETS.md"
-   ],
-   "type": "docs-only",
-   "wave": 0
-  },
-  {
-   "acceptance": "Outcome carries dedupeIndex; pipeline-twice test greens second-run dup; rg claimFingerprints in stream = 0; dedupe/pipeline suites + typecheck green; stream rewired (stream.dedupeIndex = outcome.dedupeIndex, outcome destructured); pipeline-twice test threads returned index; stream-advance test with zero claimFingerprints in stream",
-   "blocked_by": [],
-   "collision": "pipeline.ts + harvest.ts dirty in worktree: verify-before-edit own regions; stop-and-report on overlap; never touch dedupe-persist.ts",
-   "id": "M-A3",
-   "objective": "Single dedupe claim site: DiscoveryRunOutcome carries dedupeIndex; delete stream re-claim loop",
-   "role": "executor",
-   "touches": [
-    "src/discovery/pipeline.ts",
-    "src/discovery/harvest-stream.ts",
-    "src/discovery/harvest.ts",
-    "tests/domain/discovery-pipeline-dedupe-index.test.ts",
-    ".autoforge/execution/M-A3.md"
-   ],
-   "type": "implement",
-   "wave": 0
-  },
-  {
-   "acceptance": "rg nextSeq|lastSeq|INDEX_KEY in harvest.ts = 0; concurrent appendLedgerRun disjoint seqs; ledger-r2 + harvest suites + typecheck green; VITEST/NODE_ENV guard stays at executeJob call site; coverage-mirror write does NOT move; adjunct runs continue disjoint seqs on shared store (simultaneity out of scope: read-tail-then-assign inherited; mirror tmp-confined, live mtime asserted)",
-   "blocked_by": [
-    "M-A3"
-   ],
-   "collision": "harvest.ts dirty: verify-before-edit; serializes after M-A3",
-   "id": "M-A1",
-   "objective": "Move run-slice persist into ledger.appendLedgerRun; executeJob becomes one call",
-   "role": "executor",
-   "touches": [
-    "src/discovery/harvest.ts",
-    "src/discovery/ledger.ts",
-    "tests/domain/discovery-ledger-run.test.ts",
-    ".autoforge/execution/M-A1.md"
-   ],
-   "type": "implement",
-   "wave": 1
-  },
-  {
-   "acceptance": "Bare-fetch rg = 0; fake provider.fetch non-PDF test green; dead seq removed; %PDF guard in d04, fetch contract unwidened; pipeline suites + typecheck green; per-hit try provider.fetch with direct-fetch fallback on throw (seed-portals offline); no withHostBudget wrap around provider.fetch (wrapper only on legacy fallback); seed-hit test + fetch-called spy test; provider-types.ts zero-diff; d04 test asserts fallback yielded docs (acquired non-empty)",
-   "blocked_by": [
-    "M-A3"
-   ],
-   "collision": "pipeline.ts dirty: verify-before-edit; disjoint nodes d04 vs d08; parallel-safe with M-A1",
-   "grill_decision": "%PDF guard stays caller-side in d04Acquire; provider.fetch unwidened (hypothetical-seam rule)",
-   "id": "M-A4",
-   "objective": "Route d04Acquire live fallback through provider.fetch; index hits/quals once",
-   "role": "executor",
-   "touches": [
-    "src/discovery/pipeline.ts",
-    "src/discovery/providers/provider-types.ts",
-    "tests/domain/discovery-pipeline-d04.test.ts",
-    ".autoforge/execution/M-A4.md"
-   ],
-   "type": "implement",
-   "wave": 1
-  },
-  {
-   "acceptance": "No inline JUR_MAP/filter in stream; ctx parity + UnknownCellKeyError + deprecated-excluded tests green; stream + harvest suites green; null-cellKey pinned to harvest gaps-aware derivation (+static fallback), deps carry read/cwd, parity test hermetic",
-   "blocked_by": [
-    "M-A3",
-    "M-A1"
-   ],
-   "collision": "serializes harvest-stream.ts after M-A3, harvest.ts after M-A1",
-   "id": "M-A2",
-   "objective": "Single buildDiscoveryCtx in harvest.ts used by harvest + stream",
-   "role": "executor",
-   "touches": [
-    "src/discovery/harvest.ts",
-    "src/discovery/harvest-stream.ts",
-    "tests/domain/discovery-ctx-builder.test.ts",
-    ".autoforge/execution/M-A2.md"
-   ],
-   "type": "implement",
-   "wave": 2
-  },
-  {
-   "acceptance": "Step-0 HEAD diff verdict recorded (implement | verify-only-waiting | dup-close); if implement: thin route, 8-field shape tests green, harvest-health suite green; stale 6-field comments fixed in passing (health-aggregate.ts:79-80,:18-21; route.ts:134)",
-   "blocked_by": [],
-   "id": "M-A5",
-   "lane_gate": "BLOCKED until foreign bridge-lane edits in health-aggregate.ts + health/route.ts commit; close-as-dup if lane covered it",
-   "objective": "Consolidate health fallback inside bridgeHarvestHealth; freeze HarvestHealthBridge shape",
-   "role": "executor",
-   "touches": [
-    "src/discovery/health-aggregate.ts",
-    "src/app/api/dev/health/route.ts",
-    "tests/domain/harvest-health-bridge.test.ts",
-    ".autoforge/execution/M-A5.md"
-   ],
-   "type": "implement-lane-gated",
-   "wave": 2
+  "tracker_coverage": {
+    "GH:Akamel01/AuditorAI#40": ["M1", "M2", "M3", "M4"],
+    "out_of_scope_frontier": ["ops-residual/R1", "ops-residual/R2", "ops-residual/R3", "ops-residual/R5", "ops-residual/R6", "ops-residual/R7", "ops-residual/R8", "ops-residual/R9", "ops-residual/R10", "ops-residual/R11", "ops-residual/R12", "ops-residual/R14", "ops-residual/R15", "ops-residual/R16", "ops-residual/R17", "ops-residual/R18", "ops-residual/R19", "v2-agentic-platform/F2"]
   }
- ],
- "parallel_groups": [
-  [
-   "M-GATED-V2",
-   "M-GATED-V3",
-   "M-TICKETS",
-   "M-A3"
-  ],
-  [
-   "M-A1",
-   "M-A4"
-  ],
-  [
-   "M-A2",
-   "M-A5"
-  ]
- ],
- "policy": {
-  "deps": "stdlib only, no new deps",
-  "forbidden": [
-   "state/vault-notes.json",
-   "git mutations by children",
-   "tests/domain/wayfinder-tickets.test.ts"
-  ],
-  "reviewers": "read-only",
-  "workers": "EXECUTE, no plans/questions"
- }
 }

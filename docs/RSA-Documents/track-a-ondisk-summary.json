@@ -1,0 +1,135 @@
+{
+  "totals": {
+    "documents": 304,
+    "bytes": 1516885512,
+    "unique_sha256": 268,
+    "duplicates": 36,
+    "anchors": 4,
+    "needs_review": 134
+  },
+  "counts": {
+    "class": {
+      "duplicate": 36,
+      "methodology": 27,
+      "out-of-scope": 125,
+      "rsa-sample": 59,
+      "unusable": 57
+    },
+    "tier": {
+      "T0": 244,
+      "T1": 30,
+      "T3": 23,
+      "T4": 7
+    },
+    "stage": {
+      "detailed": 32,
+      "existing": 78,
+      "planning": 3,
+      "pre-opening": 5,
+      "preliminary": 10,
+      "unknown": 176
+    },
+    "jurisdiction": {
+      "AB": 17,
+      "BC": 16,
+      "CAN-GOV": 45,
+      "INT": 46,
+      "MB": 9,
+      "NB": 5,
+      "NL": 5,
+      "NS": 12,
+      "ON": 17,
+      "PE": 2,
+      "QC": 8,
+      "SK": 9,
+      "USA": 112,
+      "YT": 1
+    },
+    "lang": {
+      "en": 267,
+      "fr": 19,
+      "unk": 18
+    },
+    "source_group": {
+      "docs/RSA-Documents/canada": 54,
+      "docs/RSA-Documents/intl": 6,
+      "docs/RSA-Documents/quarantine": 74,
+      "docs/RSA-Documents/usa": 68,
+      "docs/references": 22,
+      "tests/fixtures": 77,
+      "tmp/harvest": 3
+    }
+  },
+  "deep_subset": {
+    "enabled": true,
+    "canadian_in_scope_documents": 146,
+    "selected": 135,
+    "processed": 135,
+    "text_failed": 0,
+    "tier_changed": 45,
+    "stage_changed": 54,
+    "class_changed": 34,
+    "canadian_in_scope_counts": {
+      "class": {
+        "duplicate": 11,
+        "methodology": 24,
+        "rsa-sample": 54,
+        "unusable": 57
+      },
+      "tier": {
+        "T0": 91,
+        "T1": 26,
+        "T3": 22,
+        "T4": 7
+      },
+      "stage": {
+        "detailed": 15,
+        "existing": 59,
+        "planning": 3,
+        "pre-opening": 4,
+        "preliminary": 8,
+        "unknown": 57
+      }
+    },
+    "counts": {
+      "class": {
+        "methodology": 24,
+        "rsa-sample": 54,
+        "unusable": 57
+      },
+      "tier": {
+        "T0": 87,
+        "T1": 24,
+        "T3": 17,
+        "T4": 7
+      },
+      "stage": {
+        "detailed": 15,
+        "existing": 49,
+        "planning": 3,
+        "pre-opening": 3,
+        "preliminary": 8,
+        "unknown": 57
+      },
+      "jurisdiction": {
+        "AB": 14,
+        "BC": 15,
+        "CAN-GOV": 44,
+        "MB": 8,
+        "NB": 3,
+        "NL": 5,
+        "NS": 12,
+        "ON": 14,
+        "PE": 2,
+        "QC": 8,
+        "SK": 9,
+        "YT": 1
+      },
+      "label_confidence": {
+        "anchor": 4,
+        "needs_review": 96,
+        "rule": 35
+      }
+    }
+  }
+}

@@ -1,81 +1,60 @@
-# Grilling report for loop-3 tickets (read-only artifact)
+# Grilling — Ticket #40 "Harvest Track A: fetch the public Canadian RSA documents"
 
-Summary
-- The eight open tickets across v2-agentic-platform (F1–F4) and v3-architecture-deepening (F1–F4) are all gated. None are executable without owner-triggered gates or fresh Tier-1 validation passes. The current evidence indicates blockers include missing operator keys, absent triggers, and pending owner/product decisions. The parallel track to improve architecture via improve-codebase-architecture is acknowledged but cannot execute gated work without gate fulfillment.
+Evidence: ticket body + `.autoforge/discovery/*`. Parent `docs/RSA-Documents/HARVESTING_PLAN.md` is **absent** — §3/§5/§7 unrecoverable (`plan-recovery-a.md:3`).
 
-Per-ticket verdict lines below mark whether the ticket is executable now and what ungating would entail. All references below cite the mapped gate names and the PLAN/MAP sources surfaced in the tracker.
+## 1. REQUIREMENTS → acceptance-criteria map
 
-Notes on scope and constraints used for grilling
-- All eight tickets are HITL-blocked or gated by explicit owner/product decisions or hidden flags.
-- Gate semantics are drawn from docs/validation/eval-gates.md (Tier-1 and Tier-2 gates) and the tracker-index.md open-tickets section.
-- The analysis assumes no mutations to repository state are allowed; only planning and risk articulation are produced per the read-only constraint.
+- **R1** [Rules] Public/free/no-login only; no ATIP/FOIA, paywall, CAPTCHA; robots.txt honored. *Check:* zero requests to a robots-disallowed or auth-walled URL; `--selftest` green.
+- **R2** [Rules] ≤1 req/s/host; ≥10s on CKAN hosts. *Check:* fake-clock test: gap ≥1000ms/host (`ratelimit.ts:4-5`), ≥10 000ms on CKAN hosts (`source-feasibility.md:26`).
+- **R3** [Rules] Binaries + text stay **off-git**; only manifests ship in the PR. *Check:* `git status --porcelain` shows no binary path; corpus root git-ignored (`CLAUDE.md:14`; `rsa-corpus/MAP.md:15`).
+- **R4** [AC2] Intake record per doc with the 9 protocol fields; *accepted* = sha256 + licence row + dedupe claim + cell assignment; tier ∈ {T0,T1,T3,T4}; T1 never counts as §3 coverage. *Check:* every row has non-empty `project_id,tier,split,stage,source_url,licence_verdict,lang`; no `T2` row.
+- **R5** [AC2] Multi-doc projects share one `project_id`. *Check:* group-by `project_id` has ≥1 group of ≥2 rows when a multi-doc project was fetched; single-doc projects get their own id.
+- **R6** [AC2] `canadian-download-log.tsv` (absent today) created; one row per doc; sha256 = bytes. *Check:* file exists; row count == fetched count; `shasum -a 256` spot-check matches.
+- **R7** [AC2] Licence row per source dir, 4-col `| dir | VERDICT | basis | date |`. *Check:* every fetched source dir appears in `docs/RSA-Documents/LICENSE-REGISTER.md`; new rows match the regex.
+- **R8** [AC2] Terms-forbidding docs → `quarantine/<dir>/` + QUARANTINE.md bullet with reason. *Check:* each non-`CLEAR` doc has a bullet (reason + date); zero non-`CLEAR` docs in train/test.
+- **R9** [AC2] Dedupe: no fetched sha256 pre-exists; each new sha256 claimed with `project_id`+`split`. *Check:* corpus `dedupe-index.json` — no new sha256 among the pre-existing 333 (`ca-sources.md:27`); every new row carries project_id+split.
+- **R10** [AC3] Split at intake: QC + held-out prairie province → test only, never train; other provinces → train. *Check:* script asserts train∩test provinces = ∅, QC ∉ train, no `project_id` in both; non-zero exit on violation.
+- **R11** [AC1] Coverage table: per CA ODD cell fetched vs target, priority cells called out; per-doc `cell_key` ledger exists (none today, `ca-cells-split.md:11`). *Check:* keys == the 3 `canada:*` cells; fetched == distinct `cell_key` in the manifest; targets match `state/odd-coverage.json` (13/1, 41/0, 41/0 — `ca-cells-split.md:7-9`); priorities 0.9231/3/3 flagged.
+- **R12** [AC4] Unfillable cells listed with reason + source family, as Track B/C input. *Check:* every zero-yield cell has non-empty reason + named source family; list non-empty.
 
-----
+## 2. AMBIGUITIES
 
-## Executable-now verdicts and ungating conditions
+- **A1 Missing parent plan.** §3/§5/§7 unrecoverable (`plan-recovery-a.md:3`); ticket body lists sources, probe ranks feasible hosts. **Default:** ticket body = authoritative list; §3 targets := `odd-coverage.json` targets; §7 := R10. **REVERSIBLE.**
+- **A2 Held-out prairie province.** Prairie = AB/MB/SK (`plan-recovery-a.md:31`); MB+SK portals DNS-dead, MB robots bans AI agents (`source-feasibility.md:14-15,27`). **Default: AB held out** — only prairie province with a live robots-clean portal, so the test split is non-empty; train keeps BC/ON/others. **REVERSIBLE** (one manifest row; SK ⇒ empty test split).
+- **A3 "QC" = Québec province or French content?** `ca_province` QC = Québec (`plan-recovery-a.md:31`); language is not a schema axis (`:41`). **Default:** QC = province Québec → test-only; French content elsewhere train-eligible, tracked by `lang`. **REVERSIBLE.**
+- **A4 Undefined T2.** T0 unusable / T1 outputs-only / T3 complete / T4 = T3+outcome; T2 unknown (`plan-recovery-a.md:24`; `rsa-corpus/MAP.md:17` "EXTENDS, never redefines"). **Default:** never mint or assign T2; partials via `completeness` (`src/discovery/types.ts:124-129`). **REVERSIBLE** (label) but redefines a frozen ladder ⇒ not defaulted silently.
+- **A5 60-70 docs vs "quality over count".** **Default:** count is a scale hint, not a floor; report actuals + deltas. **REVERSIBLE.**
+- **A6 Where binaries live.** "No bulk text to git" (`CLAUDE.md:14`; corpus 886 MB untracked, `rsa-corpus/MAP.md:15`) vs corpus on the production box (6 of 333 paths on disk here, `ca-sources.md:39`). **Default:** write to `<corpus-root>/canada/<source-dir>/` on the corpus box; git gets manifests only. **REVERSIBLE in principle; needs the operator for the box ⇒ HITL-2.**
+- **A7 Priority cells with absent axes.** rural/urban, existing/new, language **absent** (`plan-recovery-a.md:38-41`; schema axes lack them). **Default:** table on the repo's real axes (`cell_key` = jurisdiction:stage); §3 descriptor as free-text `priority_cell_note`; no schema change this ticket (`plan-recovery-a.md:54`). **REVERSIBLE.**
+- **A8 "Complete" = doc_type or package?** `doc_type: complete-RSA` (`plan-recovery-a.md:40`) vs `have_full_package`/`completeness` (`types.ts:124-129`; ADR-0007 R1/R2). **Default:** two columns; "complete" for §3 only when both align. **REVERSIBLE.**
+- **A9 Intake home + which dedupe index.** No field homes for project ID, track, language, split (`intake-fields.md:34`); split model is per-consumer roles, not train/test (ADR-0007). Two indexes: corpus `dedupe-index.json` vs discovery `state/dedupe-index.json`; write authority open (tracker R10). **Default:** standalone intake manifest in `docs/RSA-Documents/`, no `src/`/`contracts/` change; claim in the **corpus** index with `project_id`+`split` columns; cross-check the discovery index. **REVERSIBLE.**
 
-Ticket: v2 F1 — F1-quote-bearing-baselines.md
-- What it asks: Provide owner-supplied verbatim INT evidence for GF-6..GF-10 baseline/fixture records to satisfy evidence grounding; currently blocked awaiting source and acceptance rubric.
-- Hidden requirements/risks: verbatim quotes essential (evidence_grounding=2); Tier-1 fresh archive and zero-drop eval must pass; 401 judge-key issue pending resolution (OPENCODE_API_KEY). If key is fixed, a fresh tier-1 run must pass and quotes verified; otherwise release cannot proceed.
-- Dependencies: F4 resolution; M1/M2 references in MAP and PLAN; needs OWNER_GF_SOURCE_AND_ACCEPTANCE.
-- Measured risk: high: without valid Tier-1 evaluation and owner acceptance, no progress. Key threat is judge gateway key failure causing repeated re-run costs.
-- Executable-now? No. Ungating condition: supply valid owner-sourced GF evidence and a fresh Tier-1 archive with passes; fix judge key; then run tier1-archive.mjs --rebase --topup <runId> and re-verify quotes. See M1.
-- Suggested ungating trigger: owner provides accepted GF source material and rubric alignment; judge gateway key corrected; Tier-1 pass achieved; then F1 proceeds.
+## 3. DECISIONS to bake into the plan
 
-Ticket: v2 F2 — F2-blob-storage-escape-hatch.md
-- What it asks: If Upstash limits block data-URL images, add a second attachment implementation behind Attachment/Repository seam; currently fog until fresh limit probe.
-- Hidden requirements/risks: requires BLOB_LIMIT_TRIGGER and BLOB_OWNER_SECURITY_AND_ROLLBACK to be opened; absent trigger means no migration; needs adapter behind Repository and proper migration/rollback handling; lock for single-writer; authorization/expiry/cleanup.
-- Dependencies: M2 plan touch; M2 gate presence.
-- Executable-now? No. Ungating condition: both BLOB_LIMIT_TRIGGER and BLOB_OWNER_SECURITY_AND_ROLLBACK exist and are satisfied; implement behind Repository edge-case adapters; ensure migration and rollback safe; then proceed.
+1. **Source list of record** = ticket list ∩ probe-feasible = `open.alberta.ca`, `donnees.montreal.ca`, `www2.gov.bc.ca`, `www.unb.ca` (known PDF), `www.toronto.ca` (sitemap only) → fetcher allowlist (`source-feasibility.md:32`). MRDC/MUNIAC, Québec provincial, MB/SK open data are dropped (DNS-dead, 403, retired) → they become R12 unfillable rows (`ca-sources.md:56`; `source-feasibility.md:13-17`).
+2. **Robots + politeness**: implement robots.txt fetch+parse (none in repo, `probe.md:7`) → `src/discovery/robots.ts`; 1 req/s/host, 10s on CKAN hosts (`ratelimit.ts:4-5`); neutral UA without AI-agent tokens (`source-feasibility.md:27`).
+3. **Tier policy** T0/T1/T3/T4 only, never T2; partials via `completeness` → manifest validator.
+4. **Project ID** `PRJ-`+`shortHash(sourceDir|projectKey)`, convention of `src/discovery/ids.ts:44-46` → minted in `scripts/harvest-track-a.mjs`.
+5. **Split rule** QC+AB → test, else train, fixed at intake → split manifest; later replace the marker rule at `docs/RSA-Documents/scripts/build-finetune.py:10` (cannot express geography, `ca-cells-split.md:19`).
+6. **Storage** binaries/text on the corpus box, out of git; PR carries only log, licence rows, dedupe claims, coverage table.
+7. **Coverage reporting** target := `odd-coverage.json` `cells[].target`; fetched := distinct `cell_key` in the manifest; never report server-side `have_total` as fetched (`ca-cells-split.md:11`).
+8. **Stop rule** no numeric floor; accepted = R4's four artefacts; T1 reported separately, never as §3 coverage.
+9. **No `corpus-schema.json` change** this ticket → additive intake manifest (`intake-fields.md:34`).
+10. **Quarantine routing** non-`CLEAR` → `quarantine/<dir>/` + QUARANTINE.md bullet, excluded from train/test; only `CLEAR` feeds C7/C8/C9 (`probe.md:15`).
 
-Ticket: v2 F3 — F3-vault-sync-conflict-ux.md
-- What it asks: Add deterministic path/hash/diff diagnostics for vault divergence and fail-closed on human resolution when conflict arises; current gating until trigger.
-- Hidden requirements/risks: VAULT_CONFLICT_TRIGGER_AND_OWNER needed; deterministic fixtures, byte-identical compile; fail-closed instructions; acquire vault-state-single-writer lock.
-- Dependencies: M3 touches in MAP; F1 gating interplay; tie to vault sync process.
-- Executable-now? No. Ungating condition: trigger VAULT_CONFLICT_TRIGGER_AND_OWNER; provide deterministic divergent-path fixture; run vault-sync.mjs --check; then allow fall-through.
+## 4. HITL (operator only)
 
-Ticket: v2 F4 — F4-report-generation-assists.md
-- What it asks: After M1 gate and owner approval, pilot typed-draft report/recommendation drafting assists with OFF mode; preserve provenance and determinism of canonical report.
-- Hidden requirements/risks: requires OWNER_ASSIST_SCHEMA_AND_QUALITY_INTERPRETATION and FRESH_TIER_1_ARCHIVE; changes to scripts and domain types; avoid editing render/pipeline contracts; requires newer Tier-1 if prompt/schema changes; risk of provenance drift.
-- Dependencies: F1 gate; M4 references; MAP/M1/M4 references; M1 gating context in plan.
-- Executable-now? No. Ungating condition: open OWNER_ASSIST_SCHEMA... and FRESH_TIER_1_ARCHIVE; update targeted modules (ai.ts, inference.ts, candidate-review) with a fresh Tier-1; ensure no edits to renderReportMarkdown or contracts; Tier-1 pass required.
+- **HITL-1 Missing parent plan.** `HARVESTING_PLAN.md` is in no branch (`plan-recovery-a.md:3`). Supply it, or authorise the D1 reconstruction — it is owner-authored; I cannot reconstruct it with authority. Work proceeds on D1 meanwhile.
+- **HITL-2 Corpus location / execution box.** Binaries must land on the box holding the corpus (`ca-sources.md:39`); confirm host + path, and whether Track A runs here or on production. Box access = operator authority.
+- **HITL-3 Crown-copyright verdicts.** CA Crown works will mostly be `RESTRICTED` (`CLAUDE.md:7`); only `CLEAR` feeds training (`probe.md:15`). Do RESTRICTED-but-fetched docs count toward the target, and who signs off? Changes the meaning of "60-70 documents".
 
-Ticket: v3 F1 — F1-candidate-findings-review-ux.md
-- What it asks: Roadmap commitment to make candidate-findings review UX smaller/usable as auditor-reviewable work items; patch live workspace, pending Flag-2 product decision and bottleneck evidence.
-- Hidden requirements/risks: FLAG_2_PRODUCT_COMMITMENT and LIVE_REVIEW_BOTTLENECK; must patch several UI files and acquire page-workspace-single-writer lock.
-- Dependencies: MAP references; M5 gating in PLAN; need live usage evidence.
-- Executable-now? No. Ungating condition: FLAG_2_PRODUCT_COMMITMENT and LIVE_REVIEW_BOTTLENECK opened; apply patch and acquire required lock; then proceed with evaluation.
+Remaining §2 items have reversible defaults; A2/A3 are veto-able, not blocking.
 
-Ticket: v3 F2 — F2-audit-history-retention-policy.md
-- What it asks: Define narrowly scoped retention for drafts/issues/artifacts/outcomes; policy/enforcement only; block on FLAG_1 authority.
-- Hidden requirements/risks: TTL/purge/export/legal rules; authorization; rollback backups; tests ensuring immutability; requires persistence-single-writer lock.
-- Dependencies: ADR lifecycle already implemented; MAP and PLAN references.
-- Executable-now? No. Ungating condition: obtain FLAG_1_RETENTION_AUTHORITY; implement policy enforcement then proceed with tests and backups.
+## 5. OUT OF SCOPE
 
-Ticket: v3 F3 — F3-rsc-initial-page-data.md
-- What it asks: Spike measurable SEO/TTFB/loading target; generate server initial snapshot while preserving API mutations; idiomatic risk assessment; fog until target.
-- Hidden requirements/risks: requires RSC_MEASURABLE_TARGET_AND_RISK_ACCEPTANCE; observable before/after performance; lock with M5; ensure no repository divergence.
-- Dependencies: M7; PLAN map references.
-- Executable-now? No. Ungating condition: secure RSC_MEASURABLE_TARGET_AND_RISK_ACCEPTANCE; run probe; measure SEO/TTFB; ensure no divergence; then proceed.
-
-Ticket: v3 F4 — F4-postgres-adapter.md
-- What it asks: After Phase-3 ownership, add a third DataStore adapter and remove memory-only split-brain; requires Phase-3 key-scheme ownership.
-- Hidden requirements/risks: PHASE_3_KEY_SCHEME_AND_POSTGRES_AUTHORITY; prove contract matrix and no silent memory; use single writer lock; migration/backup planning.
-- Dependencies: M8 references; MAP references; plan touch.
-- Executable-now? No. Ungating condition: PHASE_3_KEY_SCHEME_AND_POSTGRES_AUTHORITY granted; implement memory/KV/Postgres contract matrix; enable Postgres adapter; ensure there is no silent fallback.
-
-----
-
-Escalation and owner-facing gaps
-- All eight tickets require either owner decisions or external triggers. The eval-gates policy doc confirms Tier-1 gating and the need for verbatim grounding quotes; several tickets hinge on fresh Tier-1 archives, key access, or explicit product/owner commitments. The absence of an OPENCODE_API_KEY key (judge) blocks Tier-1, and the tracker shows no executable work without owner actions.
-- Risks include: cost/time tied to Tier-1 cycles, gating dependencies across F1/F4 and the v3 flags, potential test/test-suite churn when gating is lifted, and cross-ticket lock management (per-plan writer locks). Without ungating plans, architecture-improvement tickets via improve-codebase-architecture remain non-executable in this pass.
-- Dependencies among gates: F1 and F4 in v2 are algebraically connected to Tier-1/Eval; v3 gates depend on FLAG and PHASE keys. eval-gates.md indicates maximum freshness window; gating must be re-archived after Tier-1 passes to maintain freshness.
-
-## Recommendations
-- Do not attempt code changes now. Prepare ungating packages: supply required owner decisions, obtain fresh Tier-1 archives, and sort required keys (judge, OPENCODE_API_KEY). When gates are opened, execute the Architecture-improvement tickets in a controlled worktree and gate them through the orch pipeline.
-- Document explicit ungating criteria per ticket in the tracker, including exact sources of truth for quotes, fixture paths, and lock types.
-- Ensure that the parallel ticketing for NEW architecture improvements uses the improve-codebase-architecture skill in a gated mode, and aligns with the PLAN surfaces in .autoforge/plans/plan.md.
-
-----
-
-Artifact path for this grilling: .autoforge/requirements/grilling.md
+- **Track B** (ATIP/FOIA, fees, formal requests) and **Track C** — operator-only per the ticket Rules.
+- **Corpus mining / training-pack construction** over `usa/`, `canada/`, `quarantine/` (`CLAUDE.md:6-9`) — C6/C8 territory.
+- **ODD-cell status flips** (`mapped_unproven` → `in`): needs an accepted mapping + gate-passing fixture (`policies/odd.json` `_notes`); a fetch is not that.
+- **Tier/T2 redefinition** of the frozen T0–T4 ladder (`rsa-corpus/MAP.md:17`).
+- **Anything requiring the missing plan** — inventing §3 targets, the source list, or the §7 rule as if recovered.
+- **`src/discovery/*` surgery** beyond the robots helper; no `state/` harvest-state changes; no `docs/` edits beyond register, quarantine, manifest.

@@ -1,1 +1,52 @@
-{"artifacts": [".autoforge/discovery/report.md", ".autoforge/discovery/tracker-index.md", ".autoforge/requirements/grilling.md", ".autoforge/architecture/report.md", ".autoforge/architecture/decisions.md", ".autoforge/plans/plan.md", ".autoforge/execution/work-order.json", ".autoforge/reviews/plan-critique.md", ".autoforge/execution/M-GATED-V2.md", ".autoforge/execution/M-GATED-V3.md", ".autoforge/execution/M-TICKETS.md", ".autoforge/execution/M-A3.md", ".autoforge/execution/M-A1.md", ".autoforge/execution/M-A4.md", ".autoforge/execution/M-A2.md", ".autoforge/execution/M-A5.md", ".autoforge/reviews/M-GATED-V2.md", ".autoforge/reviews/M-GATED-V3.md", ".autoforge/reviews/M-TICKETS.md", ".autoforge/reviews/M-A3.md", ".autoforge/reviews/M-A1.md", ".autoforge/reviews/M-A4.md", ".autoforge/reviews/M-A2.md", ".autoforge/reviews/M-A5.md", ".autoforge/validation/report.md", ".autoforge/validation/investigation.md"], "completed": "2026-09-14T00:00:00Z", "created": "2026-09-14T00:00:00Z", "execution": "Wave0 approved (TICKETS+A3 repaired); Wave1 approved (A1 incident+gate+shadow repaired, A4 test fixed); Wave2 approved (A2 rebuilt, A5 implemented); validator REPLAN overruled as defective (monitor modules judged by implementation criteria, no current evidence; battery re-run green); investigator findings are pre-existing-path test gaps → follow-ups", "incidents": ["discovery agent returned write-up without writing artifacts; orchestrator wrote both inline from verified findings", "M-A1 test beforeEach rm DELETED live 7.8MB state/discovery-ledger.json during worker test run; restored origin/main 1050-entry version byte-identical (Sep13-14 live rows lost, disclosed)", "worktree has stale untracked src/**/*.js twins shadowing .ts under vitest+eslint (foreign build output; poisoned local verification, CI-clean)", "M-A2 worker scaffold replaced wholesale by orchestrator (parallel types, mock reads, unrun typecheck)", "v4 ticket front-matter normalized by orchestrator (ids/hitl/assignee/blocks)", "investigator returned text without writing artifact; orchestrator wrote inline", "validator REPLAN overruled: verdict rested on gate states (correct outcome for monitors) with zero current-evidence rows, violating spawn-contract 11; battery re-run by orchestrator (vault-sync ok, lint 0, counts 97/13/9/4, typecheck 0, proofs pass)"], "loop": 3, "modules": ["M-GATED-V2", "M-GATED-V3", "M-TICKETS", "M-A3", "M-A1", "M-A4", "M-A2", "M-A5"], "objective": "proceed with all open/remaining tickets + open new tickets for improved codebase architecture (improve-codebase-architecture skill); full lifecycle to GO", "phase": "integration-GO-WITH-NOTES", "updated": "2026-09-14T00:00:00Z", "validation": "GO WITH NOTES (validator REPLAN overruled as defective; investigator top-3 are pre-existing test gaps → follow-up wave; residual: ledger rows lost, twins, T2 flip, judge 401)", "version": "1.0.0"}
+{
+  "version": "1.0.0",
+  "created": "2026-09-14T00:00:00Z",
+  "updated": "2026-10-21T00:00:00Z",
+  "objective": "Issue #40 Track A — inventory the ~300 already-downloaded Canadian RSA documents in the operator checkout, reconcile them against the corpus registers, fetch only to fill the section 3 ODD gaps, and report coverage + harvest precision",
+  "phase": "execute-M5",
+  "loop": 4,
+  "branch": "oc/40",
+  "ticket": "Akamel01/AuditorAI#40",
+  "modules": ["M5", "M6", "M7"],
+  "artifacts": [
+    ".autoforge/discovery/report.md",
+    ".autoforge/discovery/tracker-index.md",
+    ".autoforge/requirements/grilling.md",
+    ".autoforge/architecture/report.md",
+    ".autoforge/plans/plan.md",
+    ".autoforge/execution/work-order.json",
+    ".autoforge/execution/M5.md",
+    ".autoforge/execution/M6.md",
+    ".autoforge/execution/M7.md",
+    ".autoforge/reviews/M5.md",
+    ".autoforge/reviews/M6.md",
+    ".autoforge/reviews/M7.md",
+    ".autoforge/validation/report.md"
+  ],
+  "operator_addition_2026_10_21": [
+    "1. inventory every PDF/DOC/XLSX in /Users/akamel/Documents/AuditorAI (read-only): path, sha256, title, jurisdiction, stage, tier, language, real-RSA-sample vs methodology",
+    "2. reconcile against corpus-inventory.json, corpus-catalog.json, dedupe-index.json, canadian-download-log.tsv; list drift",
+    "3. build the section 3 ODD coverage table FROM that inventory first; then fetch only to fill gaps; never re-download a hash already present",
+    "4. report harvest precision: share that are true in-scope Canadian RSAs at T3/T4 vs methodology, out of scope, duplicates, T0/T1 - counts per class",
+    "keep documents untracked; commit only registers/logs/catalog/inventory changes; never move or delete anything in the operator checkout"
+  ],
+  "plan_recovered": "docs/RSA-Documents/HARVESTING_PLAN.md is NOT in the repo but IS present (untracked) in the operator checkout /Users/akamel/Documents/AuditorAI/docs/RSA-Documents/HARVESTING_PLAN.md. Section 3 (ODD matrix + priority cells), section 5 (Track A sources), section 7 (split rule) are therefore now authoritative. grilling.md A1/A7 defaults are superseded; HITL-1 is resolved.",
+  "prior_session_state": "M1 robots gate, M3 source manifest, M2 Track A CLI and M4 outputs are implemented and staged but UNCOMMITTED on oc/40 (3 fetches: 1 CLEAR T3 AB, 2 RESTRICTED BC, 2 duplicates). Branch has no commits ahead of origin/main. Do not redo committed work.",
+  "known_gaps": [
+    "coverage table counted only the 3 Track A fetches, ignoring the ~300 on-disk corpus documents",
+    "corpus-catalog.json has stage=null for all 333 records and tier set for only 2 - the labels the operator asked for do not exist yet",
+    "no precision report",
+    "prior session believed HARVESTING_PLAN.md was unrecoverable (it is in the operator checkout)"
+  ],
+  "incidents": [
+    "opencode local database reset mid-run; fresh session resumed on existing branch oc/40",
+    "operator checkout ollama pool http://ollama-gen-lb:11434 is NOT reachable from this machine (http 000) - no free-model labelling available, labelling must be deterministic + rules"
+  ],
+  "constraints": [
+    "operator checkout is READ-ONLY: never write, move or delete there",
+    "corpus binaries and extracted text never enter git",
+    "never merge; never touch other branches; never commit .autoforge/, .env* or secrets",
+    "no ATIP/FOIA, no paywalls, no logins, no CAPTCHA; robots.txt honored; <=1 req/s per host"
+  ],
+  "updated_by": "orchestrator"
+}

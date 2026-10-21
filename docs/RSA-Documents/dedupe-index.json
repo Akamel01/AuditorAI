@@ -2329,5 +2329,32 @@
 "bytes": 876641,
 "canonical_id": "C-0318",
 "exact_dup_group": null
+},
+{
+"canonical_id": "PRJ-d8c82b96d74c1c92",
+"path": "canada/track-a/ab-open/neahdappendixc.pdf",
+"sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95",
+"bytes": 35444,
+"source_url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+"project_id": "PRJ-d8c82b96d74c1c92",
+"split": "test"
+},
+{
+"canonical_id": "PRJ-667d360379e0181e",
+"path": "canada/track-a/bc-moti/t02-04b.pdf",
+"sha256": "84a70638ba6077885b2c17f94b36554cea4e65f9f001f7d0f8e1c1d0632a245b",
+"bytes": 17093,
+"source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04b.pdf",
+"project_id": "PRJ-667d360379e0181e",
+"split": "restricted"
+},
+{
+"canonical_id": "PRJ-667d360379e0181e",
+"path": "canada/track-a/bc-moti/t02-04a.pdf",
+"sha256": "555848f63c690810661d7837b766ccb611f97ebe313a942bd413704745e947aa",
+"bytes": 22003,
+"source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf",
+"project_id": "PRJ-667d360379e0181e",
+"split": "restricted"
 }
 ]
