@@ -85,7 +85,7 @@ map's "workspaces" (an organisation a firm buys seats for) does not exist in cod
 ```
 ABSENCE: named user accounts, seats, invitations, roles and sessions — no match for
   \b(user|account|seat|invite|invitation|session|login|signup|sso)\b under src/
-  (search 1: `rg -n -i "\b(user|account|seat|invite|invitation|session|login|signup|ssow|sso)\b" src/`
+  (search 1: `rg -n -i "\b(user|account|seat|invite|invitation|session|login|signup|sso)\b" src/`
    → 0 hits for an account model; every hit is incidental — a URL filter in
    src/discovery/qualifier.ts:27, a keychain account parameter in src/discovery/keychain.ts:17,
    "road user" vocabulary, or an LLM message role; search 2:
@@ -272,8 +272,10 @@ because no fixture exists.
 ```
 ABSENCE: scorecards for the 11 cells that are not `in` — no match for (GF-|fixture_id) under
   state/eval-scorecards/ for those cells' fixtures
-  (search 1: `rg -ln "GF-" state/eval-scorecards/` → scorecards exist for 11 fixture ids only, and
-   those 11 belong to the 5 `in` cells; search 2: `python3 -c "…"` over the 16 cells' fixture_ids in
+  (search 1: `rg -ln "GF-" state/eval-scorecards/2026-09-08T01-52-05-000Z/` → scorecards exist for
+   11 fixture ids in the newest archive, and those 11 belong to the 5 `in` cells; the parent
+   directory holds 373 files across 16 ids from the whole archive history; search 2:
+   `python3 -c "…"` over the 16 cells' fixture_ids in
    policies/odd.json → 11 cells have an empty fixture list)
   nearest miss: state/eval-scorecards/2026-09-08T01-52-05-000Z/GF-10.json is a passing Canada
   planning scorecard, but it is 57 days old.
@@ -379,7 +381,8 @@ schedule, no drill, no monitoring, and no RPO or RTO statement.
 ABSENCE: a backup job, a restore drill, and an RPO/RTO statement — no match for
   (backup|snapshot|restore) as a scheduled operation, and no match for \b(rpo|rto)\b
   (search 1: `find src scripts .github -type f \( -iname "*backup*" -o -iname "*snapshot*" \)` → 0 files;
-   `rg -ln -i "\brpo\b|\brto\b" docs/ src/` → 0 hits; search 2: `ls .github/workflows/` → six
+   `rg -ln -i "\brpo\b|\brto\b" docs/ src/ --glob '!docs/research/enterprise-gap-audit.md'`
+   → 0 hits; search 2: `ls .github/workflows/` → six
    workflows (ci, ci-gates, deploy, discovery-harvest, eval, opencode), none of them a backup job)
   nearest miss: src/lib/persistence/issue-ledger.ts:80 exports issue lineage — the primitive a backup
   would use, exercised only by tests/domain/retention-policy.test.ts:143.
@@ -392,7 +395,8 @@ customer-data backup, and it does not let a tenant be restored.
 ```
 ABSENCE: an incident runbook — no match for (runbook|incident) under docs/
   (search 1: `find docs -iname "*runbook*" -o -iname "*incident*"` → 0 files; search 2:
-   `rg -ln -i "on-call|escalation|postmortem" docs/ --glob '!docs/RSA-Documents/**'` → 1 file,
+   `rg -ln -i "on-call|escalation|postmortem" docs/ --glob '!docs/RSA-Documents/**'
+   --glob '!docs/research/enterprise-gap-audit.md'` → 1 file,
    docs/architecture/discovery-architecture.md, whose line 57 is an escalation-gate heading about
    human-in-the-loop approvals rather than an incident runbook)
   nearest miss: docs/architecture/discovery-architecture.md:57 — an escalation-gate heading — and
@@ -502,15 +506,18 @@ schema/migration or one new runtime dependency; **L** more than 8 files, or new 
 cross-cutting change to the persistence key scheme, the auth model or the pipeline.
 
 Each entry carries its **Band** label — the ordering label the ranking rule requires, printed so a
-reviewer can check the order rather than re-derive it — followed by the six content fields: Area,
-Why now, Evidence, Acceptance sketch, Size. The three band-4 severities differ (failure detection,
+reviewer can check the order rather than re-derive it — followed by the six content fields: the
+title line, then Area, Why now, Evidence, Acceptance sketch and Size. The three band-4 severities differ (failure detection,
 then conformance evidence, then an unmeasurable SLO), so the size tie-break is not reached inside
 band 4; within band 1 the entries are ordered by the severity of the buyer-visible risk and, where
-two severities are comparable, by the smaller size first.
+two severities are comparable, by the smaller size first. Two band-1 entries — request-body
+validation and the dependency set — are not in the rule's own enumeration of band 1, which names
+authz and secrets; they sit in band 1 because the same enterprise buyer's review that stops on
+authz and secrets stops on those two as well, which is the band's primary test.
 
 ### G-1 — Named-user accounts with seat counts and an actor id on every issuance
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** accounts and roles
 - **Why now:** A firm cannot buy a seat for a person who does not exist, and every record is signed
   by a constant. This blocks the first sale outright and leaves the firm's own professional
@@ -522,8 +529,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** L — a cross-cutting change to the auth model and the persistence key scheme.
 
 ### G-2 — Server-established tenant identity with rotatable, revocable credentials
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** tenant isolation
 - **Why now:** The credential is the tenant, so a leaked browser key is total access to that firm's
   work, and it can never be rotated or withdrawn. A buyer's security review stops here.
@@ -534,8 +541,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** L — cross-cutting: auth model plus the persistence key scheme.
 
 ### G-3 — Durable, actor-attributed, tamper-evident audit trail with a firm-facing export
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** audit trail
 - **Why now:** The destination promises an immutable audit trail tying every finding to its
   evidence. Today the strongest record is write-once but unsigned, the per-run artifact trail is
@@ -548,8 +555,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** L — a cross-cutting change to the persistence key scheme and the record format.
 
 ### G-4 — Scheduled tenant-store backup with a rehearsed restore and a stated RPO and RTO
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** backups and restore
 - **Why now:** The only restore path is exercised by a test. A firm asking "what happens if the
   data is lost" gets no answer, and no answer is a no-sale.
@@ -560,8 +567,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** M — one scheduled job, one drill record, one documented RPO/RTO.
 
 ### G-5 — Provisioned, rotatable and revocable secrets for tenant credentials
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** The tenant credential is generated in the browser and kept in `localStorage`, with no
   server-side session, no rotation and no revocation. The repository's own security review scopes
@@ -573,8 +580,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** M — credential lifecycle plus the record that describes it.
 
 ### G-6 — Schema validation at every trust boundary, with the public surfaces enumerated
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** Only the upload path and the policy packs are schema-validated. Every other request
   body is hand-checked, and three product routes are unauthenticated by design. A buyer's review
@@ -586,8 +593,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** M — the product route set plus a schema per request shape.
 
 ### G-7 — Inventoried, pinned and scanned runtime dependencies
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** A buyer's review expects a maintained, scanned dependency set. There is no scanner
   and no update automation, so the inventory is a line in `package.json` that nobody checks.
@@ -598,8 +605,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** S — one workflow, one document, no new runtime dependency.
 
 ### G-8 — Region-pinned persistence with a sub-processor register
-- **Band:** band 1 — blocks the first sale
 
+- **Band:** band 1 — blocks the first sale
 - **Area:** data residency
 - **Why now:** The only region fact in the repository is the hosting region. A Canadian firm whose
   data may sit in an unpinned store, and whose project material may reach a third-party model
@@ -611,8 +618,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** S — configuration plus one register, no schema change.
 
 ### G-9 — Fresh Tier-1 evaluation coverage for every jurisdiction and stage cell
-- **Band:** band 2 — blocks a jurisdiction the map names
 
+- **Band:** band 2 — blocks a jurisdiction the map names
 - **Area:** evaluation harness coverage per jurisdiction and stage
 - **Why now:** Canada is the first jurisdiction to sell in, and two of its three cells have no
   fixture at all. Even the five mapped cells are covered only by a scorecard that is 57 days old
@@ -626,8 +633,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** L — fixtures and judged runs across jurisdictions, plus a corrected freshness check.
 
 ### G-10 — Capability claims bounded at issuance, not only in the report text
-- **Band:** band 3 — blocks a claim the product makes
 
+- **Band:** band 3 — blocks a claim the product makes
 - **Area:** the ODD gate
 - **Why now:** The product's own claim language is that claims stay inside the declared ODD. Today
   an audit whose capability was invalidated can still be issued and frozen, so the claim is
@@ -639,8 +646,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** S — one route, one condition, one test.
 
 ### G-11 — Evidence binding enforced at issuance, not only in flight
-- **Band:** band 3 — blocks a claim the product makes
 
+- **Band:** band 3 — blocks a claim the product makes
 - **Area:** evidence grounding
 - **Why now:** Evidence grounding is the product's core professional promise, and it is enforced
   during the run but not at the moment the record is frozen. A finding can be flagged as
@@ -652,8 +659,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** S — one route condition plus one override record.
 
 ### G-12 — Product-reachable health and readiness, structured logs and failure alerting
-- **Band:** band 4 — operational toil
 
+- **Band:** band 4 — operational toil
 - **Area:** observability
 - **Why now:** A firm paying for a seat needs to know the service is up and who to call, and the
   team needs to learn about a failing audit before the customer does. The only health surface is an
@@ -665,8 +672,8 @@ two severities are comparable, by the smaller size first.
 - **Size:** M — one route, one logging path, one alert rule.
 
 ### G-13 — Accessibility conformance evidence against WCAG 2.2 AA
-- **Band:** band 4 — operational toil
 
+- **Band:** band 4 — operational toil
 - **Area:** accessibility
 - **Why now:** Public-sector road-safety clients face accessibility expectations, and the
   repository's semantics are unverified. A conformance statement is an evidence question, not a
@@ -675,13 +682,14 @@ two severities are comparable, by the smaller size first.
 - **Acceptance sketch:** an automated accessibility check runs in CI over the product surfaces and
   fails the build on a serious violation; a written statement records the level the product claims
   and the method used to check it.
-- **Size:** M — a check, a spec, and the fixes it surfaces.
+- **Size:** M — an added accessibility check library, a spec and the fixes the check surfaces, inside
+  the eight-file bound.
 
 ---
 
 ### G-14 — Per-stage latency measurement with a recorded p50 and p95
-- **Band:** band 4 — operational toil
 
+- **Band:** band 4 — operational toil
 - **Area:** performance (p50/p95 per audit stage)
 - **Why now:** The map's destination includes production SLOs, and an SLO needs a measured
   distribution. Nothing is recorded today, so the product's speed is unknown and cannot be
@@ -691,6 +699,7 @@ two severities are comparable, by the smaller size first.
   thirteen stages, with the method stated; the measured run is one a paying firm would use; the
   figures are reproducible from a recorded run id.
 - **Size:** S — instrumentation in the pipeline runner plus one report.
+
 ## Operator decisions required
 
 Two questions are commercial or legal rather than engineering, so this audit states them and does
