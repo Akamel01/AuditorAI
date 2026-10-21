@@ -1,9 +1,6 @@
 {
-  "ledgerDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  "dedupeDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  "capturedAt": "2026-10-21T20:07:59.524Z",
-  "manifest": {
-    "jobId": "job_mvijns1g_bbdpzx",
-    "ranAtIso": "1970-01-01T00:00:00.000Z"
-  }
+  "ledgerDigest": "",
+  "dedupeDigest": "",
+  "capturedAt": "",
+  "manifest": {}
 }
