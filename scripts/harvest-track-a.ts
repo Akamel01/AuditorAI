@@ -130,6 +130,24 @@ function loadManifest(): Manifest {
 }
 
 /**
+ * Why a manifest source entry is unusable, or null when it is complete.
+ * A partial entry is rejected here, so the fetch round skips it with a reason
+ * instead of crashing on a missing field.
+ */
+export function sourceEntryProblem(source: Partial<Source>): string | null {
+  if (!source.id) return "missing id";
+  if (!source.host) return "missing host";
+  if (!source.strategy) return "missing strategy";
+  if (!source.licence_default?.verdict) return "missing licence_default.verdict";
+  if (source.strategy === "known-document-url") {
+    if (!source.known_document_urls?.length) return "missing known_document_urls";
+  } else if (!source.listing_url) {
+    return `missing listing_url for the ${source.strategy} strategy`;
+  }
+  return null;
+}
+
+/**
  * Serialise the corpus dedupe index in the file's existing format (one key per
  * line at column 0, as written by the corpus python scripts). Re-serialising
  * the 333 existing rows must produce the same bytes - only new rows append.
@@ -490,6 +508,11 @@ async function runFetch(argv: string[]): Promise<void> {
   const known = knownHashes();
 
   for (const source of manifest.sources) {
+    const problem = sourceEntryProblem(source);
+    if (problem) {
+      console.log(`skip (invalid source entry ${source.id ?? "?"}): ${problem}`);
+      continue;
+    }
     if (only && source.id !== only) continue;
     const urls = await candidatesFor(source);
     const cap = Math.min(limit, source.max_downloads ?? limit);
@@ -760,6 +783,13 @@ function runIntake(): void {
 
 // ---- report --------------------------------------------------------------------
 
+/**
+ * Hazard H3: binaries fetched by a container run live in that container, not in
+ * the operator's checkout. Every regeneration of the coverage report carries it.
+ */
+export const H3_BINARIES_NOTE =
+  "Binaries fetched by this run live in the box-runner container (`docs/RSA-Documents/canada/track-a/**`, gitignored) - they are **not** in the operator's checkout (`/Users/akamel/Documents/AuditorAI`).";
+
 function runReport(): void {
   const manifest = loadManifest();
   const records = readIntakeManifest();
@@ -796,6 +826,8 @@ function runReport(): void {
     "",
     "Targets come from `state/odd-coverage.json` (cells[].target).",
     "Fetched = documents in `canada-intake-manifest.jsonl` whose cell_key matches, never the server-side have_total.",
+    "",
+    H3_BINARIES_NOTE,
     "",
     "| ODD cell | target | fetched | complete (T3) | priority |",
     "| --- | --- | --- | --- | --- |",
@@ -895,6 +927,13 @@ function selftest(): void {
   check(
     new Set(manifest.sources.map((s) => s.id)).size === manifest.sources.length,
     "every source id is unique",
+  );
+  const invalid = manifest.sources.filter((s) => sourceEntryProblem(s) !== null);
+  check(
+    invalid.length === 0,
+    `every source entry is complete (${
+      invalid.map((s) => `${s.id}: ${sourceEntryProblem(s)}`).join("; ") || "none invalid"
+    })`,
   );
   check(manifest.unfillable.length > 0, "unfillable source families are listed");
   check(

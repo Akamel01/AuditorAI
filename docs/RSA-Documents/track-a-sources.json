@@ -92,6 +92,39 @@
       }
     },
     {
+      "id": "ab-publications-listing",
+      "host": "open.alberta.ca",
+      "family": "Alberta open government publications - server-rendered search listing (road safety audit series)",
+      "plan_ref": "§4 AB: open.alberta.ca - arterial/collector + rural",
+      "strategy": "html-listing-pdf",
+      "listing_url": "https://open.alberta.ca/publications?q=%22road+safety+audit%22",
+      "document_url_template": "https://open.alberta.ca/dataset/{dataset_id}/resource/{resource_id}/download/{name}",
+      "robots_hint": "The /publications search page is server rendered (CKAN 2.10) and robots.txt allows /publications (Crawl-delay: 10). Each publication page links to its /dataset/<id>/resource/<rid>/download/<name>.pdf resources, which robots.txt allows too. The robots-disallowed CKAN /api/ path is never used; the query string carries the search term, and the faceted /publications?... links are skipped.",
+      "licence_default": {
+        "verdict": "CLEAR",
+        "basis": "Open Government Licence - Alberta (open data portal) - the resources are /dataset/ resources of the same portal dataset as source ab-open; the publication pages leave the per-resource licence field empty",
+        "licence_ref": "https://open.alberta.ca/opendata/licence"
+      },
+      "stage_hint": "FEASIBILITY_CONCEPT",
+      "ca_province_hint": "AB",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 2,
+      "url_keywords": [
+        "road-safety-audit",
+        "ring-road"
+      ],
+      "max_listing_pages": 4,
+      "max_candidates": 12,
+      "max_downloads": 12,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_not_rsa": 9,
+        "m6_skipped_hash_already_present": 3,
+        "note": "The server-rendered /publications?q=\"road safety audit\" listing (3 results) was enumerated without the robots-disallowed CKAN /api/ path. All 12 resource PDFs belong to one dataset - the Northeast Edmonton Ring Road Advanced Functional Planning Study (R-1084). The study itself is a functional planning study, not a road safety audit, and the RSA classifier rejects it; its RSA appendix C and the 2004 RSA guidelines and implementation plan are already in the corpus (hash-already-present). The /dataset?q= listing is client-rendered (423 results, no server-rendered document links), so the CKAN catalogue is still not enumerable from Track A."
+      }
+    },
+    {
       "id": "bc-moti",
       "host": "www2.gov.bc.ca",
       "family": "British Columbia Ministry of Transportation and Infrastructure",

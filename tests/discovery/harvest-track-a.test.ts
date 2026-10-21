@@ -17,9 +17,11 @@ import {
   knownHashes,
   missingSideNote,
   projectKeyFor,
+  sourceEntryProblem,
   splitByProvince,
   splitFor,
   HASH_SKIP_REASON,
+  H3_BINARIES_NOTE,
   type Source,
 } from "../../scripts/harvest-track-a";
 
@@ -395,4 +397,65 @@ describe("intake when the staging file holds only duplicate sha256 values (H1 / 
       rows.map((r) => (JSON.parse(r) as { sha256: string }).sha256),
     );
   }, 60_000);
+});
+
+describe("sourceEntryProblem (a partial manifest entry must never crash the fetch)", () => {
+  const complete = {
+    id: "ab-open",
+    host: "open.alberta.ca",
+    strategy: "known-document-url",
+    known_document_urls: ["https://example.test/a.pdf"],
+    licence_default: { verdict: "CLEAR", basis: "b", licence_ref: "r" },
+  } as Source;
+
+  it("accepts a complete known-document-url entry", () => {
+    expect(sourceEntryProblem(complete)).toBe(null);
+  });
+
+  it("accepts a complete listing entry", () => {
+    expect(
+      sourceEntryProblem({
+        ...complete,
+        strategy: "html-listing-pdf",
+        listing_url: "https://example.test/list",
+      }),
+    ).toBe(null);
+  });
+
+  it("rejects an entry without an id, a host or a licence", () => {
+    expect(sourceEntryProblem({ ...complete, id: "" })).toMatch(/id/);
+    expect(sourceEntryProblem({ ...complete, host: "" })).toMatch(/host/);
+    expect(sourceEntryProblem({ ...complete, licence_default: undefined })).toMatch(/licence/);
+  });
+
+  it("rejects a known-document-url entry without known urls", () => {
+    expect(sourceEntryProblem({ ...complete, known_document_urls: [] })).toMatch(/known_document_urls/);
+  });
+
+  it("rejects a listing entry without a listing url", () => {
+    expect(
+      sourceEntryProblem({ ...complete, strategy: "sitemap-keyword", listing_url: null }),
+    ).toMatch(/listing_url/);
+  });
+
+  it("finds no invalid entry in the committed manifest", () => {
+    const manifest = JSON.parse(
+      readFileSync(path.join(process.cwd(), "docs/RSA-Documents/track-a-sources.json"), "utf8"),
+    ) as { sources: Source[] };
+    expect(manifest.sources.map((s) => sourceEntryProblem(s))).toEqual(
+      manifest.sources.map(() => null),
+    );
+  });
+});
+
+describe("the coverage report carries the H3 note (Hazard H3)", () => {
+  it("says the binaries live in the container, not in the operator's checkout", () => {
+    const md = readFileSync(
+      path.join(process.cwd(), "docs/RSA-Documents/track-a-coverage.md"),
+      "utf8",
+    );
+    expect(md).toContain(H3_BINARIES_NOTE);
+    expect(H3_BINARIES_NOTE).toMatch(/box-runner container/);
+    expect(H3_BINARIES_NOTE).toMatch(/not\*\* in the operator's checkout/);
+  });
 });
