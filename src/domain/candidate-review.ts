@@ -154,6 +154,10 @@ export function promoteCandidate(
       source_trace: [{ origin: "ai_candidate", producer: candidate.producer }],
       reviewer_status: edited ? "accepted_with_edits" : "accepted",
       reviewer_note: edits?.reviewer_note ?? null,
+      // ADR-0010 flag-and-show: a flag is never removed. The promoted finding
+      // keeps the candidate's validation annotation so the issued record still
+      // shows it (G-11 evidence binding reads it).
+      ...(candidate.validation ? { validation: { ...candidate.validation } } : {}),
     },
   };
 }

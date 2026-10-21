@@ -234,6 +234,20 @@ export interface CandidateOutcomeRow extends CandidateOutcome {
   schema_version: "1.0.0";
 }
 
+/** G-11: an attributable override of the evidence-binding gate. Present on an
+ *  issued record only when a named reviewer accepted the violations in the
+ *  frozen result; the claim is recorded, not merely implied. */
+export interface EvidenceOverride {
+  /** Named reviewer; a recorded claim (no account model exists). */
+  auditor_pseudonym: string;
+  /** One machine-readable string per covered violation. */
+  reasons: string[];
+  /** Free-text rationale. */
+  note: string | null;
+  /** ISO timestamp. */
+  overridden_at: string;
+}
+
 export interface AuditResult {
   audit_id: string;
   project_id: string;
@@ -276,6 +290,9 @@ export interface AuditResult {
   /** ADR-0006: pending AI candidates on a live-path draft. Absent on
    *  deterministic results; consumed by promotion, never rendered as findings. */
   candidate_findings?: CandidateFindingRecord[];
+  /** G-11: present only when the evidence-binding gate was overridden at
+   *  issuance; additive optional so legacy records stay valid. */
+  evidence_override?: EvidenceOverride;
 }
 
 /** ADR-0004 / DEC-0005: an immutable, numbered snapshot of an Audit's results
