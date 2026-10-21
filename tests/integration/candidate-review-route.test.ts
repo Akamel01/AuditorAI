@@ -311,11 +311,11 @@ describe("POST /audits/[auditId]/issues capability bound at issuance", () => {
     expect(after.map((i) => i.revision)).toEqual(before.map((i) => i.revision));
   });
 
-  it("refuses to issue an audit whose capability status is not in the ODD", async () => {
+  it("refuses to issue an audit whose record carries no out-of-ODD stamp", async () => {
     await seedDraft(
       draftWithCapability({
         odd_status: "mapped_unproven",
-        odd_stamp: "outside ODD v1 — validation pending",
+        odd_stamp: null,
         odd_floor_satisfied: null,
       }),
     );
@@ -323,9 +323,28 @@ describe("POST /audits/[auditId]/issues capability bound at issuance", () => {
     const res = await postIssue(req("POST"), params());
     expect(res.status).toBe(422);
     const body = (await res.json()) as { error: string };
-    expect(body.error).toMatch(/validation pending/i);
+    expect(body.error).toMatch(/stamp/i);
     expect(body.error).not.toMatch(/floor/i);
     const after = await repo.listIssues(WS, "P-1", "AUD-P-1-S1");
     expect(after.map((i) => i.revision)).toEqual(before.map((i) => i.revision));
+  });
+
+  // ADR-0005 d4: a mapped-unproven pack is a legitimate run — it is stamped
+  // "validation pending", not refused. The stamp is what denies the capability
+  // claim, so the issued record must carry it.
+  it("issues an out-of-ODD audit when the record carries the out-of-ODD stamp", async () => {
+    await seedDraft(
+      draftWithCapability({
+        odd_status: "mapped_unproven",
+        odd_stamp: "outside ODD v1 — validation pending",
+        odd_floor_satisfied: null,
+      }),
+    );
+    const res = await postIssue(req("POST"), params());
+    expect(res.status).toBe(201);
+    const { issue } = (await res.json()) as { issue: { result: AuditResult } };
+    // The issued record carries the capability status it was bounded by (AC-2).
+    expect(issue.result.odd_status).toBe("mapped_unproven");
+    expect(issue.result.odd_stamp).toBe("outside ODD v1 — validation pending");
   });
 });

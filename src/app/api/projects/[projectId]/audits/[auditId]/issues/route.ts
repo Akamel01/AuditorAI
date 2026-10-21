@@ -10,9 +10,9 @@
 // carry an ADR-0010 auto-flag, is refused unless the Auditor overrides it with
 // a named reviewer claim; the override is then visible in the issued record.
 // G-10: the capability claim is bounded here, at issuance — not only stamped in
-// the report text. A draft whose ODD cell status is not "in", or whose cell's
-// input floor is unsatisfied, is refused: the freeze is a capability claim, so
-// it may not be made outside the claim.
+// the report text. A draft whose cell's input floor is unsatisfied carries an
+// invalidated claim and is refused; a draft outside the declared ODD is issued
+// only when the record carries the out-of-ODD stamp that denies the claim.
 import { NextResponse } from "next/server";
 import { badRequest, notFound, requireWorkspace, serverError } from "@/lib/api";
 import { unreviewedCandidateLimitation } from "@/domain/candidate-review";
@@ -60,14 +60,22 @@ export async function POST(req: Request, ctx: Ctx) {
     const draft = await auth.repo.getAudit(auth.ws, projectId, auditId);
     if (!draft) return notFound("audit not found");
 
-    // ADR-0005 d5/d8: the freeze carries a capability claim, so it is bounded — a run
-    // outside the ODD cell or below its input floor cannot be issued (G-10, issue #44).
+    // ADR-0005 d4/d5: the freeze carries a capability claim, so it is bounded here, at
+    // issuance — not only annotated in the report text (G-10, issue #44).
+    //  - A claim that was invalidated (the ODD cell's input floor is not satisfied)
+    //    must not become a formal revision: refuse, loudly.
+    //  - A run outside the declared ODD is legitimate (d4: mapped-unproven packs run
+    //    and are stamped "validation pending"), so it is not refused outright; but it
+    //    may only be issued when the record carries that out-of-ODD stamp, which
+    //    denies the capability claim. A record with no capability status at all (a
+    //    draft predating ODD stamping) is not issuable either.
     // Checked first: no request content can relax the bound, so a draft that cannot
     // be issued is refused before the body is even read.
-    if (draft.odd_status !== "in" || draft.odd_floor_satisfied === false) {
-      throw new CapabilityClaimNotIssuableError(
-        draft.odd_status !== "in" ? "outside_odd" : "below_floor",
-      );
+    if (draft.odd_floor_satisfied === false) {
+      throw new CapabilityClaimNotIssuableError("below_floor");
+    }
+    if (draft.odd_status !== "in" && !draft.odd_stamp) {
+      throw new CapabilityClaimNotIssuableError("outside_odd");
     }
 
     const body = await readBody(req);

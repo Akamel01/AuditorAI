@@ -34,7 +34,7 @@ export class CapabilityClaimNotIssuableError extends Error {
   constructor(public readonly reason: CapabilityRefusalReason) {
     super(
       reason === "outside_odd"
-        ? 'cannot issue: capability status is not "in" — this audit is outside the declared ODD (validation pending)'
+        ? 'cannot issue: capability status is not "in" and the record carries no out-of-ODD stamp — re-run the audit so the record is stamped'
         : "cannot issue: input floor not satisfied — this audit is outside the cell's claim",
     );
   }
