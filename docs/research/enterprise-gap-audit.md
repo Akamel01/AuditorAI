@@ -75,7 +75,7 @@ keeps in `localStorage` (`src/lib/client.ts:10`, `src/lib/client.ts:22`); the se
 proof of tenancy (`src/lib/api.ts:59`, `src/lib/api.ts:69`). A display label for outcome logging
 exists separately (`src/lib/client.ts:12`) and is a pseudonym, not an account. The `role` strings
 in the codebase are LLM message roles and document-classification roles, never user roles
-(`src/lib/ai.ts:287`, `src/lib/eval-run.ts:180`). Issued records carry a constant actor:
+(`src/lib/ai.ts:287`, `src/lib/eval-run.ts:180`, `src/discovery/classifier.ts:24`). Issued records carry a constant actor:
 `src/lib/persistence/issue-ledger.ts:49` writes `issued_by: "auditor"`.
 
 **Note on vocabulary.** "Workspace" means three different things in this repository — the tenant-ish
@@ -116,15 +116,14 @@ Verdict: partly (below bar)
 **What the bar needs.** Isolation enforced server-side, non-bypassable, tested, and survivable
 against credential compromise.
 
-**What exists.** Every product route authenticates server-side through one helper
+**What exists.** Every workspace-scoped product route authenticates server-side through one helper
 (`src/lib/api.ts:56`), and the key's SHA-256 prefix becomes the storage namespace
 (`src/lib/persistence/store.ts:236`, `src/lib/persistence/keys.ts:5`). The failing clause is
 **server-established identity**: the credential is minted by the browser
 (`src/lib/client.ts:22`), hashed into the namespace at `src/lib/api.ts:69`, and the credential
-*is* the tenant.
-**server-established identity**: the credential *is* the tenant. It is client-supplied, minted in
-the browser, never rotated and never revoked, and it grants total access to that tenant's records
-once leaked. Namespacing is not authorisation. No cross-tenant negative test exists.
+*is* the tenant. It is client-supplied, never rotated and never revoked, and it grants total access
+to that tenant's records once leaked. Namespacing is not authorisation. No cross-tenant
+read/write isolation test exists; the only negative-tenant assertion in the suite covers restore.
 
 ```
 ABSENCE: a test proving one tenant cannot read another's records — no match for
@@ -137,7 +136,9 @@ ABSENCE: a test proving one tenant cannot read another's records — no match fo
 ```
 
 **Deployment evidence.** The live check above shows an unauthenticated `GET /api/projects` returns
-401 (`2026-10-21T11:14:14Z`), so the boundary is enforced at the edge of the deployed MVP.
+401 (`2026-10-21T11:14:14Z`). That 401 is produced by `requireWorkspace` inside the route handler
+(`src/lib/api.ts:56`); the repository has no middleware, so this is route-level enforcement, not
+edge enforcement.
 
 ---
 
@@ -166,8 +167,11 @@ store access can overwrite a key without leaving a trace.
 ABSENCE: a tamper-evident or chained audit log, and an export a firm can take away — no match for
   (audit_log|auditlog|prev_hash|hash_chain|merkle) under src/
   (search 1: `rg -ln "audit_log|auditlog|prev_hash|hash_chain|merkle" src/` → 0 hits; search 2:
-   `find src -type f -iname "*audit*"` → 0 files)
-  nearest miss: src/lib/persistence/issue-ledger.ts:80 exports issue lineage and
+   `find src -type f -iname "*audit*"` → 2 files, src/domain/audit-workspace.ts and
+   src/domain/pipeline/nodes/evidence-use-audit.ts — the per-audit working set and a pipeline node,
+   neither of which is an audit log)
+  nearest miss: src/domain/audit-workspace.ts:1 describes the "audit workspace" working set, and
+  src/lib/persistence/issue-ledger.ts:80 exports issue lineage and
   src/lib/persistence/issue-ledger.ts:98 restores it — a class-level export, exercised only by a test
   (tests/domain/retention-policy.test.ts:143) and never exposed on a product route.
 ```
@@ -250,14 +254,20 @@ other 11 carry no fixtures at all.
 
 **The scorecards.** The newest archive directory is `state/eval-scorecards/2026-09-08T01-52-05-000Z/`,
 but the scorecards inside it carry the internal `run_id` `2026-08-25T19-54-07-248Z` — **57 days
-old** against a 7-day doctrine. Reading the JSON, not the folder name, is what exposes this. The
-fixtures behind the 5 `in` cells do have archived scorecards that pass
-(`passes_corpus_mark: true`, `regression_vs_prior.regression: false`,
-`tier2_review_required: false`), so the *only* clause those cells fail is freshness.
+old** against a 7-day doctrine. Reading the JSON, not the folder name, is what exposes this. Nine
+of the eleven archived scorecards pass cleanly (`passes_corpus_mark: true`,
+`regression_vs_prior.regression: false`, `tier2_review_required: false`), so for those cells the
+*only* clause they fail is freshness. Two do not:
+`state/eval-scorecards/2026-09-08T01-52-05-000Z/GF-12.json` and
+`state/eval-scorecards/2026-09-08T01-52-05-000Z/GF-16.json` both record
+`regression_vs_prior.regression: true` and `tier2_review_required: true`, and they belong to the
+`us-fhwa:preliminary-design` and `int:preliminary-design` cells. Those two cells need a re-judge,
+not only a re-run.
 
 **Covered cells: 0 of 16.** Per jurisdiction (Canada first, then UK, US, UAE, International):
-Canada 0, UK 0, US 0, UAE 0, International 0. No cell satisfies all three clauses; 5 fail only on
-freshness, 11 fail because no fixture exists.
+Canada 0, UK 0, US 0, UAE 0, International 0. No cell satisfies all three clauses: 3 fail only on
+freshness, 2 fail on freshness and additionally on the regression and tier-2 clause, and 11 fail
+because no fixture exists.
 
 ```
 ABSENCE: scorecards for the 11 cells that are not `in` — no match for (GF-|fixture_id) under
@@ -287,8 +297,9 @@ run, with the method stated.
 definition of "audit stage" is the 13 registered pipeline nodes — `AG-PROJECT`,
 `AG-STAGE-SELECT`, `AG-MANIFEST`, `AG-RULES`, `AG-FINDINGS`, `AG-QUESTIONS`, `AG-AI-CANDIDATES`,
 `AG-HALLUCINATION-CHECK`, `AG-EVIDENCE-USE-AUDIT`, `AG-ADJUDICATION`, `AG-EVIDENCE-LINKS`,
-`AG-REPORT`, `AG-PERSIST` (`src/domain/pipeline/registry.ts:28` and the node definitions below it) —
-and none of them times itself.
+`AG-REPORT`, `AG-PERSIST` (`src/domain/pipeline/types.ts:16` lists all thirteen ids;
+`src/domain/pipeline/registry.ts:27` maps the twelve synchronous ones, with `AG-PERSIST` behind the
+persist step) — and none of them times itself.
 
 **The finding is `unmeasured`, not `slow`.** The product's performance is unknown, not bad. No
 number is reported here, and no number should be inferred.
@@ -297,9 +308,10 @@ number is reported here, and no number should be inferred.
 ABSENCE: per-audit-stage latency instrumentation — no match for
   (performance\.now|hrtime|elapsedMs|durationMs|histogram) in the audit pipeline
   (search 1: `rg -n "performance\.now|hrtime|latency|elapsedMs|durationMs|histogram" src/` → the only
-   latency hits are harvest-provider pings on the dev console
-   (src/app/dev/mission-control/_components/provider-health.tsx:18) and the admin health route
-   (src/app/api/dev/health/route.ts:24); search 2: `rg -n "Date\.now" src/lib src/domain` → the only
+   latency hits are harvest-provider pings, in three files: the dev console provider panel
+   (src/app/dev/mission-control/_components/provider-health.tsx:18), the dev console harvest
+   visualisation (src/app/dev/mission-control/_components/ai-harvest-viz.tsx:37) and the admin health
+   route (src/app/api/dev/health/route.ts:41); search 2: `rg -n "Date\.now" src/lib src/domain` → the only
    clock read is the rate-limiter window, src/lib/ratelimit.ts:52)
   nearest miss: src/app/api/dev/health/route.ts:41 measures provider ping latency — a different
   subject (corpus-provider reachability), not audit-stage latency.
@@ -321,16 +333,17 @@ verdict is the worst sub-verdict*.
 
 | Sub-question | Sub-verdict | Why |
 |---|---|---|
-| Secrets | `partly (below bar)` | Keys are held in the macOS keychain for corpus work (`src/discovery/keychain.ts:17`), the admin gate reads `ADMIN_KEY` from the environment and compares it in constant time (`src/lib/api.ts:30`, `src/lib/api.ts:52`), and the upload path is bounded (`src/lib/extract.ts:7`). But the tenant credential lives in browser `localStorage` (`src/lib/client.ts:10`), is minted client-side (`src/lib/client.ts:22`), and has no rotation, no revocation and no server-side session. |
+| Secrets | `partly (below bar)` | Keys are held in the macOS keychain for corpus work (`src/discovery/keychain.ts:17`), the admin gate reads `ADMIN_KEY` from the environment and compares it in constant time (`src/lib/api.ts:30`, `src/lib/api.ts:52`). But the tenant credential lives in browser `localStorage` (`src/lib/client.ts:10`), is minted client-side (`src/lib/client.ts:22`), and has no rotation, no revocation and no server-side session. |
 | Authz | `no` | Possession of the key is the whole authorisation model (`src/lib/api.ts:59`): there is no per-action, per-user or per-role authorisation anywhere, and issued records carry a constant actor (`src/lib/persistence/issue-ledger.ts:49`). |
-| Input validation | `partly (below bar)` | The upload path is genuinely well validated — size cap (`src/lib/extract.ts:7`, `src/lib/extract.ts:19`) and PDF magic-byte check (`src/lib/extract.ts:28`) — and policy packs are schema-validated with Ajv (`src/domain/packs.ts:138`). But request bodies on the API are hand-validated with no schema library, and one product route is unauthenticated by design (`src/app/api/inputs/[jur]/route.ts:11`). |
+| Input validation | `partly (below bar)` | The upload path is genuinely well validated — size cap (`src/lib/extract.ts:7`, `src/lib/extract.ts:19`) and PDF magic-byte check (`src/lib/extract.ts:28`) — and policy packs are schema-validated with Ajv (`src/domain/packs.ts:138`). But request bodies on the API are hand-validated with no schema library, and three product routes are unauthenticated by design (`src/app/api/inputs/[jur]/route.ts:11`, `src/app/api/jurisdictions/route.ts:6`, `src/app/api/jurisdictions/[jur]/stages/route.ts:11`). |
 | Dependency risk | `no` | Five runtime dependencies, no scanner, no update automation. |
 
 ```
-ABSENCE: dependency scanning and update automation — no match for (dependabot|audit|snyk|renovate)
-  under .github/ and package.json
-  (search 1: `ls .github/` → only `workflows`; `rg -ln "prom-client|statsd|opentelemetry|sentry|datadog" package.json src/`
-   → 0 hits; search 2: `rg -ln -i "audit" .github/workflows/` → 0 hits)
+ABSENCE: dependency scanning and update automation — no match for
+  (dependabot|renovate|snyk|npm audit) under package.json and .github/
+  (search 1: `rg -n -i "dependabot|renovate|snyk|npm audit" package.json .github/` → 0 hits; search 2:
+   `ls .github/` → only `workflows`, with no `dependabot.yml`; the six workflows are ci, ci-gates,
+   deploy, discovery-harvest, eval and opencode, none of which scans dependencies)
   nearest miss: package.json:26 pins `ajv` — a runtime dependency with no scanner behind it, and the
   only dependency a reviewer can currently inventory by reading the file.
 ```
@@ -379,9 +392,12 @@ customer-data backup, and it does not let a tenant be restored.
 ```
 ABSENCE: an incident runbook — no match for (runbook|incident) under docs/
   (search 1: `find docs -iname "*runbook*" -o -iname "*incident*"` → 0 files; search 2:
-   `rg -ln -i "on-call|escalation|postmortem" docs/` → 0 hits)
-  nearest miss: docs/deployment.md:3 documents the deploy target — how code ships, not how to respond
-  to a customer-impacting failure.
+   `rg -ln -i "on-call|escalation|postmortem" docs/ --glob '!docs/RSA-Documents/**'` → 1 file,
+   docs/architecture/discovery-architecture.md, whose line 57 is an escalation-gate heading about
+   human-in-the-loop approvals rather than an incident runbook)
+  nearest miss: docs/architecture/discovery-architecture.md:57 — an escalation-gate heading — and
+  docs/deployment.md:3, which documents the deploy target: how code ships, not how to respond to a
+  customer-impacting failure.
 ```
 
 ---
@@ -396,7 +412,7 @@ tracking, metrics, dashboards and alerting, so a team detects failures before a 
 **What exists.** The only health and readiness routes are admin-gated dev surfaces
 (`src/app/api/dev/health/route.ts:15`, `src/app/api/dev/readiness/route.ts`) and the product API
 has no health route at all. Logging is scattered `console.error` / `console.log`
-(`src/lib/api.ts:52` and elsewhere), with no structured logger.
+(`src/lib/api.ts:121` and elsewhere), with no structured logger.
 
 ```
 ABSENCE: structured logging, error tracking, metrics, dashboards and alerting for the product —
@@ -431,7 +447,8 @@ it is off by default (`src/lib/ai.ts:51`).
 ```
 ABSENCE: any residency policy, sub-processor register, region selection or per-jurisdiction
   deployment — no match for (residency|gdpr|pipeda|data residency) under src/, policies/ and docs/
-  (search 1: `rg -ln -i "residency|gdpr|pipeda|data residency|eu region" src/ policies/ docs/` → 0 hits;
+  (search 1: `rg -ln -i "residency|gdpr|pipeda|data residency|eu region" src/ policies/ docs/
+   --glob '!docs/research/enterprise-gap-audit.md'` → 0 hits;
    search 2: `find . -maxdepth 3 -type f \( -iname "*residency*" -o -iname "*sub-processor*" \)` → 0 files)
   nearest miss: docs/deployment.md:5 names the single region fact the repository has (`iad1`); it is
   a hosting detail, not a residency control.
@@ -453,7 +470,7 @@ anywhere; WCAG 2.2 AA is the defensible default for a product whose own delivera
 sector accessibility expectations. This is an assumption of this audit, not a fact about the repo.
 
 **What exists.** Product surfaces carry semantic structure and accessible names: the landing page
-(`src/app/page.tsx:262`, `src/app/page.tsx:5` aria-labels), the project list
+(`src/app/page.tsx:262`, `src/app/page.tsx:128`), the project list
 (`src/app/projects/page.tsx`), the project page (`src/app/projects/[projectId]/page.tsx:327`) and
 the audit page (`src/app/projects/[projectId]/audits/[auditId]/page.tsx:625`). The failing clause is
 **conformance evidence**: there are no automated accessibility assertions and no documented
@@ -484,7 +501,15 @@ size first. `Size`: **XS** ≤1 file, no dependency, no schema; **S** ≤3 files
 schema/migration or one new runtime dependency; **L** more than 8 files, or new infrastructure, or a
 cross-cutting change to the persistence key scheme, the auth model or the pipeline.
 
+Each entry carries its **Band** label — the ordering label the ranking rule requires, printed so a
+reviewer can check the order rather than re-derive it — followed by the six content fields: Area,
+Why now, Evidence, Acceptance sketch, Size. The three band-4 severities differ (failure detection,
+then conformance evidence, then an unmeasurable SLO), so the size tie-break is not reached inside
+band 4; within band 1 the entries are ordered by the severity of the buyer-visible risk and, where
+two severities are comparable, by the smaller size first.
+
 ### G-1 — Named-user accounts with seat counts and an actor id on every issuance
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** accounts and roles
 - **Why now:** A firm cannot buy a seat for a person who does not exist, and every record is signed
@@ -497,6 +522,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** L — a cross-cutting change to the auth model and the persistence key scheme.
 
 ### G-2 — Server-established tenant identity with rotatable, revocable credentials
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** tenant isolation
 - **Why now:** The credential is the tenant, so a leaked browser key is total access to that firm's
@@ -508,6 +534,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** L — cross-cutting: auth model plus the persistence key scheme.
 
 ### G-3 — Durable, actor-attributed, tamper-evident audit trail with a firm-facing export
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** audit trail
 - **Why now:** The destination promises an immutable audit trail tying every finding to its
@@ -518,9 +545,10 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Acceptance sketch:** the trail survives a redeploy and a rerun; each entry names a resolvable
   actor; a tamper-evident link exists between entries and a verification routine detects a
   modified record; a product route exports a firm's own history.
-- **Size:** L — new append-only store, actor identity and an export surface.
+- **Size:** L — a cross-cutting change to the persistence key scheme and the record format.
 
 ### G-4 — Scheduled tenant-store backup with a rehearsed restore and a stated RPO and RTO
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** backups and restore
 - **Why now:** The only restore path is exercised by a test. A firm asking "what happens if the
@@ -532,6 +560,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** M — one scheduled job, one drill record, one documented RPO/RTO.
 
 ### G-5 — Provisioned, rotatable and revocable secrets for tenant credentials
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** The tenant credential is generated in the browser and kept in `localStorage`, with no
@@ -544,10 +573,11 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** M — credential lifecycle plus the record that describes it.
 
 ### G-6 — Schema validation at every trust boundary, with the public surfaces enumerated
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** Only the upload path and the policy packs are schema-validated. Every other request
-  body is hand-checked, and one product route is unauthenticated by design. A buyer's review
+  body is hand-checked, and three product routes are unauthenticated by design. A buyer's review
   expects one validation story, not three exceptions.
 - **Evidence:** `src/lib/extract.ts:28`, `src/domain/packs.ts:138`, `src/app/api/inputs/[jur]/route.ts:11`
 - **Acceptance sketch:** every route that accepts a body validates it against a schema before use; a
@@ -556,6 +586,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** M — the product route set plus a schema per request shape.
 
 ### G-7 — Inventoried, pinned and scanned runtime dependencies
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** security (secrets, authz, input validation, dependency risk)
 - **Why now:** A buyer's review expects a maintained, scanned dependency set. There is no scanner
@@ -567,6 +598,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** S — one workflow, one document, no new runtime dependency.
 
 ### G-8 — Region-pinned persistence with a sub-processor register
+- **Band:** band 1 — blocks the first sale
 
 - **Area:** data residency
 - **Why now:** The only region fact in the repository is the hosting region. A Canadian firm whose
@@ -579,18 +611,22 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** S — configuration plus one register, no schema change.
 
 ### G-9 — Fresh Tier-1 evaluation coverage for every jurisdiction and stage cell
+- **Band:** band 2 — blocks a jurisdiction the map names
 
 - **Area:** evaluation harness coverage per jurisdiction and stage
 - **Why now:** Canada is the first jurisdiction to sell in, and two of its three cells have no
   fixture at all. Even the five mapped cells are covered only by a scorecard that is 57 days old
-  against a 7-day doctrine, so the harness currently certifies nothing.
+  against a 7-day doctrine, and two of them also carry a regression and a tier-2 review flag, so the
+  harness currently certifies nothing.
 - **Evidence:** `docs/validation/eval-gates.md:36`, `src/lib/eval-gates.ts:21`
 - **Acceptance sketch:** every cell the map implies has a fixture and a scorecard whose internal
-  `run_id` is within the freshness window; the check reports the internal `run_id` age rather than
-  a file timestamp; Canada cells are covered first.
+  `run_id` is within the freshness window; no covered cell carries a regression or a tier-2 review
+  flag; the check reports the internal `run_id` age rather than a file timestamp; Canada cells are
+  covered first.
 - **Size:** L — fixtures and judged runs across jurisdictions, plus a corrected freshness check.
 
 ### G-10 — Capability claims bounded at issuance, not only in the report text
+- **Band:** band 3 — blocks a claim the product makes
 
 - **Area:** the ODD gate
 - **Why now:** The product's own claim language is that claims stay inside the declared ODD. Today
@@ -603,6 +639,7 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** S — one route, one condition, one test.
 
 ### G-11 — Evidence binding enforced at issuance, not only in flight
+- **Band:** band 3 — blocks a claim the product makes
 
 - **Area:** evidence grounding
 - **Why now:** Evidence grounding is the product's core professional promise, and it is enforced
@@ -615,30 +652,20 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 - **Size:** S — one route condition plus one override record.
 
 ### G-12 — Product-reachable health and readiness, structured logs and failure alerting
+- **Band:** band 4 — operational toil
 
 - **Area:** observability
 - **Why now:** A firm paying for a seat needs to know the service is up and who to call, and the
   team needs to learn about a failing audit before the customer does. The only health surface is an
   admin-gated internal console.
-- **Evidence:** `src/app/api/dev/health/route.ts:15`, `src/lib/api.ts:52`
+- **Evidence:** `src/app/api/dev/health/route.ts:15`, `src/lib/api.ts:121`
 - **Acceptance sketch:** a product-reachable readiness endpoint reports dependency state without
   exposing tenant data; product logs are structured and carry a correlation id; an alert fires on
   a failing audit, a failing provider or a storage outage.
 - **Size:** M — one route, one logging path, one alert rule.
 
-### G-13 — Per-stage latency measurement with a recorded p50 and p95
-
-- **Area:** performance (p50/p95 per audit stage)
-- **Why now:** The map's destination includes production SLOs, and an SLO needs a measured
-  distribution. Nothing is recorded today, so the product's speed is unknown and cannot be
-  promised or defended. The gap is measurement, not speed.
-- **Evidence:** `src/domain/pipeline/registry.ts:28`
-- **Acceptance sketch:** each pipeline node records its own duration under a run id; a measurement
-  over a named run reports a p50 and a p95 per stage; the measurement covers the path a paying
-  firm would use.
-- **Size:** S — instrumentation in the pipeline runner plus one report.
-
-### G-14 — Accessibility conformance evidence against WCAG 2.2 AA
+### G-13 — Accessibility conformance evidence against WCAG 2.2 AA
+- **Band:** band 4 — operational toil
 
 - **Area:** accessibility
 - **Why now:** Public-sector road-safety clients face accessibility expectations, and the
@@ -652,6 +679,18 @@ cross-cutting change to the persistence key scheme, the auth model or the pipeli
 
 ---
 
+### G-14 — Per-stage latency measurement with a recorded p50 and p95
+- **Band:** band 4 — operational toil
+
+- **Area:** performance (p50/p95 per audit stage)
+- **Why now:** The map's destination includes production SLOs, and an SLO needs a measured
+  distribution. Nothing is recorded today, so the product's speed is unknown and cannot be
+  promised or defended. The gap is measurement, not speed.
+- **Evidence:** `src/domain/pipeline/types.ts:16`, `src/domain/pipeline/registry.ts:27`
+- **Acceptance sketch:** a measurement over a named run reports a p50 and a p95 for each of the
+  thirteen stages, with the method stated; the measured run is one a paying firm would use; the
+  figures are reproducible from a recorded run id.
+- **Size:** S — instrumentation in the pipeline runner plus one report.
 ## Operator decisions required
 
 Two questions are commercial or legal rather than engineering, so this audit states them and does
