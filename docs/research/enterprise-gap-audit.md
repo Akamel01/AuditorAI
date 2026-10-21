@@ -685,8 +685,6 @@ authz and secrets stops on those two as well, which is the band's primary test.
 - **Size:** M — an added accessibility check library, a spec and the fixes the check surfaces, inside
   the eight-file bound.
 
----
-
 ### G-14 — Per-stage latency measurement with a recorded p50 and p95
 
 - **Band:** band 4 — operational toil
