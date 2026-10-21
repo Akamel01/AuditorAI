@@ -239,6 +239,29 @@ describe("the committed report (M7 acceptance)", () => {
   });
 });
 
+describe("report labelling (M7 notes 1, 2 and 4)", () => {
+  const fresh = buildReport(inventory, manifest, coverage, unfillable);
+
+  it("counts rows, not documents, in the all-rows set", () => {
+    expect(fresh).toContain("every **row** on record");
+    expect(fresh).not.toContain("every document on record");
+  });
+
+  it("labels the coverage Have column apart from the server-side have_total", () => {
+    expect(fresh).toContain(
+      "| ODD cell | Target | Priority | Have (documents) | On disk | Fetched | Gap |",
+    );
+    expect(fresh).toContain("have_total");
+    expect(fresh).toContain("have_full_package");
+  });
+
+  it("marks the section-2 stage counts as label-reconciled", () => {
+    expect(fresh).toContain("**reconciled** label");
+    expect(fresh).toContain("inventory `unknown` → manifest `UNSTAGED`");
+    expect(fresh).toContain("inventory `planning` → manifest `FEASIBILITY_CONCEPT`");
+  });
+});
+
 describe("cross-check against the committed on-disk summary", () => {
   it("reproduces the inventory-only Canadian subset", () => {
     const summary = readJson<{

@@ -18,18 +18,20 @@ This report carries no timestamp: `npx tsx scripts/harvest-track-a-report.ts` re
 - A `BLOCKED` manifest row never counts as coverage; `RESTRICTED` rows stay in the corpus.
 
 Row sets (never mixed):
-- **|A| = 305** — every document on record: the 304 inventory rows plus the manifest rows whose sha256 is not in the inventory. Denominator of the all-rows table (3a).
+- **|A| = 305** — every **row** on record: the 304 inventory rows plus the manifest rows whose sha256 is not in the inventory. These are rows, not documents: the inventory holds repeated copies of the same sha256, so 36 of the rows are duplicate copies of another row. Denominator of the all-rows table (3a).
 - **|B| = 147** — the Canadian subset of A. Denominator of the Canadian table (3b) and of the in-scope share.
 
 ## 1. ODD coverage — inventory first, then the fetched documents
 
-| ODD cell | Target | Priority | Have | On disk | Fetched | Gap |
+| ODD cell | Target | Priority | Have (documents) | On disk | Fetched | Gap |
 |---|---|---|---|---|---|---|
 | canada:FEASIBILITY_CONCEPT | 13 | 0.9231 | 1 | 0 | 1 | 12 |
 | canada:PRELIMINARY_DESIGN | 41 | 3 | 0 | 0 | 0 | 41 |
 | canada:DETAILED_DESIGN | 41 | 3 | 1 | 1 | 0 | 40 |
 
 Targets and priorities are read from `state/odd-coverage.json`; the counts are distinct coverage-candidate documents, split by the source that supplied the label.
+
+`Have (documents)` counts the coverage-candidate **documents** of this corpus, under the rules above (a duplicate copy never carries a count). It is **not** the server-side `have_total` of `state/odd-coverage.json`, which counts ODD **packages** (`have_total` / `have_full_package`): the two counters measure different things and can disagree for the same cell.
 
 Coverage candidates:
 - `a24707c6081a279fa899064bc95dba02d1664993f3b8c7b6491654f20b74789d` — on-disk — T3 — detailed — canada:DETAILED_DESIGN
@@ -51,6 +53,8 @@ Reconciliation — shas present in both sources (counted once, attributed to the
 | PRE_OPENING | none (unmapped) | 0 | 0 |
 
 `existing`, `pre-opening` and `unknown` (and the manifest's `UNSTAGED` / `MULTI_STAGE` / `PRE_OPENING`) have no canonical cell (`policies/canada/pack.json:76-83`), so they are reported here and are never coverage.
+
+These counts use the **reconciled** label — the manifest wins for tier and stage, as in the rules above — so a row the manifest re-labels leaves its inventory stage column. Re-labelled here: `555848f63c690810661d7837b766ccb611f97ebe313a942bd413704745e947aa` (inventory `unknown` → manifest `UNSTAGED`) and `0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95` (inventory `planning` → manifest `FEASIBILITY_CONCEPT`). Those rows are counted under their reconciled label above, so the inventory's own stage counts (section 7) are higher for the stages they left.
 
 ## 3. Harvest precision
 

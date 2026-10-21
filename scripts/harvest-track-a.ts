@@ -131,10 +131,11 @@ function loadManifest(): Manifest {
 
 /**
  * Why a manifest source entry is unusable, or null when it is complete.
- * A partial entry is rejected here, so the fetch round skips it with a reason
- * instead of crashing on a missing field.
+ * A partial or missing entry is rejected here, so the fetch round skips it
+ * with a reason instead of crashing on a missing field.
  */
-export function sourceEntryProblem(source: Partial<Source>): string | null {
+export function sourceEntryProblem(source: Partial<Source> | null | undefined): string | null {
+  if (!source || typeof source !== "object") return "missing entry";
   if (!source.id) return "missing id";
   if (!source.host) return "missing host";
   if (!source.strategy) return "missing strategy";
@@ -510,7 +511,7 @@ async function runFetch(argv: string[]): Promise<void> {
   for (const source of manifest.sources) {
     const problem = sourceEntryProblem(source);
     if (problem) {
-      console.log(`skip (invalid source entry ${source.id ?? "?"}): ${problem}`);
+      console.log(`skip (invalid source entry ${source?.id ?? "?"}): ${problem}`);
       continue;
     }
     if (only && source.id !== only) continue;
@@ -925,14 +926,14 @@ function selftest(): void {
     "no source uses a robots-disallowed /api/ listing",
   );
   check(
-    new Set(manifest.sources.map((s) => s.id)).size === manifest.sources.length,
+    new Set(manifest.sources.map((s) => s?.id)).size === manifest.sources.length,
     "every source id is unique",
   );
   const invalid = manifest.sources.filter((s) => sourceEntryProblem(s) !== null);
   check(
     invalid.length === 0,
     `every source entry is complete (${
-      invalid.map((s) => `${s.id}: ${sourceEntryProblem(s)}`).join("; ") || "none invalid"
+      invalid.map((s) => `${s?.id ?? "?"}: ${sourceEntryProblem(s)}`).join("; ") || "none invalid"
     })`,
   );
   check(manifest.unfillable.length > 0, "unfillable source families are listed");

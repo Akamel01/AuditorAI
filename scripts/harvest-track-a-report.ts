@@ -187,6 +187,7 @@ export function buildReport(
   const rows = mergeRows(inventory, manifest);
   const all = rows; // row set A
   const canadian = rows.filter((row) => row.canadian); // row set B
+  const duplicates = all.filter((row) => row.duplicate).length;
   const target = (cellKey: string) => coverage.cells.find((c) => c.cell_key === cellKey);
 
   const out: string[] = [];
@@ -217,7 +218,7 @@ export function buildReport(
   out.push("");
   out.push("Row sets (never mixed):");
   out.push(
-    `- **|A| = ${all.length}** — every document on record: the ${inventory.length} inventory rows plus the manifest rows whose sha256 is not in the inventory. Denominator of the all-rows table (3a).`,
+    `- **|A| = ${all.length}** — every **row** on record: the ${inventory.length} inventory rows plus the manifest rows whose sha256 is not in the inventory. These are rows, not documents: the inventory holds repeated copies of the same sha256, so ${duplicates} of the rows are duplicate copies of another row. Denominator of the all-rows table (3a).`,
   );
   out.push(
     `- **|B| = ${canadian.length}** — the Canadian subset of A. Denominator of the Canadian table (3b) and of the in-scope share.`,
@@ -226,7 +227,7 @@ export function buildReport(
 
   out.push("## 1. ODD coverage — inventory first, then the fetched documents");
   out.push("");
-  out.push("| ODD cell | Target | Priority | Have | On disk | Fetched | Gap |");
+  out.push("| ODD cell | Target | Priority | Have (documents) | On disk | Fetched | Gap |");
   out.push("|---|---|---|---|---|---|---|");
   for (const cellKey of CANADIAN_CELLS) {
     const cellState = target(cellKey);
@@ -241,6 +242,10 @@ export function buildReport(
   out.push("");
   out.push(
     "Targets and priorities are read from `state/odd-coverage.json`; the counts are distinct coverage-candidate documents, split by the source that supplied the label.",
+  );
+  out.push("");
+  out.push(
+    "`Have (documents)` counts the coverage-candidate **documents** of this corpus, under the rules above (a duplicate copy never carries a count). It is **not** the server-side `have_total` of `state/odd-coverage.json`, which counts ODD **packages** (`have_total` / `have_full_package`): the two counters measure different things and can disagree for the same cell.",
   );
   const candidates = all.filter((row) => row.coverage_candidate);
   if (candidates.length > 0) {
@@ -276,6 +281,15 @@ export function buildReport(
   out.push("");
   out.push(
     "`existing`, `pre-opening` and `unknown` (and the manifest's `UNSTAGED` / `MULTI_STAGE` / `PRE_OPENING`) have no canonical cell (`policies/canada/pack.json:76-83`), so they are reported here and are never coverage.",
+  );
+  out.push("");
+  const relabelled = inventory.flatMap((row) => {
+    const fetched = manifest.find((m) => m.sha256 === row.sha256);
+    if (!fetched || fetched.stage === row.stage) return [];
+    return [`\`${row.sha256}\` (inventory \`${row.stage}\` → manifest \`${fetched.stage}\`)`];
+  });
+  out.push(
+    `These counts use the **reconciled** label — the manifest wins for tier and stage, as in the rules above — so a row the manifest re-labels leaves its inventory stage column. Re-labelled here: ${relabelled.length > 0 ? relabelled.join(" and ") : "none"}. Those rows are counted under their reconciled label above, so the inventory's own stage counts (section 7) are higher for the stages they left.`,
   );
   out.push("");
 

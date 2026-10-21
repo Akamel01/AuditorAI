@@ -438,6 +438,11 @@ describe("sourceEntryProblem (a partial manifest entry must never crash the fetc
     ).toMatch(/listing_url/);
   });
 
+  it("reports a missing entry instead of throwing on a null or undefined source", () => {
+    expect(sourceEntryProblem(null)).toBe("missing entry");
+    expect(sourceEntryProblem(undefined)).toBe("missing entry");
+  });
+
   it("finds no invalid entry in the committed manifest", () => {
     const manifest = JSON.parse(
       readFileSync(path.join(process.cwd(), "docs/RSA-Documents/track-a-sources.json"), "utf8"),
