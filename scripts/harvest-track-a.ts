@@ -340,6 +340,31 @@ export function splitFor(province: string, licenceVerdict: string): string {
   return licenceVerdict === "BLOCKED" ? "quarantine" : "restricted";
 }
 
+/** Splits a document may never be filed under. */
+const NON_TRAINABLE_SPLITS = new Set(["restricted", "quarantine"]);
+
+/**
+ * Province -> split map for the intake manifest. The split of a province is
+ * splitFor(province, licence verdict), so a document whose licence is not CLEAR
+ * never lands in train or test.
+ */
+export function splitByProvince(
+  records: Array<Pick<IntakeRecord, "ca_province" | "licence_verdict" | "source_url">>,
+): Record<string, { split: string; docs: string[] }> {
+  const map: Record<string, { split: string; docs: string[] }> = {};
+  for (const r of records) {
+    const key = r.ca_province;
+    const split = splitFor(key, r.licence_verdict);
+    map[key] ??= { split, docs: [] };
+    // a province that mixes verdicts keeps the most restrictive label
+    if (NON_TRAINABLE_SPLITS.has(split) && !NON_TRAINABLE_SPLITS.has(map[key].split)) {
+      map[key].split = split;
+    }
+    map[key].docs.push(r.source_url);
+  }
+  return map;
+}
+
 const STAGE_RULES: Array<[RegExp, string]> = [
   [/pre-?opening/i, "PRE_OPENING"],
   [/stage\s*3|detailed design/i, "DETAILED_DESIGN"],
@@ -592,6 +617,15 @@ function readStaging(): IntakeRecord[] {
     .map((l) => JSON.parse(l) as IntakeRecord);
 }
 
+/** The intake manifest rows on disk - the source of truth for the split map. */
+function readIntakeManifest(): IntakeRecord[] {
+  if (!existsSync(path.join(REPO, INTAKE_JSONL))) return [];
+  return readFileSync(path.join(REPO, INTAKE_JSONL), "utf8")
+    .split("\n")
+    .filter((l) => l.trim())
+    .map((l) => JSON.parse(l) as IntakeRecord);
+}
+
 function runIntake(): void {
   const records = readStaging();
   if (!records.length) {
@@ -606,6 +640,8 @@ function runIntake(): void {
     : new Set<string>();
 
   const knownPath = new Map(dedupe.map((r) => [String(r.sha256 ?? ""), String(r.path ?? "")]));
+  // the committed manifest rows, read before the fresh ones are appended
+  const existingRecords = readIntakeManifest();
   const fresh: IntakeRecord[] = [];
   const duplicates: Array<{ source_url: string; sha256: string; reason: string; existing_path: string }> = [];
   for (const r of records) {
@@ -641,33 +677,32 @@ function runIntake(): void {
     )}\n`,
   );
 
-  // 1. download log (TSV, one row per document)
-  const logLines = fresh.map((r) => TSV_COLUMNS.map((c) => String(r[c])).join("\t"));
-  if (existsSync(path.join(REPO, LOG_TSV))) {
-    writeFileSync(path.join(REPO, LOG_TSV), `${readFileSync(path.join(REPO, LOG_TSV), "utf8")}${logLines.join("\n")}\n`);
-  } else {
-    writeFileSync(
-      path.join(REPO, LOG_TSV),
-      `${TSV_COLUMNS.join("\t")}\n${logLines.join("\n")}\n`,
-    );
+  // 1. download log (TSV, one row per document). With no fresh document the
+  //    log stays byte-identical.
+  if (fresh.length) {
+    const logLines = fresh.map((r) => TSV_COLUMNS.map((c) => String(r[c])).join("\t")).join("\n");
+    if (existsSync(path.join(REPO, LOG_TSV))) {
+      writeFileSync(path.join(REPO, LOG_TSV), `${readFileSync(path.join(REPO, LOG_TSV), "utf8")}${logLines}\n`);
+    } else {
+      writeFileSync(path.join(REPO, LOG_TSV), `${TSV_COLUMNS.join("\t")}\n${logLines}\n`);
+    }
   }
 
   // 2. intake manifest (JSONL, the source of truth for the coverage table)
-  const manifestLines = fresh.map((r) => JSON.stringify(r)).join("\n");
-  writeFileSync(
-    path.join(REPO, INTAKE_JSONL),
-    existsSync(path.join(REPO, INTAKE_JSONL))
-      ? `${readFileSync(path.join(REPO, INTAKE_JSONL), "utf8")}${manifestLines}\n`
-      : `${manifestLines}\n`,
-  );
-
-  // 3. split manifest: province -> split, per document
-  const splitMap: Record<string, { split: string; docs: string[] }> = {};
-  for (const r of fresh) {
-    const key = r.ca_province;
-    splitMap[key] ??= { split: r.split, docs: [] };
-    splitMap[key].docs.push(r.source_url);
+  if (fresh.length) {
+    const manifestLines = fresh.map((r) => JSON.stringify(r)).join("\n");
+    writeFileSync(
+      path.join(REPO, INTAKE_JSONL),
+      existsSync(path.join(REPO, INTAKE_JSONL))
+        ? `${readFileSync(path.join(REPO, INTAKE_JSONL), "utf8")}${manifestLines}\n`
+        : `${manifestLines}\n`,
+    );
   }
+
+  // 3. split manifest: province -> split, per document. It is derived from the
+  //    FULL intake manifest (the committed rows plus the fresh ones), so an
+  //    intake run that ingests nothing cannot lose the committed rows.
+  const splitMap = splitByProvince([...existingRecords, ...fresh]);
   const splitDoc = {
     schema_version: "1.0.0",
     ticket: "Akamel01/AuditorAI#40",
@@ -727,12 +762,7 @@ function runIntake(): void {
 
 function runReport(): void {
   const manifest = loadManifest();
-  const records = existsSync(path.join(REPO, INTAKE_JSONL))
-    ? readFileSync(path.join(REPO, INTAKE_JSONL), "utf8")
-        .split("\n")
-        .filter((l) => l.trim())
-        .map((l) => JSON.parse(l) as IntakeRecord)
-    : [];
+  const records = readIntakeManifest();
   const coverage = readJson<{ cells: Array<{ cell_key: string; target: number; label: string; priority: number }> }>(
     ODD_COVERAGE,
   );
@@ -910,10 +940,7 @@ function selftest(): void {
 
   // tier ladder: never mint T2
   if (existsSync(path.join(REPO, INTAKE_JSONL))) {
-    const records = readFileSync(path.join(REPO, INTAKE_JSONL), "utf8")
-      .split("\n")
-      .filter((l) => l.trim())
-      .map((l) => JSON.parse(l) as IntakeRecord);
+    const records = readIntakeManifest();
     check(records.every((r) => r.tier !== "T2"), "no document is tier T2");
     check(records.every((r) => r.project_id && r.split && r.stage), "every record has project_id, split and stage");
     // no document fetched now may carry a hash the corpus already held

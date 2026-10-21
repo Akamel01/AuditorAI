@@ -1,4 +1,7 @@
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -14,6 +17,7 @@ import {
   knownHashes,
   missingSideNote,
   projectKeyFor,
+  splitByProvince,
   splitFor,
   HASH_SKIP_REASON,
   type Source,
@@ -290,4 +294,105 @@ describe("serializeDedupeIndex (the corpus index format must not drift)", () => 
     );
     expect(serializeDedupeIndex(JSON.parse(raw) as Array<Record<string, unknown>>)).toBe(raw);
   });
+});
+
+describe("splitByProvince (the split map is derived from the full manifest)", () => {
+  const records = [
+    { ca_province: "QC", licence_verdict: "CLEAR", source_url: "qc.pdf" },
+    { ca_province: "AB", licence_verdict: "CLEAR", source_url: "ab.pdf" },
+    { ca_province: "BC", licence_verdict: "CLEAR", source_url: "bc.pdf" },
+    { ca_province: "ON", licence_verdict: "CLEAR", source_url: "on.pdf" },
+    { ca_province: "MB", licence_verdict: "RESTRICTED", source_url: "mb.pdf" },
+    { ca_province: "SK", licence_verdict: "BLOCKED", source_url: "sk.pdf" },
+  ];
+
+  it("maps every province to its split and lists its documents", () => {
+    expect(splitByProvince(records)).toEqual({
+      QC: { split: "test", docs: ["qc.pdf"] },
+      AB: { split: "test", docs: ["ab.pdf"] },
+      BC: { split: "train", docs: ["bc.pdf"] },
+      ON: { split: "train", docs: ["on.pdf"] },
+      MB: { split: "restricted", docs: ["mb.pdf"] },
+      SK: { split: "quarantine", docs: ["sk.pdf"] },
+    });
+  });
+
+  it("agrees with splitFor on every province and verdict", () => {
+    for (const province of ["QC", "AB", "BC", "ON", "MB", "SK"]) {
+      for (const verdict of ["CLEAR", "RESTRICTED", "BLOCKED"]) {
+        const map = splitByProvince([{ ca_province: province, licence_verdict: verdict, source_url: "d.pdf" }]);
+        expect(map[province].split).toBe(splitFor(province, verdict));
+      }
+    }
+  });
+
+  it("never puts a non-CLEAR document under train or test", () => {
+    const map = splitByProvince(records);
+    expect(map.MB.split).not.toBe("train");
+    expect(map.MB.split).not.toBe("test");
+    expect(map.SK.split).not.toBe("train");
+    expect(map.SK.split).not.toBe("test");
+    const held = ["QC", "AB"].map((p) => map[p].split);
+    expect(held).toEqual(["test", "test"]);
+  });
+});
+
+/** The corpus files `intake` reads or writes, copied into a scratch root. */
+const INTAKE_FILES = [
+  "track-a-sources.json",
+  "canada-intake-manifest.jsonl",
+  "canadian-download-log.tsv",
+  "track-a-split.json",
+  "track-a-duplicates.json",
+  "dedupe-index.json",
+  "LICENSE-REGISTER.md",
+  "QUARANTINE.md",
+];
+
+describe("intake when the staging file holds only duplicate sha256 values (H1 / RC-3)", () => {
+  const corpusDir = path.join(process.cwd(), "docs/RSA-Documents");
+  const tsxCli = createRequire(import.meta.url).resolve("tsx/cli");
+
+  /** Copy the corpus into a scratch root and run `intake` there. */
+  function intakeWithStaging(stagingRows: string[]): string {
+    const scratch = mkdtempSync(path.join(tmpdir(), "track-a-intake-"));
+    const corpus = path.join(scratch, "docs/RSA-Documents");
+    mkdirSync(path.join(corpus, ".track-a"), { recursive: true });
+    for (const f of INTAKE_FILES) copyFileSync(path.join(corpusDir, f), path.join(corpus, f));
+    writeFileSync(path.join(corpus, ".track-a/fetched.jsonl"), `${stagingRows.join("\n")}\n`);
+    execFileSync(
+      process.execPath,
+      [tsxCli, path.join(process.cwd(), "scripts/harvest-track-a.ts"), "intake"],
+      { cwd: scratch, stdio: "pipe" },
+    );
+    return corpus;
+  }
+
+  it("leaves the committed log, manifest and split map byte-identical", () => {
+    // the three committed manifest rows: their sha256 are already in dedupe-index.json
+    const rows = readFileSync(path.join(corpusDir, "canada-intake-manifest.jsonl"), "utf8")
+      .split("\n")
+      .filter((l) => l.trim());
+    const corpus = intakeWithStaging(rows);
+
+    for (const f of ["canadian-download-log.tsv", "canada-intake-manifest.jsonl", "track-a-split.json"]) {
+      expect(readFileSync(path.join(corpus, f), "utf8")).toBe(
+        readFileSync(path.join(corpusDir, f), "utf8"),
+      );
+    }
+  }, 60_000);
+
+  it("still refreshes the duplicates register with the rows it found", () => {
+    const rows = readFileSync(path.join(corpusDir, "canada-intake-manifest.jsonl"), "utf8")
+      .split("\n")
+      .filter((l) => l.trim());
+    const corpus = intakeWithStaging(rows);
+
+    const dupes = JSON.parse(
+      readFileSync(path.join(corpus, "track-a-duplicates.json"), "utf8"),
+    ) as { duplicates: Array<{ sha256: string }> };
+    expect(dupes.duplicates.map((d) => d.sha256)).toEqual(
+      rows.map((r) => (JSON.parse(r) as { sha256: string }).sha256),
+    );
+  }, 60_000);
 });
