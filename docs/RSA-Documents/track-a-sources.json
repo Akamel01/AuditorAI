@@ -58,7 +58,7 @@
         "state": "no-new-document",
         "m6_new_documents": 0,
         "m6_skipped_hash_already_present": 1,
-        "note": "The one known CKAN resource URL is already in the corpus (Track A run 1: CLEAR, T3, FEASIBILITY_CONCEPT). The CKAN catalogue is not enumerable without the robots-disallowed /api/ path."
+        "note": "The one known CKAN resource URL is already in the corpus (Track A run 1: CLEAR, T3, FEASIBILITY_CONCEPT). The CKAN catalogue is not enumerable without the robots-disallowed /api/ path. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 1 hash-already-present document was downloaded in full and then discarded: never re-ingested, never written to disk."
       }
     },
     {
@@ -88,7 +88,7 @@
         "state": "no-new-document",
         "m6_new_documents": 0,
         "m6_skipped_hash_already_present": 2,
-        "note": "The Alberta Transportation 2004 RSA Guidelines (2004-rsa-guidelines-final-report.pdf) and RSA Implementation Plan (2004-rsa-implementation-plan-final-report.pdf) are already in the corpus (docs/RSA-Documents/canada/canadian/). Both portal pages show \"No licence\", so the verdict would have been RESTRICTED and the split \"restricted\"."
+        "note": "The Alberta Transportation 2004 RSA Guidelines (2004-rsa-guidelines-final-report.pdf) and RSA Implementation Plan (2004-rsa-implementation-plan-final-report.pdf) are already in the corpus (docs/RSA-Documents/canada/canadian/). Both portal pages show \"No licence\", so the verdict would have been RESTRICTED and the split \"restricted\". The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 2 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk."
       }
     },
     {
@@ -121,7 +121,7 @@
         "m6_new_documents": 0,
         "m6_skipped_not_rsa": 9,
         "m6_skipped_hash_already_present": 3,
-        "note": "The server-rendered /publications?q=\"road safety audit\" listing (3 results) was enumerated without the robots-disallowed CKAN /api/ path. All 12 resource PDFs belong to one dataset - the Northeast Edmonton Ring Road Advanced Functional Planning Study (R-1084). The study itself is a functional planning study, not a road safety audit, and the RSA classifier rejects it; its RSA appendix C and the 2004 RSA guidelines and implementation plan are already in the corpus (hash-already-present). The /dataset?q= listing is client-rendered (423 results, no server-rendered document links), so the CKAN catalogue is still not enumerable from Track A."
+        "note": "The server-rendered /publications?q=\"road safety audit\" listing (3 results) was enumerated without the robots-disallowed CKAN /api/ path. All 12 resource PDFs belong to one dataset - the Northeast Edmonton Ring Road Advanced Functional Planning Study (R-1084). The study itself is a functional planning study, not a road safety audit, and the RSA classifier rejects it; its RSA appendix C and the 2004 RSA guidelines and implementation plan are already in the corpus (hash-already-present). The /dataset?q= listing is client-rendered (423 results, no server-rendered document links), so the CKAN catalogue is still not enumerable from Track A. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 3 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk. 10 such skips are recorded across the committed outcome blocks (ab-open 1, ab-publications 2, ab-publications-listing 3, bc-moti 4)."
       }
     },
     {
@@ -155,7 +155,7 @@
         "m6_new_documents": 0,
         "m6_skipped_hash_already_present": 4,
         "m6_skipped_not_rsa": 34,
-        "note": "The T-02 series was enumerated from the 12 asset sitemaps (38 PDF candidates). The RSA circulars T-02/04a, T-02/04b, T-02/04c and T-02/94 are already in the corpus; the other T-02 circulars cover other subjects and the RSA classifier rejects them."
+        "note": "The T-02 series was enumerated from the 12 asset sitemaps (38 PDF candidates). The RSA circulars T-02/04a, T-02/04b, T-02/04c and T-02/94 are already in the corpus; the other T-02 circulars cover other subjects and the RSA classifier rejects them. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 4 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk."
       }
     },
     {
