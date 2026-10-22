@@ -70,6 +70,12 @@ export interface ManifestRow {
   local_path?: string;
   /** Which harvest round produced the row; round 2 rows are excluded here. */
   round?: string;
+  /** Where the stage came from: the document's text or the source's hint. */
+  stage_source?: string;
+  /** Where the tier came from: the document's text or the source's doc-type hint. */
+  tier_source?: string;
+  /** The detected language (a function-word heuristic, not a language model). */
+  lang?: string;
 }
 
 export interface SourceEntry {

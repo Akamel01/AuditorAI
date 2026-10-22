@@ -14,7 +14,7 @@
 // the source list of record is docs/RSA-Documents/track-a-sources.json.
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { extractText, getDocumentProxy } from "unpdf";
 import { withHostBudget } from "../src/discovery/ratelimit.js";
@@ -475,22 +475,40 @@ const NON_TRAINABLE_SPLITS = new Set(["restricted", "quarantine"]);
 
 /**
  * Province -> split map for the intake manifest. The split of a province is
- * splitFor(province, licence verdict), so a document whose licence is not CLEAR
- * never lands in train or test.
+ * the split of its TRAINABLE documents - the ones whose licence is CLEAR, and
+ * which therefore sit in train or test. A document that is neither train nor
+ * test (restricted, quarantine) does not decide the province's geography: a
+ * province with one CLEAR document and one restricted document is still the
+ * train/test province its geography says it is, and the restricted document is
+ * listed in `docs` but counted in neither. A province with no trainable
+ * document keeps the most restrictive label it has.
  */
 export function splitByProvince(
   records: Array<Pick<IntakeRecord, "ca_province" | "licence_verdict" | "source_url">>,
 ): Record<string, { split: string; docs: string[] }> {
   const map: Record<string, { split: string; docs: string[] }> = {};
+  const trainable = new Set<string>();
   for (const r of records) {
-    const key = r.ca_province;
-    const split = splitFor(key, r.licence_verdict);
+    const key = r.ca_province || "UNKNOWN";
+    const split = splitFor(r.ca_province, r.licence_verdict);
     map[key] ??= { split, docs: [] };
-    // a province that mixes verdicts keeps the most restrictive label
+    if (!NON_TRAINABLE_SPLITS.has(split)) trainable.add(key);
+    // a province that mixes verdicts keeps the most restrictive non-trainable
+    // label until a trainable document says otherwise
     if (NON_TRAINABLE_SPLITS.has(split) && !NON_TRAINABLE_SPLITS.has(map[key].split)) {
       map[key].split = split;
     }
     map[key].docs.push(r.source_url);
+  }
+  // A trainable document sets the province's geography; a province with none
+  // keeps the most restrictive label it has.
+  for (const [key, entry] of Object.entries(map)) {
+    if (trainable.has(key)) {
+      const first = records.find(
+        (r) => (r.ca_province || "UNKNOWN") === key && !NON_TRAINABLE_SPLITS.has(splitFor(r.ca_province, r.licence_verdict)),
+      );
+      if (first) entry.split = splitFor(first.ca_province, first.licence_verdict);
+    }
   }
   return map;
 }
@@ -639,30 +657,40 @@ export function projectKeyFor(url: string, source: Source): string {
 // ---- fetch ---------------------------------------------------------------------
 
 /**
- * The bytes the corpus already holds on this runner: the manifests' byte
- * columns plus whatever is on disk under the corpus shelves. The 5 GB cap is
- * measured against this, so the cap is cumulative over the corpus.
+ * The bytes the corpus occupies on this runner: the files on the corpus
+ * shelves, plus the manifest rows whose file is not on the shelf (a manifest
+ * row whose binary lives only in the operator's checkout).
+ *
+ * The intake manifest and the download log describe the SAME documents, so
+ * they are not added together - counting both would count every ingested
+ * document twice.
  */
 export function corpusBytes(): number {
   let total = 0;
-  for (const rel of [INTAKE_JSONL, "docs/RSA-Documents/canadian-download-log.tsv"]) {
-    const file = path.join(REPO, rel);
-    if (!existsSync(file)) continue;
-    if (rel.endsWith(".jsonl")) {
-      for (const line of readFileSync(file, "utf8").split("\n")) {
-        if (!line.trim()) continue;
-        try {
-          total += Number((JSON.parse(line) as { bytes?: number }).bytes ?? 0);
-        } catch {
-          // a malformed row must not stop the harvest
-        }
+  const onDisk = new Set<string>();
+  for (const shelf of ["canada/track-a", "quarantine/track-a"]) {
+    const dir = path.join(REPO, CORPUS_ROOT, shelf);
+    if (!existsSync(dir)) continue;
+    for (const entry of readdirSync(dir, { withFileTypes: true, recursive: true })) {
+      if (!entry.isFile()) continue;
+      const abs = path.join(entry.parentPath ?? dir, entry.name);
+      try {
+        total += statSync(abs).size;
+        onDisk.add(path.relative(REPO, abs));
+      } catch {
+        // a file that vanished mid-walk must not stop the measurement
       }
-    } else {
-      const lines = readFileSync(file, "utf8").split("\n").slice(1);
-      for (const line of lines) {
-        const cells = line.split("\t");
-        total += Number(cells[12] ?? 0);
-      }
+    }
+  }
+  // a manifest row whose binary is not on this runner still occupies corpus
+  // bytes (it lives in the operator's checkout)
+  for (const line of readFileSync(path.join(REPO, INTAKE_JSONL), "utf8").split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const row = JSON.parse(line) as { bytes?: number; local_path?: string };
+      if (row.local_path && !onDisk.has(row.local_path)) total += Number(row.bytes ?? 0);
+    } catch {
+      // a malformed row must not stop the measurement
     }
   }
   return total;
@@ -697,6 +725,12 @@ async function runFetch(argv: string[]): Promise<void> {
   const corpusBytesBefore = corpusBytes();
   let remainingBudget = Math.max(0, BYTE_CAP_BYTES - corpusBytesBefore);
   let downloadedThisRound = 0;
+  // bytes that went over the wire, including the documents the known-hash gate
+  // downloaded in full and then discarded
+  let fetchedThisRound = 0;
+  // the shelf file name -> sha256, so two documents with the same basename
+  // never overwrite each other
+  const shelfNames = new Map<string, string>();
   const skippedForCap: string[] = [];
   const logRows: string[] = [];
 
@@ -815,6 +849,7 @@ async function runFetch(argv: string[]): Promise<void> {
           continue;
         }
         bytes = buf;
+        fetchedThisRound += buf.length;
       } catch (err) {
         skip("fetch error");
         console.log(`  skip (fetch error): ${url} ${err instanceof Error ? err.message : err}`);
@@ -932,7 +967,13 @@ async function runFetch(argv: string[]): Promise<void> {
       const licence = attrs.licence;
       const split = splitFor(province, licence.verdict);
       const projectId = `PRJ-${shortHash(`${source.id}|${projectKeyFor(url, source)}`)}`;
-      const fileName = path.basename(new URL(url).pathname) || "document.pdf";
+      let fileName = path.basename(new URL(url).pathname) || "document.pdf";
+      // Two documents from different URLs can share a basename ("Download"),
+      // and the second write would overwrite the first. The name is
+      // disambiguated with the sha256 prefix so every ingested document has
+      // its own file and its own local_path.
+      const taken = shelfNames.get(`${source.id}/${fileName}`);
+      if (taken && taken !== sha) fileName = `${sha.slice(0, 8)}-${fileName}`;
       const shelf =
         licence.verdict === "BLOCKED" ? "quarantine/track-a" : "canada/track-a";
       const localRel = path.posix.join(CORPUS_ROOT, shelf, source.id, fileName);
@@ -987,6 +1028,7 @@ async function runFetch(argv: string[]): Promise<void> {
         stage_source: stage.source,
         tier_source: tier.source,
       };
+      shelfNames.set(`${source.id}/${fileName}`, sha);
       appendFileSync(path.join(REPO, staging), `${JSON.stringify(record)}\n`);
       downloaded += 1;
       logRow({
@@ -1028,6 +1070,8 @@ async function runFetch(argv: string[]): Promise<void> {
           per_document_cap_bytes: PER_DOCUMENT_CAP_BYTES,
           corpus_bytes_before: corpusBytesBefore,
           downloaded_this_round: downloadedThisRound,
+          fetched_this_round: fetchedThisRound,
+          discarded_bytes: fetchedThisRound - downloadedThisRound,
           corpus_bytes_after: corpusBytesBefore + downloadedThisRound,
           remaining_bytes: remainingBudget,
           skipped_for_cap: skippedForCap,
@@ -1056,6 +1100,53 @@ function readIntakeManifest(): IntakeRecord[] {
     .split("\n")
     .filter((l) => l.trim())
     .map((l) => JSON.parse(l) as IntakeRecord);
+}
+
+/**
+ * Recompute the round-2 byte accounting from the committed candidate log and
+ * the corpus on disk. The fetch writes the same file while it runs; this
+ * subcommand rebuilds it afterwards, so the accounting never depends on a
+ * re-fetch.
+ */
+function runAccounting(argv: string[]): void {
+  const round = Number(argv.find((a) => a.startsWith("--round="))?.slice("--round=".length) ?? 2);
+  if (round !== 2) {
+    console.error("accounting is a round-2 artefact");
+    process.exit(2);
+  }
+  const logPath = path.join(REPO, CANDIDATE_LOG_ROUND2);
+  const rows: string[][] = existsSync(logPath)
+    ? readFileSync(logPath, "utf8").split("\n").slice(1).filter((l) => l.trim()).map((l) => l.split("\t"))
+    : [];
+  // bytes that went over the wire: every candidate that answered with a body
+  const fetched = rows.reduce((sum, c) => sum + Number(c[4] ?? 0), 0);
+  // bytes written to the corpus: the ingested documents
+  const written = rows
+    .filter((c) => c[6] === "ingested")
+    .reduce((sum, c) => sum + Number(c[4] ?? 0), 0);
+  const corpusBytesAfter = corpusBytes();
+  writeFileSync(
+    path.join(REPO, BYTES_JSON_ROUND2),
+    `${JSON.stringify(
+      {
+        schema_version: "1.0.0",
+        ticket: "Akamel01/AuditorAI#60",
+        note: "The 5 GB cap is cumulative over the corpus on the runner, not per round; a single document may not exceed 100 MiB. Both limits are enforced before any byte is written to disk. corpus_bytes_before is the corpus without this round's documents; fetched_this_round is what went over the wire, including the documents the known-hash gate downloaded in full and then discarded; downloaded_this_round is what was written to the corpus shelf.",
+        cap_bytes: BYTE_CAP_BYTES,
+        per_document_cap_bytes: PER_DOCUMENT_CAP_BYTES,
+        corpus_bytes_before: corpusBytesAfter - written,
+        fetched_this_round: fetched,
+        downloaded_this_round: written,
+        discarded_bytes: fetched - written,
+        corpus_bytes_after: corpusBytesAfter,
+        remaining_bytes: BYTE_CAP_BYTES - corpusBytesAfter,
+        skipped_for_cap: rows.filter((c) => c[7] === "byte-cap").map((c) => c[2]),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  console.log(`wrote ${BYTES_JSON_ROUND2}`);
 }
 
 function runIntake(argv: string[]): void {
@@ -1462,8 +1553,15 @@ function selftest(): void {
     const records = readIntakeManifest();
     check(records.every((r) => r.tier !== "T2"), "no document is tier T2");
     check(records.every((r) => r.project_id && r.split && r.stage), "every record has project_id, split and stage");
-    // no document fetched now may carry a hash the corpus already held
-    const stray = records.filter((r) => known.has(r.sha256) && !LEGACY_SHA256.includes(r.sha256));
+    // No document fetched now may carry a hash the corpus already held. The
+    // dedupe index is written by intake, so it now holds this manifest's own
+    // shas; the set of shas the corpus held BEFORE this manifest is what the
+    // check is about.
+    const manifestShas = new Set(records.map((r) => r.sha256));
+    const preExisting = new Set([...known].filter((sha) => !manifestShas.has(sha)));
+    const stray = records.filter(
+      (r) => preExisting.has(r.sha256) && !LEGACY_SHA256.includes(r.sha256),
+    );
     check(
       stray.length === 0,
       `no manifest row carries a hash the corpus already held (${stray.length} stray)`,
@@ -1491,6 +1589,7 @@ async function main(): Promise<void> {
   const rest = process.argv.slice(3);
   if (cmd === "fetch") await runFetch(rest);
   else if (cmd === "intake") runIntake(rest);
+  else if (cmd === "accounting") runAccounting(rest);
   else if (cmd === "report") runReport(rest);
   else if (cmd === "selftest") selftest();
   else {

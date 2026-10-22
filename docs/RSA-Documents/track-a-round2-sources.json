@@ -2,18 +2,19 @@
   "schema_version": "1.0.0",
   "source_of_record": "GH:Akamel01/AuditorAI#60",
   "plan": "docs/RSA-Documents/HARVESTING_PLAN.md §3 (ODD matrix and priority cells), §5 (Track A access paths), §7 (split). The plan lives in the operator checkout (/Users/akamel/Documents/AuditorAI) and is read-only; docs/RSA-Documents/track-a-sources.json remains the Track A source list of record and this file is the round-2 list of record.",
-  "note": "Round 2 is Track A with a wider net: the same rules (public, free, no-login, robots-permitted, <=1 req/s per host), a different discovery channel. Every source here is a SEARCH source: the discovery channel is agent-reach's zero-config Jina Reader channel over a search engine (agent-reach's Exa branch needs keys that are not provisioned, so it is unavailable - recorded in the round-2 report). Because a search returns candidates from many hosts, `host` below names the DISCOVERY host, while the licence and the province of each candidate are resolved per candidate from `host_licences` and `province_hints`.",
+  "note": "Round 2 is Track A with a wider net: the same rules (public, free, no-login, robots-permitted, <=1 req/s per host), a different discovery channel. TWO channels are used and the committed candidate list records which one found each URL. (1) enumeration: the repo's own robots-checked listing strategies, run by scripts/harvest-round2-discover.ts - fully repeatable. (2) operator-discovery-pass: the candidate URLs were located in the operator's discovery pass, which used agent-reach's documented Jina Reader channel over a search engine. That channel is NOT usable by the committed pipeline: r.jina.ai's robots.txt allows only named AI user-agents (Claude-User, ChatGPT-User, ...) and disallows User-agent: *, and the harvest UA (AuditorAI-RSA-Harvest/1.0) is neutral and matches none of them. Every candidate is fetched by the harvester from its ORIGIN host under the robots, rate, hash and licence gates either way. NOTE on the `host` field: it is the host the source TALKS TO during discovery, not the host the documents live on. A search source talks to one search host and finds documents on many others; the licence and the province of each candidate are resolved from the candidate's own host (host_licences / province_hints below), which is why the `host` field here is the discovery host.",
   "user_agent": "AuditorAI-RSA-Harvest/1.0 (+public documents only)",
   "discovery": {
-    "channel": "agent-reach/jina-reader",
-    "engine": "duckduckgo-html",
-    "engine_url_template": "https://r.jina.ai/https://html.duckduckgo.com/html/?q={query}",
+    "channel": "enumeration (repeatable) + operator-discovery-pass (not repeatable by the committed pipeline)",
+    "engine": "duckduckgo-html, read through r.jina.ai during the operator's discovery pass only",
+    "engine_url_template": "https://r.jina.ai/https://html.duckduckgo.com/html/?q={query}  (operator discovery pass only; NOT usable by the committed pipeline - r.jina.ai's robots.txt disallows User-agent: *)",
     "agent_reach_reference": "/home/oc/.agents/skills/agent-reach/SKILL.md (零配置快速命令 -> 通用网页阅读), references/web.md",
     "unavailable_channels": [
       "agent-reach Exa via mcporter (mcporter not installed, EXA_API_KEY absent)",
       "agent-reach doctor --json (the agent-reach binary is not installed)",
       "direct scraping of html.duckduckgo.com / lite.duckduckgo.com (anti-bot challenge), mojeek (403), search.brave.com (429), searx.be (browser verification), bing (JS-wrapped markup)",
-      "s.jina.ai Jina Search API (401 without a key)"
+      "s.jina.ai Jina Search API (401 without a key)",
+      "the committed pipeline cannot use the discovery pass's own channel: r.jina.ai's robots.txt allows only named AI user-agents, and the neutral harvest UA matches none of them"
     ],
     "politeness": {
       "min_interval_ms": 1000,
@@ -95,7 +96,8 @@
         "channel": "operator-discovery-pass",
         "strategy": null,
         "listing_url": null
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-ea-study",
@@ -127,7 +129,8 @@
         "channel": "operator-discovery-pass",
         "strategy": null,
         "listing_url": null
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-university",
@@ -162,7 +165,8 @@
         "channel": "operator-discovery-pass",
         "strategy": null,
         "listing_url": null
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-conference",
@@ -193,7 +197,8 @@
         "channel": "operator-discovery-pass",
         "strategy": null,
         "listing_url": null
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-ministry",
@@ -236,7 +241,8 @@
         ],
         "max_listing_pages": 12,
         "max_candidates": 40
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-opendata",
@@ -273,7 +279,8 @@
         ],
         "max_listing_pages": 6,
         "max_candidates": 12
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     },
     {
       "id": "r2-direct",
@@ -301,7 +308,8 @@
         "channel": "operator-discovery-pass",
         "strategy": null,
         "listing_url": null
-      }
+      },
+      "host_note": "the DISCOVERY host, not the host the documents live on; a candidate's own host decides its licence and its province"
     }
   ],
   "host_licences": {

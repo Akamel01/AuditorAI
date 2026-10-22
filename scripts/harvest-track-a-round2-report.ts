@@ -275,25 +275,26 @@ export function buildRound2Report(inputs: {
   // The near misses: Canadian T3/T4 documents that were ingested but did not
   // become coverage candidates. They say where the bottleneck is.
   const round2Shas = new Set(manifest.filter((r) => (r as { round?: string }).round === "2").map((r) => r.sha256));
-  const nearMisses = rowsAll.filter(
+  const t3Round2 = rowsAll.filter(
     (row) => round2Shas.has(row.sha256) && (row.tier === "T3" || row.tier === "T4") && !row.coverage_candidate,
   );
+  const nearMisses = t3Round2.filter((row) => row.canadian);
+  const notCanadian = t3Round2.length - nearMisses.length;
   out.push("### Near misses — Canadian T3/T4 documents that did not become coverage");
   out.push("");
+  out.push(
+    `A Canadian document is fetched and classified T3/T4 but still misses a cell. These are the documents a different stage vocabulary would unlock, so the reason is stated for each: it says where the bottleneck is — the search, the classifier, the stage vocabulary or the licence. (${notCanadian} further T3/T4 document(s) round 2 ingested were **not Canadian** and are counted as out-of-scope in the funnel, not here.)`,
+  );
+  out.push("");
   if (!nearMisses.length) {
-    out.push("None: every T3/T4 document round 2 ingested is a coverage candidate.");
+    out.push("None: every Canadian T3/T4 document round 2 ingested is a coverage candidate.");
   } else {
-    out.push(
-      "A document is fetched and classified T3/T4 but still misses a cell. The reason is stated for each, because it says where the bottleneck is — the search, the classifier, the stage vocabulary or the licence.",
-    );
-    out.push("");
     out.push("| document | tier | stage | province | why it is not coverage |");
     out.push("|---|---|---|---|---|");
     for (const row of nearMisses) {
       const m = manifest.find((r) => r.sha256 === row.sha256);
-      const why = !row.canadian
-        ? `not Canadian (province \`${row.jurisdiction || "unknown"}\`)`
-        : row.cell === null
+      const why =
+        row.cell === null
           ? `stage \`${row.stage}\` maps to no canonical cell`
           : row.licence !== "CLEAR"
             ? `licence \`${row.licence}\` — counted, not usable`
@@ -397,6 +398,40 @@ export function buildRound2Report(inputs: {
   for (const [reason, count] of Object.entries(skips).sort()) out.push(`| ${reason} | ${count} |`);
   out.push("");
 
+  // ---- section 2d: provenance and language ---------------------------------
+  const round2Rows = manifest.filter((r) => (r as { round?: string }).round === "2");
+  out.push("### 2d — where the tier and the stage came from, and the language split");
+  out.push("");
+  out.push(
+    "A stage or a tier that falls back to a source hint is weaker evidence than one read out of the document, so the two are counted separately (the manifest carries `stage_source` and `tier_source` per row).",
+  );
+  out.push("");
+  out.push("| provenance | stage | tier |");
+  out.push("|---|---|---|");
+  for (const [stageSource, tierSource] of [
+    ["text", "text"],
+    ["text", "doc_type_hint"],
+    ["hint", "text"],
+    ["hint", "doc_type_hint"],
+  ]) {
+    const n = round2Rows.filter(
+      (r) => (r as { stage_source?: string }).stage_source === stageSource && (r as { tier_source?: string }).tier_source === tierSource,
+    ).length;
+    out.push(`| stage \`${stageSource}\` | tier \`${tierSource}\` | ${n} |`);
+  }
+  out.push("");
+  const languages = tally(round2Rows, (r) => (r as { lang?: string }).lang ?? "unknown");
+  out.push("Language of the round-2 documents:");
+  out.push("");
+  out.push("| language | documents |");
+  out.push("|---|---|");
+  for (const [lang, count] of Object.entries(languages).sort()) out.push(`| \`${lang}\` | ${count} |`);
+  out.push("");
+  out.push(
+    "The language split is a **heuristic**, not a language model: `detectLang` counts English and French function words in the extracted text, so a short document can be mislabelled and a document with a French title and an English body is counted as English. No claim about French-language coverage rests on this alone.",
+  );
+  out.push("");
+
   // ---- section 3: AC3 source yield --------------------------------------------------
   out.push("## 3. AC3 — Source yield");
   out.push("");
@@ -455,13 +490,28 @@ export function buildRound2Report(inputs: {
   out.push("");
   out.push("| family | host | why still unfillable (mechanism) | how it was verified this round | cells affected | Track B (ATIP) ask: province + stage + document type + issuing body |");
   out.push("|---|---|---|---|---|---|");
+  // How each family was verified this round, derived from the candidate log:
+  // a claim about what was examined must be backed by a row in the log.
+  const seenFor = (pattern: RegExp): number =>
+    candidateLog.filter((row) => pattern.test(row.url)).length;
+  const ingestedFor = (pattern: RegExp): number =>
+    candidateLog.filter((row) => pattern.test(row.url) && row.decision === "ingested").length;
+  const familyCheck = (
+    pattern: RegExp,
+    hosts: string,
+    outcome: string,
+  ): string => {
+    const seen = seenFor(pattern);
+    const got = ingestedFor(pattern);
+    return `re-attempted: ${seen} candidate(s) on ${hosts} were examined this round and ${got} were ingested — ${outcome}`;
+  };
   const verification: Record<string, string> = {
     "Quebec provincial (Ville de Quebec / Quebec government)":
-      "re-attempted: `bv.transports.gouv.qc.ca/mono/` (the ministry's own document library) answered and was harvested as part of r2-ministry; `www.quebec.ca` still answers 403 to a neutral UA",
+      familyCheck(/transports\.gouv\.qc\.ca/, "the ministry's document library", "the library is reachable and was harvested; `www.quebec.ca` itself still answers 403 to a neutral UA"),
     "Ottawa (open data portal)":
-      "re-attempted: the portal is still a JS-only single page application with a 404 robots.txt, but Ottawa documents were reached through `documents.ottawa.ca` (r2-municipal) and four Ottawa council documents were fetched",
+      familyCheck(/documents\.ottawa\.ca/, "the City's document host", "the portal is still a JS-only single page application, but the City's document host served the council documents directly"),
     "Ottawa (eSCRIBE meeting documents)":
-      "re-attempted: the meeting list is still a JS bundle with no server-rendered index; the Granicus and eSCRIBE candidates in the round-2 list were fetched and their robots decisions recorded",
+      `re-attempted: ${seenFor(/escribemeetings/)} candidate(s) on an eSCRIBE host were examined this round — the meeting list is a JS bundle with no server-rendered index, and the round found no document URL there`,
     "Manitoba open data portal":
       "not re-attempted: `data.gov.mb.ca` is a retired portal (DNS NXDOMAIN) and Manitoba is a candidate held-out geography, so it is left to the split rule",
     "Manitoba government":
@@ -469,19 +519,19 @@ export function buildRound2Report(inputs: {
     "Saskatchewan open data":
       "not re-attempted: the portal is retired (DNS NXDOMAIN) and no replacement index is published",
     "Saskatchewan government":
-      "re-attempted: the ministry and open-data paths were queried; no document index is published and no RSA document was reachable",
+      `re-attempted: ${seenFor(/saskatchewan\.ca/)} candidate(s) on a Saskatchewan host were examined this round — the ministry publishes no document index, and no RSA document was reachable`,
     "MRDC / MUNIAC (University of Manitoba transportation research)":
       "not re-attempted: the host does not resolve (DNS NXDOMAIN) and the entity appears nowhere in the corpus",
     "Prince Edward Island, Newfoundland and Labrador, and the territories":
-      "re-attempted: no provincial index for PE, NL, YT, NWT or NU was reachable; the search channel returned no candidate from those hosts",
+      `re-attempted: ${seenFor(/\.ca\//)} Canadian candidate(s) were examined this round and none came from a PE, NL, YT, NWT or NU host — no provincial index for those jurisdictions is reachable`,
     "Pre-opening stage audits (all provinces)":
-      "re-attempted: one pre-opening RSA was found and fetched (`waitemata-greenways-pre-opening-road-safety-audit.pdf`, New Zealand — out of scope) and one Canadian pre-opening document was ingested, but `ca-tac:pre-opening` has no canonical stage, so neither can enter a cell. This is a structural gap, not a search failure",
+      `re-attempted: ${seenFor(/pre-opening|pre_opening/)} candidate(s) name a pre-opening audit and ${ingestedFor(/pre-opening|pre_opening/)} were ingested, but \`ca-tac:pre-opening\` has no canonical stage, so none can enter a cell. This is a structural gap, not a search failure`,
     "Montreal open data (Ville de Montreal)":
-      "re-attempted: the CKAN API is still robots-disallowed and the catalogue is still client-rendered; the open-data enumeration over `open.alberta.ca` was tried and the Montreal candidates were still reached by URL",
+      `re-attempted: ${seenFor(/montreal/)} candidate(s) on a Montreal host were examined this round — the CKAN API is robots-disallowed and the catalogue is client-rendered, so no Montreal document was reachable`,
     "City of Toronto":
-      "re-attempted: the sitemap index still covers only the WordPress tree and the agenda service still answers 403; no Toronto candidate was reachable",
+      `re-attempted: ${seenFor(/toronto\.ca/)} candidate(s) on a Toronto host were examined this round — the sitemap index covers only the WordPress tree and the agenda service answers 403, so no Toronto document was reachable`,
     "UNB Transportation Group / MRDC":
-      "re-attempted: `unb.ca` answered this round (two UNB documents were fetched, one of them a hash skip) — the earlier \"temporarily unavailable\" page was transient",
+      familyCheck(/unb\.ca/, "the University's host", "the host answered this round (the earlier \"temporarily unavailable\" page was transient) and two UNB documents were fetched, one of them a hash skip"),
   };
   for (const family of sources.unfillable) {
     const cells = CANADIAN_CELLS.map((key) => {
@@ -534,7 +584,10 @@ export function buildRound2Report(inputs: {
   out.push("- It did not use a model for triage: the free-model pool does not resolve from the runner.");
   out.push("- It did not harvest Manitoba, and it did not change the split rule: the code holds QC + AB as the test geography, and Manitoba is left to the split rule.");
   out.push(
-    "- It did not extend the English stage vocabulary. Two Canadian T3 documents (the OC Transpo `Transitway Station Design Safety Audit` and the UNB conference paper) name no stage word the classifier recognises, so they land in `UNSTAGED` / `PRE_OPENING` and never reach a cell. The stage vocabulary — not the search — is the bottleneck for those documents. Mapping `Station Design Safety Audit` to a stage is ambiguous between preliminary and detailed design, and changing the rule set would invalidate the before/after comparison of this report, so it belongs in its own ticket.",
+    "- It did not extend the **English** stage vocabulary. Two Canadian T3 documents (the OC Transpo `Transitway Station Design Safety Audit` and the UNB conference paper) name no stage word the classifier recognises, so they land in `UNSTAGED` / `PRE_OPENING` and never reach a cell. The stage vocabulary — not the search — is the bottleneck for those documents. Mapping `Station Design Safety Audit` to a stage is ambiguous between preliminary and detailed design, and changing the rule set would invalidate the before/after comparison of this report, so it belongs in its own ticket.",
+  );
+  out.push(
+    "- It **did** extend the **French** stage vocabulary, and this is disclosed because it is a rule change: `STAGE_RULES` now matches `préliminaire`, `détaillé`, `avant ouverture`, `en service`, `planification` and `étude de faisabilité`. Without it a French RSA falls back to the source hint (`UNSTAGED`) and silently vanishes from the corpus. The change affects only documents whose text is French, and it left the committed round-1 report byte-identical — the round-1 rows are English and their stages are unchanged (verified: `git diff --exit-code -- docs/RSA-Documents/track-a-harvest-report.md`).",
   );
   out.push("");
   out.push(

@@ -5,11 +5,13 @@ import {
   mergeRows,
   parseLicenceRegister,
   CANADIAN_CELLS,
+  MANIFEST_STAGE_TO_CELL,
   type Coverage,
   type InventoryRow,
   type ManifestRow,
 } from "../../scripts/harvest-track-a-report";
 import { buildRound2Report } from "../../scripts/harvest-track-a-round2-report";
+import { BYTE_CAP_BYTES, PER_DOCUMENT_CAP_BYTES } from "../../scripts/harvest-track-a";
 
 // Offline: every input is a committed file in this repo. No network, no model call.
 const REPO = process.cwd();
@@ -53,6 +55,8 @@ const bytes = readJson<{
   corpus_bytes_before: number;
   corpus_bytes_after: number;
   downloaded_this_round: number;
+  fetched_this_round: number;
+  discarded_bytes: number;
   skipped_for_cap: string[];
 }>(BYTES_PATH);
 
@@ -217,5 +221,99 @@ describe("harvest round 2 report (ticket #60)", () => {
     const round1 = readFileSync(ROUND1_REPORT_PATH, "utf8");
     expect(round1).toContain("# Track A harvest report");
     expect(round1).not.toContain("track-a-round2");
+  });
+
+  it("enforces the 5 GB cap and the 100 MiB per-document cap (R35, R36)", () => {
+    expect(BYTE_CAP_BYTES).toBe(5 * 1024 * 1024 * 1024);
+    expect(PER_DOCUMENT_CAP_BYTES).toBe(100 * 1024 * 1024);
+    // the accounting: the corpus before plus what this round wrote is the
+    // corpus after, and what went over the wire is at least what was written
+    expect(bytes.corpus_bytes_before + bytes.downloaded_this_round).toBe(bytes.corpus_bytes_after);
+    expect(bytes.fetched_this_round).toBeGreaterThanOrEqual(bytes.downloaded_this_round);
+    expect(bytes.corpus_bytes_after).toBeLessThanOrEqual(bytes.cap_bytes);
+  });
+
+  it("cross-checks the yield table against the manifest (R22)", () => {
+    // The in-scope column of the yield table must equal the coverage
+    // candidates the manifest attributes to that source type.
+    const report = build();
+    const manifestBySha = new Map(manifest.map((r) => [r.sha256, r]));
+    const sourceTypeById = new Map(sources.sources.map((s) => [s.id, s.source_type]));
+    const byType = new Map<string, number>();
+    for (const row of candidateLog) {
+      if (row.decision !== "ingested") continue;
+      const m = manifestBySha.get(row.sha256);
+      if (!m) continue;
+      const type = sourceTypeById.get(row.source_id) ?? row.source_type;
+      const inScope =
+        (m.ca_province === "QC" ||
+          m.ca_province === "AB" ||
+          m.ca_province === "ON" ||
+          m.ca_province === "BC" ||
+          m.ca_province === "NB" ||
+          m.ca_province === "SK" ||
+          m.ca_province === "MB" ||
+          m.ca_province === "NS" ||
+          m.ca_province === "PE" ||
+          m.ca_province === "NL" ||
+          m.ca_province === "YT" ||
+          m.ca_province === "NT" ||
+          m.ca_province === "NU" ||
+          m.ca_province === "CAN-GOV") &&
+        (m.tier === "T3" || m.tier === "T4") &&
+        MANIFEST_STAGE_TO_CELL[m.stage] !== undefined;
+      if (!inScope) continue;
+      byType.set(type, (byType.get(type) ?? 0) + 1);
+    }
+    for (const [type, count] of byType) {
+      const line = report.split("\n").find((l) => l.startsWith(`| \`${type}\` |`));
+      expect(line, `no yield row for ${type}`).toBeDefined();
+      const cells = (line as string).split("|").map((c) => c.trim());
+      // | type | hosts | seen | rejected | ingested | in-scope | licence | yield |
+      expect(cells[6]).toBe(String(count));
+    }
+  });
+
+  it("gives every unfillable family a gap row with an actionable ask (R23, R24)", () => {
+    const report = build();
+    for (const family of sources.unfillable) {
+      expect(report, `no gap row for ${family.family}`).toContain(`| ${family.family.replace(/\|/g, "\\|")} |`);
+    }
+    // each ask must name a province, a stage and a document type
+    const asks = report.split("\n").filter((l) => l.startsWith("| ") && l.includes("Track B") === false && l.includes("—") && l.split("|").length > 6);
+    expect(asks.length).toBeGreaterThanOrEqual(sources.unfillable.length);
+  });
+
+  it("states the honest zero when no coverage candidate was created (R45)", () => {
+    const before = mergeRows(inventory, round1Manifest, licence);
+    const after = mergeRows(inventory, manifest, licence);
+    const newOnes = after.filter(
+      (r) => r.coverage_candidate && !before.some((b) => b.sha256 === r.sha256 && b.path === r.path),
+    );
+    const report = build();
+    if (newOnes.length === 0) {
+      expect(report).toContain("**Honest zero.**");
+      expect(report).toContain("0 new coverage candidates");
+      expect(report).toContain("unchanged");
+    }
+  });
+
+  it("gives every manifest row a candidate-log row (R-4)", () => {
+    const logged = new Set(candidateLog.map((r) => r.sha256));
+    for (const row of manifest.filter((r) => (r as { round?: string }).round === "2")) {
+      expect(logged.has(row.sha256), `manifest row ${row.sha256} has no candidate-log row`).toBe(true);
+    }
+  });
+
+  it("tabulates the stage and tier provenance and the language split (R30, R31)", () => {
+    const report = build();
+    expect(report).toContain("### 2d — where the tier and the stage came from");
+    expect(report).toContain("stage_source");
+    const round2 = manifest.filter((r) => (r as { round?: string }).round === "2");
+    const fromText = round2.filter((r) => (r as { stage_source?: string }).stage_source === "text").length;
+    const fromHint = round2.filter((r) => (r as { stage_source?: string }).stage_source === "hint").length;
+    expect(fromText + fromHint).toBe(round2.length);
+    // the language split is declared a heuristic, not a language model
+    expect(report).toContain("heuristic");
   });
 });

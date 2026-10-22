@@ -9,7 +9,7 @@
   "rule": "test = QC + held-out prairie province (AB); train = every other province; licence verdict != CLEAR never enters train or test",
   "by_province": {
     "AB": {
-      "split": "restricted",
+      "split": "test",
       "docs": [
         "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
         "http://conf.tac-atc.ca/english/resourcecentre/readingroom/conference/conf2005/docs/s16/kenny.pdf"
@@ -32,7 +32,7 @@
         "https://www.niagararegion.ca/media/grcbeqke/appendix-h.pdf"
       ]
     },
-    "": {
+    "UNKNOWN": {
       "split": "restricted",
       "docs": [
         "https://at.govt.nz/media/1976251/waitemata-greenways-pre-opening-road-safety-audit.pdf",
