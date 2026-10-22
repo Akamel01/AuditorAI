@@ -304,6 +304,15 @@ export default function AuditPage() {
             </Button>
           </div>
 
+          {/* G-10: a refused issuance must be visible. The refusal (e.g. an
+              invalidated capability claim) otherwise leaves the dialog closed
+              and nothing on screen — a silent failure. */}
+          {error && (
+            <div className="mt-3 max-w-[520px]" data-testid="issue-error">
+              <InlineNotice>{error}</InlineNotice>
+            </div>
+          )}
+
           {issues.length > 0 && (
             <div className="mt-4" data-testid="issue-lineage">
               <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">

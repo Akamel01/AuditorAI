@@ -99,6 +99,18 @@ async function seed() {
   await repo.saveAudit(WS, draftWithCandidates());
 }
 
+async function seedDraft(draft: AuditResult) {
+  await repo.saveAudit(WS, draft);
+}
+
+function draftWithCapability(over: {
+  odd_status: "in" | "mapped_unproven";
+  odd_stamp?: string | null;
+  odd_floor_satisfied: boolean | null;
+}): AuditResult {
+  return { ...draftWithCandidates(), ...over };
+}
+
 function params() {
   return { params: Promise.resolve({ projectId: "P-1", auditId: "AUD-P-1-S1" }) };
 }
@@ -257,6 +269,10 @@ describe("POST /audits/[auditId]/issues over unreviewed candidates", () => {
     expect(issue.result.limitations.some((l) => l.startsWith("2 AI-generated candidate findings were not reviewed"))).toBe(true);
     // Frozen snapshot excludes pending candidates themselves (never report members).
     expect(issue.result.candidate_findings).toBeUndefined();
+    // The issued record carries the capability status it was bounded by (AC-6).
+    expect(issue.result.odd_status).toBe("in");
+    expect(issue.result.odd_stamp).toBeNull();
+    expect(issue.result.odd_floor_satisfied).toBeNull();
 
     const draft = await repo.getAudit(WS, "P-1", "AUD-P-1-S1");
     expect(draft?.limitations).toHaveLength(0);
@@ -277,5 +293,58 @@ describe("POST /audits/[auditId]/issues over unreviewed candidates", () => {
     const res = await postIssue(req("POST"), params());
     const { issue } = (await res.json()) as { issue: { result: AuditResult } };
     expect(issue.result.limitations).toHaveLength(0);
+  });
+});
+
+describe("POST /audits/[auditId]/issues capability bound at issuance", () => {
+  it("refuses to issue an audit below the ODD input floor", async () => {
+    await seedDraft(
+      draftWithCapability({ odd_status: "in", odd_floor_satisfied: false }),
+    );
+    const before = await repo.listIssues(WS, "P-1", "AUD-P-1-S1");
+    const res = await postIssue(req("POST"), params());
+    expect(res.status).toBe(422);
+    const body = (await res.json()) as { error: string };
+    expect(body.error).toMatch(/floor/i);
+    expect(body.error).not.toMatch(/validation pending/i);
+    const after = await repo.listIssues(WS, "P-1", "AUD-P-1-S1");
+    expect(after.map((i) => i.revision)).toEqual(before.map((i) => i.revision));
+  });
+
+  it("refuses to issue an audit whose record carries no out-of-ODD stamp", async () => {
+    await seedDraft(
+      draftWithCapability({
+        odd_status: "mapped_unproven",
+        odd_stamp: null,
+        odd_floor_satisfied: null,
+      }),
+    );
+    const before = await repo.listIssues(WS, "P-1", "AUD-P-1-S1");
+    const res = await postIssue(req("POST"), params());
+    expect(res.status).toBe(422);
+    const body = (await res.json()) as { error: string };
+    expect(body.error).toMatch(/stamp/i);
+    expect(body.error).not.toMatch(/floor/i);
+    const after = await repo.listIssues(WS, "P-1", "AUD-P-1-S1");
+    expect(after.map((i) => i.revision)).toEqual(before.map((i) => i.revision));
+  });
+
+  // ADR-0005 d4: a mapped-unproven pack is a legitimate run — it is stamped
+  // "validation pending", not refused. The stamp is what denies the capability
+  // claim, so the issued record must carry it.
+  it("issues an out-of-ODD audit when the record carries the out-of-ODD stamp", async () => {
+    await seedDraft(
+      draftWithCapability({
+        odd_status: "mapped_unproven",
+        odd_stamp: "outside ODD v1 — validation pending",
+        odd_floor_satisfied: null,
+      }),
+    );
+    const res = await postIssue(req("POST"), params());
+    expect(res.status).toBe(201);
+    const { issue } = (await res.json()) as { issue: { result: AuditResult } };
+    // The issued record carries the capability status it was bounded by (AC-2).
+    expect(issue.result.odd_status).toBe("mapped_unproven");
+    expect(issue.result.odd_stamp).toBe("outside ODD v1 — validation pending");
   });
 });

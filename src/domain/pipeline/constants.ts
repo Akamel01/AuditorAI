@@ -27,3 +27,15 @@ export class OddOutsideDomainError extends Error {
     super(reason);
   }
 }
+
+export type CapabilityRefusalReason = "outside_odd" | "below_floor";
+
+export class CapabilityClaimNotIssuableError extends Error {
+  constructor(public readonly reason: CapabilityRefusalReason) {
+    super(
+      reason === "outside_odd"
+        ? 'cannot issue: capability status is not "in" and the record carries no out-of-ODD stamp — re-run the audit so the record is stamped'
+        : "cannot issue: input floor not satisfied — this audit is outside the cell's claim",
+    );
+  }
+}
