@@ -2,6 +2,7 @@
 // between steps (JSON value replaces the slice whole, never merged).
 import { NextResponse } from "next/server";
 import { badRequest, requireAdmin, serverError } from "@/lib/api";
+import { devRunEditRequest, readJsonBody } from "@/lib/request-schema";
 import { getSession, putSession } from "@/lib/devtab";
 import { SHARED_STATE_SLICES } from "@/domain/pipeline/types";
 
@@ -17,7 +18,7 @@ export async function POST(req: Request, ctx: Ctx) {
     const session = getSession(runId);
     if (!session) return NextResponse.json({ error: "unknown runId" }, { status: 404 });
 
-    const body = (await req.json()) as { slice?: string; value?: unknown };
+    const body = await readJsonBody<{ slice?: string; value?: unknown }>(req, devRunEditRequest);
     if (!body.slice) return badRequest("slice is required");
     if (body.value === undefined) return badRequest("value is required");
     if (
@@ -34,7 +35,8 @@ export async function POST(req: Request, ctx: Ctx) {
     putSession(session);
     return NextResponse.json({ edited: body.slice, state: session.state });
   } catch (e) {
-    if (e instanceof SyntaxError) return badRequest(`value is not valid JSON: ${e.message}`);
+    // The slice value is replaced whole with a JSON deep copy; a malformed
+    // body is a 422 (RequestContractError), the domain 400s above stay 400.
     return serverError(e);
   }
 }

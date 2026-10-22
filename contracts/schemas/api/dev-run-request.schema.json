@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/dev-run-request.schema.json",
+  "title": "POST /api/dev/runs request body",
+  "description": "Shape only. The route's own 'project with project_id, stage_selection and input_values is required' stays a 400 (src/app/api/dev/runs/route.ts:17-22).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "project": {
+      "type": "object",
+      "description": "Unknown keys are accepted — in the project, in metadata, in stage_selection and in each input_values entry: the dev console pastes free-form project JSON (src/app/dev/page.tsx:25,45-53). The route's own 'project with project_id, stage_selection and input_values is required' 400 still guards the body.",
+      "properties": {
+        "project_id": { "type": "string" },
+        "workspace_key_hash": { "type": "string" },
+        "metadata": {
+          "type": "object",
+          "description": "Known keys are typed; unknown keys are accepted (free-form paste) except the prototype keys.",
+          "propertyNames": { "not": { "enum": ["__proto__", "constructor", "prototype"] } },
+          "properties": {
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "scheme_summary": { "type": "string" },
+            "authority": { "type": "string" },
+            "location": { "type": "string" }
+          }
+        },
+        "stage_selection": {
+          "type": "object",
+          "description": "Known keys are typed; unknown keys are accepted (free-form paste).",
+          "properties": {
+            "jurisdiction": { "type": "string" },
+            "native_stage_id": { "type": "string" }
+          }
+        },
+        "input_values": {
+          "type": "object",
+          "description": "Unknown keys are accepted: the dev console pastes free-form project JSON. The prototype keys are not: an input id must never be able to set a prototype (src/domain/project-edits.ts:134).",
+          "propertyNames": { "not": { "enum": ["__proto__", "constructor", "prototype"] } },
+          "additionalProperties": {
+            "type": "object",
+            "description": "Unknown keys are accepted: the dev console pastes free-form project JSON.",
+            "properties": {
+              "state": { "description": "Unconstrained on purpose: the state vocabulary is the domain's." },
+              "value": { "type": "string" },
+              "attachments": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      }
+    }
+  }
+}

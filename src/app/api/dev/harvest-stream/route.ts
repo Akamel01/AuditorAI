@@ -1,6 +1,7 @@
 // POST /api/dev/harvest-stream — start a continuous AI harvest stream
 import { NextResponse } from "next/server";
 import { requireAdmin, serverError } from "@/lib/api";
+import { devHarvestStreamRequest, readJsonBody } from "@/lib/request-schema";
 import { createStream, saveStream, listStreams } from "@/discovery/harvest-stream";
 
 export async function GET(req: Request) {
@@ -18,11 +19,12 @@ export async function POST(req: Request) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
   try {
-    const body = (await req.json().catch(() => ({}))) as {
+    // An absent body is legal here (it means "start with the defaults").
+    const body = await readJsonBody<{
       live?: boolean;
       cellKey?: string | null;
       continuous?: boolean;
-    };
+    }>(req, devHarvestStreamRequest, { allowEmpty: true });
     const live = body.live === true;
     const cellKey = typeof body.cellKey === "string" && body.cellKey.length > 0 ? body.cellKey : null;
     const stream = createStream(cellKey, live);

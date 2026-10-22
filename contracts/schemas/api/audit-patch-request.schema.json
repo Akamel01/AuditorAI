@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/audit-patch-request.schema.json",
+  "title": "PATCH /api/projects/[projectId]/audits/[auditId] request body",
+  "description": "Shape only. question_marked[].addressed is REQUIRED by this schema — a new tightening: a missing addressed used to pass here and then vanish from the stored audit. The question-id lookup stays a domain 400 (src/domain/finding-review.ts:129-135). candidate_promotions[].action is a free string so the domain's own 'unknown candidate action' 400 survives (src/domain/candidate-review.ts:206-208); the index bound is the domain's too. Unknown finding ids, the wording gate and the consent posture stay domain rules and keep their 400 (src/domain/finding-review.ts:89-107, src/domain/candidate-review.ts:58-65).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "finding_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": { "type": "string" },
+          "reviewer_status": {
+            "type": "string",
+            "enum": ["draft", "accepted", "accepted_with_edits", "rejected", "escalated"]
+          },
+          "recommendation": { "type": ["string", "null"] },
+          "reviewer_note": { "type": ["string", "null"] },
+          "location": { "type": ["string", "null"] },
+          "severity": { "type": ["string", "null"] },
+          "likelihood": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "question_marked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["addressed"],
+        "properties": {
+          "question_id": { "type": "string" },
+          "addressed": { "type": "boolean" }
+        }
+      }
+    },
+    "candidate_promotions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "index": { "type": "integer" },
+          "action": { "type": "string" },
+          "edited_recommendation": { "type": "string" },
+          "edited_statement": { "type": "string" },
+          "edited_category": { "type": "string" },
+          "edited_evidence_ids": { "type": "array", "items": { "type": "string" } },
+          "reviewer_note": { "type": "string" }
+        }
+      }
+    },
+    "consent": {
+      "description": "Unconstrained on purpose: the consent-posture rule is the domain's and answers 400 (src/domain/candidate-review.ts:52-67)."
+    },
+    "auditor_pseudonym": { "type": "string" }
+  }
+}

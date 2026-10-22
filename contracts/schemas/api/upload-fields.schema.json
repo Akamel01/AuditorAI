@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/upload-fields.schema.json",
+  "title": "POST /api/upload non-file form fields",
+  "description": "The non-file multipart fields only; a File entry is never part of the validated field set. The file policy stays with src/lib/intake.ts and src/lib/extract.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "kind": { "type": "string" },
+    "project_id": { "type": "string" },
+    "input_id": { "type": "string" },
+    "attachment_id": { "type": "string" }
+  }
+}

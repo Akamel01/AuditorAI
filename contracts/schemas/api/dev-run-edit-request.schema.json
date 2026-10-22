@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/dev-run-edit-request.schema.json",
+  "title": "POST /api/dev/runs/[runId]/edit request body",
+  "description": "Shape only. 'slice is required', 'value is required' and the chartered-slice rule stay domain 400s (src/app/api/dev/runs/[runId]/edit/route.ts:21-28); value is intentionally free-form.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "slice": { "type": "string" },
+    "value": { "description": "Any JSON value: the slice is replaced whole." }
+  }
+}
