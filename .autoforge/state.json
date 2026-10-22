@@ -14,7 +14,7 @@
 =======
  "version": "1.0.0",
  "created": "2026-09-14T00:00:00Z",
- "updated": "2026-10-21T19:10:00Z",
+ "updated": "2026-10-21T21:05:00Z",
  "objective": "Ticket #53 \u2014 Supabase Postgres in ca-central-1 as the tenant store, with row-level security (G-2, G-8)",
  "phase": "integration-GO",
  "loop": 2,
@@ -29,7 +29,7 @@
   "M8"
  ],
  "execution": "8 modules implemented in 4 waves (W0 M1||M2, W1 M3, W2 M4||M5, W3 M6||M7, W4 M8); all approved after a fix pass that closed 9 of 10 review findings (M1-1 deferred as defence in depth). PR #59 opened on oc/53 (9 commits).",
- "validation": "GO \u2014 every acceptance criterion evidenced in the PR body; lint 0, typecheck 0, test 0 (73 files / 710 passed / 2 skipped), build 0 with every Supabase env unset. No live-project call (verified by grep over package.json and both CI workflows).",
+ "validation": "GO WITH NOTES (validator) + CLEAR (investigation sweep). Two validator notes closed in f9319bc (SQL header comment + cap tests for the Postgres store). Remaining risks are documented in .autoforge/validation/investigation-t53.md.",
  "artifacts": [
   ".autoforge/discovery/report-t53.md",
   ".autoforge/discovery/tracker-index-t53.md",
@@ -51,7 +51,8 @@
   ".autoforge/reviews/M2-M3.md",
   ".autoforge/reviews/M4-M5.md",
   ".autoforge/reviews/M6-M7-M8.md",
-  ".autoforge/decisions/need-human.md"
+  ".autoforge/decisions/need-human.md",
+  ".autoforge/validation/investigation-t53.md"
  ],
  "incidents": [
   "discovery agent returned write-up without writing artifacts; orchestrator wrote both inline from verified findings",
@@ -64,7 +65,8 @@
   "plan critique found 4 blockers before execution (credential-resolution hole, vacuous isolation proof, Production first-deploy 503, service-role allowlist contradiction) \u2014 all folded into plan v2 before any code was written",
   "M7 worker was interrupted after writing its code but before its brief; the code was verified green (57 tests) and the brief was completed by a re-dispatched worker (58 tests after it added the C1 GUC-order proof)",
   "review found 2 majors in M2 (pg bare query ran without the role guard; pool factory refused the pooled username the operator procedure mandates) and 1 in M3 (a rotated credential still authenticated) \u2014 all fixed and re-verified",
-  "M6 reported a pre-existing full-suite flake under parallel load (tests/domain/discovery-pipeline*.test.ts exceeds the 5s budget); it passes standalone and no other module's timeout was weakened"
+  "M6 reported a pre-existing full-suite flake under parallel load (tests/domain/discovery-pipeline*.test.ts exceeds the 5s budget); it passes standalone and no other module's timeout was weakened",
+  "the autoforge-investigator Task was interrupted four times by the harness; the adversarial sweep was executed directly by the orchestrator with the same evidence rules (every claim a current-file quote or a quoted command output) and written to .autoforge/validation/investigation-t53.md"
  ],
  "history": [
   {
