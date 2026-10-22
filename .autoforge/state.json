@@ -1,1 +1,67 @@
-{"artifacts": [".autoforge/discovery/report.md", ".autoforge/discovery/tracker-index.md", ".autoforge/requirements/grilling.md", ".autoforge/architecture/report.md", ".autoforge/architecture/decisions.md", ".autoforge/plans/plan.md", ".autoforge/execution/work-order.json", ".autoforge/reviews/plan-critique.md", ".autoforge/execution/M-GATED-V2.md", ".autoforge/execution/M-GATED-V3.md", ".autoforge/execution/M-TICKETS.md", ".autoforge/execution/M-A3.md", ".autoforge/execution/M-A1.md", ".autoforge/execution/M-A4.md", ".autoforge/execution/M-A2.md", ".autoforge/execution/M-A5.md", ".autoforge/reviews/M-GATED-V2.md", ".autoforge/reviews/M-GATED-V3.md", ".autoforge/reviews/M-TICKETS.md", ".autoforge/reviews/M-A3.md", ".autoforge/reviews/M-A1.md", ".autoforge/reviews/M-A4.md", ".autoforge/reviews/M-A2.md", ".autoforge/reviews/M-A5.md", ".autoforge/validation/report.md", ".autoforge/validation/investigation.md"], "completed": "2026-09-14T00:00:00Z", "created": "2026-09-14T00:00:00Z", "execution": "Wave0 approved (TICKETS+A3 repaired); Wave1 approved (A1 incident+gate+shadow repaired, A4 test fixed); Wave2 approved (A2 rebuilt, A5 implemented); validator REPLAN overruled as defective (monitor modules judged by implementation criteria, no current evidence; battery re-run green); investigator findings are pre-existing-path test gaps → follow-ups", "incidents": ["discovery agent returned write-up without writing artifacts; orchestrator wrote both inline from verified findings", "M-A1 test beforeEach rm DELETED live 7.8MB state/discovery-ledger.json during worker test run; restored origin/main 1050-entry version byte-identical (Sep13-14 live rows lost, disclosed)", "worktree has stale untracked src/**/*.js twins shadowing .ts under vitest+eslint (foreign build output; poisoned local verification, CI-clean)", "M-A2 worker scaffold replaced wholesale by orchestrator (parallel types, mock reads, unrun typecheck)", "v4 ticket front-matter normalized by orchestrator (ids/hitl/assignee/blocks)", "investigator returned text without writing artifact; orchestrator wrote inline", "validator REPLAN overruled: verdict rested on gate states (correct outcome for monitors) with zero current-evidence rows, violating spawn-contract 11; battery re-run by orchestrator (vault-sync ok, lint 0, counts 97/13/9/4, typecheck 0, proofs pass)"], "loop": 3, "modules": ["M-GATED-V2", "M-GATED-V3", "M-TICKETS", "M-A3", "M-A1", "M-A4", "M-A2", "M-A5"], "objective": "proceed with all open/remaining tickets + open new tickets for improved codebase architecture (improve-codebase-architecture skill); full lifecycle to GO", "phase": "integration-GO-WITH-NOTES", "updated": "2026-09-14T00:00:00Z", "validation": "GO WITH NOTES (validator REPLAN overruled as defective; investigator top-3 are pre-existing test gaps → follow-up wave; residual: ledger rows lost, twins, T2 flip, judge 401)", "version": "1.0.0"}
+{
+  "version": "1.0.0",
+  "created": "2026-09-14T00:00:00Z",
+  "updated": "2026-10-22T00:00:00Z",
+  "objective": "Issue #40 Track A — inventory the ~300 already-downloaded Canadian RSA documents in the operator checkout, reconcile them against the corpus registers, fetch only to fill the section 3 ODD gaps, and report coverage + harvest precision",
+  "phase": "pr-open",
+  "loop": 5,
+  "branch": "oc/40",
+  "pull_request": "https://github.com/Akamel01/AuditorAI/pull/58",
+  "ticket": "Akamel01/AuditorAI#40",
+  "modules": ["M5", "M6", "M7"],
+  "artifacts": [
+    ".autoforge/discovery/report.md",
+    ".autoforge/discovery/tracker-index.md",
+    ".autoforge/requirements/grilling.md",
+    ".autoforge/architecture/report.md",
+    ".autoforge/plans/plan.md",
+    ".autoforge/plans/plan-loop6.md",
+    ".autoforge/execution/work-order.json",
+    ".autoforge/execution/work-order-loop6.json",
+    ".autoforge/execution/loop6-brief.md",
+    ".autoforge/execution/M5.md",
+    ".autoforge/execution/M6a.md",
+    ".autoforge/execution/M6b.md",
+    ".autoforge/execution/M6b-fetch-round.md",
+    ".autoforge/execution/M7.md",
+    ".autoforge/execution/M7-fixes.md",
+    ".autoforge/execution/M7b.md",
+    ".autoforge/reviews/M5.md",
+    ".autoforge/reviews/plan-loop6-critique.md",
+    ".autoforge/reviews/M6.md",
+    ".autoforge/reviews/M7.md",
+    ".autoforge/reviews/M7b.md",
+    ".autoforge/validation/report.md",
+    ".autoforge/validation/loop6-report.md",
+    ".autoforge/validation/loop6-investigation.md"
+  ],
+  "operator_addition_2026_10_21": [
+    "1. inventory every PDF/DOC/XLSX in /Users/akamel/Documents/AuditorAI (read-only): path, sha256, title, jurisdiction, stage, tier, language, real-RSA-sample vs methodology — DONE: docs/RSA-Documents/track-a-ondisk-inventory.jsonl (304 rows) + track-a-ondisk-summary.json",
+    "2. reconcile against corpus-inventory.json, corpus-catalog.json, dedupe-index.json, canadian-download-log.tsv; list drift — DONE: docs/RSA-Documents/track-a-reconciliation.md",
+    "3. build the section 3 ODD coverage table FROM that inventory first; then fetch only to fill gaps; never re-download a hash already present — DONE (inventory-first table in docs/RSA-Documents/track-a-harvest-report.md; fetch round in .autoforge/execution/M6b-fetch-round.md). The known-hash gate runs AFTER the bytes arrive, so a known document is downloaded and discarded, never re-ingested",
+    "4. report harvest precision: share that are true in-scope Canadian RSAs at T3/T4 vs methodology, out of scope, duplicates, T0/T1 - counts per class — DONE: track-a-harvest-report.md sections 3a/3b (|A| 305 all rows, |B| 147 Canadian subset)",
+    "keep documents untracked; commit only registers/logs/catalog/inventory changes; never move or delete anything in the operator checkout"
+  ],
+  "plan_recovered": "docs/RSA-Documents/HARVESTING_PLAN.md is NOT in the repo but IS present (untracked) in the operator checkout /Users/akamel/Documents/AuditorAI/docs/RSA-Documents/HARVESTING_PLAN.md. Section 3 (ODD matrix + priority cells), section 5 (Track A sources), section 7 (split rule) are therefore now authoritative. grilling.md A1/A7 defaults are superseded; HITL-1 is resolved.",
+  "loop6_outcome": "M6a fixed the H1 split-map bug (the split map is derived from the full intake manifest, not the fresh batch) with an RC-3 regression test. M6b ran one bounded live fetch round: the new robots-permitted listing (open.alberta.ca/publications?q=\"road safety audit\") yielded 12 candidates, all from one highway planning study — 0 new documents, 9 rejected by the RSA classifier, 3 discarded as already-known hashes. M7 built the inventory-first coverage + precision report; M7b applied the investigator's honesty fixes (licence dimension, label provenance, corpus-root split, manifest-row classification, 'never re-ingested' wording, partial duplicates register, cross-referenced coverage views).",
+  "coverage_now": "canada:FEASIBILITY_CONCEPT 1/13 (usable 1/13), canada:PRELIMINARY_DESIGN 0/41, canada:DETAILED_DESIGN 1/41 (usable 0/41 — the one candidate is RESTRICTED Crown copyright and its label is 'existing' = unmapped). Honest state, not a closed gap.",
+  "known_gaps": [
+    "coverage is still far from the section 3 targets: 1/13, 0/41, 1/41 — the operator's checkout holds the corpus, Track A's public portals cannot fill the cells (13 unfillable families listed in track-a-coverage.md)",
+    "corpus-catalog.json is NOT enriched with stage/tier: it is generated by scripts/build-catalog.py on the operator's Mac and a hand edit here would be overwritten. The labels live in track-a-ondisk-inventory.jsonl (134 of 304 rows are label_confidence=needs_review)",
+    "no CI job regenerates track-a-harvest-report.md; only the vitest equality test guards it",
+    "the fetch-round skip log was container-local; the verbatim copy now ships as .autoforge/execution/M6b-fetch-round.md"
+  ],
+  "incidents": [
+    "opencode local database reset mid-run; fresh session resumed on existing branch oc/40",
+    "operator checkout ollama pool http://ollama-gen-lb:11434 is NOT reachable from this machine (http 000) - no free-model labelling available, labelling must be deterministic + rules",
+    "git-lfs is NOT installed in the box-runner container, so `node scripts/vault-sync.mjs --check` cannot complete here (it creates a temp git worktree). No vault/ file and no state/vault-notes.json change is in this branch; CI must confirm",
+    "the sub-agent run for the plan critique and the M6 worker was interrupted several times; the M6b fetch round was completed by the orchestrator with the same CLI and the same gates"
+  ],
+  "constraints": [
+    "operator checkout is READ-ONLY: never write, move or delete there",
+    "corpus binaries and extracted text never enter git",
+    "never merge; never touch other branches; never commit .env* or secrets",
+    "no ATIP/FOIA, no paywalls, no logins, no CAPTCHA; robots.txt honored; <=1 req/s per host"
+  ],
+  "updated_by": "orchestrator"
+}

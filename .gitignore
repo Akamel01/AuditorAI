@@ -71,3 +71,9 @@ tsconfig.tsbuildinfo
 !.autoforge/reviews/**
 !.autoforge/validation/
 !.autoforge/validation/**
+
+# Track A corpus binaries (ticket #40): no bulk text to git.
+docs/RSA-Documents/canada/track-a/
+docs/RSA-Documents/quarantine/track-a/
+docs/RSA-Documents/.track-a/
+docs/RSA-Documents/**/*.pdf

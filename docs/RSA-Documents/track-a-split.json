@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "ticket": "Akamel01/AuditorAI#40",
+  "test_provinces": [
+    "QC",
+    "AB"
+  ],
+  "rule": "test = QC + held-out prairie province (AB); train = every other province; licence verdict != CLEAR never enters train or test",
+  "by_province": {
+    "AB": {
+      "split": "test",
+      "docs": [
+        "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+      ]
+    },
+    "BC": {
+      "split": "restricted",
+      "docs": [
+        "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04b.pdf",
+        "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf"
+      ]
+    }
+  }
+}

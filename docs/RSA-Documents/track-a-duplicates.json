@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "ticket": "Akamel01/AuditorAI#40",
+  "note": "Documents fetched by Track A that were not ingested because their sha256 is already in the corpus.",
+  "duplicates": [
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf",
+      "sha256": "75645c0e6de990fbc2db08decd6a04b1569cd1e81e94405f9b57b5978c1bfa48",
+      "reason": "sha256 already in the corpus dedupe index",
+      "existing_path": "quarantine/canadian-html-quarantine/t02-04c.pdf"
+    },
+    {
+      "source_url": "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf",
+      "sha256": "a04c48f4ef339e7d8168e9ed3e230077e9db1c29f2f7e7c0410237bc716c3ced",
+      "reason": "sha256 already in the corpus dedupe index",
+      "existing_path": "quarantine/canadian-html-quarantine/rsa-guidelines.pdf"
+    }
+  ]
+}

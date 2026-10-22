@@ -1,0 +1,207 @@
+{
+  "ticket": "Akamel01/AuditorAI#40",
+  "branch": "oc/40",
+  "loop": 6,
+  "objective": "Close out the operator addition for ticket #40: fix the split-manifest bug, run one bounded Track A gap-filling fetch round that never re-downloads a known hash, refresh the tracked outputs, and report the ODD coverage table built from the on-disk inventory first plus the harvest precision per class. Binaries never enter git; only registers, logs, manifests, inventory and reports ship.",
+  "authority": ".autoforge/execution/loop6-brief.md is authoritative; .autoforge/plans/plan-loop6.md adds the execution detail.",
+  "amended_from": ".autoforge/reviews/plan-loop6-critique.md (RC-1..RC-5 + the cheap non-blocking fixes N-1..N-12).",
+  "modules": [
+    {
+      "id": "M6",
+      "title": "Bounded gap-filling fetch round + H1 split-file fix + output refresh",
+      "goal": "Derive track-a-split.json from the full intake manifest instead of the fresh batch (H1), prove it with a regression test, run one bounded fetch round over the committed source manifest, and leave every tracked output consistent with the fixed code.",
+      "creates": [],
+      "modifies": [
+        "scripts/harvest-track-a.ts",
+        "tests/discovery/harvest-track-a.test.ts",
+        "docs/RSA-Documents/track-a-sources.json",
+        "docs/RSA-Documents/canada-intake-manifest.jsonl",
+        "docs/RSA-Documents/canadian-download-log.tsv",
+        "docs/RSA-Documents/track-a-split.json",
+        "docs/RSA-Documents/track-a-coverage.md",
+        "docs/RSA-Documents/track-a-duplicates.json",
+        "docs/RSA-Documents/dedupe-index.json",
+        "docs/RSA-Documents/LICENSE-REGISTER.md",
+        "docs/RSA-Documents/QUARANTINE.md"
+      ],
+      "touches": [
+        "scripts/harvest-track-a.ts",
+        "tests/discovery/harvest-track-a.test.ts",
+        "docs/RSA-Documents/track-a-sources.json",
+        "docs/RSA-Documents/canada-intake-manifest.jsonl",
+        "docs/RSA-Documents/canadian-download-log.tsv",
+        "docs/RSA-Documents/track-a-split.json",
+        "docs/RSA-Documents/track-a-coverage.md",
+        "docs/RSA-Documents/track-a-duplicates.json",
+        "docs/RSA-Documents/dedupe-index.json",
+        "docs/RSA-Documents/LICENSE-REGISTER.md",
+        "docs/RSA-Documents/QUARANTINE.md",
+        "docs/RSA-Documents/canada/track-a/**",
+        "docs/RSA-Documents/quarantine/track-a/**",
+        "docs/RSA-Documents/.track-a/**"
+      ],
+      "blocked_by": [],
+      "context": "H1 (real bug): runIntake() builds the by_province split map from the FRESH records only (scripts/harvest-track-a.ts:664-670) and writes track-a-split.json from it (scripts/harvest-track-a.ts:671-678). A later intake run whose staging holds only duplicates therefore rewrites the split file with an empty or partial map. Fix: derive the split map from the FULL intake manifest (the records already in canada-intake-manifest.jsonl plus the fresh ones). Implement it as ONE exported pure helper (e.g. splitManifest(records: IntakeRecord[])) so it is testable without touching the filesystem, and call it from runIntake with the full record set. Do not add a second split algorithm. Regression test (required): in tests/discovery/harvest-track-a.test.ts assert that a split map built from a record list containing a document that is NOT in the current batch still contains that document (the staging-holds-only-duplicates case must not lose previously ingested documents), and assert that the committed docs/RSA-Documents/track-a-split.json equals the split derived from the committed docs/RSA-Documents/canada-intake-manifest.jsonl (compare the parsed structure, not the file bytes). The test file is offline, no network (tests/discovery/harvest-track-a.test.ts:1-20). Two write guards: with no fresh records runIntake still rewrites the download log with a trailing newline (scripts/harvest-track-a.ts:646-647) and the intake manifest with a trailing newline (scripts/harvest-track-a.ts:656-662); guard both writes so an empty batch leaves both files byte-identical. RC-3: the guard must be exercised by a run where the staging file EXISTS and holds records whose sha256 values are all already in dedupe-index.json - the three committed manifest rows qualify (0af7ea58..., 84a70638..., 555848f6...; scripts/harvest-track-a.ts:612-618 puts them in duplicates, so fresh stays empty) - because running intake with NO staging file returns early at scripts/harvest-track-a.ts:596-600 and never reaches the writes, so it cannot prove the guard. That scenario also rewrites docs/RSA-Documents/track-a-duplicates.json (scripts/harvest-track-a.ts:630-642); restore it afterwards with `git checkout -- docs/RSA-Documents/track-a-duplicates.json` and confirm it is byte-identical to HEAD. Fetch round: run `npx tsx scripts/harvest-track-a.ts fetch` ONCE over the committed manifest (scripts/harvest-track-a.ts:460-583). The robots gate is evaluated per URL path before every request (scripts/harvest-track-a.ts:480-484), the crawl delay is honoured (scripts/harvest-track-a.ts:486-487), the host budget keeps at most 1 request per second per host (scripts/harvest-track-a.ts:490-492), and a sha256 already in the known-hash set is skipped BEFORE any write (scripts/harvest-track-a.ts:511-518; knownHashes reads the on-disk inventory, dedupe-index.json and corpus-catalog.json at scripts/harvest-track-a.ts:161-193). Binaries land under docs/RSA-Documents/canada/track-a/<source-id>/ (scripts/harvest-track-a.ts:545-550) and are gitignored (.gitignore:76-79). Time bound (N-10): stop the round after 30 minutes and record the partial outcome - the crawl delays alone make a full round tens of minutes (docs/RSA-Documents/track-a-sources.json:10-13, :117; scripts/harvest-track-a.ts:264, :327). A stopped round is a normal outcome. RC-5 manifest extension: extend docs/RSA-Documents/track-a-sources.json ONLY if a server-rendered listing that robots permits yields candidate PDFs, and then by ADDING A NEW source entry (new id, e.g. ab-publications-listing) - NEVER by mutating the existing ab-publications entry, whose strategy is known-document-url (docs/RSA-Documents/track-a-sources.json:70) and which carries two known_document_urls (:82-85): candidatesFor returns known_document_urls ONLY for that strategy (scripts/harvest-track-a.ts:245-246), so changing the strategy would silently drop both Alberta URLs and invalidate that source's committed outcome block (:87). The new entry must carry EVERY field the Source interface needs (scripts/harvest-track-a.ts:63-89): id, host, family, strategy ('html-listing-pdf', already in the CLI strategy union, :67-71), listing_url, robots_hint, licence_default{verdict, basis, licence_ref}, stage_hint, ca_province_hint, doc_type_hint, expected_yield_estimate, plus max_downloads. runFetch dereferences source.stage_hint (:539), source.ca_province_hint (:540), source.licence_default.verdict (:541) and source.doc_type_hint (:561): a partial or invalid entry is REJECTED before the file is written, with the reason recorded - it must not crash the fetch. The listing_url must not be under /api/ (the selftest rejects that, scripts/harvest-track-a.ts:857-864); verify the listing's robots.txt with robotsFor before adding it. If the listing yields no candidate PDFs, do NOT extend the manifest and leave the file byte-identical. Output refresh: re-run intake then report so canada-intake-manifest.jsonl, canadian-download-log.tsv, track-a-split.json, track-a-coverage.md, track-a-duplicates.json, dedupe-index.json (append only - the existing rows are the corpus's, never rewritten, scripts/harvest-track-a.ts:680-695), LICENSE-REGISTER.md and QUARANTINE.md agree with the fixed code. Expect track-a-coverage.md to change (N-6): the committed copy lists only 12 unfillable families (docs/RSA-Documents/track-a-coverage.md:35-46) while the manifest has 13 (docs/RSA-Documents/track-a-sources.json:360-365), and runReport stamps a fresh Generated: line (scripts/harvest-track-a.ts:765) - commit the regenerated file; it is not byte-reproducible. H3 label (N-12): put the H3 line into runReport's markdown template so every regeneration carries it (the file is rewritten wholesale, scripts/harvest-track-a.ts:762-830); the line states that binaries fetched by this run live in the box-runner container (docs/RSA-Documents/canada/track-a/**), NOT in the operator's checkout. Outcome record: update each source's outcome block in docs/RSA-Documents/track-a-sources.json with the numbers this round produced (m6_new_documents, m6_skipped_*); the 8 blocks already committed (docs/RSA-Documents/track-a-sources.json:57, :87, :120, :156, :186, :217, :250, :279) record a previous round in which no source produced a new document - if this round reproduces them, leave the file byte-identical and do not add a timestamp. The CLI's real exports are TEST_PROVINCES, TSV_COLUMNS, serializeDedupeIndex, HASH_SKIP_REASON, knownHashes, hashSkipReason, splitFor, detectStage, detectLang, detectProvince, subjectRegion, isRsaDocument, detectTier, missingSideNote, projectKeyFor (scripts/harvest-track-a.ts:38-446) and LEGACY_SHA256 (:842-846); there is no projectId, verifyPdf, dedupeClaim or coverage export. Split rule: QC + AB are test, every other province train, a non-CLEAR verdict never enters train or test (docs/RSA-Documents/track-a-sources.json:16-24; scripts/harvest-track-a.ts:338-341). ODD targets are read-only inputs: canada:FEASIBILITY_CONCEPT 13 (state/odd-coverage.json:108), canada:PRELIMINARY_DESIGN 41 (:239), canada:DETAILED_DESIGN 41 (:220).",
+      "acceptance": [
+        "track-a-split.json is derived from the full intake manifest: a staging batch of only duplicates cannot shrink or empty it (H1 fixed at scripts/harvest-track-a.ts:664-678)",
+        "tests/discovery/harvest-track-a.test.ts contains a regression test for H1 plus an invariant test that the committed track-a-split.json equals the split derived from the committed canada-intake-manifest.jsonl (compare the parsed structure, not the file bytes)",
+        "RC-3: the empty-batch guard is exercised - with a staging file PRESENT at docs/RSA-Documents/.track-a/fetched.jsonl holding records whose sha256 values are all already in dedupe-index.json (the three committed manifest rows qualify: 0af7ea58..., 84a70638..., 555848f6...), `npx tsx scripts/harvest-track-a.ts intake` leaves canadian-download-log.tsv and canada-intake-manifest.jsonl byte-identical to their committed content (no trailing blank line) and leaves track-a-split.json holding the full manifest's provinces; the byte comparison is pasted in the PR body. Running intake with NO staging file does NOT satisfy this criterion (scripts/harvest-track-a.ts:596-600 returns early). docs/RSA-Documents/track-a-duplicates.json is restored afterwards and is byte-identical to HEAD",
+        "exactly one bounded fetch round ran (stopped at the 30-minute bound if it had not finished); robots, crawl delay and the 1 req/s per host budget were honoured; no binary whose sha256 is in the known-hash set was written",
+        "RC-5: docs/RSA-Documents/track-a-sources.json gained AT MOST ONE NEW entry, and only if a robots-permitted server-rendered listing yielded candidate PDFs; the new entry carries every required Source field and a partial entry is rejected rather than crashing the fetch; the existing ab-publications entry (strategy + known_document_urls) is unchanged; the selftest /api/ check still passes",
+        "every newly ingested document has a row in canadian-download-log.tsv, LICENSE-REGISTER.md, dedupe-index.json and canada-intake-manifest.jsonl with a project_id and a split; dedupe-index.json only grew",
+        "track-a-coverage.md carries the H3 line from runReport's template, stating that binaries fetched by this run live in the box-runner container, not in the operator's checkout (H3)",
+        "git status --porcelain shows no path under docs/RSA-Documents/canada/, docs/RSA-Documents/quarantine/ or docs/RSA-Documents/.track-a/ and no *.pdf",
+        "npx tsx scripts/harvest-track-a.ts selftest exits 0"
+      ],
+      "verify": [
+        "npx vitest run tests/discovery/harvest-track-a.test.ts",
+        "npx tsx scripts/harvest-track-a.ts selftest",
+        "npm run lint",
+        "npm run typecheck",
+        "git status --porcelain"
+      ],
+      "out_of_scope": [
+        "editing docs/RSA-Documents/corpus-catalog.json - it is generated by docs/RSA-Documents/scripts/build-catalog.py on the operator's Mac and the operator's labels live in docs/RSA-Documents/track-a-ondisk-inventory.jsonl (.autoforge/execution/loop6-brief.md:80-84)",
+        "editing state/odd-coverage.json, policies/odd.json, policies/canada/pack.json or docs/RSA-Documents/corpus-schema.json",
+        "mutating the existing ab-publications source entry (strategy or known_document_urls) - a listing source is a NEW entry",
+        "Track B (ATIP/FOIA) and Track C (headless browse); the 13 unfillable families stay unfillable (docs/RSA-Documents/track-a-sources.json:287-366)",
+        "logins, paywalls, CAPTCHAs, ATIP/FOIA requests, UA rotation, proxies",
+        "writing, moving or deleting anything outside this worktree - the operator checkout is read-only and absent here",
+        "training packs, mining usa/ or quarantine/",
+        "merging, closing or labelling the issue, pushing another branch, committing .env* or secrets",
+        "staging state/production-harvest-proof.json (foreign lane, .autoforge/execution/loop6-brief.md:45-46)"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "Inventory-first ODD coverage table + harvest precision report",
+      "goal": "Build the section-3 ODD coverage table from the committed on-disk inventory FIRST, then add the fetched documents, and report harvest precision per class - deterministically, from committed inputs only, with no network and no model call.",
+      "creates": [
+        "scripts/harvest-track-a-report.ts",
+        "tests/discovery/harvest-track-a-report.test.ts",
+        "docs/RSA-Documents/track-a-harvest-report.md"
+      ],
+      "modifies": [],
+      "touches": [
+        "scripts/harvest-track-a-report.ts",
+        "tests/discovery/harvest-track-a-report.test.ts",
+        "docs/RSA-Documents/track-a-harvest-report.md"
+      ],
+      "blocked_by": ["M6"],
+      "context": "Operator items 3 and 4 (issue comment 2026-10-21): build the coverage table against the section 3 ODD matrix FROM the on-disk inventory first, then fetch only to fill the gaps, never re-download a hash already present; and report harvest precision - the share that are true in-scope Canadian RSAs at T3/T4 versus methodology, out of scope, duplicates and T0/T1, counts per class. Inputs (committed, read-only): docs/RSA-Documents/track-a-ondisk-inventory.jsonl (304 rows; each row carries path, abs_path, sha256, bytes, ext, title, jurisdiction, stage, tier, lang, class, label_confidence, evidence, dup_of, source_group - docs/RSA-Documents/track-a-ondisk-inventory.jsonl:1-5), docs/RSA-Documents/canada-intake-manifest.jsonl (all rows: 3 today - 1 CLEAR T3 canada:FEASIBILITY_CONCEPT AB test, 2 RESTRICTED T1 UNSTAGED BC restricted - docs/RSA-Documents/canada-intake-manifest.jsonl:1-3; more if M6 ingested any), state/odd-coverage.json (targets 13 / 41 / 41 - state/odd-coverage.json:108, :220, :239) and docs/RSA-Documents/track-a-sources.json (13 unfillable families, lines 287-366). Implement ONE exported pure function, e.g. buildReport(inventory, manifest, coverage, unfillable): string, returning the whole markdown; the CLI writes it to docs/RSA-Documents/track-a-harvest-report.md. The output carries NO timestamp so the file is byte-reproducible and the test can assert it. Export the builder and guard main() with the same process.argv[1] basename check the existing CLI uses (scripts/harvest-track-a.ts:957-958), so importing the module in the vitest file does not execute the CLI (N-7). COVERAGE-CANDIDATE RULE (RC-1): a document is identified by its sha256; a row qualifies when it is Canadian (inventory: jurisdiction in the 13 ca_province codes (docs/RSA-Documents/corpus-schema.json:10-12) or CAN-GOV (docs/RSA-Documents/track-a-ondisk-summary.json:35); manifest: ca_province in the 13 codes), tier is T3 or T4, and its stage maps to a canonical cell. The class test is per source: an INVENTORY row must additionally have class == 'rsa-sample' (the inventory is the only file with a class label; duplicate, out-of-scope, methodology and unusable never count); a MANIFEST row has NO class field at all (the IntakeRecord interface, scripts/harvest-track-a.ts:105-126) and qualifies on tier + cell_key alone - it already passed the RSA classifier (scripts/harvest-track-a.ts:533-537). A manifest row with licence_verdict == 'BLOCKED' is quarantined and never counts; RESTRICTED rows stay in the corpus and the report states the verdict breakdown. PRECEDENCE (RC-1): when a sha256 is in BOTH sources, the MANIFEST wins for tier and stage/cell_key (it is the intake record of record), the INVENTORY wins for class (it is the only class authority), and the document is counted ONCE and attributed to the FETCHED column. Numeric example from the committed data: sha 0af7ea58... is manifest row 1 (T3, FEASIBILITY_CONCEPT, AB, cell_key canada:FEASIBILITY_CONCEPT) and inventory row 231 (tests/fixtures/samples/CA/ab-neahd-planning-stage-rsa-2009.pdf, AB, stage planning, T0, class rsa-sample) - under the inventory labels alone it contributes nothing (T0); the precedence rule resolves the conflict to the manifest label, so it counts ONCE, in canada:FEASIBILITY_CONCEPT, in the fetched column. Manifest row 3's sha 555848f6... is inventory row 210 (docs/references/CA/bct-moti-rsa-policy-tc-t02-04-2004.pdf, BC, unknown, T0, methodology); manifest row 2's sha 84a70638... is not in the inventory. DENOMINATORS (RC-2): the report states TWO row sets and never mixes them. Row set A = every inventory row (304) plus every manifest row whose sha256 is not in the inventory (1 today); a sha in both is one document; denominator = |A|; this is the denominator of the all-rows class shares. Row set B = the rows of A that are Canadian; today 146 inventory rows + 1 manifest-only row = 147; denominator = |B|; this is the denominator of the in-scope share. The out-of-scope class (125 rows) and the USA/INT jurisdictions exist ONLY outside B; B contains duplicate, methodology, rsa-sample and unusable and NO out-of-scope row (docs/RSA-Documents/track-a-ondisk-summary.json:64-92) - the all-rows table shows out-of-scope, the Canadian table states its absence explicitly instead of printing a zero. Class attribution: the inventory row's class when the sha is inventoried; a manifest-only row is class-equivalent rsa-sample. Report sections: (1) ODD coverage table - one row per Canadian canonical cell (canada:FEASIBILITY_CONCEPT, canada:PRELIMINARY_DESIGN, canada:DETAILED_DESIGN) with the target read from state/odd-coverage.json (never hand-typed), the priority, and the have-count computed under the coverage-candidate rule and the precedence rule, stating which source each count came from (on-disk vs fetched); (2) unmapped stages - counts for existing, pre-opening, unknown and the manifest's UNSTAGED / MULTI_STAGE / PRE_OPENING, with the note that they have no canonical cell (policies/canada/pack.json:76-83); (3) harvest precision - 3a all rows (row set A: every class value, count and share over |A|, including out-of-scope) and 3b Canadian in-scope (row set B: class breakdown, count and share over |B|, and the in-scope share as the coverage-candidate count over |B|); the T0/T1 cut of the in-scope rows is a tier cross-tab of row set B, not a class; (4) fetched-only precision - ALL rows of canada-intake-manifest.jsonl (3 today, more if M6 ingested any) with tier, stage, split and licence verdict, plus the AC3 disjointness check done PER DOCUMENT (map each manifest row's sha256 to its split and assert no sha256 appears with two different splits) - do NOT reuse the province-level map, because the selftest's own check pushes every non-train province into the test set (scripts/harvest-track-a.ts:900-906) and a province-level map cannot represent a province holding both train and test documents (N-9); (5) cells Track A cannot fill - the 13 unfillable families and every Canadian cell with a zero count, as the Track B/C input (AC4); (6) provenance - one line stating that the ~300 documents live in the operator's checkout, untracked, and that the committed inventory is their stand-in here (.autoforge/execution/loop6-brief.md:33-37). ODD stage mapping rule (binding): the inventory stage vocabulary (planning, preliminary, detailed, existing, pre-opening, unknown - docs/RSA-Documents/scripts/build-ondisk-inventory.py:110-131) maps as planning -> canada:FEASIBILITY_CONCEPT (policies/canada/pack.json:22-31), preliminary -> canada:PRELIMINARY_DESIGN (policies/canada/pack.json:40-49), detailed -> canada:DETAILED_DESIGN (policies/canada/pack.json:58-67); existing, pre-opening and unknown have NO canonical cell (ca-tac:pre-opening carries canonical_stages: [] - policies/canada/pack.json:76-83) and are reported as unmapped WITH their counts, never folded into a cell. T1 NEVER counts as coverage, and neither does T0 (.autoforge/requirements/grilling.md:10, :41); only T3/T4 rows count. Cross-check: the script's INVENTORY-ONLY Canadian subset (146 rows, class unusable 57 / rsa-sample 54 / methodology 24 / duplicate 11, stage existing 59 / unknown 57 / detailed 15 / preliminary 8 / pre-opening 4 / planning 3) must match docs/RSA-Documents/track-a-ondisk-summary.json:64-92 exactly - that block describes the inventory alone, so it is checked against the inventory part of row set B, not against B as a whole. If the script disagrees with that block, the script is wrong: stop and report, do not 'fix' the summary. Why TypeScript and not Python: the corpus python scripts under docs/RSA-Documents/scripts/ are not covered by CI (no python step in .github/workflows/), while npm run lint, npm run typecheck and npm test are (package.json:6-14); the report must be lint-clean, type-checked and unit-tested.",
+      "acceptance": [
+        "docs/RSA-Documents/track-a-harvest-report.md exists, contains no timestamp, and is regenerated byte-identically by npx tsx scripts/harvest-track-a-report.ts",
+        "the ODD coverage table lists all three Canadian cells with the targets read from state/odd-coverage.json (13 / 41 / 41) and the priority from the same file",
+        "RC-1: every document counted in a cell satisfies the coverage-candidate rule - Canadian, tier T3/T4, stage-mapped; an INVENTORY row additionally requires class == 'rsa-sample', a MANIFEST row qualifies on tier + cell_key alone (it has no class field, scripts/harvest-track-a.ts:105-126); T1 appears in no cell count",
+        "RC-1: the two sources' labels are reconciled by the stated precedence rule - a sha256 present in both is counted ONCE and attributed to the FETCHED column; the committed case is checked explicitly (sha 0af7ea58...: manifest row 1 T3 canada:FEASIBILITY_CONCEPT vs inventory row 231 planning/T0 -> one count, in canada:FEASIBILITY_CONCEPT, fetched column)",
+        "existing, pre-opening and unknown appear as unmapped with their counts",
+        "RC-2: the precision section states both denominators explicitly (|A| for the all-rows table, |B| for the Canadian table) and never uses one as the other; out-of-scope appears in the all-rows table and is explicitly absent from the Canadian table; every class value present in the inventory appears in the all-rows table",
+        "the fetched-only section lists EVERY manifest row (all rows of canada-intake-manifest.jsonl, not a hard-coded count) with tier, stage, split and licence verdict, and the per-document split disjointness check passes",
+        "the inventory-only Canadian subset cross-check matches docs/RSA-Documents/track-a-ondisk-summary.json:64-92",
+        "the unfillable section lists all 13 families and every Canadian cell with a zero count",
+        "tests/discovery/harvest-track-a-report.test.ts asserts the stage mapping per stage, that a T1 row never lands in a cell, that a sha256 in both sources is counted once and attributed to the fetched column, that the committed report equals the freshly computed report, and the summary cross-check",
+        "the new script exports its builder and guards main() with the same process.argv[1] check as scripts/harvest-track-a.ts:957-958, so importing it in the test does not run the CLI",
+        "no network call, no LLM/model call, no write outside the three files this module creates"
+      ],
+      "verify": [
+        "npx vitest run tests/discovery/harvest-track-a-report.test.ts",
+        "npx tsx scripts/harvest-track-a-report.ts",
+        "npm run lint",
+        "npm run typecheck"
+      ],
+      "out_of_scope": [
+        "editing state/odd-coverage.json - targets are read-only inputs",
+        "editing corpus-catalog.json or corpus-inventory.json",
+        "re-running docs/RSA-Documents/scripts/build-ondisk-inventory.py - it runs against the operator's Mac and its output is committed (.autoforge/execution/loop6-brief.md:56-58)",
+        "flipping any ODD cell status, adding a policy stage, adding a corpus-schema field",
+        "re-labelling inventory rows or 'correcting' the committed inventory counts",
+        "writing coverage into state/odd-coverage.json to make the numbers look better",
+        "any fetch, intake or network work - M6 owns that"
+      ]
+    }
+  ],
+  "integration": {
+    "order": ["M6", "M7"],
+    "parallel_safe": false,
+    "why": "M7's numbers must reflect the final fetch state, so it is blocked_by M6; the modules also share the read of docs/RSA-Documents/canada-intake-manifest.jsonl and the committed inventory. No two modules may run in parallel on this ticket.",
+    "shared_state": [
+      "docs/RSA-Documents/canada-intake-manifest.jsonl",
+      "docs/RSA-Documents/track-a-split.json",
+      "docs/RSA-Documents/dedupe-index.json",
+      "docs/RSA-Documents/track-a-ondisk-inventory.jsonl"
+    ],
+    "foreign_lane": "state/production-harvest-proof.json is modified by another process - never stage, commit or revert it (.autoforge/execution/loop6-brief.md:45-46).",
+    "commits": [
+      {
+        "concern": "H1 fix: derive the split manifest from the full intake manifest",
+        "paths": ["scripts/harvest-track-a.ts", "tests/discovery/harvest-track-a.test.ts"]
+      },
+      {
+        "concern": "refresh the Track A outputs after the bounded fetch round",
+        "paths": [
+          "docs/RSA-Documents/track-a-sources.json",
+          "docs/RSA-Documents/track-a-duplicates.json",
+          "docs/RSA-Documents/canada-intake-manifest.jsonl",
+          "docs/RSA-Documents/canadian-download-log.tsv",
+          "docs/RSA-Documents/track-a-split.json",
+          "docs/RSA-Documents/track-a-coverage.md",
+          "docs/RSA-Documents/dedupe-index.json",
+          "docs/RSA-Documents/LICENSE-REGISTER.md",
+          "docs/RSA-Documents/QUARANTINE.md"
+        ]
+      },
+      {
+        "concern": "inventory-first ODD coverage and harvest precision report",
+        "paths": [
+          "scripts/harvest-track-a-report.ts",
+          "tests/discovery/harvest-track-a-report.test.ts",
+          "docs/RSA-Documents/track-a-harvest-report.md"
+        ]
+      }
+    ]
+  },
+  "verification_sequence": [
+    "npm run lint",
+    "npm run typecheck",
+    "npm test",
+    "npx tsx scripts/harvest-track-a.ts selftest",
+    "npx vitest run tests/discovery/robots.test.ts tests/discovery/harvest-track-a.test.ts",
+    "npx vitest run tests/discovery/harvest-track-a-report.test.ts",
+    "npx tsx scripts/harvest-track-a-report.ts",
+    "git diff --exit-code -- docs/RSA-Documents/track-a-harvest-report.md",
+    "git status --porcelain",
+    "node scripts/vault-sync.mjs --check"
+  ],
+  "verification_sequence_note": "Run the sequence AFTER the three commits: git does not diff untracked paths, so `git diff --exit-code -- docs/RSA-Documents/track-a-harvest-report.md` is vacuous until the report is committed (N-8). Before the commits use `git add <report path>` + `git diff --cached --exit-code -- <report path>`.",
+  "odd_stage_mapping": {
+    "planning": "canada:FEASIBILITY_CONCEPT",
+    "preliminary": "canada:PRELIMINARY_DESIGN",
+    "detailed": "canada:DETAILED_DESIGN",
+    "existing": null,
+    "pre-opening": null,
+    "unknown": null,
+    "note": "existing / pre-opening / unknown have no canonical cell (policies/canada/pack.json:76-83) and are reported as unmapped with their counts. T1 never counts as coverage; only T3/T4 rsa-sample rows count."
+  },
+  "counting_rules": {
+    "coverage_candidate": "Canadian AND tier in {T3,T4} AND stage maps to a cell. Inventory rows additionally need class == 'rsa-sample'; manifest rows have no class field and qualify on tier + cell_key alone.",
+    "precedence": "sha256 in both sources -> the manifest wins for tier/stage, the inventory wins for class, the document is counted once and attributed to the fetched column.",
+    "denominators": "row set A = inventory rows + manifest-only rows (all documents on record); row set B = the Canadian subset of A. The all-rows shares use |A|, the in-scope share uses |B|; the two are never mixed.",
+    "cross_check": "the inventory-only Canadian subset must reproduce docs/RSA-Documents/track-a-ondisk-summary.json:64-92"
+  },
+  "tracker_coverage": {
+    "GH:Akamel01/AuditorAI#40": ["M6", "M7"],
+    "operator_addition_1_inventory": "done before this loop - docs/RSA-Documents/track-a-ondisk-inventory.jsonl",
+    "operator_addition_2_reconciliation": "done before this loop - docs/RSA-Documents/track-a-reconciliation.md",
+    "operator_addition_3_coverage_from_inventory": "M7",
+    "operator_addition_4_harvest_precision": "M7"
+  },
+  "decisions": [
+    "Gap 2 is a decision, not a task: corpus-catalog.json is generated by docs/RSA-Documents/scripts/build-catalog.py on the operator's Mac and is not hand-edited here; the operator's labels live in docs/RSA-Documents/track-a-ondisk-inventory.jsonl (.autoforge/execution/loop6-brief.md:80-84).",
+    "The ODD stage mapping is fixed by policies/canada/pack.json, not by the inventory labels.",
+    "T1 never counts as coverage (.autoforge/requirements/grilling.md:10, :41).",
+    "A sha256 present in both the inventory and the manifest is one document, labelled by the manifest for tier/stage and by the inventory for class, attributed to the fetched column.",
+    "The precision report has two denominators (|A| all rows, |B| Canadian subset) and never mixes them.",
+    "A new listing source is a NEW entry; the existing ab-publications entry is never mutated.",
+    "Module boundary != child-session boundary: M6 and M7 are separate modules with a dependency edge."
+  ]
+}

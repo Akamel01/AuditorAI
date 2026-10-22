@@ -21,3 +21,5 @@
 | state-dots | CLEAR | State DOT manuals/reports; public-domain or open-access | 2026-09-12 |
 | templates | RESTRICTED | Empty dir; owner templates inherit project license when filled | 2026-09-12 |
 | root loose files (COLLECTION_INDEX/HARVESTING_PLAN/FOIA_TEMPLATE/logs) | CLEAR | Owner-authored indexes + harvest logs; FOIA template is a form, not content | 2026-09-12 |
+| canada/track-a/ab-open | CLEAR | Open Government Licence - Alberta (open data portal) (https://open.alberta.ca/opendata/licence) | 2026-10-21 |
+| canada/track-a/bc-moti | RESTRICTED | Crown copyright (BC government works) - public access, reuse needs owner sign-off (https://www2.gov.bc.ca/gov/content/home/terms-of-use) | 2026-10-21 |

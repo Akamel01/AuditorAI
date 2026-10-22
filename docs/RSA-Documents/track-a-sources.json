@@ -1,0 +1,400 @@
+{
+  "schema_version": "1.1.0",
+  "source_of_record": "GH:Akamel01/AuditorAI#40",
+  "plan": "docs/RSA-Documents/HARVESTING_PLAN.md §5 (Track A access paths), §3 (ODD matrix and priority cells), §7 (split). The plan lives in the operator checkout (/Users/akamel/Documents/AuditorAI) and is read-only; this file remains the source list of record.",
+  "note": "Track A source list with the per-source outcome of the M6 run. Hosts not listed under \"sources\" are listed under \"unfillable\" with the reason they cannot be filled by Track A and the Track B/C handoff.",
+  "user_agent": "AuditorAI-RSA-Harvest/1.0 (+public documents only)",
+  "politeness": {
+    "min_interval_ms": 1000,
+    "max_concurrent_per_host": 2,
+    "crawl_delay_ms_by_host": {
+      "open.alberta.ca": 10000,
+      "donnees.montreal.ca": 10000
+    },
+    "note": "Crawl-delay is read from each host's robots.txt at fetch time and honoured before every request (src/discovery/robots.ts)."
+  },
+  "split_rule": {
+    "test_provinces": [
+      "QC",
+      "AB"
+    ],
+    "train_provinces": "* (every province not in test_provinces)",
+    "quarantine": "documents whose licence verdict is not CLEAR are never train and never test",
+    "note": "licence verdict CLEAR only: QC + AB are test geography, every other province is train. RESTRICTED documents stay in the corpus and are excluded from train and test (repo practice for canada/*, LICENSE-REGISTER.md). BLOCKED (terms forbid reuse) goes to quarantine/track-a/ with a QUARANTINE.md bullet."
+  },
+  "hash_rule": {
+    "known_hash_sources": [
+      "docs/RSA-Documents/track-a-ondisk-inventory.jsonl",
+      "docs/RSA-Documents/dedupe-index.json",
+      "docs/RSA-Documents/corpus-catalog.json"
+    ],
+    "skip_reason": "hash-already-present",
+    "note": "A document whose sha256 is already in the union of those three sets is never written to disk and never enters the intake manifest."
+  },
+  "sources": [
+    {
+      "id": "ab-open",
+      "host": "open.alberta.ca",
+      "family": "Alberta open data (Open Government Licence)",
+      "plan_ref": "§5 Track A: open.alberta.ca - no fee, immediate download",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://open.alberta.ca/dataset/{id}/resource/{resource_id}/download/{name}",
+      "robots_hint": "Disallow /api/, /dataset/rate/, /dataset/*/history; Crawl-delay: 10. The CKAN search page is client-rendered and /api/ is disallowed, so Track A can only fetch known document URLs.",
+      "licence_default": {
+        "verdict": "CLEAR",
+        "basis": "Open Government Licence - Alberta (open data portal)",
+        "licence_ref": "https://open.alberta.ca/opendata/licence"
+      },
+      "stage_hint": "FEASIBILITY_CONCEPT",
+      "ca_province_hint": "AB",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 6,
+      "known_document_urls": [
+        "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+      ],
+      "max_downloads": 3,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_hash_already_present": 1,
+        "note": "The one known CKAN resource URL is already in the corpus (Track A run 1: CLEAR, T3, FEASIBILITY_CONCEPT). The CKAN catalogue is not enumerable without the robots-disallowed /api/ path. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 1 hash-already-present document was downloaded in full and then discarded: never re-ingested, never written to disk."
+      }
+    },
+    {
+      "id": "ab-publications",
+      "host": "open.alberta.ca",
+      "family": "Alberta open government publications (road safety audit series)",
+      "plan_ref": "§4 AB: open.alberta.ca - arterial/collector + rural",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://open.alberta.ca/dataset/{dataset_id}/resource/{resource_id}/download/{name}",
+      "robots_hint": "The /publications/<slug> pages are server rendered and carry the resource URL; the resource pages under /dataset/... are allowed (Crawl-delay: 10). The publication pages show the licence per resource.",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Alberta open government portal publication whose resource page states \"No licence\" - public access, reuse needs the publisher's sign-off",
+        "licence_ref": "https://open.alberta.ca/publications/alberta-transportation-road-safety-audit-guidelines"
+      },
+      "stage_hint": "MULTI_STAGE",
+      "ca_province_hint": "AB",
+      "doc_type_hint": "guide",
+      "expected_yield_estimate": 2,
+      "known_document_urls": [
+        "https://open.alberta.ca/dataset/c9e2f226-9518-45d2-806c-8558195d60c6/resource/fac2c710-26cc-47bb-a184-38d4ea2683e9/download/2004-rsa-guidelines-final-report.pdf",
+        "https://open.alberta.ca/dataset/eb777feb-e6c8-4c45-b93b-62bed8f5c5a4/resource/1591d634-3ad1-45d8-8a65-e78ce6d7b232/download/2004-rsa-implementation-plan-final-report.pdf"
+      ],
+      "max_downloads": 2,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_hash_already_present": 2,
+        "note": "The Alberta Transportation 2004 RSA Guidelines (2004-rsa-guidelines-final-report.pdf) and RSA Implementation Plan (2004-rsa-implementation-plan-final-report.pdf) are already in the corpus (docs/RSA-Documents/canada/canadian/). Both portal pages show \"No licence\", so the verdict would have been RESTRICTED and the split \"restricted\". The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 2 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk."
+      }
+    },
+    {
+      "id": "ab-publications-listing",
+      "host": "open.alberta.ca",
+      "family": "Alberta open government publications - server-rendered search listing (road safety audit series)",
+      "plan_ref": "§4 AB: open.alberta.ca - arterial/collector + rural",
+      "strategy": "html-listing-pdf",
+      "listing_url": "https://open.alberta.ca/publications?q=%22road+safety+audit%22",
+      "document_url_template": "https://open.alberta.ca/dataset/{dataset_id}/resource/{resource_id}/download/{name}",
+      "robots_hint": "The /publications search page is server rendered (CKAN 2.10) and robots.txt allows /publications (Crawl-delay: 10). Each publication page links to its /dataset/<id>/resource/<rid>/download/<name>.pdf resources, which robots.txt allows too. The robots-disallowed CKAN /api/ path is never used; the query string carries the search term, and the faceted /publications?... links are skipped.",
+      "licence_default": {
+        "verdict": "CLEAR",
+        "basis": "Open Government Licence - Alberta (open data portal) - the resources are /dataset/ resources of the same portal dataset as source ab-open; the publication pages leave the per-resource licence field empty",
+        "licence_ref": "https://open.alberta.ca/opendata/licence"
+      },
+      "stage_hint": "FEASIBILITY_CONCEPT",
+      "ca_province_hint": "AB",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 2,
+      "url_keywords": [
+        "road-safety-audit",
+        "ring-road"
+      ],
+      "max_listing_pages": 4,
+      "max_candidates": 12,
+      "max_downloads": 12,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_not_rsa": 9,
+        "m6_skipped_hash_already_present": 3,
+        "note": "The server-rendered /publications?q=\"road safety audit\" listing (3 results) was enumerated without the robots-disallowed CKAN /api/ path. All 12 resource PDFs belong to one dataset - the Northeast Edmonton Ring Road Advanced Functional Planning Study (R-1084). The study itself is a functional planning study, not a road safety audit, and the RSA classifier rejects it; its RSA appendix C and the 2004 RSA guidelines and implementation plan are already in the corpus (hash-already-present). The /dataset?q= listing is client-rendered (423 results, no server-rendered document links), so the CKAN catalogue is still not enumerable from Track A. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 3 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk. 10 such skips are recorded across the committed outcome blocks (ab-open 1, ab-publications 2, ab-publications-listing 3, bc-moti 4)."
+      }
+    },
+    {
+      "id": "bc-moti",
+      "host": "www2.gov.bc.ca",
+      "family": "British Columbia Ministry of Transportation and Infrastructure",
+      "plan_ref": "§4 BC: gov.bc.ca open postings - existing/rural-hwy + urban arterial",
+      "strategy": "sitemap-keyword",
+      "listing_url": "https://www2.gov.bc.ca/sitemap/sitemap_index.xml",
+      "document_url_template": "https://www2.gov.bc.ca/assets/gov/.../*.pdf",
+      "robots_hint": "Disallow /search*, /gov/search*, /en/search/, /query.html*; document pages and /assets/ allowed. The /search* endpoints are unusable, so discovery runs off the sitemap index (12 asset sitemaps, ~89k PDFs).",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (BC government works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://www2.gov.bc.ca/gov/content/home/terms-of-use"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "BC",
+      "doc_type_hint": "guide",
+      "expected_yield_estimate": 4,
+      "url_keywords": [
+        "/t02-",
+        "road-safety-audit",
+        "safety-audit"
+      ],
+      "max_listing_pages": 15,
+      "max_candidates": 400,
+      "max_downloads": 6,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_hash_already_present": 4,
+        "m6_skipped_not_rsa": 34,
+        "note": "The T-02 series was enumerated from the 12 asset sitemaps (38 PDF candidates). The RSA circulars T-02/04a, T-02/04b, T-02/04c and T-02/94 are already in the corpus; the other T-02 circulars cover other subjects and the RSA classifier rejects them. The hash gate runs after the bytes arrive (the sha256 is only known after the download), so the 4 hash-already-present documents were downloaded in full and then discarded: never re-ingested, never written to disk."
+      }
+    },
+    {
+      "id": "qc-montreal-open",
+      "host": "donnees.montreal.ca",
+      "family": "Montreal open data (Quebec open data licence)",
+      "plan_ref": "§4 QC: Montreal portal (FR) - FR quota + urban/transit",
+      "strategy": "atom-dataset-listing",
+      "listing_url": "https://donnees.montreal.ca/feeds/dataset.atom",
+      "alternate_index": "https://donnees.montreal.ca/group/transport",
+      "document_url_template": "https://donnees.montreal.ca/dataset/{slug}",
+      "robots_hint": "Disallow /api/ and faceted /*?*tags= queries; Crawl-delay: 10. Only the atom feed (20 most recent datasets), /group/<name> pages and /dataset/<slug> pages are readable.",
+      "licence_default": {
+        "verdict": "CLEAR",
+        "basis": "Quebec open data licence (Liibre) as published on the portal",
+        "licence_ref": "https://donnees.montreal.ca/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "QC",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 3,
+      "feed_keywords": [
+        "sécurité routière",
+        "road safety",
+        "trafic routier",
+        "accident",
+        "vitesse",
+        "routier"
+      ],
+      "max_downloads": 4,
+      "outcome": {
+        "state": "unfillable",
+        "m6_new_documents": 0,
+        "reason": "The portal publishes data (CSV/GeoJSON), not audit reports: the 20-dataset atom feed and the readable /group/transport listing carry no road safety audit document. The CKAN API (/api/3/action/package_search) is robots-disallowed, so the full catalogue is not enumerable without a browser.",
+        "track_input": "Track C (headless browse)"
+      }
+    },
+    {
+      "id": "qc-mtl-transports",
+      "host": "cdn-contenu.quebec.ca",
+      "family": "Ministere des Transports et de la Mobilite durable (Quebec) - road safety plan guidance",
+      "plan_ref": "§4 QC: MTQ (FR) + Montreal portal (FR) - FR quota",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://cdn-contenu.quebec.ca/cdn-contenu/adm/min/transports/.../plan-securite-routiere/*.pdf",
+      "robots_hint": "The ministry's CDN host is separate from www.quebec.ca (403 bot protection). Both URLs are checked against that host's robots.txt at fetch time.",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (Quebec government works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://cdn-contenu.quebec.ca/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "QC",
+      "doc_type_hint": "guide",
+      "expected_yield_estimate": 2,
+      "known_document_urls": [
+        "https://cdn-contenu.quebec.ca/cdn-contenu/adm/min/transports/transports/aide_financiere/reseaux-routiers-locaux-municipaux/voirie-locale/plan-securite-routiere/guide-elab-PSRMM.pdf",
+        "https://www.bv.transports.gouv.qc.ca/mono/1117153.pdf"
+      ],
+      "max_downloads": 2,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_not_rsa": 1,
+        "m6_skipped_robots": 1,
+        "note": "The CDN guide d'elaboration d'un plan de securite routiere en milieu municipal was fetched and rejected by the RSA classifier: it is municipal road-safety plan guidance, not an audit. The Quebec document library (www.bv.transports.gouv.qc.ca) could not be checked - its robots.txt fetch failed, so the path was refused rather than fetched."
+      }
+    },
+    {
+      "id": "qc-montreal-city",
+      "host": "ville.montreal.qc.ca",
+      "family": "Ville de Montreal - road safety policy documents",
+      "plan_ref": "§4 QC: Montreal portal (FR) - FR quota + urban/transit",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://ville.montreal.qc.ca/pls/portal/docs/PAGE/.../*.PDF",
+      "robots_hint": "Public document server of the City of Montreal; robots.txt checked per path at fetch time.",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (Ville de Montreal works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://montreal.ca/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "QC",
+      "doc_type_hint": "guide",
+      "expected_yield_estimate": 2,
+      "known_document_urls": [
+        "https://ville.montreal.qc.ca/pls/portal/docs/PAGE/COMMISSIONS_PERM_V2_FR/MEDIA/DOCUMENTS/REF_MEM-SAAQ_201702.PDF",
+        "https://ville.montreal.qc.ca/pls/portal/docs/PAGE/PRT_VDM_FR/MEDIA/DOCUMENTS/MEMOIRE_VILLE_MONTR%C3%89AL_PL-48.PDF"
+      ],
+      "max_downloads": 2,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_not_rsa": 1,
+        "m6_skipped_http": 1,
+        "note": "The 2017 SAAQ memorandum was fetched and rejected by the RSA classifier (road-safety policy, not an audit). The 2024 Bill 48 memorandum answered HTTP 401 to the neutral UA."
+      }
+    },
+    {
+      "id": "toronto-legdocs",
+      "host": "www.toronto.ca",
+      "family": "City of Toronto council documents (legdocs)",
+      "plan_ref": "§4 ON: Toronto legdocs - urban/transit/arterial",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://www.toronto.ca/legdocs/mmis/{year}/{committee_code}/bgrd/backgroundfile-{id}.pdf",
+      "robots_hint": "Allow all except /wp-admin/, /news/* and /legdocs/mmis/<year>/<sv|sx|sy|sz>/ for 2009-2026, /legdocs/mmis/<year>/dg/ for 2019-2026, /legdocs/mmis/2018/ex/. The committee codes ie, ex (2019+), dg (2009-2018) and pw are therefore fetchable; the document ids are opaque, so the URLs come from the public search index rather than from a City listing.",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (City of Toronto works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://www.toronto.ca/open-data/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "ON",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 2,
+      "known_document_urls": [
+        "https://www.toronto.ca/legdocs/mmis/2023/ie/bgrd/backgroundfile-239909.pdf",
+        "https://www.toronto.ca/legdocs/mmis/2024/ie/bgrd/backgroundfile-250583.pdf",
+        "https://www.toronto.ca/legdocs/mmis/2019/ie/bgrd/backgroundfile-134964.pdf",
+        "https://www.toronto.ca/wp-content/uploads/2026/04/95d9-VZAR2025Finala.pdf"
+      ],
+      "max_downloads": 4,
+      "outcome": {
+        "state": "no-new-document",
+        "m6_new_documents": 0,
+        "m6_skipped_not_rsa": 4,
+        "note": "The four reachable legdocs/Vision Zero documents are road safety *plans* (Vision Zero 2.0, the 2023 and 2024 updates, the 2025 annual report), not road safety *audits*: the RSA classifier rejects them. The City publishes no index of legdocs files (every directory URL answers 404) and the document ids are opaque, so the audit reports themselves are not enumerable from Track A."
+      }
+    },
+    {
+      "id": "unb-transport",
+      "host": "www.unb.ca",
+      "family": "UNB Transportation Group (MRDC partner)",
+      "plan_ref": "§5 Track A/C: UNB/MRDC direct",
+      "strategy": "known-document-url",
+      "listing_url": null,
+      "document_url_template": "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf",
+      "robots_hint": "unknown - final robots.txt not verified; re-checked at fetch time",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Published by the University of New Brunswick, no open licence stated on the landing page",
+        "licence_ref": "https://www.unb.ca/research/transportation-group/"
+      },
+      "stage_hint": "MULTI_STAGE",
+      "ca_province_hint": "NB",
+      "doc_type_hint": "complete-RSA",
+      "expected_yield_estimate": 1,
+      "known_document_urls": [
+        "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf"
+      ],
+      "max_downloads": 2,
+      "outcome": {
+        "state": "unfillable",
+        "m6_new_documents": 0,
+        "reason": "www.unb.ca answers every request with a \"UNB.ca temporarily unavailable\" page (public-facing unb.ca sites are restricted to users inside the university network, a security precaution): the response is HTML, not the PDF, so the fetch was refused as \"not a pdf\". The single known PDF (rsa-guidelines.pdf) was fetched by Track A run 1 and is already in the manifest.",
+        "track_input": "Track C (university agreement)"
+      }
+    }
+  ],
+  "unfillable": [
+    {
+      "family": "Quebec provincial (Ville de Quebec / Quebec government)",
+      "host": "www.quebec.ca",
+      "reason": "HTTP 403 bot protection on both robots.txt and the landing page for our neutral UA; no public listing reachable without a browser session. The ministry's CDN host (cdn-contenu.quebec.ca) and its document library (www.bv.transports.gouv.qc.ca) stay reachable and are harvested as source qc-mtl-transports.",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Ottawa (open data portal)",
+      "host": "open.ottawa.ca",
+      "reason": "JavaScript-only single page application; robots.txt returns 404; no server-rendered listing to read",
+      "track_input": "Track C (headless browse)"
+    },
+    {
+      "family": "Ottawa (eScribe meeting documents)",
+      "host": "pub-ottawa.escribemeetings.com",
+      "reason": "Listing is a JS bundle (/bundles/MeetingList); no server-rendered document index",
+      "track_input": "Track C (headless browse)"
+    },
+    {
+      "family": "Manitoba open data portal",
+      "host": "data.gov.mb.ca",
+      "reason": "DNS NXDOMAIN - portal retired",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Manitoba government",
+      "host": "www.gov.mb.ca",
+      "reason": "robots.txt disallows / for GPTBot, ClaudeBot, CCBot and Scrapy; neutral UA is permitted but the province is also the candidate held-out test geography, so Track A leaves it to the split rule rather than harvesting it",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Saskatchewan open data",
+      "host": "open.saskatchewan.ca",
+      "reason": "DNS NXDOMAIN",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Saskatchewan government",
+      "host": "www.saskatchewan.ca",
+      "reason": "Reachable, but the open-data listing path returns 404 and no document index is published",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "MRDC / MUNIAC (University of Manitoba transportation research)",
+      "host": "www.muniac.ca",
+      "reason": "DNS NXDOMAIN; the entity is not referenced anywhere in the repo corpus",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Prince Edward Island, Newfoundland and Labrador, and the territories",
+      "host": null,
+      "reason": "No public, no-login document listing identified for PE, NL, Yukon, NWT or Nunavut; the ODD matrix has no native stage for them either",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Pre-opening stage audits (all provinces)",
+      "host": null,
+      "reason": "No public pre-opening RSA report found in the allowlisted portals; ca-tac:pre-opening has no canonical stage in policies/odd.json, so it cannot be mapped to a coverage cell",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Montreal open data (Ville de Montreal)",
+      "host": "donnees.montreal.ca",
+      "reason": "The portal publishes data (CSV/GeoJSON), not audit reports: the 20-dataset atom feed and the readable /group/transport listing carry no road safety audit document. The full catalogue is client-rendered and the CKAN API (/api/3/action/package_search) is robots-disallowed, so Track A can only reach known document URLs. The City's own policy documents are harvested as source qc-montreal-city instead.",
+      "track_input": "Track C (headless browse)"
+    },
+    {
+      "family": "City of Toronto",
+      "host": "www.toronto.ca",
+      "reason": "www.toronto.ca/sitemap.xml is a sitemap index whose sub-sitemaps cover only the WordPress tree (no PDF URLs). The City's road safety audit reports live under /legdocs/mmis/<year>/<committee_code>/bgrd/backgroundfile-<id>.pdf; the directory has no listing, the ids are opaque and the council agenda service (secure.toronto.ca) answers 403 to a neutral UA. The reachable Vision Zero documents are road safety plans, not audits.",
+      "track_input": "Track C (search engine) or Track B (operator)"
+    },
+    {
+      "family": "UNB Transportation Group / MRDC",
+      "host": "www.unb.ca",
+      "reason": "The host answers every request with a \"UNB.ca temporarily unavailable\" page: public-facing unb.ca sites are restricted to users inside the university network. The single known PDF (rsa-guidelines.pdf) was fetched by the first Track A run and is already in the manifest.",
+      "track_input": "Track C (university agreement)"
+    }
+  ]
+}
