@@ -51,7 +51,7 @@ npx tsx scripts/migrate-kv-to-postgres.ts --apply --target-label ca-central-1-po
 #    TENANT_STORE=postgres
 ```
 
-### ORDERING — operator ACTION-1 (do this BEFORE the merge reaches Production)
+### ORDERING — operator ACTION-1 (the switch flips LAST; the merge is safe either way)
 
 **The merge auto-deploys.** Every push to `main` auto-deploys to production
 (`docs/deployment.md:5` — Vercel, region `iad1`).
@@ -84,7 +84,9 @@ The operator's steps, in order — **do not reorder**:
    path).
 4. **Flip the switch LAST.** Set `TENANT_STORE=postgres`. Until this value is
    set the app keeps today's Upstash path whatever `POSTGRES_URL` says;
-   flipping it before step 3 would route every workspace to an empty database.
+   flipping it before step 3 means Postgres serves NO workspace until the
+   credential rows exist — each workspace keeps being served by the legacy
+   store until its credential row is backfilled.
 5. **Verify.** A migrated workspace answers with
    `database_status.database_state === "postgres"`; an unmigrated one still
    answers from Upstash with the plain "database not configured" notice.
