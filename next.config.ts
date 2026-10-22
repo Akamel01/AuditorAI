@@ -29,17 +29,20 @@ const API_ROUTES = [
   "/api/dev/discovery/jobs",
   "/api/dev/discovery/jobs/[id]",
   "/api/dev/discovery/jobs/[id]/cancel",
+  "/api/dev/discovery/proof",
   "/api/dev/health",
   "/api/dev/coverage",
   "/api/dev/odd",
   "/api/dev/readiness",
-  "/api/dev/debug",
   "/api/dev/tickets",
   "/api/dev/harvest-stream",
   "/api/dev/harvest-stream/[id]",
   "/api/dev/harvest-stream/[id]/pause",
   "/api/dev/harvest-stream/[id]/resume",
   "/api/dev/harvest-stream/[id]/stop",
+  "/api/dev/harvest-stream/secrets",
+  "/api/dev/vault",
+  "/api/dev/vault/sync",
 ];
 
 const RUNTIME_FILES = ["./policies/**/*", "./state/evidence-registry.json", "./state/odd-coverage.json", "./state/dedupe-index.json", "./state/discovery-ledger.json", "./workflow/wayfinder/**/*"];
