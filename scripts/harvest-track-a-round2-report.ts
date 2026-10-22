@@ -220,7 +220,11 @@ export function buildRound2Report(inputs: {
   );
   out.push("## 0. What round 2 did");
   out.push("");
-  out.push(`- **${candidates.length}** candidate URLs were examined; **${candidateLog.length}** of them were reached by the harvester (robots-permitted, at most 1 request per second per host).`);
+  const robotsRefused = candidateLog.filter((r) => r.reason.startsWith("robots")).length;
+  const httpRefused = candidateLog.filter((r) => r.reason.startsWith("http ")).length;
+  out.push(
+    `- **${candidates.length}** candidate URLs were examined; every one was processed by the harvester under the robots, rate, hash and licence gates. **${robotsRefused}** were refused on robots grounds and **${httpRefused}** on an HTTP error before any bytes were fetched.`,
+  );
   out.push(`- **${ingested.length}** documents were ingested (bytes written to the gitignored corpus shelf, rows appended to the intake manifest).`);
   out.push(`- **${newCoverage.length}** new coverage candidate(s) were created.`);
   out.push(

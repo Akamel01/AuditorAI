@@ -23,7 +23,7 @@ The counting rules are the round-1 rules, unchanged, so before and after are com
 
 ## 0. What round 2 did
 
-- **108** candidate URLs were examined; **108** of them were reached by the harvester (robots-permitted, at most 1 request per second per host).
+- **108** candidate URLs were examined; every one was processed by the harvester under the robots, rate, hash and licence gates. **13** were refused on robots grounds and **1** on an HTTP error before any bytes were fetched.
 - **30** documents were ingested (bytes written to the gitignored corpus shelf, rows appended to the intake manifest).
 - **0** new coverage candidate(s) were created.
 - The free-model pool was **not** used for triage. The free-model pool (http://ollama-gen-lb:11434) does not resolve from the runner, and the box runner's two concurrent run slots were occupied by other runs, so no pool probe could complete. Tier, stage, class and every coverage count are decided by the deterministic rules.
