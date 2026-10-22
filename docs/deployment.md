@@ -19,6 +19,38 @@ main is production: every push to `main` auto-deploys to production (`auditorai-
    - `ADMIN_KEY` *(optional, developer-only)* — gates the `/dev` page and `/api/dev/*`
      routes. Leave unset in production unless developer tooling is wanted; routes
      fail closed (unset key is indistinguishable from a wrong one).
+   - `POSTGRES_URL` — pooled connection string for the tenant store, pointed at the
+     `auditorai_app` role of a Supabase Postgres project in region `ca-central-1`
+     (see *Tenant store* below). Leave it empty to run on the legacy KV store with
+     the "database not configured" notice.
+
+## Tenant store — operator action before the merge (ACTION-1)
+
+The tenant store is **Supabase Postgres, region `ca-central-1`**, pinned in
+[`supabase/migrations/0001_tenant_schema.sql`](../supabase/migrations/0001_tenant_schema.sql:1).
+All nine tenant tables carry row-level security, enabled and forced, and the
+application reaches the database as the non-bypass `auditorai_app` role.
+
+**No agent applies the SQL.** The operator procedure — apply
+`0001` → `0002` → `0003` in order, set the `auditorai_app` password out of band,
+repoint `POSTGRES_URL` — is in [`supabase/README.md`](../supabase/README.md).
+
+**Ordering (ACTION-1).** The merge auto-deploys to Production: every push to
+`main` auto-deploys (region `iad1`, see line 5 above). So the operator applies
+`0001` → `0002` → `0003` **and** repoints `POSTGRES_URL` at the `auditorai_app`
+role **before the merge reaches Production**.
+
+**Until that is done the deployed code does not fail.** The credential lookup
+hits a schema that does not exist (SQLSTATE `42P01`), the request degrades to
+the legacy KV store, and the UI shows the plain "database not configured" notice
+(`src/lib/db-notice.ts`). That is a **notice, not a 503** — the request still
+succeeds with HTTP 200. The other case is different: a configured but
+unreachable database fails closed with 503 (`src/lib/db/errors.ts`), and a
+revoked credential answers 401.
+
+Cutover is per workspace, not per deployment: Postgres serves a workspace only
+once that workspace's credential resolves. The sub-processor register is
+[`docs/compliance/sub-processor-register.md`](compliance/sub-processor-register.md).
 
 ## Option B — Automatic deploys from CI
 

@@ -38,10 +38,17 @@ lib/
   evidence.ts                  evidence-registry access (getEvidence/tryGetEvidence); shared
                                by packs, pipeline nodes and scripts
    persistence.ts               DataStore{put,get,getMany,keys,delByPrefix} seam +
-                                Memory/KvRest adapters + Repository — sole owner of the key
-                                scheme (static key/prefix helpers; draft audits, attachments,
-                                artifact trails, immutable issue revisions per ADR-0004);
-                                StoreUnavailableError; resettable singleton for tests
+                                Memory/KvRest adapters + Repository — the Postgres tenant store
+                                (src/lib/db/) is the second implementation of this seam; the KV
+                                key scheme stays the sole owner of KV namespacing (static
+                                key/prefix helpers; draft audits, attachments, artifact trails,
+                                immutable issue revisions per ADR-0004); StoreUnavailableError;
+                                resettable singleton for tests
+   db/                          tenant store (Postgres, row-level security, auditorai_app
+                                role): config.ts (env gate, reads no secret), identity.ts
+                                (the ONE credential→tenant resolution), repository-factory.ts
+                                (Postgres vs legacy), tenant-store.ts (PostgresTenantRepository),
+                                pg-client.ts, sql.ts, errors.ts
    project-edits.ts             project/input-state write policy: creation validation,
                                 stage gate, never-silently-detach merge, provided-requires-
                                 substance invariant (CONTEXT.md: Input State)
@@ -63,7 +70,7 @@ scripts/lib/                  ← frontmatter.mjs + paths.mjs: shared vault pars
 |---|---|---|---|
 | Policy source | `getPack(jur)`, `listJurisdictions()` | files under `policies/` via injectable `PackIo` | jurisdictions are data; adding one = adding a pack |
 | Evidence | `getEvidence(id)` / `tryGetEvidence` | `state/evidence-registry.json` | provenance centralized; one lookup used by packs, nodes, scripts |
-| Persistence | `Repository` over `DataStore{put,get,getMany,keys,delByPrefix}` | `MemoryStore`, `KvRestStore` (Upstash/Vercel-KV REST) | free-tier KV now, DB later; zero caller changes |
+| Persistence | `Repository` over `DataStore{put,get,getMany,keys,delByPrefix}` | `MemoryStore`, `KvRestStore` (Upstash/Vercel-KV REST), `PostgresTenantRepository` (tenant store, ca-central-1, row-level security) | free-tier KV now, DB later; zero caller changes — the Postgres tenant store is the second implementation of the same seam |
 | AI reasoning | `AiAdapter.generateCandidates()` via `getAiAdapter()` registry | `OffAiAdapter` (default), `ZenAiAdapter` | determinism without AI; bounded artifacts only, schema-checked at the boundary |
 | LLM transport | `chatComplete`, `runInferenceLoop` (breaker/failover/budget/repair) | composed inside live adapters | resilience written once below the reasoning seam |
 | Input intake | `extractText(File)` docs; `buildImageAttachment` images | PDF/TXT/MD; PNG/JPEG/WebP | uploads never persisted raw; extraction failures surface explicitly |
