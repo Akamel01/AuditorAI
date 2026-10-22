@@ -1,13 +1,13 @@
 {
  "version": "1.0.0",
  "created": "2026-09-14T00:00:00Z",
- "updated": "2026-10-21T21:05:00Z",
+ "updated": "2026-10-22T04:20:00Z",
  "ticket": "#53",
  "branch": "oc/53",
  "pull_request": "https://github.com/Akamel01/AuditorAI/pull/59",
  "objective": "Ticket #53 \u2014 Supabase Postgres in ca-central-1 as the tenant store, with row-level security (G-2, G-8)",
- "phase": "integration-GO",
- "loop": 2,
+ "phase": "pr-open",
+ "loop": 3,
  "modules": [
   "M1",
   "M2",
@@ -16,10 +16,11 @@
   "M5",
   "M6",
   "M7",
-  "M8"
+  "M8",
+  "M9"
  ],
- "execution": "8 modules implemented in 4 waves (W0 M1||M2, W1 M3, W2 M4||M5, W3 M6||M7, W4 M8); all approved after a fix pass that closed 9 of 10 review findings (M1-1 deferred as defence in depth). PR #59 opened on oc/53.",
- "validation": "GO WITH NOTES (validator) + CLEAR (investigation sweep). Two validator notes closed in f9319bc (SQL header comment + cap tests for the Postgres store). Remaining risks are documented in .autoforge/validation/investigation-t53.md.",
+ "execution": "8 modules implemented in 4 waves (W0 M1||M2, W1 M3, W2 M4||M5, W3 M6||M7, W4 M8); all approved after a fix pass that closed 9 of 10 review findings (M1-1 deferred as defence in depth). PR #59 opened on oc/53. M9 (review feedback on PR #59): the tenant path is now EXPLICIT — it runs only when TENANT_STORE=postgres and reads TENANT_POSTGRES_URL (the auditorai_app role); POSTGRES_URL (platform-injected, owner) is never read by the app, so the live MVP cannot break at merge time. 5 commits on oc/53 (2763d8d, e6cdb17, b22a451, a59d521, 8368c63); PR #59 body updated.",
+ "validation": "GO WITH NOTES (validator) + CLEAR (investigation sweep). Two validator notes closed in f9319bc (SQL header comment + cap tests for the Postgres store). Remaining risks are documented in .autoforge/validation/investigation-t53.md. M9: reviewer verdict CHANGES_REQUIRED (the cutover test could not fail without the switch) -> fixed in a59d521 (case (d) added + source scan hardened) -> re-review APPROVED_WITH_NOTES -> 2 wording notes closed in 8368c63. Suite: 77 files, 821 passed, 2 skipped; lint/typecheck green.",
  "artifacts": [
   ".autoforge/discovery/report-t53.md",
   ".autoforge/discovery/tracker-index-t53.md",
@@ -41,6 +42,8 @@
   ".autoforge/reviews/M2-M3.md",
   ".autoforge/reviews/M4-M5.md",
   ".autoforge/reviews/M6-M7-M8.md",
+  ".autoforge/execution/M9.md",
+  ".autoforge/reviews/M9.md",
   ".autoforge/validation/report-t53.md",
   ".autoforge/validation/investigation-t53.md",
   ".autoforge/decisions/need-human.md"
