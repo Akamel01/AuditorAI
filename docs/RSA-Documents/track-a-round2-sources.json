@@ -1,0 +1,428 @@
+{
+  "schema_version": "1.0.0",
+  "source_of_record": "GH:Akamel01/AuditorAI#60",
+  "plan": "docs/RSA-Documents/HARVESTING_PLAN.md §3 (ODD matrix and priority cells), §5 (Track A access paths), §7 (split). The plan lives in the operator checkout (/Users/akamel/Documents/AuditorAI) and is read-only; docs/RSA-Documents/track-a-sources.json remains the Track A source list of record and this file is the round-2 list of record.",
+  "note": "Round 2 is Track A with a wider net: the same rules (public, free, no-login, robots-permitted, <=1 req/s per host), a different discovery channel. Every source here is a SEARCH source: the discovery channel is agent-reach's zero-config Jina Reader channel over a search engine (agent-reach's Exa branch needs keys that are not provisioned, so it is unavailable - recorded in the round-2 report). Because a search returns candidates from many hosts, `host` below names the DISCOVERY host, while the licence and the province of each candidate are resolved per candidate from `host_licences` and `province_hints`.",
+  "user_agent": "AuditorAI-RSA-Harvest/1.0 (+public documents only)",
+  "discovery": {
+    "channel": "agent-reach/jina-reader",
+    "engine": "duckduckgo-html",
+    "engine_url_template": "https://r.jina.ai/https://html.duckduckgo.com/html/?q={query}",
+    "agent_reach_reference": "/home/oc/.agents/skills/agent-reach/SKILL.md (零配置快速命令 -> 通用网页阅读), references/web.md",
+    "unavailable_channels": [
+      "agent-reach Exa via mcporter (mcporter not installed, EXA_API_KEY absent)",
+      "agent-reach doctor --json (the agent-reach binary is not installed)",
+      "direct scraping of html.duckduckgo.com / lite.duckduckgo.com (anti-bot challenge), mojeek (403), search.brave.com (429), searx.be (browser verification), bing (JS-wrapped markup)",
+      "s.jina.ai Jina Search API (401 without a key)"
+    ],
+    "politeness": {
+      "min_interval_ms": 1000,
+      "max_concurrent_per_host": 1,
+      "note": "1 request/second per host via src/discovery/ratelimit.ts withHostBudget. The discovery host is r.jina.ai; candidate hosts are contacted only by the harvester, which honours each host's robots.txt and crawl delay (src/discovery/robots.ts)."
+    },
+    "model_triage": "The free-model pool (http://ollama-gen-lb:11434) does not resolve from the runner, and the box runner's two concurrent run slots were occupied by other runs, so no pool probe could complete.",
+    "notes": [
+      "Two channels. enumeration: the repo's own robots-checked listing strategies (src/discovery/robots.ts + scripts/harvest-track-a.ts), run by scripts/harvest-round2-discover.ts - fully repeatable. operator-discovery-pass: the URL's location was established in the operator's discovery pass; the general web-search backends that would find it are unavailable to a robots-compliant, keyless runner (see .autoforge/execution/M1.md for the full channel table). The documents are fetched by the harvester from their origin host under the robots, rate, hash and licence gates either way.",
+      "Model triage: none. The free-model pool (http://ollama-gen-lb:11434) does not resolve from the runner, so tier, stage, class and coverage are decided by the deterministic rules (scripts/harvest-track-a.ts)."
+    ]
+  },
+  "split_rule": {
+    "test_provinces": [
+      "QC",
+      "AB"
+    ],
+    "train_provinces": "* (every province not in test_provinces)",
+    "quarantine": "documents whose licence verdict is not CLEAR are never train and never test",
+    "note": "mirrors docs/RSA-Documents/track-a-sources.json and scripts/harvest-track-a.ts:38 (TEST_PROVINCES = QC, AB). The ticket's phrase 'the held-out prairie province' is read as Alberta per the code; Manitoba is NOT harvested in round 2 and stays in the gaps table (split-rule conflict flagged for the owner)."
+  },
+  "hash_rule": {
+    "known_hash_sources": [
+      "docs/RSA-Documents/track-a-ondisk-inventory.jsonl",
+      "docs/RSA-Documents/dedupe-index.json",
+      "docs/RSA-Documents/corpus-catalog.json"
+    ],
+    "skip_reason": "hash-already-present",
+    "note": "A document whose sha256 is already in the union of those three sets is never written to disk and never enters the intake manifest. The gate runs AFTER the bytes arrive: such a document is downloaded in full and then discarded, never re-ingested. The candidate log records it as dedupe_status=hash-already-present."
+  },
+  "byte_cap": {
+    "cap_bytes": 5368709120,
+    "per_document_cap_bytes": 104857600,
+    "note": "The 5 GB cap is cumulative over the corpus on the runner, not per round; a single document may not exceed 100 MiB. Both are enforced before any byte is written to disk."
+  },
+  "source_types": [
+    "municipal-agenda-package",
+    "ea-class-ea-study",
+    "university-repository",
+    "conference-proceedings",
+    "provincial-ministry-report",
+    "open-data-portal",
+    "direct-known-document"
+  ],
+  "sources": [
+    {
+      "id": "r2-municipal",
+      "host": "html.duckduckgo.com",
+      "family": "Municipal council and committee agenda packages (RSAs attached as appendices)",
+      "source_type": "municipal-agenda-package",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" filetype:pdf site:calgary.ca",
+        "\"road safety audit\" filetype:pdf site:niagararegion.ca",
+        "\"road safety audit\" filetype:pdf site:mississauga.ca",
+        "\"road safety audit\" filetype:pdf site:ottawa.ca",
+        "\"road safety audit\" filetype:pdf site:toronto.ca",
+        "\"road safety audit\" filetype:pdf site:edmonton.ca",
+        "\"road safety audit\" filetype:pdf site:winnipeg.ca",
+        "\"road safety audit\" filetype:pdf site:vancouver.ca",
+        "\"road safety audit\" filetype:pdf site:quebec.ca",
+        "\"road safety audit\" \"appendix\" filetype:pdf council",
+        "\"road safety audit\" \"committee\" filetype:pdf city",
+        "\"audit de sécurité routière\" filetype:pdf ville"
+      ],
+      "robots_hint": "municipal hosts vary; each candidate host's own robots.txt is checked at fetch time and its crawl delay honoured",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (municipal works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://www.canada.ca/en/crown-indigenous-relations-northern-affairs/news/2024/02/crown-copyright.html"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 4,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "operator-discovery-pass",
+        "strategy": null,
+        "listing_url": null
+      }
+    },
+    {
+      "id": "r2-ea-study",
+      "host": "html.duckduckgo.com",
+      "family": "Environmental Assessment and Class EA study reports (RSAs as appendices)",
+      "source_type": "ea-class-ea-study",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" \"environmental study report\" filetype:pdf",
+        "\"road safety audit\" \"class environmental assessment\" filetype:pdf",
+        "\"road safety audit\" \"transportation master plan\" filetype:pdf",
+        "\"road safety audit\" \"functional study\" filetype:pdf",
+        "\"road safety audit\" \"environmental assessment\" filetype:pdf canada",
+        "\"road safety audit\" appendix \"study report\" filetype:pdf canada"
+      ],
+      "robots_hint": "provincial/municipal hosts; robots.txt checked per candidate host at fetch time",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (provincial or municipal EA reports) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://www.canada.ca/en/crown-indigenous-relations-northern-affairs/news/2024/02/crown-copyright.html"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 3,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "operator-discovery-pass",
+        "strategy": null,
+        "listing_url": null
+      }
+    },
+    {
+      "id": "r2-university",
+      "host": "html.duckduckgo.com",
+      "family": "University repositories (theses and reports)",
+      "source_type": "university-repository",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" site:unb.ca",
+        "\"road safety audit\" site:unbscholar.lib.unb.ca",
+        "\"road safety audit\" site:circle.ubc.ca",
+        "\"road safety audit\" site:uwspace.uwaterloo.ca",
+        "\"road safety audit\" site:tspace.library.utoronto.ca",
+        "\"road safety audit\" site:corpus.ulaval.ca",
+        "\"road safety audit\" site:papyrus.bib.umontreal.ca",
+        "\"road safety audit\" site:umontreal.scholaris.ca",
+        "\"road safety audit\" thesis filetype:pdf canada"
+      ],
+      "robots_hint": "institutional repository hosts; robots.txt checked per candidate host at fetch time",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Published by the institution, no open licence stated on the record - reuse needs owner sign-off",
+        "licence_ref": "https://www.unb.ca/research/transportation-group/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 2,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "operator-discovery-pass",
+        "strategy": null,
+        "listing_url": null
+      }
+    },
+    {
+      "id": "r2-conference",
+      "host": "html.duckduckgo.com",
+      "family": "Conference proceedings (TAC, CITE and similar free proceedings)",
+      "source_type": "conference-proceedings",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" site:conf.tac-atc.ca",
+        "\"road safety audit\" site:tac-atc.ca",
+        "\"road safety audit\" filetype:pdf conference canada",
+        "\"road safety audit\" proceedings filetype:pdf canada",
+        "\"audit de sécurité routière\" filetype:pdf conférence"
+      ],
+      "robots_hint": "conference hosts; robots.txt checked per candidate host at fetch time",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Member-organisation publications (TAC); terms-bound, no bulk reuse without owner sign-off",
+        "licence_ref": "https://www.tac-atc.ca/"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 2,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "operator-discovery-pass",
+        "strategy": null,
+        "listing_url": null
+      }
+    },
+    {
+      "id": "r2-ministry",
+      "host": "html.duckduckgo.com",
+      "family": "Provincial ministry reports, English and French (MTO, BC MoTI, Alberta, MTQ, Maritimes)",
+      "source_type": "provincial-ministry-report",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" site:www2.gov.bc.ca",
+        "\"road safety audit\" site:mto.gov.on.ca",
+        "\"road safety audit\" site:transports.gouv.qc.ca",
+        "\"road safety audit\" site:alberta.ca",
+        "\"road safety audit\" site:transportation.alberta.ca",
+        "\"road safety audit\" site:gnb.ca",
+        "\"road safety audit\" site:saskatchewan.ca",
+        "\"road safety audit\" site:novia.net",
+        "\"audit de sécurité routière\" filetype:pdf",
+        "\"audit de sécurité routière\" site:transports.gouv.qc.ca"
+      ],
+      "robots_hint": "provincial hosts; robots.txt checked per candidate host at fetch time",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Crown copyright (provincial government works) - public access, reuse needs owner sign-off",
+        "licence_ref": "https://www.canada.ca/en/crown-indigenous-relations-northern-affairs/news/2024/02/crown-copyright.html"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 3,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "enumeration",
+        "strategy": "sitemap-keyword",
+        "listing_url": "https://www2.gov.bc.ca/sitemap/sitemap_index.xml",
+        "url_keywords": [
+          "/t02-",
+          "road-safety-audit",
+          "safety-audit"
+        ],
+        "max_listing_pages": 12,
+        "max_candidates": 40
+      }
+    },
+    {
+      "id": "r2-opendata",
+      "host": "html.duckduckgo.com",
+      "family": "Open-data portals (Alberta, Canada, Montreal, Nova Scotia)",
+      "source_type": "open-data-portal",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" site:open.alberta.ca",
+        "\"road safety audit\" site:open.canada.ca",
+        "\"road safety audit\" site:donnees.montreal.ca",
+        "\"road safety audit\" site:open.gov.ns.ca",
+        "\"road safety audit\" site:open.alberta.ca/dataset"
+      ],
+      "robots_hint": "CKAN portals disallow /api/ in robots.txt; only document URLs are fetched, never the API",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "Open-data portal: the verdict follows the portal's own licence, resolved per host in host_licences",
+        "licence_ref": "https://open.canada.ca/en/open-government-licence-canada"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 2,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "enumeration",
+        "strategy": "html-listing-pdf",
+        "listing_url": "https://open.alberta.ca/publications?q=%22road+safety+audit%22",
+        "url_keywords": [
+          "road-safety-audit",
+          "safety-audit"
+        ],
+        "max_listing_pages": 6,
+        "max_candidates": 12
+      }
+    },
+    {
+      "id": "r2-direct",
+      "host": "html.duckduckgo.com",
+      "family": "General public search for completed Canadian road safety audit documents (documents reached directly, not through a portal index)",
+      "source_type": "direct-known-document",
+      "strategy": "candidate-list",
+      "listing_url": null,
+      "queries": [
+        "\"road safety audit\" filetype:pdf site:ca",
+        "\"road safety audit\" \"audit report\" filetype:pdf canada"
+      ],
+      "robots_hint": "each candidate host's own robots.txt is checked at fetch time and its crawl delay honoured",
+      "licence_default": {
+        "verdict": "RESTRICTED",
+        "basis": "No published open licence on the host; Crown copyright assumed pending owner sign-off",
+        "licence_ref": "https://www.canada.ca/en/crown-indigenous-relations-northern-affairs/news/2024/02/crown-copyright.html"
+      },
+      "stage_hint": "UNSTAGED",
+      "ca_province_hint": "",
+      "doc_type_hint": "",
+      "expected_yield_estimate": 2,
+      "max_downloads": 40,
+      "discovery": {
+        "channel": "operator-discovery-pass",
+        "strategy": null,
+        "listing_url": null
+      }
+    }
+  ],
+  "host_licences": {
+    "open.alberta.ca": {
+      "verdict": "CLEAR",
+      "basis": "Open Government Licence - Alberta (open data portal)",
+      "licence_ref": "https://open.alberta.ca/opendata/licence"
+    },
+    "donnees.montreal.ca": {
+      "verdict": "CLEAR",
+      "basis": "Quebec open data licence (Liibre) as published on the portal",
+      "licence_ref": "https://donnees.montreal.ca/"
+    },
+    "open.canada.ca": {
+      "verdict": "CLEAR",
+      "basis": "Open Government Licence - Canada",
+      "licence_ref": "https://open.canada.ca/en/open-government-licence-canada"
+    }
+  },
+  "province_hints": {
+    "calgary.ca": "AB",
+    "open.alberta.ca": "AB",
+    "transportation.alberta.ca": "AB",
+    "alberta.ca": "AB",
+    "niagararegion.ca": "ON",
+    "mississauga.ca": "ON",
+    "ottawa.ca": "ON",
+    "toronto.ca": "ON",
+    "mto.gov.on.ca": "ON",
+    "www2.gov.bc.ca": "BC",
+    "gov.bc.ca": "BC",
+    "transports.gouv.qc.ca": "QC",
+    "bv.transports.gouv.qc.ca": "QC",
+    "cdn-contenu.quebec.ca": "QC",
+    "quebec.ca": "QC",
+    "donnees.montreal.ca": "QC",
+    "unb.ca": "NB",
+    "unbscholar.lib.unb.ca": "NB",
+    "gnb.ca": "NB",
+    "saskatchewan.ca": "SK",
+    "novia.net": "NS",
+    "open.gov.ns.ca": "NS"
+  },
+  "unfillable": [
+    {
+      "family": "Quebec provincial (Ville de Quebec / Quebec government)",
+      "host": "www.quebec.ca",
+      "reason": "HTTP 403 bot protection on both robots.txt and the landing page for our neutral UA; no public listing reachable without a browser session. The ministry's CDN host (cdn-contenu.quebec.ca) and its document library (www.bv.transports.gouv.qc.ca) stay reachable and are harvested as part of r2-ministry.",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Ottawa (open data portal)",
+      "host": "open.ottawa.ca",
+      "reason": "JavaScript-only single page application; robots.txt returns 404; no server-rendered listing to read. Round 2 searches for Ottawa documents through the search channel instead, which reaches document URLs directly.",
+      "track_input": "Track C (headless browse)"
+    },
+    {
+      "family": "Ottawa (eSCRIBE meeting documents)",
+      "host": "pub-ottawa.escribemeetings.com",
+      "reason": "Listing is a JS bundle (/bundles/MeetingList); no server-rendered document index",
+      "track_input": "Track C"
+    },
+    {
+      "family": "Manitoba open data portal",
+      "host": "data.gov.mb.ca",
+      "reason": "DNS NXDOMAIN - portal retired",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Manitoba government",
+      "host": "www.gov.mb.ca",
+      "reason": "robots.txt disallows / for GPTBot, ClaudeBot, CCBot and Scrapy; neutral UA is permitted, but Manitoba is also a candidate held-out test geography, so it is left to the split rule and NOT harvested in round 2",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Saskatchewan open data",
+      "host": "open.saskatchewan.ca",
+      "reason": "DNS NXDOMAIN",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Saskatchewan government",
+      "host": "www.saskatchewan.ca",
+      "reason": "Reachable, but the open-data listing path returns 404 and no document index is published",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "MRDC / MUNIAC (University of Manitoba transportation research)",
+      "host": "www.muniac.ca",
+      "reason": "DNS NXDOMAIN; the entity is not referenced anywhere in the repo corpus",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Prince Edward Island, Newfoundland and Labrador, and the territories",
+      "host": null,
+      "reason": "No public, no-login document listing identified for PE, NL, Yukon, NWT or Nunavut; the ODD matrix has no native stage for them either",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Pre-opening stage audits (all provinces)",
+      "host": null,
+      "reason": "ca-tac:pre-opening has no canonical stage in policies/odd.json, so a pre-opening RSA can never enter a coverage cell even when found. This is a structural gap, not a search failure.",
+      "track_input": "Track B (operator) or Track C"
+    },
+    {
+      "family": "Montreal open data (Ville de Montreal)",
+      "host": "donnees.montreal.ca",
+      "reason": "The portal publishes data (CSV/GeoJSON), not audit reports; the full catalogue is client-rendered and the CKAN API is robots-disallowed. Round 2 reaches Montreal document URLs through the search channel instead.",
+      "track_input": "Track C (headless browse)"
+    },
+    {
+      "family": "City of Toronto",
+      "host": "www.toronto.ca",
+      "reason": "www.toronto.ca/sitemap.xml is a sitemap index whose sub-sitemaps cover only the WordPress tree (no PDF URLs). The City's road safety audit reports live under /legdocs/mmis/<year>/<committee_code>/bgrd/backgroundfile-<id>.pdf; the directory has no listing, the ids are opaque and the council agenda service answers 403 to a neutral UA. Round 2 reaches Toronto document URLs through the search channel instead.",
+      "track_input": "Track C (search engine) or Track B (operator)"
+    },
+    {
+      "family": "UNB Transportation Group / MRDC",
+      "host": "www.unb.ca",
+      "reason": "The host answers every request with a 'UNB.ca temporarily unavailable' page to public-facing UAs. The single known PDF (rsa-guidelines.pdf) was fetched by the first Track A run and is already in the manifest.",
+      "track_input": "Track C (university agreement)"
+    }
+  ]
+}

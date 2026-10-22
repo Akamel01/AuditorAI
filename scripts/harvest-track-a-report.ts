@@ -68,6 +68,8 @@ export interface ManifestRow {
   source_id?: string;
   /** Where the fetched file was written (M2). */
   local_path?: string;
+  /** Which harvest round produced the row; round 2 rows are excluded here. */
+  round?: string;
 }
 
 export interface SourceEntry {
@@ -293,10 +295,14 @@ export function mergeRows(
 /** Build the whole report. Pure: same inputs, same bytes. */
 export function buildReport(
   inventory: InventoryRow[],
-  manifest: ManifestRow[],
+  manifestAll: ManifestRow[],
   coverage: Coverage,
   context: ReportContext,
 ): string {
+  // This report is the record of round 1 (ticket #40). Round 2 (ticket #60)
+  // appends rows to the same manifest and has its own report; filtering here
+  // keeps the round-1 report byte-identical without regenerating it.
+  const manifest = manifestAll.filter((row) => (row as { round?: string }).round !== "2");
   const { sources, unfillable, licence, duplicates } = context;
   const rows = mergeRows(inventory, manifest, licence);
   const all = rows; // row set A
@@ -636,7 +642,7 @@ function main(): void {
   );
   const manifest = readJsonl<ManifestRow>(
     path.join(repo, "docs/RSA-Documents/canada-intake-manifest.jsonl"),
-  );
+  ).filter((row) => (row as { round?: string }).round !== "2");
   const coverage = JSON.parse(readFileSync(path.join(repo, "state/odd-coverage.json"), "utf8")) as Coverage;
   const sources = JSON.parse(
     readFileSync(path.join(repo, "docs/RSA-Documents/track-a-sources.json"), "utf8"),

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "ticket": "Akamel01/AuditorAI#60",
+  "note": "The 5 GB cap is cumulative over the corpus on the runner, not per round; a single document may not exceed 100 MiB. Both limits are enforced before any byte is written to disk.",
+  "cap_bytes": 5368709120,
+  "per_document_cap_bytes": 104857600,
+  "corpus_bytes_before": 149080,
+  "downloaded_this_round": 51177492,
+  "corpus_bytes_after": 51326572,
+  "remaining_bytes": 5317382548,
+  "skipped_for_cap": []
+}
