@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/dev-harvest-stream-request.schema.json",
+  "title": "POST /api/dev/harvest-stream request body",
+  "description": "Shape only; the body is optional (an absent body is {}).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "live": { "type": "boolean" },
+    "cellKey": { "type": ["string", "null"] },
+    "continuous": { "type": "boolean" }
+  }
+}

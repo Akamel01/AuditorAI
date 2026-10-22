@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/issue-request.schema.json",
+  "title": "POST /api/projects/[projectId]/audits/[auditId]/issues request body",
+  "description": "Shape only. The override must name a reviewer; that rule stays a domain 400 (src/app/api/projects/[projectId]/audits/[auditId]/issues/route.ts:94-96).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "evidence_override": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "auditor_pseudonym": { "type": "string" },
+        "note": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

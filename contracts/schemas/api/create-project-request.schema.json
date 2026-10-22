@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/create-project-request.schema.json",
+  "title": "POST /api/projects request body",
+  "description": "Shape only. The non-empty name, the presence of jurisdiction/native_stage_id and the stage lookup stay domain rules and keep their 400 (src/domain/project-edits.ts:53-57).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string" },
+    "jurisdiction": { "type": "string", "enum": ["INT", "UK", "US", "CA", "AE"] },
+    "native_stage_id": { "type": "string" },
+    "description": { "type": "string" },
+    "scheme_summary": { "type": "string" },
+    "authority": { "type": "string" },
+    "location": { "type": "string" }
+  }
+}
