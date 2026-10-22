@@ -30,7 +30,7 @@ The counting rules are the round-1 rules, unchanged, so before and after are com
 
 ## 1. AC1 — ODD coverage versus the targets, before and after
 
-"Before" is the corpus at the round-1 state (the manifest rows without `round: "2"`); "after" is the same corpus with the round-2 rows added. The rule set is identical, so the two are comparable.
+`Before` is the corpus at the round-1 state - the manifest rows without `round: "2"`, as committed at the base commit of this branch (`4d776ca196b35ca33568fbe53872e428d9119740`); `after` is the same corpus with the round-2 rows added. The rule set is identical, so the two are comparable.
 
 | ODD cell | target | priority | before have | after have | before usable (CLEAR) | after usable (CLEAR) | gap before | gap after | moved |
 |---|---|---|---|---|---|---|---|---|---|
@@ -138,7 +138,7 @@ The language split is a **heuristic**, not a language model: `detectLang` counts
 
 Source **type** is the closed taxonomy of the round-2 source list. Every ingested document maps to exactly one type; no document is counted under two types and no sha256 is counted under two cells.
 
-| source type | hosts tried | candidate URLs seen | candidates rejected | docs ingested | in-scope Canadian RSA T3/T4 | licence state of ingested | yield % |
+| source type | hosts the candidates live on | candidate URLs seen | candidates rejected | docs ingested | in-scope Canadian RSA T3/T4 | licence state of ingested | yield % |
 |---|---|---|---|---|---|---|---|
 | `municipal-agenda-package` | 4 | 11 | 6 | 5 | 0 | RESTRICTED | 0.0% |
 | `ea-class-ea-study` | 22 | 26 | 12 | 14 | 0 | RESTRICTED | 0.0% |
@@ -183,7 +183,7 @@ Each row names the family, the mechanism that still blocks it, how it was verifi
 
 ### The 5 GB cap
 
-- cap 5368709120 bytes (5 GiB) over the whole corpus on the runner, per document at most 104857600 bytes (100 MiB); the corpus held 74540 bytes before this round and 51252032 after; 51177492 bytes were downloaded; 0 candidate(s) were refused with reason `byte-cap`.
+- cap 5368709120 bytes (5 GiB) over the whole corpus on the runner, per document at most 104857600 bytes (100 MiB); the corpus held 74540 bytes before this round and 51252032 after; 51177492 bytes were WRITTEN to the corpus shelf and 139419291 bytes went over the wire (the difference is what the known-hash gate downloaded in full and then discarded); 0 candidate(s) were refused with reason `byte-cap`.
 
 ### What this round could not do
 

@@ -11,7 +11,7 @@ import {
   type ManifestRow,
 } from "../../scripts/harvest-track-a-report";
 import { buildRound2Report } from "../../scripts/harvest-track-a-round2-report";
-import { BYTE_CAP_BYTES, PER_DOCUMENT_CAP_BYTES } from "../../scripts/harvest-track-a";
+import { BYTE_CAP_BYTES, PER_DOCUMENT_CAP_BYTES, detectStageWithSource } from "../../scripts/harvest-track-a";
 
 // Offline: every input is a committed file in this repo. No network, no model call.
 const REPO = process.cwd();
@@ -105,6 +105,21 @@ describe("harvest round 2 report (ticket #60)", () => {
     expect(build()).not.toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
   });
 
+  it("maps French stage words to a canonical stage (R32)", () => {
+    expect(detectStageWithSource("Audit de securite routiere - etude preliminaire", "UNSTAGED").stage).toBe(
+      "PRELIMINARY_DESIGN",
+    );
+    expect(detectStageWithSource("Audit de securite routiere - rapport detaille", "UNSTAGED").stage).toBe(
+      "DETAILED_DESIGN",
+    );
+    expect(detectStageWithSource("Audit avant ouverture", "UNSTAGED").stage).toBe("PRE_OPENING");
+    expect(detectStageWithSource("Planification et etude de faisabilite", "UNSTAGED").stage).toBe(
+      "FEASIBILITY_CONCEPT",
+    );
+    // a French document that names no stage still falls back to the hint
+    expect(detectStageWithSource("Rapport", "UNSTAGED").stage).toBe("UNSTAGED");
+  });
+
   it("states the four acceptance criteria as report sections", () => {
     const report = build();
     expect(report).toContain("AC1 — ODD coverage versus the targets, before and after");
@@ -142,6 +157,13 @@ describe("harvest round 2 report (ticket #60)", () => {
   });
 
   it("keeps the round-1 coverage numbers as the 'before' column", () => {
+    // the round-1 numbers, pinned: FEASIBILITY_CONCEPT 1, PRELIMINARY_DESIGN 0,
+    // DETAILED_DESIGN 1 (docs/RSA-Documents/track-a-harvest-report.md §1)
+    const pinned: Record<string, string> = {
+      "canada:FEASIBILITY_CONCEPT": "1",
+      "canada:PRELIMINARY_DESIGN": "0",
+      "canada:DETAILED_DESIGN": "1",
+    };
     // The round-1 report is the record of the round-1 state; the round-2
     // report's before column must agree with it.
     const before = mergeRows(inventory, round1Manifest, licence);
@@ -155,6 +177,7 @@ describe("harvest round 2 report (ticket #60)", () => {
       const cells = (row as string).split("|").map((c) => c.trim());
       // | cell | target | priority | before have | after have | ...
       expect(cells[4]).toBe(String(have));
+      expect(cells[4]).toBe(pinned[cellKey]);
     }
   });
 

@@ -28,6 +28,8 @@ import {
 } from "./harvest-track-a-report.js";
 
 const REPO = process.cwd();
+/** The commit the branch was cut from: the "before" column is the corpus as committed there. */
+const BASE_COMMIT = "4d776ca196b35ca33568fbe53872e428d9119740";
 const INVENTORY = "docs/RSA-Documents/track-a-ondisk-inventory.jsonl";
 const MANIFEST = "docs/RSA-Documents/canada-intake-manifest.jsonl";
 const SOURCES = "docs/RSA-Documents/track-a-round2-sources.json";
@@ -235,7 +237,11 @@ export function buildRound2Report(inputs: {
   // ---- section 1: AC1 coverage before and after -----------------------------------
   out.push("## 1. AC1 — ODD coverage versus the targets, before and after");
   out.push("");
-  out.push("\"Before\" is the corpus at the round-1 state (the manifest rows without `round: \"2\"`); \"after\" is the same corpus with the round-2 rows added. The rule set is identical, so the two are comparable.");
+  out.push(
+    "`Before` is the corpus at the round-1 state - the manifest rows without `round: \"2\"`, as committed at the base commit of this branch (`" +
+      BASE_COMMIT +
+      "`); `after` is the same corpus with the round-2 rows added. The rule set is identical, so the two are comparable.",
+  );
   out.push("");
   out.push(
     "| ODD cell | target | priority | before have | after have | before usable (CLEAR) | after usable (CLEAR) | gap before | gap after | moved |",
@@ -446,7 +452,7 @@ export function buildRound2Report(inputs: {
   const attemptedTypes = new Set(
     candidates.map((c) => c.source_type ?? sourceById.get(c.source_id)?.source_type ?? "unknown"),
   );
-  out.push("| source type | hosts tried | candidate URLs seen | candidates rejected | docs ingested | in-scope Canadian RSA T3/T4 | licence state of ingested | yield % |");
+  out.push("| source type | hosts the candidates live on | candidate URLs seen | candidates rejected | docs ingested | in-scope Canadian RSA T3/T4 | licence state of ingested | yield % |");
   out.push("|---|---|---|---|---|---|---|---|");
   for (const sourceType of SOURCE_TYPES) {
     const typeCandidates = candidates.filter(
@@ -572,10 +578,11 @@ export function buildRound2Report(inputs: {
       corpus_bytes_before: number;
       corpus_bytes_after: number;
       downloaded_this_round: number;
+      fetched_this_round: number;
       skipped_for_cap: string[];
     };
     out.push(
-      `- cap ${b.cap_bytes} bytes (5 GiB) over the whole corpus on the runner, per document at most ${b.per_document_cap_bytes} bytes (100 MiB); the corpus held ${b.corpus_bytes_before} bytes before this round and ${b.corpus_bytes_after} after; ${b.downloaded_this_round} bytes were downloaded; ${b.skipped_for_cap?.length ?? 0} candidate(s) were refused with reason \`byte-cap\`.`,
+      `- cap ${b.cap_bytes} bytes (5 GiB) over the whole corpus on the runner, per document at most ${b.per_document_cap_bytes} bytes (100 MiB); the corpus held ${b.corpus_bytes_before} bytes before this round and ${b.corpus_bytes_after} after; ${b.downloaded_this_round} bytes were WRITTEN to the corpus shelf and ${b.fetched_this_round} bytes went over the wire (the difference is what the known-hash gate downloaded in full and then discarded); ${b.skipped_for_cap?.length ?? 0} candidate(s) were refused with reason \`byte-cap\`.`,
     );
   } else {
     out.push("- no byte-accounting file was written: the round never ran.");
