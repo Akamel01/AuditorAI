@@ -6,6 +6,7 @@
   "phase": "pr-open",
   "loop": 5,
   "branch": "oc/40",
+  "pull_request": "https://github.com/Akamel01/AuditorAI/pull/58",
   "ticket": "Akamel01/AuditorAI#40",
   "modules": ["M5", "M6", "M7"],
   "artifacts": [
