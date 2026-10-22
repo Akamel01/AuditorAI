@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "version": "1.0.0",
   "created": "2026-09-14T00:00:00Z",
   "updated": "2026-10-22T00:00:00Z",
@@ -10,10 +11,84 @@
   "ticket": "Akamel01/AuditorAI#40",
   "modules": ["M5", "M6", "M7"],
   "artifacts": [
+=======
+ "version": "1.0.0",
+ "created": "2026-09-14T00:00:00Z",
+ "updated": "2026-10-21T19:10:00Z",
+ "objective": "Ticket #53 \u2014 Supabase Postgres in ca-central-1 as the tenant store, with row-level security (G-2, G-8)",
+ "phase": "integration-GO",
+ "loop": 2,
+ "modules": [
+  "M1",
+  "M2",
+  "M3",
+  "M4",
+  "M5",
+  "M6",
+  "M7",
+  "M8"
+ ],
+ "execution": "8 modules implemented in 4 waves (W0 M1||M2, W1 M3, W2 M4||M5, W3 M6||M7, W4 M8); all approved after a fix pass that closed 9 of 10 review findings (M1-1 deferred as defence in depth). PR #59 opened on oc/53 (9 commits).",
+ "validation": "GO \u2014 every acceptance criterion evidenced in the PR body; lint 0, typecheck 0, test 0 (73 files / 710 passed / 2 skipped), build 0 with every Supabase env unset. No live-project call (verified by grep over package.json and both CI workflows).",
+ "artifacts": [
+  ".autoforge/discovery/report-t53.md",
+  ".autoforge/discovery/tracker-index-t53.md",
+  ".autoforge/requirements/grilling-t53.md",
+  ".autoforge/architecture/report-t53.md",
+  ".autoforge/architecture/decisions-t53.md",
+  ".autoforge/plans/plan-t53.md",
+  ".autoforge/execution/work-order-t53.json",
+  ".autoforge/execution/M1.md",
+  ".autoforge/execution/M2.md",
+  ".autoforge/execution/M3.md",
+  ".autoforge/execution/M4.md",
+  ".autoforge/execution/M5.md",
+  ".autoforge/execution/M6.md",
+  ".autoforge/execution/M7.md",
+  ".autoforge/execution/M8.md",
+  ".autoforge/reviews/plan-critique-t53.md",
+  ".autoforge/reviews/M1.md",
+  ".autoforge/reviews/M2-M3.md",
+  ".autoforge/reviews/M4-M5.md",
+  ".autoforge/reviews/M6-M7-M8.md",
+  ".autoforge/decisions/need-human.md"
+ ],
+ "incidents": [
+  "discovery agent returned write-up without writing artifacts; orchestrator wrote both inline from verified findings",
+  "M-A1 test beforeEach rm DELETED live 7.8MB state/discovery-ledger.json during worker test run; restored origin/main 1050-entry version byte-identical (Sep13-14 live rows lost, disclosed)",
+  "worktree has stale untracked src/**/*.js twins shadowing .ts under vitest+eslint (foreign build output; poisoned local verification, CI-clean)",
+  "M-A2 worker scaffold replaced wholesale by orchestrator (parallel types, mock reads, unrun typecheck)",
+  "v4 ticket front-matter normalized by orchestrator (ids/hitl/assignee/blocks)",
+  "investigator returned text without writing artifact; orchestrator wrote inline",
+  "validator REPLAN overruled: verdict rested on gate states (correct outcome for monitors) with zero current-evidence rows, violating spawn-contract 11; battery re-run by orchestrator (vault-sync ok, lint 0, counts 97/13/9/4, typecheck 0, proofs pass)",
+  "plan critique found 4 blockers before execution (credential-resolution hole, vacuous isolation proof, Production first-deploy 503, service-role allowlist contradiction) \u2014 all folded into plan v2 before any code was written",
+  "M7 worker was interrupted after writing its code but before its brief; the code was verified green (57 tests) and the brief was completed by a re-dispatched worker (58 tests after it added the C1 GUC-order proof)",
+  "review found 2 majors in M2 (pg bare query ran without the role guard; pool factory refused the pooled username the operator procedure mandates) and 1 in M3 (a rotated credential still authenticated) \u2014 all fixed and re-verified",
+  "M6 reported a pre-existing full-suite flake under parallel load (tests/domain/discovery-pipeline*.test.ts exceeds the 5s budget); it passes standalone and no other module's timeout was weakened"
+ ],
+ "history": [
+  {
+   "run": "2026-09-14",
+   "phase": "integration-GO-WITH-NOTES",
+   "execution": "Wave0 approved (TICKETS+A3 repaired); Wave1 approved (A1 incident+gate+shadow repaired, A4 test fixed); Wave2 approved (A2 rebuilt, A5 implemented); validator REPLAN overruled as defective (monitor modules judged by implementation criteria, no current evidence; battery re-run green); investigator findings are pre-existing-path test gaps \u2192 follow-ups",
+   "validation": "GO WITH NOTES (validator REPLAN overruled as defective; investigator top-3 are pre-existing test gaps \u2192 follow-up wave; residual: ledger rows lost, twins, T2 flip, judge 401)",
+   "modules": [
+    "M-GATED-V2",
+    "M-GATED-V3",
+    "M-TICKETS",
+    "M-A3",
+    "M-A1",
+    "M-A4",
+    "M-A2",
+    "M-A5"
+   ],
+   "artifacts": [
+>>>>>>> 41d3088 (chore(autoforge): record the ticket #53 run state)
     ".autoforge/discovery/report.md",
     ".autoforge/discovery/tracker-index.md",
     ".autoforge/requirements/grilling.md",
     ".autoforge/architecture/report.md",
+<<<<<<< HEAD
     ".autoforge/plans/plan.md",
     ".autoforge/plans/plan-loop6.md",
     ".autoforge/execution/work-order.json",
@@ -65,3 +140,31 @@
   ],
   "updated_by": "orchestrator"
 }
+=======
+    ".autoforge/architecture/decisions.md",
+    ".autoforge/plans/plan.md",
+    ".autoforge/execution/work-order.json",
+    ".autoforge/reviews/plan-critique.md",
+    ".autoforge/execution/M-GATED-V2.md",
+    ".autoforge/execution/M-GATED-V3.md",
+    ".autoforge/execution/M-TICKETS.md",
+    ".autoforge/execution/M-A3.md",
+    ".autoforge/execution/M-A1.md",
+    ".autoforge/execution/M-A4.md",
+    ".autoforge/execution/M-A2.md",
+    ".autoforge/execution/M-A5.md",
+    ".autoforge/reviews/M-GATED-V2.md",
+    ".autoforge/reviews/M-GATED-V3.md",
+    ".autoforge/reviews/M-TICKETS.md",
+    ".autoforge/reviews/M-A3.md",
+    ".autoforge/reviews/M-A1.md",
+    ".autoforge/reviews/M-A4.md",
+    ".autoforge/reviews/M-A2.md",
+    ".autoforge/reviews/M-A5.md",
+    ".autoforge/validation/report.md",
+    ".autoforge/validation/investigation.md"
+   ]
+  }
+ ]
+}
+>>>>>>> 41d3088 (chore(autoforge): record the ticket #53 run state)
