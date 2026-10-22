@@ -1,51 +1,229 @@
-# Architecture Decisions — Harvest Pipeline Deepening (loop 4)
+# Architecture decisions — Akamel01/AuditorAI#60 (harvest round 2)
 
-Date: 2026-09-14
-Source: hot-spot walk (`git log --oneline`) + organic friction scan; line evidence in `report.md` §1–2. All 92 existing tickets verified closed or owner/trigger-gated — zero dupes (full id list checked: A1/A2 taken under v2-agentic-platform; R1/F1-style short ids are map-scoped).
-Map: proposed NEW map `v4-harvest-deepening` — justification: (a) A-series avoids collision with v2 A1/A2; (b) scope is harvest-pipeline depth, distinct from v2/v3 product-gate maps and closed ops maps. Series A: A1–A5.
-Ponytail: reuse DataStore/MemoryStore, `provider.fetch`, ledger KV/file twin, `WorkspaceApiAdapter`-style injection; stdlib only; no new deps, no new top-level seams except A2's builder (lives in `harvest.ts`, no new file).
-Supersedes: worktree `.autoforge/architecture/decisions.md` @ 2026-09-10 (uncommitted prior-loop frontier decisions; summarized in `report.md` §1).
+Each entry: context, options, decision, consequences, requirements satisfied, files touched.
 
-## AD-A1 — Ledger run-persist behind the ledger seam (Strong)
+---
 
-- **Ticket:** id `A1` / title `ledger-run-persist-deepening` / map `v4-harvest-deepening`
-- **Scope:** move run-slice persist (`src/discovery/harvest.ts:279-355`: seq alloc `:302-311`, file mirror `:336-344`) into `src/discovery/ledger.ts` as `appendLedgerRun(slices, ranAtIso, store?) → LedgerEntry[]` (seq + file mirror + KV append + trim one unit). `executeJob` call site (`:212-226`) becomes one call; `harvest.ts` keeps zero seq/INDEX_KEY arithmetic. `ledger.ts` keeps owning NX-hint/trim/orphan-prune (R2 untouched).
-- **Acceptance (testable):** (1) `rg 'nextSeq|lastSeq|INDEX_KEY' src/discovery/harvest.ts` → 0 hits; (2) NEW test `tests/domain/discovery-ledger-run.test.ts`: two concurrent `appendLedgerRun` calls on MemoryStore → disjoint seqs, `getLedgerTailKV` total correct, file mirror written; (3) existing `discovery-ledger-r2` + `discovery-harvest` suites green; (4) typecheck green.
-- **blocked_by:** `[]` (builds on landed R2, no gate). Sequence after/around foreign `harvest.ts` lane edits — rebase at implementation.
-- **Self-approve:** TRUE (local refactor behind existing seam; KV+file two adapters = real seam).
+## D1 — Round-2 discovery lives in a script, not in a `DiscoveryProvider`
 
-## AD-A2 — Single DiscoveryCtx builder for harvest + stream (Strong)
+**Context.** The repo has a provider seam (`src/discovery/providers/provider-types.ts:19-29`) with
+`seed-portals`, `brave-search`, `google-cse`, `ai-search`, `agent-reach-search`. Round 2 needs a
+keyless, repeatable wide search. R1 forbids changing the runtime discovery pipeline.
 
-- **Ticket:** id `A2` / title `harvest-ctx-builder` / map `v4-harvest-deepening`
-- **Scope:** `buildDiscoveryCtx({live, cellKey}, deps?)` in `src/discovery/harvest.ts` (no new file); unify provider-filter policy (`harvest.ts:384-389` vs `harvest-stream.ts:151-154`, incl. agent-reach-search + DEPRECATED rules), query derivation (JUR_MAP/themeFor/gaps), dedupe file read, dry-run `acquireDocs` fixture wiring. `tickStream` imports it (already imports `harvest`). Preserve `UnknownCellKeyError` behavior.
-- **Acceptance (testable):** (1) `harvest-stream.ts` contains no inline JUR_MAP/themeFor/provider-filter logic (imports builder); (2) NEW ctx unit test: same input via both paths → identical providerIds/query (stub deps, no jobs); unknown cellKey throws `UnknownCellKeyError`; deprecated excluded in live mode; (3) existing `harvest-stream` + `discovery-harvest` suites green.
-- **blocked_by:** `[]`. Same-file lane as A3 (`harvest-stream.ts` disjoint regions) — sequence A3→A2 if one worker.
-- **Self-approve:** TRUE (two callers = real seam; no interface widened beyond one builder).
+**Options.**
+(a) A new `DiscoveryProvider` adapter registered in `src/discovery/providers/index.ts`.
+(b) A standalone script `scripts/harvest-round2-discover.ts`.
+(c) A new `strategy` value inside the harvester.
 
-## AD-A3 — Pipeline returns claimed dedupe index; single claim site (Strong, DO FIRST)
+**Decision.** (b).
 
-- **Ticket:** id `A3` / title `pipeline-dedupe-index-return` / map `v4-harvest-deepening`
-- **Scope:** `DiscoveryRunOutcome` gains `dedupeIndex` (`src/discovery/pipeline.ts:342-346`); d08's clone (`:286`) becomes the returned index; delete stream re-claim loop (`src/discovery/harvest-stream.ts:220-233`); orchestrators persist via `dedupe-persist` only (keeps owning KV-first write — R10 untouched).
-- **Acceptance (testable):** (1) outcome includes `dedupeIndex`; (2) NEW through-interface test: `runDiscoveryPipeline` twice with identical docs (MemoryStore, no orchestrator) → second run `quality.dedupe_status != unique`; (3) `rg claimFingerprints src/discovery/harvest-stream.ts` → 0; (4) existing `discovery-dedupe`, `discovery-coverage-dedupe`, `pipeline` suites green.
-- **blocked_by:** `[]`.
-- **Self-approve:** TRUE (smallest diff of the five; deletes a self-admitted wart).
+**Consequences.** `src/**` stays untouched — the cleanest possible reading of R1 and R-6. The
+provider seam keeps its meaning (runtime pipeline adapters, each gated on secrets); round 2 is a
+one-shot corpus harvest, which is what `scripts/harvest-track-a.ts` already is. The cost: the
+round-2 discovery is not wired into the app's discovery jobs, so a future ticket that wants that
+must move the code. That is a separate, explicit ticket.
 
-## AD-A4 — d04Acquire via the provider.fetch seam (Worth exploring — grill first)
+**Satisfies.** R1, R3, R5. **Touches.** `scripts/harvest-round2-discover.ts` (new).
 
-- **Ticket:** id `A4` / title `d04-provider-fetch-routing` / map `v4-harvest-deepening`
-- **Scope:** route `d04Acquire` live fallback (`src/discovery/pipeline.ts:136-223`) through the originating hit provider's `fetch` (`provider-types.ts:25`); grill FIRST: %PDF-guard home (fetch contract vs acquire module), host-budget placement, non-PDF/error mapping. Index hits/quals by id once; remove dead `seq` (`:218`).
-- **Acceptance (testable):** (1) `rg '(^|[^.a-zA-Z])fetch\(' src/discovery/pipeline.ts` → 0 bare-fetch hits (only `provider.fetch` / injected); (2) NEW test: fake `provider.fetch` returning non-PDF bytes → empty bundle + warn, zero network; (3) dead `seq` removed; (4) existing pipeline suites green.
-- **blocked_by:** `[]` (grill gate is in-ticket, not a ticket dep).
-- **Self-approve:** FALSE — NEEDS GRILL (interface home for %PDF guard affects every future provider adapter).
+---
 
-## AD-A5 — Health fallback consolidation + shape freeze, follow-up (Worth exploring — after bridge lane)
+## D2 — The search runs through agent-reach's Jina Reader channel, keylessly
 
-- **Ticket:** id `A5` / title `health-bridge-consolidation` / map `v4-harvest-deepening`
-- **Scope:** AFTER the in-flight uncommitted bridge edit (`health-aggregate.ts:79-134` + `health/route.ts:134-150`) commits: move file-ledger fallback (`health/route.ts:139-150`) INSIDE `bridgeHarvestHealth`; freeze `HarvestHealthBridge` as the single served interface; thin route to auth + delegate; add shape-pinning test. FIRST step at implementation: diff against HEAD — if owning lane covered it, close as dup, no code.
-- **Acceptance (testable):** (1) route contains no `readFileSync` ledger fallback (thin aggregator); (2) NEW test: bridge under KV-down + file-ledger-present → full 8-field shape with file-derived base fields; KV-down + no-file → nulls, shape intact; (3) existing `harvest-health` suite green; (4) dup-check against HEAD recorded in ticket comment.
-- **blocked_by:** `[]` (lane dependency handled in-ticket via HEAD check, not a ticket edge).
-- **Self-approve:** FALSE — NEEDS REVIEW (freezes a consumer-pinned contract; foreign-lane coordination).
+**Context.** The ticket says to use the `agent-reach` skill. agent-reach's search branch is Exa via
+`mcporter` (`/home/oc/.agents/skills/agent-reach/references/search.md`); its web branch is
+`curl -s "https://r.jina.ai/URL"` (`references/web.md`, SKILL.md "零配置快速命令"). `mcporter`,
+`agent-reach` and `opencli` are not installed and `EXA_API_KEY`/`OPENCODE_API_KEY` are absent, so
+the Exa branch cannot run. Direct scraping of every search engine from this container is blocked
+(DDG 202 challenge, Mojeek 403, Brave 429, searx browser-verification, Bing JS-wrapped). Jina
+Reader over a search-engine URL works and returns parseable Canadian RSA candidates.
 
-## Sequencing (normative)
+**Options.**
+(a) Wait for the operator to provision Exa keys and use `mcporter`.
+(b) Scrape a search engine directly.
+(c) Use agent-reach's documented zero-config web channel (Jina Reader) over a search engine.
 
-A3 → A1 → A2 (shared-file serialization where noted) → A4 (post-grill) → A5 (post-bridge-lane). All `blocked_by:[]` by front-matter; ordering above is planner guidance, not ticket edges. Collision sets + worker guards: `report.md` §4. No ticket touches `state/vault-notes.json`, gated tripwires, or the 92 closed maps.
+**Decision.** (c).
+
+**Consequences.** The round runs keylessly and free today, and it honours the ticket's explicit
+"use the agent-reach skill" by using the skill's own routing and its own zero-config command. The
+report states that agent-reach's Exa branch was unavailable and why, so the reader can tell a
+degraded search from a complete one. If the operator later provisions Exa, the existing
+`agent-reach-search` provider (`src/discovery/providers/agent-reach-search.ts:149-241`) can be
+enabled without new code — that is a later ticket.
+
+**Satisfies.** O1, R3, R5. **Touches.** `scripts/harvest-round2-discover.ts`, and the round-2 report's
+provenance section.
+
+---
+
+## D3 — The round-1 report stays byte-identical; the round-2 report carries before/after
+
+**Context.** Appending to `docs/RSA-Documents/canada-intake-manifest.jsonl` changes the round-1
+report's inputs (|A|, |B|, cell counts), so `tests/discovery/harvest-track-a-report.test.ts:251-252`
+would fail unless the round-1 report is regenerated. The grilling offered Option A (regenerate) and
+Option B (freeze the round-1 inputs).
+
+**Options.**
+(a) Regenerate `docs/RSA-Documents/track-a-harvest-report.md` so it absorbs round-2 rows.
+(b) Point the round-1 generator at a frozen copy of the round-1 manifest.
+(c) Filter round-2 rows out of the round-1 generator.
+
+**Decision.** (c).
+
+**Consequences.** The round-1 report stays the historical record of round 1 — its committed bytes
+and its vitest guard stay green, with no regeneration and no extra committed file (b needs one).
+The round-2 report computes "before" as the round-1 rows and "after" as all rows, and prints both
+inline with the base commit sha. The rule functions are shared, so the two numbers are comparable
+(R9).
+
+**Satisfies.** R6, R9, R44, R-6. **Touches.** `scripts/harvest-track-a-report.ts`.
+
+---
+
+## D4 — A `candidate-list` strategy, not a `known-document-url` list per source
+
+**Context.** The discovered URLs must reach the fetch path. `Source.strategy`
+(`scripts/harvest-track-a.ts:67-71`) already has four strategies; `known-document-url` takes a
+`known_document_urls[]` array per source.
+
+**Options.**
+(a) Put the discovered URLs into each source's `known_document_urls[]`.
+(b) Add a `candidate-list` strategy that reads one committed candidates JSON.
+
+**Decision.** (b).
+
+**Consequences.** Discovery and fetching stay separable (R3), the candidates carry their query and
+source attribution in one auditable file (R5, R29), and the source list stays a declaration of
+*where to look* rather than a dump of *what was found*. The cost: one more strategy branch in
+`candidatesFor`.
+
+**Satisfies.** R3, R5, R29. **Touches.** `scripts/harvest-track-a.ts`, `docs/RSA-Documents/track-a-round2-sources.json`.
+
+---
+
+## D5 — French stage patterns go into `STAGE_RULES`
+
+**Context.** `STAGE_RULES` (`scripts/harvest-track-a.ts:387-392`) matches English stage words only.
+A French RSA falls back to `stage_hint` → `UNSTAGED` → unmapped → never coverage, i.e. it silently
+vanishes.
+
+**Options.**
+(a) Add French patterns to `STAGE_RULES`.
+(b) Add a separate French table and a second code path in `detectStage`.
+
+**Decision.** (a).
+
+**Consequences.** One classifier, one place. `detectStage` keeps its contract (text, hint) → stage,
+and the multi-stage guard (`:405`) applies to French hits too. The cost: `STAGE_RULES` becomes
+bilingual, so the report must say which patterns exist.
+
+**Satisfies.** R32. **Touches.** `scripts/harvest-track-a.ts`.
+
+---
+
+## D6 — The byte-accounting file is JSON
+
+**Context.** R36 requires `corpusBytesBefore`, `downloadedThisRound`, `corpusBytesAfter`,
+`capBytes`, `remainingBytes`, `perDocumentCap` and `skippedForCap`.
+
+**Options.** (a) JSON; (b) TSV.
+
+**Decision.** (a).
+
+**Consequences.** One named-field object with one consumer (the report generator and the test); the
+arithmetic is assertable field by field. TSV's column discipline buys nothing for a single row.
+
+**Satisfies.** R36, R37. **Touches.** `docs/RSA-Documents/track-a-round2-bytes.json` (new).
+
+---
+
+## D7 — The live round runs in this worktree; the box is used only to probe the model pool
+
+**Context.** The harvester is Node/tsx. The box gateway's `run` verb executes only
+`tools/eval/*.py` and `tools/research/*.py`, and the box container is the Python chat-worker
+service. Network and `npm ci` are proven in this worktree.
+
+**Options.** (a) the operator's machine; (b) the box runner; (c) this worktree, with the box used
+for the pool probe only.
+
+**Decision.** (c).
+
+**Consequences.** No dependency on the operator and no Python re-implementation of the harvester's
+classification rules — which R3 and R9 require to stay in one place. The box is still used, for
+the one thing only it can do: decide whether the free-model pool answers.
+
+**Satisfies.** A11 (superseded), O2 (superseded), D-7. **Touches.** `tools/research/pool_probe.py` (ephemeral, not committed).
+
+---
+
+## D8 — Free-model triage is probed, and is advisory-only if it answers
+
+**Context.** The ticket asks for free models for triage. The pool `http://ollama-gen-lb:11434` does
+not resolve from this container (DNS failure). `sme_ollama_gen_lb` is up on the box. The advertised
+free models were free "until 2026-10-22" — today.
+
+**Options.** (a) mandate model triage; (b) skip it; (c) probe it and let it pre-filter only.
+
+**Decision.** (c).
+
+**Consequences.** If the pool answers, the model may reject a candidate *before* its bytes are
+fetched (cost control under the 5 GB cap) — it may never set a tier, stage, class, licence verdict
+or a coverage count, and the report generator never calls it (R40). If it does not answer, the round
+proceeds rule-only and the report says so in one sentence (R39/R41). The round never stalls.
+
+**Satisfies.** R39, R40, R41. **Touches.** the round-2 report's provenance section.
+
+---
+
+## D9 — The candidate list and the candidate log are committed
+
+**Context.** R5 wants the discovered candidates auditable; R29 wants a per-candidate outcome log.
+
+**Options.** (a) commit both; (b) keep them ephemeral under `.autoforge/tmp/`.
+
+**Decision.** (a).
+
+**Consequences.** The precision and yield numbers can be re-derived from the committed tree by a
+third party. The cost: two more files under `docs/RSA-Documents/`, and they must carry no secrets
+and no extracted PDF text (R43).
+
+**Satisfies.** R5, R29, A9. **Touches.** `docs/RSA-Documents/track-a-round2-candidates.json`,
+`docs/RSA-Documents/track-a-round2-candidate-log.tsv` (both new).
+
+---
+
+## D10 — The source-type taxonomy is closed at seven types
+
+**Context.** R18 fixes the taxonomy: `municipal-agenda-package`, `ea-class-ea-study`,
+`university-repository`, `conference-proceedings`, `provincial-ministry-report`,
+`open-data-portal`, `direct-known-document`.
+
+**Options.** (a) closed set; (b) open, extended as new hosts appear.
+
+**Decision.** (a).
+
+**Consequences.** Every ingested document maps to exactly one source type and the yield table's
+denominator is stable. A discovered host that fits no type is classified by the operator's
+pre-registered rule (`direct-known-document`) rather than by inventing a type mid-round — which
+would make the denominator uninterpretable (R11).
+
+**Satisfies.** R18, R19, R20, R22. **Touches.** `docs/RSA-Documents/track-a-round2-sources.json`,
+`scripts/harvest-track-a-round2-report.ts`.
+
+---
+
+## D11 — The grilling's "no outbound network" premise is rejected
+
+**Context.** `.autoforge/requirements/grilling.md` concluded from one probe of `example.com`
+(exit 7) that the container had no outbound network, and built R4, O2 and A11 on that premise.
+
+**Options.** (a) accept the premise; (b) reject it on the orchestrator's own verification.
+
+**Decision.** (b).
+
+**Consequences.** R4 ("no new discovery-provider code") is superseded by D1; O2 and A11 are
+superseded by D7. The requirements the grilling derived from the *repo mechanics* — the counting
+rules, the licence gate, the split rule, the byte cap, the honesty rules (R6–R47) — are unaffected
+and are carried forward in full.
+
+**Satisfies.** O1, O2, A11, R4 (all superseded). **Touches.** `.autoforge/architecture/report.md` §2.
