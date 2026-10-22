@@ -19,10 +19,14 @@ main is production: every push to `main` auto-deploys to production (`auditorai-
    - `ADMIN_KEY` *(optional, developer-only)* — gates the `/dev` page and `/api/dev/*`
      routes. Leave unset in production unless developer tooling is wanted; routes
      fail closed (unset key is indistinguishable from a wrong one).
-   - `POSTGRES_URL` — pooled connection string for the tenant store, pointed at the
-     `auditorai_app` role of a Supabase Postgres project in region `ca-central-1`
-     (see *Tenant store* below). Leave it empty to run on the legacy KV store with
-     the "database not configured" notice.
+   - `TENANT_STORE` — the cutover switch. The Postgres tenant path runs ONLY
+     when this is `postgres`; leave it empty to keep the legacy KV store with
+     the "database not configured" notice (see *Tenant store* below).
+   - `TENANT_POSTGRES_URL` — pooled connection string the app actually uses
+     for the tenant store, pointed at the `auditorai_app` role of a Supabase
+     Postgres project in region `ca-central-1` (see *Tenant store* below).
+   - `POSTGRES_URL` — platform-injected owner credentials (the platform links
+     the Supabase project). The app never reads it: the owner bypasses RLS.
 
 ## Tenant store — operator action before the merge (ACTION-1)
 
@@ -32,17 +36,24 @@ All nine tenant tables carry row-level security, enabled and forced, and the
 application reaches the database as the non-bypass `auditorai_app` role.
 
 **No agent applies the SQL.** The operator procedure — apply
-`0001` → `0002` → `0003` in order, set the `auditorai_app` password out of band,
-repoint `POSTGRES_URL` — is in [`supabase/README.md`](../supabase/README.md).
+`0001` → `0002` → `0003` in order, set the `auditorai_app` password out of
+band, set `TENANT_POSTGRES_URL`, run the KV → Postgres migration (dry run,
+then apply), and flip `TENANT_STORE=postgres` **last** — is in
+[`supabase/README.md`](../supabase/README.md).
 
 **Ordering (ACTION-1).** The merge auto-deploys to Production: every push to
-`main` auto-deploys (region `iad1`, see line 5 above). So the operator applies
-`0001` → `0002` → `0003` **and** repoints `POSTGRES_URL` at the `auditorai_app`
-role **before the merge reaches Production**.
+`main` auto-deploys (region `iad1`, see line 5 above). The tenant path is
+**explicit** (`TENANT_STORE=postgres` + `TENANT_POSTGRES_URL`), so the merge
+is safe by construction. The operator still performs ACTION-1 — schema, role,
+`TENANT_POSTGRES_URL`, the KV → Postgres migration, then the switch — to reach
+the intended state.
 
-**Until that is done the deployed code does not fail.** The credential lookup
-hits a schema that does not exist (SQLSTATE `42P01`), the request degrades to
-the legacy KV store, and the UI shows the plain "database not configured" notice
+**Until that is done the deployed code does not fail.** Until
+`TENANT_STORE=postgres` is set the app never touches Postgres at all — it
+keeps the Upstash path (no 42P01 probe), so the merge is safe by construction.
+Once the switch is on but the schema is missing, the credential lookup hits a
+schema that does not exist (SQLSTATE `42P01`), the request degrades to the
+legacy KV store, and the UI shows the plain "database not configured" notice
 (`src/lib/db-notice.ts`). That is a **notice, not a 503** — the request still
 succeeds with HTTP 200. The other case is different: a configured but
 unreachable database fails closed with 503 (`src/lib/db/errors.ts`), and a

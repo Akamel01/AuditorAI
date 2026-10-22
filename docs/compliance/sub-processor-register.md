@@ -86,8 +86,11 @@ non-customer data. This is a commercial decision that no agent can bind — see
 interim posture above stands.
 
 **ACTION-1 (operator action, not a question).** Apply
-`supabase/migrations/0001` → `0002` → `0003` to the live project and repoint
-`POSTGRES_URL` at the `auditorai_app` role **before** the merge reaches
-Production (the merge auto-deploys). Procedure:
+`supabase/migrations/0001` → `0002` → `0003` to the live project, set the
+`auditorai_app` password out of band, set `TENANT_POSTGRES_URL` to the pooled
+`auditorai_app` connection string, run the KV → Postgres migration (dry run,
+then apply) and flip `TENANT_STORE=postgres` **last** **before** the merge
+reaches Production (the merge auto-deploys). The platform-injected owner-role
+`POSTGRES_URL` is never read by the app and is never repointed. Procedure:
 [`supabase/README.md`](../../supabase/README.md); ordering:
 [`docs/deployment.md`](../deployment.md).
