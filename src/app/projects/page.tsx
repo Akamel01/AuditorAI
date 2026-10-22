@@ -11,15 +11,20 @@ import { Panel } from "@/app/_components/ui/panel";
 import { EmptyState, LoadingRows } from "@/app/_components/ui/empty-state";
 import { InlineNotice } from "@/app/_components/ui/inline-notice";
 import { ArrowRight, Plus, Road } from "@/app/_components/ui/icons";
+import { databaseNoticeText, type DatabaseStatus } from "@/lib/db-notice";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dbStatus, setDbStatus] = useState<DatabaseStatus | null>(null);
 
   async function load() {
     try {
-      const data = await api<{ projects: Project[] }>("/api/projects");
+      const data = await api<{ projects: Project[]; database_status?: DatabaseStatus }>(
+        "/api/projects",
+      );
       setProjects(data.projects);
+      setDbStatus(data.database_status ?? null);
     } catch (e) {
       setError(String((e as Error).message));
     }
@@ -27,6 +32,10 @@ export default function ProjectsPage() {
   useEffect(() => {
     load();
   }, []);
+
+  // The notice text is decided in ONE place (src/lib/db-notice.ts); the page
+  // only renders it.
+  const dbNotice = databaseNoticeText(dbStatus?.code);
 
   return (
     <AppShell>
@@ -46,6 +55,16 @@ export default function ProjectsPage() {
         {error && (
           <div className="mt-5">
             <InlineNotice>{error}</InlineNotice>
+          </div>
+        )}
+
+        {/* The tenant store is not configured (or its schema is not applied
+            yet): a plain NOTICE, not an outage — the legacy project list below
+            still renders and still serves the workspace (plan-t53.md §1.4,
+            architecture D9). */}
+        {dbNotice && (
+          <div className="mt-5">
+            <InlineNotice tone="info">{dbNotice}</InlineNotice>
           </div>
         )}
 

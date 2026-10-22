@@ -256,3 +256,33 @@ are required/recommended/optional for this framework+stage, what outputs must ex
 **Audit Artifact** — any versioned, attributable output of an audit node (input manifest,
 candidate findings, adjudicated findings, reports), carrying producer, version, and
 validation status.
+
+## Tenant store
+
+**Workspace** — the isolation boundary that owns one customer's data: the unit a
+credential grants access to, and the owner of every Project, Audit and Audit Issue
+inside it. One workspace holds many Projects.
+
+**Member** — a Subject that belongs to a workspace, with a role. Membership is
+checked on every request once the tenant store serves the workspace; a non-member
+is refused rather than served.
+
+**Subject** — the identity behind a credential: the person or seat the request is
+attributed to. A Subject is not yet an authenticated user — #54 supplies the
+named-user credential that makes it one.
+
+**Credential** — the bearer secret a client presents. It is stored only as a
+short hash, never in the clear; it is rotatable and revocable, and revoking it
+never deletes the tenant's data.
+
+**Legacy wire tokens (unchanged).** The KV namespace prefix `ws:<hash>`, the
+request header `x-workspace-key` and the browser storage item
+`auditorai.workspace_key` keep their names and their meaning. Ticket #53 adds the
+Postgres tenant store behind the same seam; it renames nothing.
+
+**Known gap (G-2).** The browser still mints the workspace key itself
+(`src/lib/client.ts:19-26`) and the server still derives the tenant from the
+presented key. The gap audit's G-2 requirement — "the server derives tenant
+identity from something the client cannot mint" — remains open until #54. Ticket
+#53 adds the credential registry, not a client-side change; no document may claim
+G-2 is closed.
