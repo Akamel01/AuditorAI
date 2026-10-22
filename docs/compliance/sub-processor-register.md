@@ -89,8 +89,11 @@ interim posture above stands.
 `supabase/migrations/0001` → `0002` → `0003` to the live project, set the
 `auditorai_app` password out of band, set `TENANT_POSTGRES_URL` to the pooled
 `auditorai_app` connection string, run the KV → Postgres migration (dry run,
-then apply) and flip `TENANT_STORE=postgres` **last** **before** the merge
-reaches Production (the merge auto-deploys). The platform-injected owner-role
-`POSTGRES_URL` is never read by the app and is never repointed. Procedure:
+then apply) and flip `TENANT_STORE=postgres` **last**. The merge itself is safe
+by construction: until `TENANT_STORE=postgres` is set the app never touches
+Postgres, so the migrations, the credential and the KV → Postgres migration may
+be applied after the merge — but the flag must be flipped last, after they are
+in place. The platform-injected owner-role `POSTGRES_URL` is never read by the
+app and is never repointed. Procedure:
 [`supabase/README.md`](../../supabase/README.md); ordering:
 [`docs/deployment.md`](../deployment.md).

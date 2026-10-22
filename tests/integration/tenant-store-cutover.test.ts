@@ -91,6 +91,18 @@ describe("the tenant store cutover gate (offline)", () => {
     expect(body.projects.map((p) => p.project_id)).toEqual([projectId]);
   });
 
+  it("TENANT_POSTGRES_URL set + TENANT_STORE unset -> the gate is still closed", () => {
+    // The partial cutover: the operator already stored the app-role URL but has
+    // NOT flipped the switch. This pins the switch INSIDE isDatabaseConfigured():
+    // without it, the app would take the Postgres branch on a database the
+    // operator has not migrated yet.
+    process.env.TENANT_POSTGRES_URL = APP_URL;
+
+    expect(tenantStoreEnabled()).toBe(false);
+    expect(isDatabaseConfigured()).toBe(false);
+    // No request here: the pool factory refuses in NODE_ENV=test.
+  });
+
   it("TENANT_STORE=postgres + TENANT_POSTGRES_URL set opens the gate", () => {
     process.env.TENANT_STORE = "postgres";
     process.env.TENANT_POSTGRES_URL = APP_URL;
@@ -111,5 +123,6 @@ describe("the tenant store cutover gate (offline)", () => {
     const config = readFileSync(path.join(process.cwd(), "src", "lib", "db", "config.ts"), "utf8");
     expect(config).toContain('env("TENANT_POSTGRES_URL")');
     expect(config).not.toContain('env("POSTGRES_URL")');
+    expect(config).not.toMatch(/process\.env\.POSTGRES_URL/);
   });
 });
