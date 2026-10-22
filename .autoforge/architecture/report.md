@@ -1,129 +1,309 @@
-# Architecture — Ticket #40 Track A (public Canadian RSA documents)
+# Architecture — Akamel01/AuditorAI#60: Harvest round 2 (free, wide search for public Canadian RSAs)
 
-Authority: `.autoforge/requirements/grilling.md` (R1..R12, A1..A9, D1..D10, HITL) + `.autoforge/discovery/*`.
+## 1. Objective
 
-## 1. DESIGN
+Round 2 of the Canadian RSA corpus harvest. Track A (#40, PR #58) searched a static list of
+government portals and ingested 3 documents. Round 2 searches **wider** — municipal council/committee
+agenda packages, EA/Class EA study reports, university repositories, conference proceedings and
+provincial ministry reports — using the **`agent-reach` skill**'s routing and free channels, then
+fetches what it finds through the **existing** harvester path so that robots.txt, the 1 req/s limit,
+the known-hash gate, the licence gate and the train/test split all still apply. The deliverable is
+four report-shaped artefacts (the ticket's four acceptance criteria) plus the corpus and register
+changes that back them.
 
-Four modules: two code, one input, one output family. Rationale for two code modules: the robots gate is the sole `src/` change allowed (grilling.md:60) and must be testable in isolation; everything else is a linear pipeline (fetch → verify → record → write → report) over one in-memory record set, so splitting it across 4–5 scripts would need 4–5 shared state files, CLI surfaces and test files for one pipeline. One script with subcommands is the smaller review surface.
+The architecture must produce:
 
-### M1 — Robots gate (only `src/` addition)
-- **Files:** NEW `src/discovery/robots.ts`; NEW `tests/discovery/robots.test.ts`.
-- **Surface:** `parseRobots(text): RobotsFile` (pure), `isAllowed(robots, path, ua): boolean`, `crawlDelayMs(robots, ua): number | null`, `robotsFor(url): Promise<RobotsFile>` (fetch `/robots.txt` through `withHostBudget` — `src/discovery/ratelimit.ts:34`; cache per host; 404/410 → allow-all; 401/403 → deny-all; 5xx/network → deny + `skip_reason`).
-- **Test (no network):** fixture strings assert longest-match precedence, `Disallow: /api/` on Alberta (`source-feasibility.md:7`), `/*?*tags=` on Montréal (`:8`), `Allow` overrides, `Crawl-Delay: 10` parse, 404→allow.
+| AC | Artifact |
+|---|---|
+| AC1 coverage table before/after with priority cells | `docs/RSA-Documents/track-a-round2-harvest-report.md` §1 |
+| AC2 harvest precision per class | same report §2 (corpus tables over \|A'\|/\|B'\| + a round-2 funnel table over candidates examined) |
+| AC3 source-yield table | same report §3 |
+| AC4 gaps free sources cannot fill | same report §4 |
 
-### M2 — Track-A CLI (the whole pipeline)
-- **Files:** NEW `scripts/harvest-track-a.ts`; NEW `tests/discovery/harvest-track-a.test.ts`.
-- **CLI:** `tsx scripts/harvest-track-a.ts <sub> [--live] [--corpus-root <path>] [--manifest <file>]`
-  - `fetch` — network; only with `--live` (mirrors the dry-run write guard at `scripts/discovery-run.ts:29-32`).
-  - `intake` — no network; derive records from staged binaries.
-  - `report` — no network; coverage table + unfillable list from the intake manifest.
-  - `selftest` — no network; offline assertions (R1 check).
-- **Public functions (exported for the test):** `projectId`, `splitFor`, `verifyPdf`, `dedupeClaim`, `coverage`.
-- **Imports from `src/`:** `withHostBudget` (`ratelimit.ts:34`), `sha256Hex` (`ids.ts:6`), `parseRobots`/`isAllowed`/`crawlDelayMs` (M1). Import style = `../src/discovery/ratelimit.js` (TS `.js` specifier → `.ts` source, run by `tsx`; pattern at `scripts/discovery-run.ts:16-18`).
-- **Note:** `PRJ-` minting lives **in the script**, not `ids.ts` — `src/` surgery beyond the robots helper is out of scope (grilling.md:60). It mirrors `shortHash` = `sha256Hex(...).slice(0,16)` (`ids.ts:16-17`) and the `PKG-` convention (`ids.ts:44-46`).
-- **Test (no network):** asserts (1) split: QC→test, AB→test, BC/ON→train, train∩test provinces empty, QC∉train, no `project_id` in both splits; (2) `projectId` stable across calls, distinct per key, format `PRJ-[0-9a-f]{16}`; (3) `%PDF-` accepted, `<!DOCTYPE html>` rejected as `html-not-pdf`; (4) log sha256 equals sha256 of bytes; (5) non-CLEAR ⇒ `split=quarantine`, never train/test; (6) new sha claimed with `project_id`+`split`, pre-existing sha skipped; (7) coverage zero-fills the 3 `canada:*` cells.
+## 2. Environment facts (verified by the orchestrator, 2026-10-22, from this worktree)
 
-### M3 — Source manifest (input, hand-authored)
-- **File:** NEW `docs/RSA-Documents/track-a-sources.json` — allowlist + per-source strategy + licence default + stage/province hints.
-- Allowlist (D1, `grilling.md:34`): `open.alberta.ca` (CKAN), `donnees.montreal.ca` (CKAN), `www2.gov.bc.ca` (sitemap + doc pages), `www.unb.ca` (known PDF), `www.toronto.ca` (sitemap only). Dropped families land in the unfillable list with reasons.
+| Fact | Evidence |
+|---|---|
+| `agent-reach`, `mcporter`, `opencli`, `yt-dlp`, `feedparser` are **not installed** | `command -v` — only `curl`, `gh`, `node` v22.23.4, `npx` |
+| `EXA_API_KEY`, `OPENCODE_API_KEY`, `AGENT_REACH_ENABLED` **absent** | env presence check, no values read |
+| agent-reach's **Exa/mcporter branch is unavailable**; its **zero-config web branch works** | `/home/oc/.agents/skills/agent-reach/SKILL.md` "零配置快速命令" → `curl -s "https://r.jina.ai/URL"`; `references/web.md` |
+| `https://r.jina.ai/<search-url>` returns **parseable Canadian RSA URLs, keylessly** | 200, 12,921 B, 9 unique results from `uddg=` params for `"road safety audit" filetype:pdf site:ca` — incl. `niagararegion.ca/media/grcbeqke/appendix-h.pdf` (municipal), `bv.transports.gouv.qc.ca/mono/1357224.pdf` (MTQ), `conf.tac-atc.ca/.../hildebrand.pdf` (TAC), `unb.ca/.../rsa-guidelines.pdf` (university) |
+| Search engines reject **direct** scraping from this container | html.duckduckgo.com + lite.duckduckgo.com → HTTP 202 anti-bot challenge; mojeek 403; searx.be browser-verification; search.brave.com 429; Bing markup JS-wrapped |
+| Canadian hosts reachable | open.alberta.ca 301, www2.gov.bc.ca 301, www.toronto.ca 200, cdn-contenu.quebec.ca 404, www.unb.ca 200, circle.ubc.ca 200, tspace.library.utoronto.ca 302, uwspace.uwaterloo.ca 200, papyrus.bib.umontreal.ca 301, corpus.ulaval.ca 200, www.tac-atc.ca 301 |
+| A real PDF downloads end-to-end from this container | open.alberta.ca `neahd12579-entire-pdf.pdf` → 200, **118,839,466 B**, `application/pdf` |
+| npm registry reachable; `npm ci` works | `registry.npmjs.org` 200; `npm ci` → 204 packages; `npx tsx scripts/harvest-track-a.ts selftest` → **selftest passed** (16/16) |
+| `node_modules` was absent before `npm ci` | `ls -d node_modules` → not found |
+| Box gateway reachable; `sme_ollama_gen_lb` up | `ssh oc-box ps` → `sme_ollama_gen_lb Up 2 days (healthy)`; `oc-box` verbs push/run/pull/logs/ps/runs; `run` executes only `tools/(eval\|research)/*.py` |
+| Free-model pool **unreachable from this container** | `curl http://ollama-gen-lb:11434/api/tags` → DNS failure (host does not resolve) |
+| Disk is tight | `df -h /tmp` → 594 G total, 553 G used, **11 G free (99 %)** — the 5 GB binary cap is a live constraint, not a formality |
+| No corpus binary is tracked by git | `git ls-files docs/RSA-Documents \| grep -ci '\.pdf$'` → 0 (selftest check) |
 
-### M4 — Outputs (registers/manifests, all tracked)
-- NEW `docs/RSA-Documents/canadian-download-log.tsv` (R6), NEW `docs/RSA-Documents/canada-intake-manifest.jsonl` (R4), NEW `docs/RSA-Documents/track-a-split.json` (D5), NEW `docs/RSA-Documents/track-a-coverage.md` (R11/R12), MOD `docs/RSA-Documents/dedupe-index.json` (R9), MOD `docs/RSA-Documents/LICENSE-REGISTER.md` (R7), MOD `docs/RSA-Documents/QUARANTINE.md` (R8), MOD `.gitignore` (binary off-git, R3).
-- **Binaries:** `docs/RSA-Documents/canada/<source-dir>/` (CLEAR) and `docs/RSA-Documents/quarantine/<source-dir>/` (non-CLEAR); `--corpus-root` overrides (HITL-2).
-- **touches:** `src/discovery/robots.ts`, `scripts/harvest-track-a.ts`, `tests/discovery/{robots,harvest-track-a}.test.ts`, `docs/RSA-Documents/{track-a-sources.json,canadian-download-log.tsv,canada-intake-manifest.jsonl,track-a-split.json,track-a-coverage.md,dedupe-index.json,LICENSE-REGISTER.md,QUARANTINE.md}`, `.gitignore`.
+**Correction to `.autoforge/requirements/grilling.md`.** The grilling concluded "this container has no
+outbound network at all" (its header, O2, A11, R4) from a single probe of `example.com`. That probe
+was unrepresentative: `example.com` has no route, but the egress allowlist above is wide open.
+Consequently:
 
-## 2. DATA FLOW
+- **R4 is superseded.** "No new discovery-provider code, a committed candidate list only" was forced
+  by the false network premise. With network available, the ticket's actual instruction ("search
+  wider than portals… use the `agent-reach` skill") is executable, and a *repeatable* keyless
+  discovery step is required for the PR to be honest about having searched widely.
+- **O2 / A11 are superseded.** The live round runs in this worktree's runner; no operator machine is
+  needed.
+- **A5 stands** (model triage optional, rules authoritative), and **R41 stands**: the pool is probed
+  on the box; if unreachable, the round proceeds rule-only and says so in the report.
+
+## 3. Module decomposition
+
+Five modules. `touches` is the parallelism guard: two modules may run concurrently only when their
+`touches` globs are disjoint.
+
+### M1 — Round-2 discovery (the wide search)
+
+- **Creates**: `scripts/harvest-round2-discover.ts`
+- **Touches**: `scripts/harvest-round2-discover.ts` (new file only — nothing existing is modified)
+- **Blocked by**: none
+- **Satisfies**: R3, R5, R18, R20 (partly), O1
+- **Interface**: reads `docs/RSA-Documents/track-a-round2-sources.json` (M2) and writes
+  `docs/RSA-Documents/track-a-round2-candidates.json` — a committed candidate list, one row per
+  candidate URL examined, with `source_id`, `source_type`, `url`, `title_hint`, `query`,
+  `discovery_channel`, `discovered_at`, `jurisdiction_hint`.
+- **How**: for each source entry, for each of its queries, fetch
+  `https://r.jina.ai/https://html.duckduckgo.com/html/?q=<encoded query>` and parse the `uddg=`
+  redirect parameters into absolute URLs. One request per second per host via the repo's existing
+  `withHostBudget` (`src/discovery/ratelimit.ts:34`). The search-engine host is `r.jina.ai`; the
+  *candidate* hosts are not contacted during discovery (R3).
+- **Why a script, not a `DiscoveryProvider`**: the repo's provider seam
+  (`src/discovery/providers/provider-types.ts:19-29`) is the house pattern for the **runtime**
+  pipeline, which R1 forbids changing. A provider would also imply app-level availability that
+  needs secrets, health-state and UI wiring that this ticket does not ask for. The house pattern for
+  a one-shot corpus harvest is a script under `scripts/` — exactly what `scripts/harvest-track-a.ts`
+  is. This is the ponytail reading: use the house pattern, do not build an abstraction for later.
+
+### M2 — Round-2 source list and query set
+
+- **Creates**: `docs/RSA-Documents/track-a-round2-sources.json`
+- **Touches**: `docs/RSA-Documents/track-a-round2-sources.json` (new file only)
+- **Blocked by**: none
+- **Satisfies**: R18, R20, R23, R24, R28
+- **Interface**: consumed by M1 (queries), M3 (fetch strategy, licence defaults, province/stage
+  hints), M4 (source-type taxonomy, hosts tried).
+- **Shape**: `schema_version`, `source_of_record` (the ticket), `discovery` block (channel, engine,
+  UA, politeness), `split_rule` (mirroring `docs/RSA-Documents/track-a-sources.json`), `hash_rule`,
+  `sources[]` — each with `id`, `host`, `family`, `source_type` (the closed 7-type taxonomy),
+  `strategy: "candidate-list"`, `queries[]`, `licence_default{verdict,basis,licence_ref}`,
+  `stage_hint`, `ca_province_hint`, `doc_type_hint`, `max_downloads`, and an `outcome` block —
+  and `unfillable[]` (the 13 families carried forward, R23).
+
+### M3 — Harvester round-2 support
+
+- **Modifies**: `scripts/harvest-track-a.ts`, `scripts/harvest-track-a-report.ts`
+- **Touches**: `scripts/harvest-track-a.ts`, `scripts/harvest-track-a-report.ts`
+- **Blocked by**: M2
+- **Satisfies**: R2, R3, R9, R27, R28, R29, R30, R31, R32, R34, R35, R36, R37, R38, R44
+- **Changes**:
+  1. New strategy `"candidate-list"` — reads the committed candidates JSON instead of listing
+     pages. Discovery stays separate from fetching (R3), the candidate list stays auditable (R5).
+  2. **5 GB byte cap enforced before the write** (R35/R36). `corpusBytes` = bytes already on the
+     corpus shelf + the `bytes` column of the intake manifest; `budget = 5 GiB − corpusBytes`;
+     a candidate whose `Content-Length` exceeds `min(remainingBudget, 100 MiB)` is skipped with
+     reason `byte-cap`, and the budget is re-checked before `writeFileSync` (today's write is at
+     `scripts/harvest-track-a.ts:599`). A byte-accounting file is written.
+  3. **Additive, versioned manifest fields** (R27/R29/R30): `round` (`"1"`/`"2"`), `stage_source`
+     (`text`/`hint`), `tier_source` (`text`/`doc_type_hint`), `dedupe_status`
+     (`new`/`hash-already-present`). Existing rows are untouched; `schema_version` is bumped.
+  4. **Candidate log** (R29): `docs/RSA-Documents/track-a-round2-candidate-log.tsv`, one row per
+     candidate examined, with `source_id | source_type | url | http_status | bytes | sha256 |
+     decision | reason | dedupe_status | stage_source | tier_source`. The hash gate runs *after* the
+     bytes arrive (`scripts/harvest-track-a.ts:561-564`), so a known document is recorded as
+     `hash-already-present` and described as *downloaded then discarded*, never "never downloaded".
+  5. **French stage vocabulary** (R32): `préliminaire` → PRELIMINARY_DESIGN, `détaillé` →
+     DETAILED_DESIGN, `avant ouverture`/`en service` → PRE_OPENING, `planification`/`étude de
+     faisabilité` → FEASIBILITY_CONCEPT, added to `STAGE_RULES` (`:387-392`). A French document
+     must not silently vanish into `UNSTAGED`.
+  6. **Licence register row per source *attempted*** (R28), not only per contributing source — today
+     the row is written only for sources that yielded a document (`:756-766`).
+  7. **Round filter in the round-1 report generator** (R44): `scripts/harvest-track-a-report.ts`
+     filters manifest rows to `round !== "2"`, so the committed round-1 report stays byte-identical
+     and its vitest guard (`tests/discovery/harvest-track-a-report.test.ts:251-252`) stays green
+     without regenerating a historical artefact.
+
+### M4 — Round-2 report and its guard
+
+- **Creates**: `scripts/harvest-track-a-round2-report.ts`, `tests/discovery/harvest-track-a-round2-report.test.ts`
+- **Touches**: `scripts/harvest-track-a-round2-report.ts` (new),
+  `tests/discovery/harvest-track-a-round2-report.test.ts` (new)
+- **Blocked by**: M3 (needs the new manifest fields), M2 (needs the source-type taxonomy)
+- **Satisfies**: R6–R26, R41–R47
+- **Interface**: `npx tsx scripts/harvest-track-a-round2-report.ts` regenerates
+  `docs/RSA-Documents/track-a-round2-harvest-report.md` **byte-identically** from committed inputs
+  only — no network, no model call, no timestamp (the round-1 pattern,
+  `scripts/harvest-track-a-report.ts:6-10`). It imports the round-1 rule functions
+  (`mergeRows`, `manifestClass`, `STAGE_TO_CELL`, `MANIFEST_STAGE_TO_CELL`, `licenceForPath`)
+  instead of re-implementing them (R9).
+- **Sections**: §1 coverage before/after with priority cells; §2 precision (corpus tables over
+  \|A'\|/\|B'\| **plus** a round-2 funnel table over candidates examined); §3 source-yield table;
+  §4 gaps; §5 provenance and limitations.
+
+### M5 — Live round-2 execution and committed artefacts
+
+- **Touches**: `docs/RSA-Documents/track-a-round2-candidates.json`,
+  `docs/RSA-Documents/track-a-round2-candidate-log.tsv`,
+  `docs/RSA-Documents/canada-intake-manifest.jsonl`,
+  `docs/RSA-Documents/canadian-download-log.tsv`,
+  `docs/RSA-Documents/dedupe-index.json`,
+  `docs/RSA-Documents/track-a-split.json`,
+  `docs/RSA-Documents/LICENSE-REGISTER.md`,
+  `docs/RSA-Documents/track-a-round2-bytes.json`,
+  `docs/RSA-Documents/track-a-round2-harvest-report.md`
+- **Blocked by**: M1, M3, M4
+- **Steps**: `npm ci` → `npx tsx scripts/harvest-round2-discover.ts` (M1) → `npx tsx
+  scripts/harvest-track-a.ts fetch --round=2` → `... intake` → `npx tsx
+  scripts/harvest-track-a-round2-report.ts` (M4) → `npx tsx scripts/harvest-track-a.ts report` and
+  `npx tsx scripts/harvest-track-a-report.ts` to confirm the round-1 artefacts are unchanged.
+- Binaries land under `docs/RSA-Documents/canada/track-a/<source_id>/` — gitignored
+  (`.gitignore:76-79`) and never committed.
+
+### DAG and parallelism
 
 ```
-docs/RSA-Documents/track-a-sources.json   (source manifest — source of truth: allowlist, strategy, licence default)
-        |
-        v
-robots.ts: parse robots -> per-path allow + Crawl-Delay
-ratelimit.ts: withHostBudget(host, fn)  (1 req/s, 2 concurrent — ratelimit.ts:4-5)
-        |  (+ crawl-delay gate: 10s on CKAN hosts — source-feasibility.md:26)
-        v
-fetch bytes -> verify: %PDF magic + content-type + sha256(bytes)
-        |                       (reject -> record as skipped, no binary)
-        v
-binary -> docs/RSA-Documents/canada/<dir>/  |  quarantine/<dir>/ (non-CLEAR)
-        |
-        v
-intake record (project_id, tier, stage, missing_side_note, source_*, track, lang,
-               split, licence_*, sha256, bytes, cell_key, ca_province, retrieved_at)
-        |
-        +--> canadian-download-log.tsv        (source of truth: bytes + sha256 per doc, R6)
-        +--> canada-intake-manifest.jsonl     (source of truth: project_id, tier, stage,
-        |                                       split, licence_verdict, lang, cell_key, R4)
-        |        |
-        |        +--> track-a-split.json      (derived: project_id -> split)
-        |        +--> dedupe-index.json append (source of truth: sha256 -> project_id+split, R9)
-        +--> LICENSE-REGISTER.md row (source of truth: licence verdict per dir)
-        +--> QUARANTINE.md bullet (source of truth: quarantine reason per non-CLEAR doc)
-        |
-        v
-track-a-coverage.md  (target = state/odd-coverage.json cells[].target 13/41/41;
-                      fetched = cell_key present in the intake manifest; never have_total — ca-cells-split.md:11)
-track-a-coverage.md  -> "cells Track A cannot fill" + dropped source families (R12)
+M2 ──┐
+     ├──> M3 ──> M4 ──> M5
+M1 ──┴───────────────────────> M5
 ```
 
-## 3. SCHEMAS
+`M1 ∥ M2` (disjoint touches: `scripts/harvest-round2-discover.ts` vs
+`docs/RSA-Documents/track-a-round2-sources.json`). `M3` must follow `M2` (it reads the source
+list's shape at runtime). `M4` follows `M3`. `M5` follows `M1`, `M3`, `M4`.
 
-### Intake record (`canada-intake-manifest.jsonl`, one JSON object per line)
+## 4. Boundaries and seams
 
-| field | type | allowed | req |
-|---|---|---|---|
-| `project_id` | string | `PRJ-[0-9a-f]{16}` | ✔ |
-| `tier` | enum | `T0,T1,T3,T4` (never `T2` — A4) | ✔ |
-| `stage` | enum | `FEASIBILITY_CONCEPT,PRELIMINARY_DESIGN,DETAILED_DESIGN` (`corpus-schema.json:16`) | ✔ |
-| `missing_side_note` | string\|null | free text; values from repo `Completeness` labels (`src/discovery/types.ts:124-129`) — no new labels | ✔ (nullable) |
-| `source_url` | string | absolute URL | ✔ |
-| `source_host` | string | allowlisted host | ✔ |
-| `source_dir` | string | dir under corpus root | ✔ |
-| `track` | enum | `A` | ✔ |
-| `lang` | enum | `en,fr,unknown` | ✔ |
-| `split` | enum | `train,test,quarantine` | ✔ |
-| `licence_verdict` | enum | `CLEAR,RESTRICTED,BLOCKED` (`LICENSE-REGISTER.md:9-23`) | ✔ |
-| `licence_basis` | string | short reason | ✔ |
-| `licence_ref` | string\|null | licence/dataset URL | – |
-| `sha256` | string | 64 hex = bytes | ✔ |
-| `bytes` | int | file size | ✔ |
-| `file_name` | string | basename on disk | ✔ |
-| `retrieved_at` | string | ISO-8601 | ✔ |
-| `cell_key` | enum | `canada:FEASIBILITY_CONCEPT,canada:PRELIMINARY_DESIGN,canada:DETAILED_DESIGN` (`state/odd-coverage.json` cells) | ✔ |
-| `ca_province` | enum | `BC,AB,ON,QC,MB,NB,NL,NS,PE,SK,YT,NT,NU` (`corpus-schema.json:12`) | ✔ (CA) |
-| `doc_type` | enum | `guide,case-study,complete-RSA,prompt-list,policy,toolkit,presentation,correspondence` (`corpus-schema.json:20`) | ✔ |
+**Must not change**
 
-Split rule is one line: `const TEST_PROVINCES = new Set(["QC","AB"]); split = TEST_PROVINCES.has(province) ? "test" : "train"`; non-CLEAR overrides to `quarantine` (A2/A3 defaults, `grilling.md:23-24`).
+- `src/app/**` and the runtime discovery pipeline's behaviour (`src/discovery/pipeline.ts`,
+  `src/discovery/harvest.ts`) — R1. M1/M3/M4 touch no `src/**` file; they only *import* from
+  `src/discovery/ratelimit.js` and `src/discovery/robots.js`, as
+  `scripts/harvest-track-a.ts:20-21` already does.
+- The round-1 report's **rule functions** and its committed output (R9, R44). M3 changes only which
+  rows feed the round-1 generator, never how a rule is computed.
+- The round-1 report's committed bytes — the vitest guard
+  `tests/discovery/harvest-track-a-report.test.ts:251-252` must stay green without regenerating the
+  file.
+- Git hygiene: no binaries, no extracted PDF text, no `.env*`, no key material (R38, R43).
+- The operator checkout `/Users/akamel/Documents/AuditorAI` — read-only, untouched.
 
-### Download log TSV column order (no header row; 14 columns)
-`source_dir`, `source_url`, `file_name`, `bytes`, `sha256`, `project_id`, `tier`, `stage`, `ca_province`, `lang`, `licence_verdict`, `split`, `cell_key`, `retrieved_at`. Row count == fetched count (R6); `sha256` column == `shasum -a 256` of the file.
+**May change**
 
-### Split manifest (`track-a-split.json`)
-`{schema_version, generated_at, rule, test_provinces:["QC","AB"], projects:[{project_id, split, provinces[], ca_province, docs, sha256[]}], assertions:{train_test_province_overlap:[], qc_in_train:false, project_in_both_splits:[]}}`. Derived from the intake manifest; the intake record remains authoritative per-doc.
+- `scripts/harvest-track-a.ts` (additive: one strategy, one cap, four fields, one log writer, five
+  French patterns, one licence-register condition).
+- `scripts/harvest-track-a-report.ts` (one filter).
+- New files under `docs/RSA-Documents/` and `scripts/`, `tests/discovery/`.
+- `.autoforge/**` curated directories only, per `.autoforge/AGENTS.md`.
 
-### Dedupe index extension (`docs/RSA-Documents/dedupe-index.json`)
-Existing row shape: `{path, sha256, bytes, canonical_id, exact_dup_group}` (`dedupe-index.json:2-8`). New rows = same 5 keys, same order, **plus exactly two new keys**: `project_id` and `split` (`train|test|quarantine`). The writer appends at the array end; `path` is relative to the corpus root (`canada/CONTEXT.md` at `dedupe-index.json:38`), `canonical_id` continues the `C-NNNN` sequence, `exact_dup_group` = `null`. The 333 existing rows are never rewritten — read only to build the pre-existing sha set — and the file is re-serialised with `JSON.stringify(rows, null, 1)` (current 1-space indent) + trailing newline, so the diff shows only appended rows.
+**One-way doors** (expensive to reverse)
 
-## 4. ALTERNATIVES CONSIDERED
+1. The **`round` field on intake rows** becomes permanent corpus schema. It must be additive and
+   optional-tolerant: rows without it are round 1.
+2. The **round-2 source list's `source_type` taxonomy** becomes the reported yield taxonomy. It is
+   closed at 7 types (R18); extending it mid-round would make the denominator uninterpretable.
+3. **The candidate log becomes the precision evidence.** If it is not committed, the PR's precision
+   numbers cannot be re-derived (A9).
 
-**A. Extend the `src/discovery` pipeline** (provider + ledger + coverage) — rejected: it writes `state/discovery-ledger.json` and `state/odd-coverage.json` and reports server-side `have_total` (`scripts/discovery-run.ts:142-168`), which R11 forbids (`ca-cells-split.md:11`), and it drags provider/search machinery irrelevant to a fixed allowlist. Standalone script wins; it reuses `ratelimit.ts` + `ids.ts` primitives without touching pipeline state (grilling.md:60).
+## 5. Data flow
 
-**B. Fetch on the corpus/production box vs in this worktree** — worktree wins: egress works here and the corpus box is operator-controlled (HITL-2, `grilling.md:48`). The script writes under `--corpus-root` (default `docs/RSA-Documents/`), so one flag later targets the box path; binaries stay off-git either way (R3).
+```
+  M2 source list  ──►  M1 discovery script
+  (queries, types)      │  r.jina.ai  ──►  html.duckduckgo.com/html?q=<query>
+                        │  (1 req/s per host, r.jina.ai only)
+                        ▼
+              docs/RSA-Documents/track-a-round2-candidates.json      ← committed, auditable
+                        │
+                        ▼
+              M3 harvest-track-a.ts fetch --round=2
+                   robots.ts isAllowed  ────────► skip "robots"
+                   ratelimit withHostBudget ───► 1 req/s per candidate host
+                   byte cap (5 GiB, 100 MiB/doc) ► skip "byte-cap"
+                   fetch ──► %PDF- magic ──► skip "not a pdf"
+                   sha256 ──► knownHashes() ──► skip "hash-already-present" (bytes already spent)
+                   unpdf extractText ──► skip "no text layer"
+                   isRsaDocument ──► skip "not RSA"
+                   detectStage/detectTier/detectLang/detectProvince
+                   splitFor(province, licence)  ── licence gate ──► restricted|quarantine
+                        │
+                        ├──► docs/RSA-Documents/track-a-round2-candidate-log.tsv  (every candidate)
+                        ├──► docs/RSA-Documents/.track-a/fetched.jsonl            (staging)
+                        └──► docs/RSA-Documents/canada/track-a/<src>/<file>.pdf    (gitignored)
+                        │
+                        ▼
+              M3 harvest-track-a.ts intake --round=2
+                   ──► canada-intake-manifest.jsonl   (appended rows, round="2")
+                   ──► canadian-download-log.tsv       (appended rows)
+                   ──► dedupe-index.json               (appended rows)
+                   ──► track-a-split.json              (regenerated over the FULL manifest)
+                   ──► LICENSE-REGISTER.md             (one row per source ATTEMPTED)
+                        │
+                        ▼
+              M4 harvest-track-a-round2-report.ts
+                   reads: inventory + manifest + dedupe + licence register + candidates +
+                          candidate log + sources + odd-coverage
+                   writes: docs/RSA-Documents/track-a-round2-harvest-report.md  (AC1–AC4)
+```
 
-**C. Manifest in `docs/RSA-Documents/` vs a new top-level dir** — `docs/RSA-Documents/` wins: the register, quarantine list and dedupe index live there, and A9's default puts the intake manifest there too (`grilling.md:30`). `.autoforge/` is unsuitable — curated-only (`.autoforge/AGENTS.md`) and git-ignored (`.gitignore:57-60`).
+The **5 GB cap** sits immediately before the file write. The **hash gate** sits after the response
+arrives, so a known document is *downloaded then discarded* — the log says so. The **licence gate**
+sits at `splitFor`: a non-CLEAR verdict makes the document `restricted`, never train and never test.
 
-## 5. RISKS + MITIGATIONS
+## 6. Key risks at the seams
 
-1. **CKAN listing shape churn** (Alberta 423 hits, Montréal atom feed — `source-feasibility.md:7-8`) → pin one listing URL per source in `track-a-sources.json`, tolerant regex parsing, and a parse failure records the source as unfillable (reason) instead of crashing.
-2. **robots is per-path, and crawl-delay is 10s on both CKAN hosts** (BC disallows `/search*`, Montréal `/*?*tags=` — `source-feasibility.md:9,23,26`) → evaluate robots per URL (never host-level allow), log every skip, gate CKAN requests at ≥10s on top of `withHostBudget`; keep the fetch resumable via the sha set.
-3. **PDF-vs-HTML landings** (resource URLs redirect to HTML; Québec 403 HTML) → `%PDF` magic + content-type check; HTML/403 rejected with a reason, no binary written.
-4. **Licence judgement per document** (CA Crown works are mostly RESTRICTED — `grilling.md:49`) → fail-closed RESTRICTED, CLEAR only on an explicit open licence with no third-party mark; non-CLEAR lands in `quarantine/<dir>/` + a QUARANTINE bullet, excluded from train/test (D10); verdicts live in the source manifest, so re-judging is a one-line change + rerun.
-5. **Dedupe collision + bin/registry drift** → claim only sha256 absent from the 333 existing rows, else skip and report; the manifest is the only shipped artefact, coverage is regenerated from it and never hand-edited; `.gitignore` has **no** corpus rule today (`.gitignore:1-60`) so binaries would be staged — add `docs/RSA-Documents/canada/*/`, `docs/RSA-Documents/quarantine/*/`, `docs/RSA-Documents/**/*.pdf` and assert `git status --porcelain` shows no binary path (R3).
+| Risk | Why it bites | Mitigation |
+|---|---|---|
+| Search-engine blocking | DDG/Bing/Brave/Mojeek/searx all challenge or 403 direct requests from this container | Route through `r.jina.ai` (proven, keyless). If a query returns 0 results, record it as `no results` — never as "not found" |
+| The wide search returns too little | 9 results for one query; the query set must be broad and per-family | Run many queries across the 7 source types; the report's yield table shows every type attempted, with honest zeros (R20) |
+| The byte cap vs a huge single PDF | one Alberta PDF measured **118 MB** | per-document cap 100 MiB + cumulative 5 GiB, both enforced before the write (R35/R36) |
+| French RSAs vanish | `STAGE_RULES` is English-only today, so a French RSA falls back to the hint → `UNSTAGED` → never coverage | French patterns in `STAGE_RULES` (R32); the report also carries an explicit unmapped bucket |
+| Round-1 artefact churn | appending to the manifest changes the round-1 report's \|A\|/\|B\| | filter `round !== "2"` in the round-1 generator; the committed round-1 report stays byte-identical (R44) |
+| Manifest schema break | the intake manifest is consumed by the report generator, the split map and the dedupe index | fields are additive and optional-tolerant; `schema_version` bumped (R27) |
+| Split-rule confusion | the ticket says "the held-out prairie province"; the code says QC+AB | follow the code (`scripts/harvest-track-a.ts:38`); MB is left unharvested and flagged in the gaps table (R33, O4) |
+| The honest-zero trap | round 2 may legitimately find 0 in-scope T3/T4 documents | the report states the candidate count, the zero, and that before == after, in fixed words (R45) |
 
-## 6. DECISIONS THE OPERATOR MUST RATIFY (proceed on the default; each reversible)
+## 7. Decision table
 
-1. **HITL-1 missing `HARVESTING_PLAN.md`** → proceed on D1 reconstruction: ticket body = source list, `odd-coverage.json` targets = §3 targets (`grilling.md:22,47`). Reversible: replace the manifest.
-2. **HITL-2 corpus location / execution box** → fetch in this worktree, write to `--corpus-root` (default `docs/RSA-Documents/`); operator points it at the box path later. Reversible: one flag.
-3. **HITL-3 Crown verdicts** → default RESTRICTED (fail-closed → quarantine); RESTRICTED-but-fetched docs count in `fetched_all` but never in §3 coverage. Reversible: verdict in `track-a-sources.json`.
-4. **A2/A3 split** → QC + AB test-only, other provinces train; one line `TEST_PROVINCES` (`grilling.md:23-24`). Reversible.
-5. **A9 intake home + dedupe authority** → intake manifest in `docs/RSA-Documents/`, corpus `dedupe-index.json` is the claim authority, discovery index cross-check only, no `src/`/`contracts/` schema change (`grilling.md:30`). Reversible.
+| # | Decision | Options | Pick | Rationale |
+|---|---|---|---|---|
+| D1 | Where round-2 discovery lives | (a) new `DiscoveryProvider` in `src/discovery/providers/`; (b) script under `scripts/`; (c) a new harvester `strategy` | **(b) script** | (a) touches the runtime seam R1 forbids changing and implies app-level wiring nobody asked for; (c) conflates finding with fetching, breaking R3. The house pattern for a one-shot harvest is `scripts/` |
+| D2 | How the search is performed | direct scraping of an engine; agent-reach's Exa branch; **agent-reach's Jina Reader over an engine** | **Jina over the engine** | agent-reach's documented zero-config web channel; keyless, free, proven to return Canadian candidates. Its Exa branch is unavailable (no key, no `mcporter`) — recorded as such |
+| D3 | Round-1 report handling (R44) | Option A regenerate it; Option B freeze its inputs; **Option C filter round-2 rows out** | **Option C** | the round-1 report is a historical artefact of round 1; one filter keeps its committed bytes *and* its vitest guard green, and the round-2 report carries before/after. Option A would rewrite history in a round-1-named file |
+| D4 | Candidate-list strategy shape | a `candidate-list` strategy reading the committed JSON; or a `known-document-url` entry per source | **`candidate-list` strategy** | keeps discovery and fetching separable (R3) and the candidate log authoritative (R29); a URL list inside the source list would grow that file without provenance |
+| D5 | French stage patterns | inside `STAGE_RULES`; a separate French table | **inside `STAGE_RULES`** | one classifier, one place; the patterns are the same 4 stages, just French tokens. A second table would need a second code path through `detectStage` |
+| D6 | Byte accounting file | JSON; TSV | **JSON** | it is a single object with named fields and one consumer (the report generator + the test). TSV's column discipline buys nothing for one row |
+| D7 | Runner for the live round | the operator's machine; the box runner; **this worktree** | **this worktree** | network and npm are proven here; the harvester is Node/tsx and the box's `run` verb executes only `tools/**/*.py`. The box is used only for the free-model-pool probe |
+| D8 | Free-model triage | mandatory; attempted then skipped; **not attempted** | **probed on the box; rule-only unless it answers** | the pool does not resolve from this container. If the box answers, the model may pre-filter candidates only — never set tier, stage, class, licence or a count (R40). Otherwise the report says so in one sentence (R39/R41) |
+| D9 | Committed candidate list | commit it; keep it ephemeral | **commit it** | without it the round cannot be re-run or audited, and the precision numbers become unverifiable (R5, A9) |
+| D10 | Source-type taxonomy | closed 7 types; open | **closed 7 types** | an open taxonomy makes the yield denominator uninterpretable; extending it mid-round is a measurement bug (R18/R11) |
+
+## 8. Verification strategy
+
+| Claim | Command |
+|---|---|
+| lint clean | `npm run lint` |
+| types clean | `npm run typecheck` |
+| unit + guard tests | `npm test` (vitest) — includes the round-1 byte-reproducibility guard `tests/discovery/harvest-track-a-report.test.ts:251-252` and the new round-2 guard |
+| build | `npm run build` |
+| harvester invariants | `npx tsx scripts/harvest-track-a.ts selftest` |
+| round-2 report is byte-reproducible | `npx tsx scripts/harvest-track-a-round2-report.ts` leaves the committed file unchanged; `npx vitest run tests/discovery/harvest-track-a-round2-report.test.ts` passes |
+| round-1 report untouched | `git diff --exit-code -- docs/RSA-Documents/track-a-harvest-report.md` |
+| no binary in git | `git ls-files docs/RSA-Documents \| grep -ci '\.pdf$'` → 0 |
+| vault determinism (repo AGENTS.md) | `node scripts/vault-sync.mjs --check` |
+| byte cap honoured | the byte-accounting file's arithmetic, asserted by the round-2 test; `corpusBytesAfter ≤ capBytes` |
+
+The repo pre-commit hook runs lint + typecheck + vault determinism + YAML parse; `npm run ci:local`
+mirrors CI.
+
+## 9. Module `touches` / `blocked_by` summary
+
+| Module | Touches | Blocked by |
+|---|---|---|
+| M1 discovery script | `scripts/harvest-round2-discover.ts` | — |
+| M2 round-2 source list | `docs/RSA-Documents/track-a-round2-sources.json` | — |
+| M3 harvester round-2 support | `scripts/harvest-track-a.ts`, `scripts/harvest-track-a-report.ts` | M2 |
+| M4 round-2 report + guard | `scripts/harvest-track-a-round2-report.ts`, `tests/discovery/harvest-track-a-round2-report.test.ts` | M2, M3 |
+| M5 live round + artefacts | `docs/RSA-Documents/**` (the nine artefacts listed in M5) | M1, M3, M4 |

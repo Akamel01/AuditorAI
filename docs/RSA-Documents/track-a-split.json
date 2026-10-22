@@ -1,6 +1,7 @@
 {
   "schema_version": "1.0.0",
   "ticket": "Akamel01/AuditorAI#40",
+  "note": "the corpus split map; round 2 (ticket Akamel01/AuditorAI#60) appends documents to the same map",
   "test_provinces": [
     "QC",
     "AB"
@@ -10,7 +11,8 @@
     "AB": {
       "split": "test",
       "docs": [
-        "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf"
+        "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+        "http://conf.tac-atc.ca/english/resourcecentre/readingroom/conference/conf2005/docs/s16/kenny.pdf"
       ]
     },
     "BC": {
@@ -18,6 +20,55 @@
       "docs": [
         "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04b.pdf",
         "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf"
+      ]
+    },
+    "ON": {
+      "split": "restricted",
+      "docs": [
+        "https://documents.ottawa.ca/sites/default/files/Confederation%20Line%20Extension%20Project%20-%20Schedule%2015-2%20Part%202%20-%20Civil%20and%20Guideway%20-%20Appendix%20H%20%28Redacted%29-AODA.pdf",
+        "https://documents.ottawa.ca/sites/default/files/MEMO_WestboroStation_TransitwayActionsArisingFromRoadSafetyAudit%20FINAL%20EN.pdf",
+        "https://documents.ottawa.ca/sites/default/files/MEMO_WestboroStation_TransitwayActionsArisingFromRoadSafetyAudit_EN.pdf",
+        "https://documents.ottawa.ca/sites/default/files/Transitway%20Station%20Design%20Safety%20Audit%20-%20Analysis%20of%20Findings%20-%20Final%20Report%20-%20Sep%202021.pdf",
+        "https://www.niagararegion.ca/media/grcbeqke/appendix-h.pdf"
+      ]
+    },
+    "UNKNOWN": {
+      "split": "restricted",
+      "docs": [
+        "https://at.govt.nz/media/1976251/waitemata-greenways-pre-opening-road-safety-audit.pdf",
+        "https://consult.kerrycoco.ie/ga/system/files/materials/3631/25068-01-001_RSA1.pdf",
+        "https://docs.planning.org.uk/20220620/108/RD8Y0TBTK6300/96kf3i8q9c3wswht.pdf",
+        "https://irishcycle.com/wp-content/uploads/2018/06/2017.08.21-DBFL_RSA-Stage-3_170145-Rep-001-RSA-S3-Appendices-2.pdf",
+        "https://theedinburghreporter.co.uk/wp-content/uploads/2024/09/CCTT-Briefing-Note-on-Stage-3-Road-Safety-Audit-for-Trams-to-Newhaven-Project-1.pdf",
+        "https://www.adb.org/sites/default/files/linked-documents/40255-033-vie-oth-03.pdf",
+        "https://www.ciht.org.uk/media/15012/road-safety-audit-guidelines-stage-2-rsa-sample-report-final.pdf",
+        "https://www.ciht.org.uk/media/15013/road-safety-audit-guidelines-stage-2-rsa-sample-response-report-final.pdf",
+        "https://www.ite.org/ITEORG/assets/File/Road%20Safety%20Audit%20Training%20to%20Your%20District.pdf",
+        "https://www.pleanala.ie/publicaccess/EIAR-NIS/313206/Engineering/Transport%20&%20Connectivity/21107TT-Doc05-Road%20Safety%20Audit.pdf",
+        "https://www.pleanala.ie/publicaccess/EIAR-NIS/316828/Supplementary%20Information/Preliminary%20Design%20Report/Appendices/Appendix%20M%20-%20Road%20Safety%20Audit.pdf",
+        "https://www.rtmc.co.za/images/rtmc/docs/RoadSafetyEngineering/SA%20Road%20Safety%20Manual/SA%20Road%20Safety%20Manual/Volume%204/Chapters/Chapter%206-11.pdf",
+        "https://www.tfwm.org.uk/media/0iinxzjp/stage-1-road-safety-audit-designer-s-response.pdf",
+        "https://www.wokingham.gov.uk/sites/wokingham/files/2025-01/California%20Crossroads%20Stage%203%20Road%20Safety%20Audit%20-%20Designers%20Response.pdf",
+        "https://cabinet-sst.com/wp-content/uploads/2026/08/audit-de-securite-routiere-asr.pdf",
+        "https://pdf.tossin.app/uemoa/directive_n%C2%B013_2009_cm_uemoa.pdf",
+        "https://docs.planning.org.uk/20250708/15/SXFV4ROKL4F00/6qe4p32vjxbdgji3.pdf",
+        "https://planningexplorer.barnsley.gov.uk/Home/FileDownload/01GEE4NBYEVR47HHZNSBHKOLV2PL6TOP3C?ApplicationNumber=2024%2F0122",
+        "https://planningregister.cherwell.gov.uk/Document/Download?module=PLA&recordNumber=146197&planId=1841807&imageId=200&isPlan=False&fileName=4364%20Designers%20Resposne%20RSA1%20%28April%202022%29.pdf",
+        "https://westsussex.planning-register.co.uk/Document/Download?module=PLA&recordNumber=1705&planId=56326&imageId=78&isPlan=False&fileName=Appendix%20E%20-%20Road%20Safety%20Audit%20and%20Designers%20Response.pdf",
+        "https://www.southampton.gov.uk/modernGov/documents/s29377/Additional%20Document%202-%20Appendix%20C2%20RSA%20Designers%20Response.pdf"
+      ]
+    },
+    "NB": {
+      "split": "restricted",
+      "docs": [
+        "https://www.unb.ca/research/transportation-group/_assets/documents/quantifying-the-benefits-of-road-safety-audits.pdf",
+        "http://conf.tac-atc.ca/english/annualconference/tac2012/docs/session5/safetyaudit.pdf"
+      ]
+    },
+    "QC": {
+      "split": "restricted",
+      "docs": [
+        "http://www.bv.transports.gouv.qc.ca/mono/1357224.pdf"
       ]
     }
   }
