@@ -4,6 +4,7 @@
 // that survives refresh/tab switch. Poll GET /api/dev/discovery/jobs/:id.
 import { after, NextResponse } from "next/server";
 import { requireAdmin, serverError } from "@/lib/api";
+import { devDiscoveryRunRequest, readJsonBody } from "@/lib/request-schema";
 import { harvest, executeJob, UnknownCellKeyError } from "@/discovery/harvest";
 
 export const maxDuration = 60;
@@ -12,13 +13,12 @@ export async function POST(req: Request) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
   try {
-    let body: { live?: boolean; cellKey?: string } = {};
-    try {
-      const text = await req.text();
-      if (text.trim().length > 0) body = JSON.parse(text) as { live?: boolean; cellKey?: string };
-    } catch {
-      return NextResponse.json({ error: "invalid request body" }, { status: 400 });
-    }
+    // An absent body is legal here (it means "run the gap-aware batch").
+    const body = await readJsonBody<{ live?: boolean; cellKey?: string }>(
+      req,
+      devDiscoveryRunRequest,
+      { allowEmpty: true },
+    );
 
     let result;
     try {
