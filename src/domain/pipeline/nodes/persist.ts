@@ -2,6 +2,9 @@
 // Never executed in batch (runAudit persists nothing). Exposed as an async
 // operation because the DataStore seam is I/O-bound; one retry on transient
 // store failure.
+//
+// not tenant-scoped: takes an explicit workspace + DataStore; the production
+// audit path writes through auth.repo
 import { Repository, type DataStore } from "@/lib/persistence";
 import { makeArtifact } from "@/domain/pipeline/nodes/shared";
 import type {

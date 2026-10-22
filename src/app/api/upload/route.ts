@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 import { badRequest, requireWorkspace, serverError } from "@/lib/api";
 import { MAX_UPLOAD_BYTES, extractText } from "@/lib/extract";
 import { buildImageAttachment } from "@/lib/intake";
-import { getDataStore, Repository } from "@/lib/persistence";
 
 export async function POST(req: Request) {
   const auth = await requireWorkspace(req);
@@ -17,7 +16,9 @@ export async function POST(req: Request) {
 
     // Image branch: paste-to-attach drawings (M2).
     if ((form.get("kind") as string | null) === "image") {
-      const repo = new Repository(getDataStore());
+      // The tenant repository resolved by requireWorkspace — one store per
+      // request, never a second Repository built here.
+      const repo = auth.repo;
       const projectId = String(form.get("project_id") ?? "");
       const existing = projectId ? await repo.listAttachments(auth.ws, projectId) : [];
       const built = await buildImageAttachment(form, file, existing);

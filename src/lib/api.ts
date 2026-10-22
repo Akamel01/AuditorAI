@@ -1,7 +1,7 @@
 // Shared API helpers: workspace auth (+ rate limiting), JSON responses, error mapping.
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { Repository, getDataStore, workspaceHash } from "./persistence";
+import { workspaceHash } from "./persistence";
 import { checkRateLimit } from "./ratelimit";
 import {
   CapabilityClaimNotIssuableError,
@@ -14,6 +14,19 @@ import {
   StoreUnavailableError,
   UnknownAttachmentError,
 } from "./persistence";
+import {
+  CredentialRevokedError,
+  DatabaseUnavailableError,
+  WorkspaceMembershipError,
+} from "./db/errors";
+import { resolveTenant, type TenantResolution } from "./db/identity";
+import { createTenantRepository } from "./db/repository-factory";
+import type { TenantRepository } from "./db/tenant-repository";
+import {
+  legacyDatabaseStatus,
+  postgresDatabaseStatus,
+  type DatabaseStatus,
+} from "./db-notice";
 
 export const WORKSPACE_HEADER = "x-workspace-key";
 export const ADMIN_HEADER = "x-admin-key";
@@ -59,7 +72,10 @@ export async function requireAdmin(
 
 export async function requireWorkspace(
   req: Request,
-): Promise<{ ok: true; ws: string; repo: Repository } | { ok: false; res: NextResponse }> {
+): Promise<
+  | { ok: true; ws: string; repo: TenantRepository; databaseStatus: DatabaseStatus }
+  | { ok: false; res: NextResponse }
+> {
   const key = req.headers.get(WORKSPACE_HEADER);
   if (!key || key.length < 16) {
     return {
@@ -81,7 +97,29 @@ export async function requireWorkspace(
       ),
     };
   }
-  return { ok: true, ws, repo: new Repository(getDataStore()) };
+
+  // The tenant identity is resolved ONCE per request, in the ONE place that
+  // produces it (src/lib/db/identity.ts); the factory (never this function)
+  // picks the store. A configured-but-unreachable database fails closed with
+  // DatabaseUnavailableError, a revoked credential with CredentialRevokedError
+  // and a non-member with WorkspaceMembershipError — all mapped by ERROR_TABLE.
+  //
+  // D9: the "not configured" state is a NOTICE, not an outage — the legacy
+  // store serves and the page shows "database not configured". The reversal to
+  // the hard 503 is one line here: raise DatabaseNotConfiguredError instead of
+  // returning the legacy resolution.
+  let resolution: TenantResolution;
+  try {
+    resolution = await resolveTenant(key);
+  } catch (e) {
+    return { ok: false, res: serverError(e) };
+  }
+  const repo = createTenantRepository(resolution);
+  const databaseStatus =
+    resolution.mode === "postgres"
+      ? postgresDatabaseStatus()
+      : legacyDatabaseStatus(resolution.reason);
+  return { ok: true, ws, repo, databaseStatus };
 }
 
 export function badRequest(message: string) {
@@ -114,6 +152,12 @@ const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof UnknownAttachmentError, status: 400, exposeMessage: true },
   { matches: (e) => e instanceof RequestContractError, status: 422, exposeMessage: true },
   { matches: (e) => e instanceof StoreUnavailableError, status: 503, exposeMessage: false },
+  // The tenant-store outcomes. All three are REDACTED: the internals must not
+  // reach the wire, and the fallback branch below would otherwise answer 500
+  // with a redacted body (the state would be lost, not the detail).
+  { matches: (e) => e instanceof DatabaseUnavailableError, status: 503, exposeMessage: false },
+  { matches: (e) => e instanceof CredentialRevokedError, status: 401, exposeMessage: false },
+  { matches: (e) => e instanceof WorkspaceMembershipError, status: 403, exposeMessage: false },
 ];
 
 const REDACTED_MESSAGE = "internal server error";
@@ -126,6 +170,7 @@ export function serverError(e: unknown) {
     console.error("[api]", e);
     return NextResponse.json({ error: REDACTED_MESSAGE }, { status: 500 });
   }
+  console.error("[api]", e);
   const message = entry.exposeMessage && e instanceof Error ? e.message : REDACTED_MESSAGE;
   return NextResponse.json({ error: message }, { status: entry.status });
 }

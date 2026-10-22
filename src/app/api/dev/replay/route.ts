@@ -1,5 +1,8 @@
 // GET /api/dev/replay — stored artifact trail for an audit, split by the N3
 // replay rule (verified = trusted; everything else regenerates).
+//
+// Dev-console namespace only (src/lib/devtab.ts:9,15-16) — not tenant-scoped:
+// the dev console keeps the legacy KV repository by design (architecture D15).
 import { NextResponse } from "next/server";
 import { badRequest, requireAdmin, serverError } from "@/lib/api";
 import { devWorkspaceHash } from "@/lib/devtab";

@@ -31,7 +31,10 @@ export async function GET(req: Request) {
   if (!auth.ok) return auth.res;
   try {
     const projects = await auth.repo.listProjects(auth.ws);
-    return NextResponse.json({ projects });
+    // m3: the discriminator lives under ONE separate key, `database_status` —
+    // a bare top-level `code` would sit in the error-body namespace
+    // (src/lib/client.ts:72 reads data?.error on a non-ok response).
+    return NextResponse.json({ projects, database_status: auth.databaseStatus });
   } catch (e) {
     return serverError(e);
   }

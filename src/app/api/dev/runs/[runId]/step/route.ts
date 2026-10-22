@@ -3,6 +3,9 @@
 // nodes; { decisions?: [...] } feeds human adjudication. Behavior selection
 // is registry-driven via pipeline.runNodeAsync; off default refuses
 // uniformly, so the deterministic path never changes.
+//
+// Dev-console namespace only (src/lib/devtab.ts:9,15-16) — not tenant-scoped:
+// the dev console keeps the legacy KV repository by design (architecture D15).
 import { NextResponse } from "next/server";
 import { badRequest, requireAdmin, RequestContractError, serverError } from "@/lib/api";
 import { devWorkspaceHash, getSession, putSession } from "@/lib/devtab";

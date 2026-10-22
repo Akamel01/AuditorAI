@@ -1,6 +1,9 @@
 // POST /api/dev/runs/[runId]/finish — persist the session's accumulated
 // artifact trail (N3 layout). Requires AG-REPORT to have executed. The trail
 // is exactly what stepping produced, including any what-if edits.
+//
+// Dev-console namespace only (src/lib/devtab.ts:9,15-16) — not tenant-scoped:
+// the dev console keeps the legacy KV repository by design (architecture D15).
 import { NextResponse } from "next/server";
 import { badRequest, requireAdmin, serverError } from "@/lib/api";
 import { devWorkspaceHash, getSession } from "@/lib/devtab";
