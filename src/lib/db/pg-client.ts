@@ -1,4 +1,4 @@
-// The production adapter: a `pg` Pool over POSTGRES_URL
+// The production adapter: a `pg` Pool over TENANT_POSTGRES_URL
 // (architecture report-t53.md §3.4 and §4.1). Server-only — `pg` must never
 // reach a client bundle.
 import { Pool, type PoolClient } from "pg";
@@ -50,7 +50,7 @@ export function assertAppRoleAllowed(url: string): void {
   if (baseRole === APP_ROLE) return;
   throw new Error(
     `refusing to build a pool for role '${role ?? "unknown"}': expected '${APP_ROLE}'. ` +
-      `Point POSTGRES_URL at the ${APP_ROLE} role, or set DB_ALLOW_OWNER=1 out of band ` +
+      `Point TENANT_POSTGRES_URL at the ${APP_ROLE} role, or set DB_ALLOW_OWNER=1 out of band ` +
       `(that override voids the isolation guarantee).`,
   );
 }
@@ -106,6 +106,14 @@ let poolSingleton: Pool | null = null;
 
 /** Build a pool for the given URL. Refuses an owner URL unless DB_ALLOW_OWNER=1. */
 function createPgPool(url: string): Pool {
+  // The offline guarantee, moved here from config.ts so the cutover gate
+  // stays testable: a suite can never open a real pool, whatever the
+  // developer's shell exports.
+  if (process.env.NODE_ENV === "test") {
+    throw new DatabaseNotConfiguredError(
+      "refusing to build a pool in a test environment",
+    );
+  }
   assertAppRoleAllowed(url);
   const normalized = normalizePostgresUrl(url);
   const sslDisabled = new URL(normalized).searchParams.get("sslmode") === "disable";
@@ -115,12 +123,12 @@ function createPgPool(url: string): Pool {
   });
 }
 
-/** The ambient pool, built on first use from POSTGRES_URL. Throws
+/** The ambient pool, built on first use from TENANT_POSTGRES_URL. Throws
  *  DatabaseNotConfiguredError when the database is not configured. */
 function getPgPool(): Pool {
   if (!poolSingleton) {
     const url = postgresUrl();
-    if (!url) throw new DatabaseNotConfiguredError("POSTGRES_URL is not set");
+    if (!url) throw new DatabaseNotConfiguredError("TENANT_POSTGRES_URL is not set");
     poolSingleton = createPgPool(url);
   }
   return poolSingleton;

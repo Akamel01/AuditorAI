@@ -7,9 +7,9 @@ export default defineConfig({
     setupFiles: ["./tests/setup.ts"],
     include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
     // Offline guarantee (critique m5): a suite can never open a real pool,
-    // whatever the developer's shell exports. src/lib/db/config.ts treats
-    // NODE_ENV === "test" as "the database is not configured" as well.
-    env: { POSTGRES_URL: "", SUPABASE_URL: "" },
+    // whatever the developer's shell exports. src/lib/db/pg-client.ts refuses
+    // to build a pool in NODE_ENV === "test" as well.
+    env: { POSTGRES_URL: "", TENANT_POSTGRES_URL: "", TENANT_STORE: "", SUPABASE_URL: "" },
   },
   resolve: {
     alias: {

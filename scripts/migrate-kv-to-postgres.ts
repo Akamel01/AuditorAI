@@ -50,7 +50,7 @@ function usage(): string {
     "  --help              this text",
     "",
     "Environment: KV_REST_API_URL + KV_REST_API_TOKEN (the KV source),",
-    "POSTGRES_URL (the target, the auditorai_app role).",
+    "TENANT_POSTGRES_URL (the target, the auditorai_app role).",
   ].join("\n");
 }
 
@@ -168,10 +168,10 @@ async function main(): Promise<void> {
   const source = new KvRestStore(kvUrl, kvToken);
 
   let target: SqlClient | null = null;
-  if (process.env.POSTGRES_URL) {
+  if (process.env.TENANT_POSTGRES_URL) {
     target = createPgSqlClient();
   } else if (options.apply) {
-    fail("POSTGRES_URL is not set: the target store is not configured");
+    fail("TENANT_POSTGRES_URL is not set: the target store is not configured");
   }
 
   try {

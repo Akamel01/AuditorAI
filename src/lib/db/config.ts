@@ -6,10 +6,10 @@
 // env read that throws and no import-time network call, so the build succeeds
 // with every variable unset.
 
-/** NODE_ENV === "test" means "the database is not configured", always. A
- *  locally exported POSTGRES_URL must never open a real pool from a suite
- *  (critique m5 — vitest.config.ts blanks the vars too; this is the second
- *  half of the guarantee). */
+/** NODE_ENV === "test" means "no admin/DDL connection", always. The TENANT
+ *  pool's offline guarantee lives in the pool factory
+ *  (src/lib/db/pg-client.ts — the only place a pool is built), so the cutover
+ *  gate itself stays testable. */
 function isTestEnv(): boolean {
   return process.env.NODE_ENV === "test";
 }
@@ -20,15 +20,27 @@ function env(name: string): string | null {
   return value && value.trim() ? value : null;
 }
 
-/** Is the Postgres tenant path configured at all? The cutover gate. */
-export function isDatabaseConfigured(): boolean {
-  return postgresUrl() !== null;
+/** The CUTOVER SWITCH. The Postgres tenant path runs ONLY when
+ *  TENANT_STORE=postgres. Until the operator flips it, the app keeps today's
+ *  Upstash/KV path — whatever POSTGRES_URL says. Production already has
+ *  POSTGRES_URL injected (the Vercel-Supabase link: the OWNER role, no
+ *  tables), so a path keyed off POSTGRES_URL would take the tenant branch on
+ *  the live MVP at merge time and every request would fail on the
+ *  owner-role refusal in the pool factory. */
+export function tenantStoreEnabled(): boolean {
+  return (process.env.TENANT_STORE ?? "").trim().toLowerCase() === "postgres";
 }
 
-/** The pooled tenant connection string (the `auditorai_app` role). */
+/** Is the Postgres tenant path configured at all? The cutover gate. */
+export function isDatabaseConfigured(): boolean {
+  return tenantStoreEnabled() && postgresUrl() !== null;
+}
+
+/** The pooled tenant connection string (the `auditorai_app` role).
+ *  NEVER POSTGRES_URL: the platform injects POSTGRES_URL with the OWNER
+ *  role, and the owner bypasses RLS. */
 export function postgresUrl(): string | null {
-  if (isTestEnv()) return null;
-  return env("POSTGRES_URL");
+  return env("TENANT_POSTGRES_URL");
 }
 
 /** The direct (non-pooled) connection string for admin/DDL/migration work. */

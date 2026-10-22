@@ -22,7 +22,9 @@ import { createPgSqlClient } from "./pg-client";
 
 /** The outcome of a resolution: Postgres serves this workspace, or the legacy
  *  KV store does. `reason` says WHY the legacy store serves it:
- *  - not_configured    — no POSTGRES_URL (a notice, not an outage, D9)
+ *  - not_configured    — the tenant path is not switched on
+ *                        (TENANT_STORE=postgres + TENANT_POSTGRES_URL;
+ *                        a notice, not an outage, D9)
  *  - not_migrated      — the credential has no row (D12: no first-use
  *                        registration, so an unmigrated key keeps its data)
  *  - schema_not_applied— the database is reachable but the tenant schema is
@@ -53,9 +55,10 @@ export function tenantSqlClient(): SqlClient {
  *
  *  The INJECTED client counts: it IS the database for that process, and it is
  *  the only way a suite can exercise the resolution without a live endpoint —
- *  NODE_ENV=test means "not configured" by design (M2, config.ts), so the env
- *  gate alone would make the injected client unreachable. In production no
- *  client is injected, so this is exactly the POSTGRES_URL gate. */
+ *  a suite never opens a real pool (pg-client.ts refuses in NODE_ENV=test),
+ *  so the env gate alone would make the injected client unreachable. In
+ *  production no client is injected, so this is exactly the tenant-store
+ *  gate: TENANT_STORE=postgres AND TENANT_POSTGRES_URL. */
 export function isTenantDatabaseAvailable(): boolean {
   return getInjectedSqlClient() !== null || isDatabaseConfigured();
 }
