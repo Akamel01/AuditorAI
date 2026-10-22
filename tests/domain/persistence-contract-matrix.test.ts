@@ -7,14 +7,16 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { PGlite } from "@electric-sql/pglite";
 import { MemoryStore } from "@/lib/persistence/store";
 import type { DataStore } from "@/lib/persistence/store";
-import { Repository } from "@/lib/persistence";
+import { ArtifactTooLargeError, MAX_ARTIFACT_BYTES, Repository } from "@/lib/persistence";
 import { UnknownAttachmentError } from "@/lib/persistence/project-store";
+import { buildImageAttachment } from "@/lib/intake";
 import { createPgliteSqlClient, type PgliteLike } from "@/lib/db/pglite-client";
 import { legacySubjectFor, workspaceUuidFor } from "@/lib/db/migration";
 import { PostgresTenantRepository } from "@/lib/db/tenant-store";
 import type { TenantRepository } from "@/lib/db/tenant-repository";
 import { workspaceHash } from "@/lib/persistence/store";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
+import { ATTACHMENT_MAX_BYTES } from "@/domain/types";
 import type { AgNodeId, AuditArtifact } from "@/domain/pipeline/types";
 
 /** Minimal in-test KV-conforming fake: DataStore seam only, Map-backed. */
@@ -351,5 +353,61 @@ describe.each(repositories)("repository contract: %s", (_name, make) => {
   itRepo("a missing artifact resolves to null", async () => {
     const repo = await make();
     expect(await repo.getArtifact(WS, "P-1", "A-1", "AG-PERSIST", 1)).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The size caps on the POSTGRES column only: the two caps live at DIFFERENT
+// layers, so they cannot be asserted by one shared case.
+//   - the ARTIFACT cap IS asserted inside the Postgres repository, before any
+//     insert (src/lib/db/tenant-store.ts:366-369) -> ArtifactTooLargeError.
+//   - the ATTACHMENT cap is NOT: `saveAttachment` performs no size check.
+//     The real enforcement point is INTAKE (src/lib/intake.ts:46-48,
+//     ATTACHMENT_MAX_BYTES in src/domain/types.ts:20-22), one layer above the
+//     repository. The repository therefore ACCEPTS an oversized attachment —
+//     this case pins that actual behaviour, and pins where the cap IS enforced.
+// ---------------------------------------------------------------------------
+
+describe("PostgresTenantRepository (pglite): size caps", () => {
+  const itRepo = (name: string, fn: () => Promise<void>) => it(name, fn, 30_000);
+
+  itRepo("rejects an oversized artifact with ArtifactTooLargeError and writes no row", async () => {
+    const repo = await newPostgresRepository();
+    const big = artifactFixture("AG-PERSIST", "big");
+    big.payload = { blob: "x".repeat(MAX_ARTIFACT_BYTES + 10) };
+
+    await expect(
+      repo.saveArtifactTrailFor(WS, { projectId: "P-1", auditId: "A-1" }, [big]),
+    ).rejects.toBeInstanceOf(ArtifactTooLargeError);
+
+    // The cap is checked BEFORE the insert, so no artifact row landed.
+    expect(await repo.listArtifacts(WS, "P-1", "A-1")).toEqual([]);
+  });
+
+  itRepo("accepts an oversized attachment (the cap is enforced at intake, not in the repository)", async () => {
+    const repo = await newPostgresRepository();
+    const oversize = ATTACHMENT_MAX_BYTES + 1;
+    const attachment: Attachment = {
+      ...attachmentFixture("att-big", NOW),
+      bytes: oversize,
+      data_url: `data:image/png;base64,${Buffer.alloc(oversize, 1).toString("base64")}`,
+    };
+
+    // The Postgres repository has no size check: the write SUCCEEDS.
+    await repo.saveAttachment(WS, attachment);
+    const stored = await repo.getAttachment(WS, "P-1", "att-big");
+    expect(stored?.attachment_id).toBe("att-big");
+    expect(stored?.bytes).toBe(oversize);
+
+    // The cap IS enforced one layer up — at intake (src/lib/intake.ts:46-48).
+    const form = new FormData();
+    form.append("project_id", "P-1");
+    const file = new File([new Uint8Array(oversize).buffer as ArrayBuffer], "big.png", {
+      type: "image/png",
+    });
+    expect(await buildImageAttachment(form, file, [])).toEqual({
+      ok: false,
+      error: "Image exceeds 500 KB limit",
+    });
   });
 });

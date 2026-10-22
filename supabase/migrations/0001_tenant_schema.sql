@@ -18,10 +18,11 @@
 -- in a `payload jsonb` column; only the columns that carry MEANING (ordering,
 -- uniqueness, foreign keys) are real columns. The documented size caps are
 -- enforced at the write path, not here: the 512 000-byte per-artifact cap
--- (src/lib/persistence/artifact-trail.ts:10,44-47) and the 500 KB attachment
--- cap (src/domain/types.ts:20-22) are asserted by the repository before the
--- insert (M3, src/lib/db/tenant-store.ts), so no DB-level byte constraint is
--- declared here.
+-- (src/lib/persistence/artifact-trail.ts:10,44-47) is asserted by the Postgres
+-- repository before the insert (M3, src/lib/db/tenant-store.ts:366-369), while
+-- the 500 KB attachment cap (src/domain/types.ts:20-22) is enforced at intake
+-- (src/lib/intake.ts:46-48), NOT in the repository; so no DB-level byte
+-- constraint is declared here.
 --
 -- Write-once issue revisions are expressed by the primary key of
 -- `audit_issues` (revision is part of the key): a revision can never be
