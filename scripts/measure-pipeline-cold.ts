@@ -41,8 +41,8 @@ async function main() {
   });
   const res = await POST(req, { params: Promise.resolve({ projectId: project.project_id }) });
   const dt = performance.now() - t0;
-  await res.json();
-  console.log(JSON.stringify({ status: res.status, durationMs: dt }));
+  const json = await res.json() as { status?: number; stageDurationsMs?: Record<string, number> };
+  console.log(JSON.stringify({ status: res.status, durationMs: dt, stageDurationsMs: json.stageDurationsMs ?? {} }));
 }
 
 main().catch((e) => {

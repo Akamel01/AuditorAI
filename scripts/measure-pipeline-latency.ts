@@ -18,7 +18,8 @@ interface SamplesFile {
   warmN: number;
   coldN: number;
   warm: Record<string, number[]>;
-  cold: number[];
+  coldTotals: number[];
+  coldStages: Record<string, number[]>;
 }
 
 function loadProject(file: string): Project {
@@ -77,12 +78,21 @@ function renderReport(samples: SamplesFile): string {
     lines.push(`| ${id} | ${pct(s, 50).toFixed(3)} | ${pct(s, 95).toFixed(3)} | ${s.length} |`);
   }
   lines.push("");
-  lines.push("## Cold per-request");
+  lines.push("## Cold per-request (total)");
   lines.push("");
-  const cold = [...samples.cold].sort((a, b) => a - b);
+  const cold = [...samples.coldTotals].sort((a, b) => a - b);
   lines.push(`- p50: ${pct(cold, 50).toFixed(3)} ms`);
   lines.push(`- p95: ${pct(cold, 95).toFixed(3)} ms`);
   lines.push(`- n: ${cold.length}`);
+  lines.push("");
+  lines.push("## Cold per-stage");
+  lines.push("");
+  lines.push("| Stage (AG node) | p50 (ms) | p95 (ms) | n |");
+  lines.push("|---|---:|---:|---:|");
+  for (const id of Object.keys(samples.coldStages)) {
+    const s = [...samples.coldStages[id]].sort((a, b) => a - b);
+    lines.push(`| ${id} | ${pct(s, 50).toFixed(3)} | ${pct(s, 95).toFixed(3)} | ${s.length} |`);
+  }
   lines.push("");
   return lines.join("\n");
 }
@@ -109,12 +119,16 @@ function main() {
     }
   }
 
-  const cold: number[] = [];
+  const coldTotals: number[] = [];
+  const coldStages: Record<string, number[]> = {};
   for (let i = 0; i < COLD_N; i++) {
     const r = spawnSync("npx", ["tsx", "scripts/measure-pipeline-cold.ts"], { encoding: "utf8", cwd: process.cwd() });
     const line = r.stdout.trim().split("\n").pop() ?? "{}";
-    const parsed = JSON.parse(line) as { durationMs: number };
-    cold.push(parsed.durationMs);
+    const parsed = JSON.parse(line) as { durationMs: number; stageDurationsMs: Record<string, number> };
+    coldTotals.push(parsed.durationMs);
+    for (const [k, v] of Object.entries(parsed.stageDurationsMs)) {
+      (coldStages[k] ??= []).push(v);
+    }
   }
 
   const runId = `g14-${gitSha().slice(0, 7)}-${new Date().toISOString().replace(/[:.]/g, "-")}`;
@@ -126,7 +140,8 @@ function main() {
     warmN: WARM_N,
     coldN: COLD_N,
     warm,
-    cold,
+    coldTotals,
+    coldStages,
   };
 
   mkdirSync(path.join(process.cwd(), "docs", "performance", "runs"), { recursive: true });
