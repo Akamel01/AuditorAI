@@ -1,0 +1,24 @@
+# source: alberta-transportation-rsa-guidelines-2004.pdf
+# (committed open-licence reference PDF; short test excerpt)
+# phrase: planning stage
+ency Table TAC Canadian RSA Guide Terminology Alberta Transportation Equivalent Planning Stage RSA Stage 1 RSA Preliminary Design Stage RSA Stage 2 RSA Detailed Design Stage 
+
+# phrase: preliminary design
+es in these areas are therefore unlikely to be acceptable after the planning or preliminary design stage. These procedures do not cover road maintenance or temporary road project
+
+# phrase: detailed design
+ the TAC Canadian Road Safety Audit Guide include planning, preliminary design, detailed design, construction and pre-opening. Alberta Transportation uses unique RSA terminolo
+
+# phrase: pre-opening
+t Guide include planning, preliminary design, detailed design, construction and pre-opening. Alberta Transportation uses unique RSA terminology for various audit stages to
+
+# phrase: existing road
+ementary methodology is collision prevention. With new roads or improvements to existing roads, collision occurrence can be reduced by adopting a proactive approach during t
+
+# phrase: construction stage
+is stage are: • Road safety audits should be considered at the pre-opening/post-construction stage. • Pre-opening stage audits should be mandatory if the project is a new road co
+
+# phrase: functional plan
+P3 PROJECTS APPENDIX C ROAD SAFETY AUDIT PILOT PROGRAM List of Figures FIGURE 1 Functional Planning Process and Recommended Road Safety Input/Audits 6 FIGURE 2 Recommended Roa
+
+# phrase NOT FOUND: concept design

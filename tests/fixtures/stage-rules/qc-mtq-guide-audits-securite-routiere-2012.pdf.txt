@@ -1,0 +1,25 @@
+# source: qc-mtq-guide-audits-securite-routiere-2012.pdf
+# (committed open-licence reference PDF; short test excerpt)
+# phrase: avant-projet préliminaire
+’il y aurait lieu de réaliser quatre audits par projet, soit à l’étape : • de l’avant-projet préliminaire; • des plans et devis préliminaires; • des travaux; • de l’évaluation (mise en 
+
+# phrase: plans et devis préliminaires
+tre audits par projet, soit à l’étape : • de l’avant-projet préliminaire; • des plans et devis préliminaires; • des travaux; • de l’évaluation (mise en service). Toutefois, un audit peut ê
+
+# phrase: plans et devis définitifs
+efois, un audit peut être réalisé aux étapes de l’avant-projet définitif ou des plans et devis définitifs, selon les besoins de l’équipe de projet. Les audits de sécurité routière perme
+
+# phrase: avant-projet définitif
+uation (mise en service). Toutefois, un audit peut être réalisé aux étapes de l’avant-projet définitif ou des plans et devis définitifs, selon les besoins de l’équipe de projet. Les 
+
+# phrase: avant son ouverture
+it sur l’analyse de sécurité routière d’une section de 34 km de l’autoroute 407 avant son ouverture à la circulation (Professional Engineers of Ontario, 1997). Des audits ont égal
+
+# phrase: après ouverture
+7.6  41Guide de réalisation d’audits de sécurité routière Liste de vérification Après ouverture No Questions Oui Non S. O. Commentaires 1. Général Est-ce qu’il y a déjà eu un 
+
+# phrase: préliminaire
+.....................................................18 4.2.4 Les constatations préliminaires.............................................................................18
+
+# phrase: analyse détaillée
+i; • L’AUDIT N’EST PAS une « re-conception » du projet; • L’AUDIT N’EST PAS une analyse détaillée d’accidents. 2 L’AUDIT DE SÉCURITÉ ROUTIÈRE 8 L’audit ne vise pas à remplacer l

@@ -1,0 +1,27 @@
+# source: ontario-good-roads-rsa-guideline-2023.pdf
+# (committed open-licence reference PDF; short test excerpt)
+# phrase: planning stage
+ commonly conducted. These are described below. Feasibility stage: Generally, a planning stage where the alignment of a road or general location of a facility are known, but 
+
+# phrase: preliminary design
+relaxations? - Consider road safety aspects of any departures granted since the preliminary design stage - Are there any adverse road safety implications of any departures from s
+
+# phrase: detailed design
+changes to the design at this stage, but less so than at the feasibility stage. Detailed design stage: A late stage of design where virtually all the details have been Speed L
+
+# phrase: pre-opening
+is built. There is less scope to make changes than at the concept design stage. Pre-opening stage: After construction when the works are substantially complete, but before
+
+# phrase: existing road
+safety audit is a formal examination of a future road or traffic project, or an existing road or road-related area, in which a team of appropriately qualified persons identi
+
+# phrase: already in service
+ing conditions: Distinct from a post- opening audit, this is an audit of a road already in service. These audits may be carried out on a rolling basis by a road authority seeking
+
+# phrase: post-opening
+oads and corridors; - The need for costly remedial work (i.e., re-design and/or post-opening reactive measures) can be avoided, with associated reductions in trauma, disrup
+
+# phrase: concept design
+nity to make fundamental changes to major infrastructure features of a project. Concept design stage: An early stage of design where basic details have been worked out. Desig
+
+# phrase NOT FOUND: functional plan

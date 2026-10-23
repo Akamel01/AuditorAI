@@ -1,0 +1,3 @@
+# source: bct-moti-rsa-policy-tc-t02-04-2004.pdf
+# (committed open-licence reference PDF; short test excerpt)
+# phrase NOT FOUND: planning stage

@@ -20,6 +20,7 @@ import { MANIFEST_STAGE_TO_CELL } from "../../scripts/harvest-track-a-report";
 const REPO = process.cwd();
 const RULE_DIR = path.join(REPO, "docs/research/stage-rules");
 const REFERENCES = path.join(REPO, "docs/references/CA");
+const FIXTURE_DIR = path.join(REPO, "tests/fixtures/stage-rules");
 const MANIFEST = path.join(REPO, "docs/RSA-Documents/canada-intake-manifest.jsonl");
 const HARVESTER = path.join(REPO, "scripts/harvest-track-a.ts");
 
@@ -67,6 +68,19 @@ function pdfText(file: string): Promise<string> {
   return promise;
 }
 
+
+/** Read a committed plain-text fixture (CI-safe stand-in for a reference PDF). */
+function fixtureText(file: string): string {
+  const raw = readFileSync(path.join(FIXTURE_DIR, file), "utf8");
+  return raw.normalize("NFC").replace(/\s+/g, " ");
+}
+
+/** The evidence phrase must occur in the committed fixture. */
+function expectPhraseInFixture(file: string, phrase: string): void {
+  const text = fixtureText(file);
+  expect(text.toLowerCase(), `"${phrase}" must occur in ${file}`).toContain(phrase.toLowerCase());
+}
+
 /** The evidence phrase must occur in the real document it cites. */
 async function expectPhraseInPdf(file: string, phrase: string): Promise<void> {
   const text = await pdfText(file);
@@ -77,7 +91,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   it("CA-FEAS — the corpus title row 1 and the AB guidelines attest 'planning stage'", async () => {
     const row = corpusRow("0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95");
     expect(row.title.toLowerCase()).toContain("planning stage");
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "planning stage");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "planning stage");
 
     const decision = classify("", { title: row.title, hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("FEASIBILITY_CONCEPT");
@@ -107,7 +121,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-PRELIM — 'preliminary design' occurs in the AB guidelines", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "preliminary design");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "preliminary design");
 
     const decision = classify("preliminary design", { title: "", hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("PRELIMINARY_DESIGN");
@@ -119,7 +133,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-DETAIL — 'detailed design' occurs in the AB guidelines", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "detailed design");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "detailed design");
 
     const decision = classify("detailed design", { title: "", hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("DETAILED_DESIGN");
@@ -142,7 +156,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   it("CA-PREOPEN — the corpus title row 9 'WAITEMATA GREENWAYS PRE-OPENING' has no cell", async () => {
     const row = corpusRow("babe092a5473ed64e211f7a86dc76b700db5196cc4324ac613049b73f69894bc");
     expect(row.title.toLowerCase()).toContain("pre-opening");
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "pre-opening");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "pre-opening");
 
     const decision = classify("", { title: row.title, hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("PRE_OPENING");
@@ -152,7 +166,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-EXISTING — 'existing road' occurs in the AB guidelines and has no cell", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "existing road");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "existing road");
 
     const decision = classify("existing road", { title: "", hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("EXISTING");
@@ -173,8 +187,8 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-CONSTR — 'construction stage' (AB) and 'during construction' (BCT) have no cell", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "construction stage");
-    await expectPhraseInPdf("bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf", "during construction");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "construction stage");
+    await expectPhraseInFixture("bct-moti-rsa-guidelines-tc-t02-04c-2004.txt", "during construction");
 
     for (const text of ["construction stage", "during construction"]) {
       const decision = classify(text, { title: "", hint: "UNSTAGED" }, v2);
@@ -186,7 +200,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-PCT-DETAIL — '90% to 95% stage of the design' wins over the tier-2 percentage rule", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "90% to 95% stage of the design");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "90% to 95% stage of the design");
 
     const decision = classify("90% to 95% stage of the design", { title: "", hint: "UNSTAGED" }, v2);
     expect(decision.stage).toBe("DETAILED_DESIGN");
@@ -197,7 +211,7 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 
   it("CA-AMBIG-FUNCPLAN — 'functional plan' yields the contested pair, tier 1 wins over it", async () => {
-    await expectPhraseInPdf("alberta-transportation-rsa-guidelines-2004.pdf", "functional plan");
+    await expectPhraseInFixture("alberta-transportation-rsa-guidelines-2004.txt", "functional plan");
 
     const decision = classify("functional plan", { title: "", hint: "UNSTAGED" }, v2);
     expect(decision.ambiguous).toBe(true);
@@ -258,7 +272,21 @@ describe("stage rules — one test per v2 rule id (ticket #62 M2.3, group 1)", (
   });
 });
 
-describe("reference-PDF attestation (slow)", () => {
+function isLfsPointer(file: string): boolean {
+  try {
+    const bytes = readFileSync(path.join(REFERENCES, file));
+    return bytes.toString("utf8", 0, 64).trimStart().startsWith("version https://git-lfs");
+  } catch {
+    return false;
+  }
+}
+const SLOW_PDFS = [
+  "ontario-good-roads-rsa-guideline-2023.pdf",
+  "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+  "unb-transportation-group-rsa-guidelines.pdf",
+  "alberta-transportation-rsa-guidelines-2004.pdf",
+];
+describe.skipIf(SLOW_PDFS.some(isLfsPointer))("reference-PDF attestation (slow)", () => {
   beforeAll(async () => {
     // Extracted once per test file, memoised for every slow test below.
     await pdfText("ontario-good-roads-rsa-guideline-2023.pdf");
