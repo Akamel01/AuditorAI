@@ -1,0 +1,264 @@
+{
+  "ticket": "Akamel01/AuditorAI#62",
+  "title": "Versioned stage rule set v2, corpus re-run, v2-vs-v1 coverage table, ambiguity list",
+  "plan": ".autoforge/plans/plan-t62.md",
+  "plan_version": "v2",
+  "amendment": "Closes the 14 required changes of .autoforge/reviews/plan-critique-t62.md (A1-A14). D1-D14 untouched.",
+  "branch": "oc/62",
+  "base_commit": "5dcaddb",
+  "decisions_locked": [
+    "D1 confidence = authoritative|interpreted|inferred (docs/adr/0002-canonical-stage-model.md decision 3)",
+    "D2 window = whole text, NFC, cap 1_000_000 chars; record text_chars_scanned + truncated",
+    "D3 rule sets as JSON stage-rules.v1.json (frozen) + stage-rules.v2.json; rule = id/pattern/stage-or-bucket/tier/language/evidence",
+    "D4 pure classifier scripts/stage-rules.ts: decision type + rule loader + classify(text,{title,hint},ruleSet)",
+    "D5 ambiguity = versioned sidecar docs/research/stage-rules/classifications-v2.jsonl (all 33 rows); committed manifest untouched",
+    "D6 coverage = coverage-v2-vs-v1.md + coverage-v2-vs-v1.json; Table A = 33 manifest rows; Table B = merged Canadian+T3 rows reproducing round-2 after-have 1/0/1; moved = cell-level; md byte-derivable from json",
+    "D7 ambiguity list = docs/research/stage-rules/ambiguous-v2.md",
+    "D8 write-up = docs/research/stage-rules/README.md",
+    "D9 corpus fetched from the 33 committed manifest URLs into .autoforge/tmp/stage-rules-v2-cache/ (gitignored); sha256-verified; mismatch excluded and reported; never write the committed manifest; bypass the known-hash gate",
+    "D10 asset cue = asset_type metadata only; Transitway row stays UNSTAGED with asset_type=station",
+    "D11 functional-plan conflict by tiering: Tier-1 named-stage rules win; Tier-2 fires only when Tier 1 is empty -> {FEASIBILITY_CONCEPT,PRELIMINARY_DESIGN} inferred",
+    "D12 no-cell buckets EXISTING/CONSTRUCTION = stages, confidence inferred, cell_key \"\"; policies/canada/pack.json untouched; ODD gap = follow-up ticket",
+    "D13 untouched: scripts/harvest-track-a.ts, docs/RSA-Documents/**, policies/**, src/**, state/odd-coverage.json, the 3 existing harvest test files",
+    "D14 new stage tokens EXISTING/CONSTRUCTION appear only in the new sidecar/table"
+  ],
+  "amendment_changes": [
+    {"id": "A1", "change": "Test split: M2 owns tests/discovery/stage-rules.test.ts (28 tests: 17 per-rule + v1 freeze x2 + v1 behavioural equality + 4 classifier units + 4 negative traps); M5 owns tests/discovery/stage-rules-artifacts.test.ts (5 tests: md==render(json), sidecar shape, live v1 reproduction, ambiguity shape, committed-report byte identity). No test count is claimed for M2 that needs an M3/M5 artefact."},
+    {"id": "A2", "change": "Rule schema extended with flags (default \"i\", recorded explicitly) and scope (\"text\"|\"title\"|\"any\"); v1.json records the flags of all four /…/i rules; the v2 scan input is stated once - region B (body, NFC, 1e6 cap) and region T (title) scanned independently, scope selects the region, a title hit is distinguishable via evidence_scope + offset, scope:\"any\" matching both regions takes the title match."},
+    {"id": "A3", "change": "Stage union extended: StageToken = CanonicalStage | \"MULTI_STAGE\" (v1-only token, 13 of 33 committed rows carry it); D14 unaffected."},
+    {"id": "A4", "change": "Table B redefined as mergeRows(inventory, manifest) from scripts/harvest-track-a-report.ts, imported unmodified = 335 rows, counted with the repo's coverage_candidate predicate = 2 candidates (a24707c6081a, 0af7ea584ae0) => 1/0/1; merged_rows 335 and both shas recorded in the json; md §1 states Table A 10/3/20 = cell occupancy over 33 manifest rows vs Table B 1/0/1 = coverage candidates over the merged 335; the 302 inventory-only rows carry no v2 verdict and keep their v1 stage."},
+    {"id": "A5", "change": "v1 freeze is a mechanical test: the four /…/i literals are parsed out of scripts/harvest-track-a.ts:517-520 at test time and their {source, flags} compared to stage-rules.v1.json; v1 cells byte-equal CANONICAL_STAGE (3 keys, no PRE_OPENING key)."},
+    {"id": "A6", "change": "The v1 reproduction is recomputed inside the artefact test from the LIVE detectStage imported from scripts/harvest-track-a.ts over the fetched rows; the committed artefact field is only a shape check, never the thing verified."},
+    {"id": "A7", "change": "The 10 tautological echo-the-phrase tests are replaced by reference-PDF extraction tests (unpdf, at test time) against the committed open-licence PDFs; small PDFs (AB guidelines 83KB, AB impl-plan 152KB, BCT guidelines 167KB, BCT policy 22KB) in the test body, slow PDFs (ON 8.7MB, QC 5.5MB, UNB 3.5MB) in a memoised describe block with a generous timeout; corpus-only rules assert the committed attested phrase plus the sidecar fetch-time attestation; the AC1 mapping row is corrected (CA-CONSTR and CA-AMBIG-CONCEPT have no corpus row)."},
+    {"id": "A8", "change": "The ticket's terms ship as rules: CA-PRELIM-TICKET (conception preliminaire), CA-DETAIL-TICKET (conception detaillee), CA-EXISTING-TICKET (audit de securite routiere en exploitation) and CA-PCT-DETAIL (the 90% rung), with CA-AMBIG-PCT carrying the 30/60 rungs; unattested terms carry evidence kind \"ticket-declared\" + attested:false and the README lists them as \"declared by ticket #62, unattested in the committed corpus at the time of writing\"."},
+    {"id": "A9", "change": "Evidence re-pointed at measured phrases (planning stage, preliminary design, detailed design, pre-opening, existing road, construction stage, functional plan, concept design, avant-projet preliminaire/definitif, plans et devis preliminaires/definitifs, apres ouverture, 90%-100% Design Audit, 90% to 95% stage of the design); \"detail design\" and \"avant l'ouverture\" are not cited as attested; every evidence entry gains an attested field; an acceptance requires every cited phrase to occur in its cited document."},
+    {"id": "A10", "change": "Download bounded to 25 MB per file and 64 MB total, enforced WHILE STREAMING; an oversize or over-budget row is aborted, its .part deleted and reported unavailable - never written; the bound is stated in the plan and the README."},
+    {"id": "A11", "change": "fetch writes both <sha256>.pdf and <sha256>.txt (NFC, capped at 1e6 chars) into the gitignored cache; compare reads the .txt only; a PDF with no text layer is a no-text-layer row and is treated downstream as title-only (body_available:false, source:\"title\")."},
+    {"id": "A12", "change": "Reproducibility boundary stated in coverage-v2-vs-v1.md §8 and in the README: the committed json + sidecar + md reproduce offline; only re-deriving them needs the gitignored corpus cache (network); added render --from classifications-v2.jsonl --ambiguous-out ambiguous-v2.md so the ambiguity list is regenerable from the committed sidecar alone."},
+    {"id": "A13", "change": "Numbers corrected: 22 of the 29 Canadian T3/T4 on-disk inventory rows are existing (22 of the 32 in the merged corpus); ClassificationRow gains body_available (+ source:\"title\"); the \"2 dead hosts / 30 of 33 HTTP 200\" claims are dropped (the committed candidate log shows both hosts at HTTP 200 ingested, 32/32 logged rows at 200); fetch expectation is \"up to 33 rows, ~48.9 MB, per-row failure tolerant, partial results labelled\"."},
+    {"id": "A14", "change": "--selftest moved off the pure module onto the M3 CLI as a `selftest` verb; M2's purity rule restated as \"no fs and no fetch inside classify / loadRuleSet\"; loadRuleSet takes the already-parsed JSON value."}
+  ],
+  "modules": [
+    {
+      "id": "M1",
+      "purpose": "Author the frozen v1 rule set and the new v2 rule set, each rule carrying id, pattern, flags, scope, canonical stage (or no-cell bucket), tier, language and evidence (phrase + kind + attested + corpus_sha256 | reference_doc).",
+      "files_created": ["docs/research/stage-rules/stage-rules.v1.json", "docs/research/stage-rules/stage-rules.v2.json"],
+      "files_modified": [],
+      "touches": ["docs/research/stage-rules/stage-rules.v1.json", "docs/research/stage-rules/stage-rules.v2.json"],
+      "blocked_by": [],
+      "inputs": ["scripts/harvest-track-a.ts:516-527", "scripts/harvest-track-a.ts:517-520 (the four /…/i literals)", "docs/adr/0002-canonical-stage-model.md", "policies/canada/pack.json:25,43,75-89", "docs/references/CA/MANIFEST.md", "docs/RSA-Documents/canada-intake-manifest.jsonl", "ticket #62 bullet 1 (the French terms + the 30/60/90 ladder)"],
+      "acceptance": [
+        "v1.json is a behaviourally identical transcription of scripts/harvest-track-a.ts:516-527: 4 rules, cells byte-equal to CANONICAL_STAGE (exactly 3 keys, no PRE_OPENING key), scan {mode:head, chars:8000}; every v1 rule records flags \"i\" (A2, A5)",
+        "v2.json scan = {mode:whole, chars:1000000, normalize:NFC}",
+        "17 v2 rules: CA-FEAS, CA-PRELIM, CA-DETAIL, CA-PREOPEN, CA-EXISTING, CA-CONSTR, CA-PRELIM-FR, CA-DETAIL-FR, CA-PCT-DETAIL, CA-AMBIG-FUNCPLAN, CA-AMBIG-CONCEPT, CA-AMBIG-AVP, CA-AMBIG-PCT, CA-PRELIM-TICKET, CA-DETAIL-TICKET, CA-EXISTING-TICKET, CA-ASSET (A8 adds the four ticket/percentage rules)",
+        "every rule has flags (default \"i\", recorded) and scope (\"text\"|\"title\"|\"any\") (A2)",
+        "every rule has >=1 evidence entry; every evidence entry has an attested boolean and a kind (reference-doc | corpus | ticket-declared); every evidence.corpus_sha256 is a manifest sha; every evidence.reference_doc exists under docs/references/CA/; every phrase <= 10 words",
+        "every evidence phrase cited to a reference PDF occurs in that document's extracted text (measured 2026-10-22); \"detail design\" and \"avant l'ouverture\" are not cited as attested (A9)",
+        "the ticket terms (conception preliminaire, conception detaillee, audit de securite routiere en exploitation) and the 30/60/90 ladder appear as rules; unattested ones carry kind \"ticket-declared\" + attested:false (A8)",
+        "CA-ASSET carries no stage and no cell and scope \"title\"; no v2 pattern matches 'mise en service'",
+        "both files parse as JSON"
+      ],
+      "commands": [
+        "node -e \"for (const f of ['v1','v2']) JSON.parse(require('fs').readFileSync('docs/research/stage-rules/stage-rules.'+f+'.json'))\"",
+        "node -e \"const j=require('./docs/research/stage-rules/stage-rules.v1.json'); console.log(j.rules.length, j.rules.map(r=>r.flags).join(','))\""
+      ]
+    },
+    {
+      "id": "M2",
+      "purpose": "Pure classifier module (no fs/fetch inside classify/loadRuleSet) exporting the decision type, the pure rule loader and classify(text,{title,hint},ruleSet); plus tests/discovery/stage-rules.test.ts with one test per v2 rule id (proven against the committed reference PDFs), the mechanical v1 freeze and the classifier guards. It reads NO committed artefact and imports NO M3 module.",
+      "files_created": ["scripts/stage-rules.ts", "tests/discovery/stage-rules.test.ts"],
+      "files_modified": [],
+      "touches": ["scripts/stage-rules.ts", "tests/discovery/stage-rules.test.ts"],
+      "blocked_by": ["M1"],
+      "inputs": ["docs/research/stage-rules/stage-rules.v1.json", "docs/research/stage-rules/stage-rules.v2.json", "docs/RSA-Documents/canada-intake-manifest.jsonl", "scripts/harvest-track-a.ts:516-547", "scripts/harvest-track-a-report.ts:24-29", "docs/references/CA/*.pdf (read-only, extracted at test time with unpdf)"],
+      "acceptance": [
+        "no fs and no fetch inside classify / loadRuleSet; loadRuleSet takes the already-parsed JSON value (A14)",
+        "StageToken includes \"MULTI_STAGE\"; the v1 path returns it when >1 distinct rule stage fires (A3)",
+        "the v2 scan input is exactly two independent regions (body NFC/1e6 cap, title); scope selects the region; a title hit is distinguishable from a body hit via evidence_scope + offset; scope:\"any\" matching both takes the title match (A2)",
+        "28 tests green in tests/discovery/stage-rules.test.ts: 17 per-rule (each rule's attested phrase must occur in its cited committed reference PDF, extracted at test time with unpdf) + v1 freeze source/flags parsed live from scripts/harvest-track-a.ts:517-520 + v1 cells byte-equal CANONICAL_STAGE + v1 behavioural equality vs the live detectStage + 4 classifier unit tests + 4 negative prose traps (A1, A5, A7)",
+        "the slow reference PDFs (ON 8.7MB, QC 5.5MB, UNB 3.5MB) are extracted once per file in a memoised describe block with a generous timeout; no test touches the network or a corpus body",
+        "the 3 ticket-declared rules assert the honesty flag (attested:false), never an attestation (A8)",
+        "confidence labels are only authoritative|interpreted|inferred; document confidence = weakest candidate; null when no candidate",
+        "ambiguous => cell_key \"\"; no-cell buckets EXISTING/CONSTRUCTION => cell_key \"\" and confidence inferred",
+        "npm run lint and npm run typecheck clean"
+      ],
+      "commands": [
+        "npx vitest run tests/discovery/stage-rules.test.ts",
+        "npm run lint",
+        "npm run typecheck"
+      ]
+    },
+    {
+      "id": "M3",
+      "purpose": "CLI scripts/harvest-stage-rules-v2.ts with verbs selftest (rule-set loader + regex compile check), fetch (the only network path), compare (never touches the network; runs both rule sets over the same corpus and the same text) and render (md from the committed json, ambiguity list from the committed sidecar).",
+      "files_created": ["scripts/harvest-stage-rules-v2.ts"],
+      "files_modified": [],
+      "touches": ["scripts/harvest-stage-rules-v2.ts"],
+      "blocked_by": ["M2"],
+      "inputs": ["scripts/stage-rules.ts", "docs/RSA-Documents/canada-intake-manifest.jsonl", "src/discovery/robots.ts", "src/discovery/ratelimit.ts", "scripts/harvest-track-a.ts:274-304,762-788,1245-1256"],
+      "acceptance": [
+        "selftest verb loads both rule files, compiles every regex with its recorded flags and runs the loader validation - the --selftest that used to sit on the pure M2 module (A14)",
+        "fetch: robots gate + <=1 req/s per host + <=2 concurrent per host; 25 MB per file and 64 MB total enforced WHILE STREAMING; an oversize/over-budget row is aborted, its .part deleted and reported unavailable, never written (A10); writes <cache>/<sha256>.pdf only on sha256 match; a mismatch is excluded and reported; no write under docs/RSA-Documents; the committed manifest is never written",
+        "fetch also writes <cache>/<sha256>.txt (NFC, capped at 1e6 chars); a PDF with no text layer is reported no-text-layer and treated downstream as title-only (A11)",
+        "compare: no network call; reads the .txt files only; a row with no body is classified from its title and marked body_available:false + source:\"title\"; classifies every row under BOTH rule sets over the SAME corpus and text, recording the v1 rule file verdict, the committed manifest stage and the per-row agreement (a disagreement is a finding, not a bug); writes 4 outputs (A11, A13)",
+        "render: md byte-equals the md produced by compare from the same json; render --from classifications-v2.jsonl --ambiguous-out regenerates the ambiguity list from the committed sidecar alone (A12)",
+        "exit codes 0 ok / 1 usage / 2 fatal / 3 partial; no timestamp, absolute path or hostname in any output",
+        "npm run lint and npm run typecheck clean"
+      ],
+      "commands": [
+        "npx tsx scripts/harvest-stage-rules-v2.ts selftest",
+        "npx tsx scripts/harvest-stage-rules-v2.ts compare --cache /tmp/empty-cache --out /tmp/t.md --json-out /tmp/t.json --sidecar-out /tmp/t.jsonl --ambiguous-out /tmp/a.md",
+        "npx tsx scripts/harvest-stage-rules-v2.ts render --from /tmp/t.json --out /tmp/t2.md",
+        "npx tsx scripts/harvest-stage-rules-v2.ts render --from /tmp/t.jsonl --ambiguous-out /tmp/a2.md",
+        "cmp /tmp/t.md /tmp/t2.md",
+        "cmp /tmp/a.md /tmp/a2.md"
+      ]
+    },
+    {
+      "id": "M4",
+      "purpose": "Fetch the 33 committed manifest rows into the gitignored cache, sha256-verify each and extract their text; nothing is committed.",
+      "files_created": [".autoforge/tmp/stage-rules-v2-cache/<sha256>.pdf", ".autoforge/tmp/stage-rules-v2-cache/<sha256>.txt"],
+      "files_modified": [],
+      "touches": [".autoforge/tmp/stage-rules-v2-cache/**"],
+      "blocked_by": ["M3"],
+      "inputs": ["docs/RSA-Documents/canada-intake-manifest.jsonl", "scripts/harvest-stage-rules-v2.ts"],
+      "acceptance": [
+        "every cached file's sha256 == the manifest sha256; total fetched <= 64 MB and no single file > 25 MB (the corpus is 51 252 032 B with a largest row of 11 126 108 B, so the bound never truncates a legitimate row)",
+        "expectation: up to 33 rows, ~48.9 MB, per-row failure tolerant, partial results labelled - the committed candidate log shows both previously-'dead' hosts at HTTP 200 ingested and 32/32 logged rows at 200, so a full run is the expectation and a partial run must be labelled, not presented as complete (A13)",
+        "unreachable / robots-refused / oversize rows are listed as unavailable with a reason, not fatal; an oversize row is never written (A10)",
+        "every fetched row also has a <sha256>.txt (NFC, <=1e6 chars); a no-text-layer row is reported and will be title-only downstream (A11)",
+        "the cache path is git-ignored (.gitignore:57 and .git/info/exclude:7)",
+        "git status --porcelain shows no new tracked file; git diff --stat -- docs/RSA-Documents is empty; no licence-register or quarantine row is owed (nothing is committed)"
+      ],
+      "commands": [
+        "npx tsx scripts/harvest-stage-rules-v2.ts fetch --manifest docs/RSA-Documents/canada-intake-manifest.jsonl --cache .autoforge/tmp/stage-rules-v2-cache/",
+        "git check-ignore -v .autoforge/tmp/stage-rules-v2-cache/x.pdf",
+        "git status --porcelain",
+        "git diff --stat -- docs/RSA-Documents"
+      ]
+    },
+    {
+      "id": "M5",
+      "purpose": "Produce the machine source of truth (classifications-v2.jsonl), the coverage table with its json companion (two labelled denominators), the human ambiguity list, and the artefact test file that owns every artefact-level assertion.",
+      "files_created": ["docs/research/stage-rules/classifications-v2.jsonl", "docs/research/stage-rules/coverage-v2-vs-v1.md", "docs/research/stage-rules/coverage-v2-vs-v1.json", "docs/research/stage-rules/ambiguous-v2.md", "tests/discovery/stage-rules-artifacts.test.ts"],
+      "files_modified": [],
+      "touches": ["docs/research/stage-rules/classifications-v2.jsonl", "docs/research/stage-rules/coverage-v2-vs-v1.md", "docs/research/stage-rules/coverage-v2-vs-v1.json", "docs/research/stage-rules/ambiguous-v2.md", "tests/discovery/stage-rules-artifacts.test.ts"],
+      "blocked_by": ["M1", "M3", "M4"],
+      "inputs": [".autoforge/tmp/stage-rules-v2-cache/", "docs/RSA-Documents/canada-intake-manifest.jsonl", "docs/RSA-Documents/track-a-ondisk-inventory.jsonl", "docs/RSA-Documents/track-a-round2-harvest-report.md:35", "scripts/harvest-track-a-report.ts:233-299 (mergeRows + coverage_candidate, imported unmodified)", "state/odd-coverage.json"],
+      "acceptance": [
+        "sidecar has exactly 33 rows, one per manifest row, sorted by sha256; every stage_v1_committed/cell_key_v1_committed equals the committed manifest value; body_available:false <=> source:\"title\"; a title-only row is never counted as if it had body evidence",
+        "sidecar also records stage_v1_recomputed (the v1 rule file's verdict over the same text) and v1_agreement; a disagreement is a finding, not a bug, and is itemised (A13)",
+        "cell_key_v2 == \"\" for every ambiguous row; no body text is committed",
+        "Table A denominator = the 33 manifest rows, columns: ODD cell | target | priority | have (v1, committed) | have (v1, recomputed) | have (v2) | usable CLEAR (v1) | usable CLEAR (v2) | moved in | moved out | ambiguous (unadjudicated) | title-only rows",
+        "Table B denominator = mergeRows(inventory, manifest) imported unmodified from scripts/harvest-track-a-report.ts = 335 rows, counted with the repo's coverage_candidate predicate = 2 candidates (a24707c6081a, 0af7ea584ae0) => its v1 column equals the committed after-have 1 / 0 / 1; the json records merged_rows 335 and both candidate shas (A4)",
+        "md §1 states the two denominators apart: Table A 10/3/20 = cell occupancy over the 33 manifest rows vs Table B 1/0/1 = coverage candidates over the merged 335; never mixed (A4)",
+        "moved is cell-level; stage-token changes itemised separately; ambiguous rows counted, never forced",
+        "the md is byte-derivable from the json: renderCoverageTable(json) == md; ambiguous-v2.md is byte-derivable from the committed sidecar alone",
+        "md §8 states the reproducibility boundary: the committed json + sidecar + md reproduce offline; only re-deriving them needs the gitignored corpus cache (A12)",
+        "5 tests green in tests/discovery/stage-rules-artifacts.test.ts: md==render(json), sidecar row shape, the v1 reproduction recomputed from the LIVE detectStage (mismatches == [] on that computation; the committed field is only a shape check), ambiguity list shape, committed-report byte identity (A1, A6)"
+      ],
+      "commands": [
+        "npx tsx scripts/harvest-stage-rules-v2.ts compare --cache .autoforge/tmp/stage-rules-v2-cache/",
+        "npx tsx scripts/harvest-stage-rules-v2.ts render --from docs/research/stage-rules/coverage-v2-vs-v1.json --out docs/research/stage-rules/coverage-v2-vs-v1.md",
+        "npx tsx scripts/harvest-stage-rules-v2.ts render --from docs/research/stage-rules/classifications-v2.jsonl --ambiguous-out docs/research/stage-rules/ambiguous-v2.md",
+        "npx vitest run tests/discovery/stage-rules-artifacts.test.ts",
+        "git diff --stat -- docs/RSA-Documents"
+      ]
+    },
+    {
+      "id": "M6",
+      "purpose": "The human write-up: denominators, rule-set delta, honest coverage-impact statement, the Transitway premise correction, caveats, repro commands, the reproducibility boundary, the download bound, the AC1 evidence quality, the unattested list, named follow-ups, licence note.",
+      "files_created": ["docs/research/stage-rules/README.md"],
+      "files_modified": [],
+      "touches": ["docs/research/stage-rules/README.md"],
+      "blocked_by": ["M5"],
+      "inputs": ["docs/research/stage-rules/coverage-v2-vs-v1.json", "docs/research/stage-rules/ambiguous-v2.md", "docs/research/enterprise-gap-audit.md:250,267-268", "docs/adr/0002-canonical-stage-model.md", "ticket #62 bullet 1"],
+      "acceptance": [
+        "states both denominators apart: Table A 10/3/20 cell occupancy over 33 manifest rows; Table B = mergeRows(inventory, manifest) = 335 rows, coverage candidate = the repo's coverage_candidate predicate, 2 candidates, 1/0/1",
+        "states the honest coverage impact (numbers may shrink; 22 of the 29 Canadian T3/T4 on-disk inventory documents - 22 of the 32 in the merged corpus - are in-service/existing with no cell; Canada 0 of 16 covered cells)",
+        "states the Transitway premise correction (no stage named; UNSTAGED with asset_type=station)",
+        "contains the three caveat lines and the exact repro commands",
+        "states the reproducibility boundary (json + sidecar + md offline; only re-deriving needs the gitignored cache) and the download bound (25 MB/file, 64 MB total, enforced while streaming)",
+        "states the AC1 evidence quality honestly: 4 of 17 rules proven against a real corpus title, 10 against a committed reference PDF, 3 ticket-declared and unattested",
+        "lists every unattested rule as \"declared by ticket #62, unattested in the committed corpus at the time of writing\" and never claims an unmeasured attestation",
+        "reports the v1 recomputation disagreements as findings, not bugs",
+        "names the four follow-up tickets (ODD cells for EXISTING/CONSTRUCTION; contested vocabulary ruling; asset-type-as-stage; Quebec stage vocabulary with the issuing authority)"
+      ],
+      "commands": [
+        "grep -n \"Denominators\\|coverage impact\\|Transitway\\|Repro\\|follow-up\\|25 MB\\|64 MB\\|offline\\|unattested\" docs/research/stage-rules/README.md"
+      ]
+    },
+    {
+      "id": "M7",
+      "purpose": "Verification: full suite, lint, typecheck, byte-identity of the committed v1 artefacts, clean tree.",
+      "files_created": [],
+      "files_modified": [],
+      "touches": [],
+      "touches_note": "read-only verification module - edits nothing (blocked_by every module; it is strictly last)",
+      "blocked_by": ["M1", "M2", "M3", "M4", "M5", "M6"],
+      "inputs": ["all modules M1-M6"],
+      "acceptance": [
+        "npm run lint, npm run typecheck and npm run test are green",
+        "npx vitest run tests/discovery/stage-rules.test.ts tests/discovery/stage-rules-artifacts.test.ts is green (28 + 5 = 33 tests)",
+        "the 3 existing harvest test files pass unmodified (byte-identity of the committed round-1/round-2 reports)",
+        "no diff under docs/RSA-Documents/, scripts/harvest-track-a.ts, policies/, src/, state/odd-coverage.json",
+        "git status --porcelain lists only the new files; the corpus cache is ignored",
+        "node scripts/vault-sync.mjs --check is clean"
+      ],
+      "commands": [
+        "npm run lint",
+        "npm run typecheck",
+        "npx vitest run tests/discovery/stage-rules.test.ts tests/discovery/stage-rules-artifacts.test.ts",
+        "npx vitest run tests/discovery/harvest-track-a.test.ts tests/discovery/harvest-track-a-report.test.ts tests/discovery/harvest-track-a-round2-report.test.ts",
+        "npm run test",
+        "node scripts/vault-sync.mjs --check",
+        "git diff --exit-code -- docs/RSA-Documents/ scripts/harvest-track-a.ts policies/ src/ state/odd-coverage.json",
+        "git status --porcelain"
+      ]
+    }
+  ],
+  "edges": [
+    {"from": "M1", "to": "M2"},
+    {"from": "M2", "to": "M3"},
+    {"from": "M3", "to": "M4"},
+    {"from": "M1", "to": "M5"},
+    {"from": "M3", "to": "M5"},
+    {"from": "M4", "to": "M5"},
+    {"from": "M5", "to": "M6"},
+    {"from": "M6", "to": "M7"}
+  ],
+  "parallelization": {
+    "forced_sequential": [
+      "M1->M2->M3 (rule data -> classifier contract -> CLI)",
+      "M4->M5 (M5 reads the cache dir M4 writes: shared mutable state)",
+      "M5->M6 (the README quotes the final numbers)",
+      "M6->M7 (M7 verifies every module, including M6)"
+    ],
+    "safe_concurrent": ["M1 rule authoring with M2 code authoring only (disjoint files); M2's test run needs M1, so the overlap is authoring-only"],
+    "never_parallel": ["anything writing the cache dir", "anything writing the rule files", "anything touching the committed manifest"],
+    "note": "M7 is strictly last (blocked_by every module); the v1 wording claiming M7 lint/typecheck could start once M1-M4 land is withdrawn as inconsistent with the DAG."
+  },
+  "acceptance_mapping": [
+    {"ac": "AC1", "artifact": "tests/discovery/stage-rules.test.ts (28 tests, 17 rule-focused: one per v2 rule id)", "command": "npx vitest run tests/discovery/stage-rules.test.ts", "caveat": "honest: 'using real corpus titles' is met for 4 of 17 rules (CA-FEAS, CA-DETAIL, CA-PREOPEN, CA-ASSET); 10 rules are proven against a committed open-licence reference PDF extracted at test time (unpdf); 3 are the ticket's own terms with attested:false; CA-CONSTR and CA-AMBIG-CONCEPT have no corpus row"},
+    {"ac": "AC2", "artifact": "docs/research/stage-rules/coverage-v2-vs-v1.md + docs/research/stage-rules/coverage-v2-vs-v1.json + docs/research/stage-rules/classifications-v2.jsonl", "command": "npx tsx scripts/harvest-stage-rules-v2.ts compare --cache .autoforge/tmp/stage-rules-v2-cache/ && npx tsx scripts/harvest-stage-rules-v2.ts render --from docs/research/stage-rules/coverage-v2-vs-v1.json --out docs/research/stage-rules/coverage-v2-vs-v1.md && npx vitest run tests/discovery/stage-rules-artifacts.test.ts", "caveat": "Table A (10/3/20 cell occupancy over 33 manifest rows) and Table B (1/0/1 coverage candidates over the merged 335) are different populations; the v2 column is a re-labelling, 0 new documents fetched"},
+    {"ac": "AC3", "artifact": "docs/research/stage-rules/ambiguous-v2.md + the ambiguous:true rows of docs/research/stage-rules/classifications-v2.jsonl", "command": "npx vitest run tests/discovery/stage-rules-artifacts.test.ts -t 'ambiguous'", "caveat": "the ambiguity list is regenerable offline from the committed sidecar alone (render --from classifications-v2.jsonl)"},
+    {"ac": "goal-clause (result, not criterion)", "artifact": "docs/research/stage-rules/README.md + coverage table sections 2-3", "command": "grep -n 'coverage impact\\|Transitway' docs/research/stage-rules/README.md", "caveat": "the goal clause is a goal, not a criterion; the honest expectation is that the numbers barely move; 22 of the 29 Canadian T3/T4 inventory documents (22 of 32 merged) are existing audits with no cell"}
+  ],
+  "non_goals": [
+    "no change under docs/RSA-Documents/** (manifest, both reports, candidate log, licence register, quarantine stay byte-identical)",
+    "no change to scripts/harvest-track-a.ts (v1 stays frozen)",
+    "no edit to scripts/harvest-track-a-report.ts (mergeRows and coverage_candidate are imported unmodified)",
+    "no change to policies/** (no new ODD cell)",
+    "no change to src/** (the app has no text classifier)",
+    "no change to state/odd-coverage.json",
+    "no Postgres tenant-store work (TENANT_STORE=postgres stays off)",
+    "no box round trip",
+    "no new stage token in the committed manifest; no UNMAPPED_STAGES edit",
+    "no corpus body text committed (32 of 33 rows are RESTRICTED)",
+    "no new dependency (unpdf already present)",
+    "the 75 non-ingested round-2 candidates are out of scope",
+    "no re-fetch of the 302 inventory-only merged rows",
+    "no adjudicated cell for ambiguous rows",
+    "no claim of attestation that was not measured"
+  ]
+}
