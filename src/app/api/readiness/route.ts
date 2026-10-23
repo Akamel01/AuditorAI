@@ -1,18 +1,19 @@
 // GET /api/readiness — product-reachable readiness (no tenant data)
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
-import { log } from "@/lib/logger";
+import { tenantStoreEnabled, isDatabaseConfigured } from "@/lib/db/config";
+import { isAnyProviderDegraded } from "@/discovery/health-state";
+import { ensureCorrelationId, log } from "@/lib/logger";
 
 export async function GET(req: Request) {
-  const cid = req.headers.get("x-correlation-id") ?? req.headers.get("x-request-id");
-  const root = process.cwd();
-  const checks = {
-    evidenceRegistry: existsSync(path.join(root, "state", "evidence-registry.json")),
-    graphState: existsSync(path.join(root, "state", "graph-state.json")),
-    storageConfigured: process.env.TENANT_STORE === "postgres" ? !!process.env.DATABASE_URL : true,
-  };
-  const ready = Object.values(checks).every(Boolean);
-  log("info", "readiness check", { correlationId: cid, ready });
-  return NextResponse.json({ ready, checks }, { status: ready ? 200 : 503 });
+  const correlationId = ensureCorrelationId(req);
+  const storage = tenantStoreEnabled() ? isDatabaseConfigured() : true;
+  const providers = !isAnyProviderDegraded();
+  const ready = storage && providers;
+  log("info", "readiness check", { correlationId, ready });
+  const res = NextResponse.json(
+    { ready, checks: { storage, providers } },
+    { status: ready ? 200 : 503 },
+  );
+  res.headers.set("x-correlation-id", correlationId);
+  return res;
 }
