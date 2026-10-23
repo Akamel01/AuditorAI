@@ -36,6 +36,7 @@ import { IssueRevisionConflictError } from "@/lib/persistence/issue-ledger";
 import type { SqlClient } from "./sql";
 import type { TenantRepository, TenantSession } from "./tenant-repository";
 import { asDatabaseUnavailable, claimsJson, sqlStateOf } from "./identity";
+import type { ActorId } from "@/domain/actor";
 
 interface ProjectRow {
   project_id: string;
@@ -80,7 +81,7 @@ export class PostgresTenantRepository implements TenantRepository {
     try {
       return await this.client.transaction(async (tx) => {
         await tx.query("select set_config('request.jwt.claims', $1, true)", [
-          claimsJson(this.session.subjectId, this.session.workspaceId),
+          claimsJson(this.session.subjectId, this.session.workspaceId, this.session.role, this.session.email),
         ]);
         return await fn(tx);
       });
@@ -103,7 +104,7 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Projects ------------------------------------------------------------
 
-  async saveProject(_ws: string, project: Project): Promise<void> {
+  async saveProject(_ws: string, project: Project, _actor?: ActorId): Promise<void> {
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.projects
@@ -156,7 +157,7 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Audits --------------------------------------------------------------
 
-  async saveAudit(_ws: string, audit: AuditResult): Promise<void> {
+  async saveAudit(_ws: string, audit: AuditResult, _actor?: ActorId): Promise<void> {
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.audits (workspace_id, project_id, audit_id, ran_at, payload)
@@ -207,6 +208,7 @@ export class PostgresTenantRepository implements TenantRepository {
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
+    _actor?: ActorId,
   ): Promise<AuditIssue> {
     return this.withClaim(async (tx) => {
       const prior = await tx.query<{ revision: number }>(
@@ -271,7 +273,7 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Attachments ----------------------------------------------------------
 
-  async saveAttachment(_ws: string, attachment: Attachment): Promise<void> {
+  async saveAttachment(_ws: string, attachment: Attachment, _actor?: ActorId): Promise<void> {
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.attachments
@@ -316,7 +318,7 @@ export class PostgresTenantRepository implements TenantRepository {
    *  operation (project-store.ts:68-91). The KV's delByPrefix has no
    *  transactional equivalent and is NOT ported. Throws
    *  UnknownAttachmentError when no such record exists. */
-  async deleteAttachment(_ws: string, projectId: string, id: string): Promise<void> {
+  async deleteAttachment(_ws: string, projectId: string, id: string, _actor?: ActorId): Promise<void> {
     await this.withClaim(async (tx) => {
       const deleted = await tx.query<{ attachment_id: string }>(
         "delete from public.attachments where project_id = $1 and attachment_id = $2 returning attachment_id",
@@ -358,6 +360,7 @@ export class PostgresTenantRepository implements TenantRepository {
     _ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
+    _actor?: ActorId,
   ): Promise<{ stored: number }> {
     const sized: { art: AuditArtifact; seq: number }[] = [];
     let seq = 0;

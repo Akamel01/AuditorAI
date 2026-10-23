@@ -43,3 +43,52 @@ export class WorkspaceMembershipError extends Error {
     this.name = "WorkspaceMembershipError";
   }
 }
+
+export class NotSignedInError extends Error {
+  constructor(detail = "not signed in") {
+    super(detail);
+    this.name = "NotSignedInError";
+  }
+}
+
+export class AuthNotConfiguredError extends Error {
+  constructor(detail = "auth not configured") {
+    super(detail);
+    this.name = "AuthNotConfiguredError";
+  }
+}
+
+export class ProviderNotConfiguredError extends Error {
+  constructor(detail = "provider not configured") {
+    super(detail);
+    this.name = "ProviderNotConfiguredError";
+  }
+}
+
+export class TenantStoreRequiredError extends Error {
+  constructor(detail = "tenant store required") {
+    super(detail);
+    this.name = "TenantStoreRequiredError";
+  }
+}
+
+export class SeatLimitExceededError extends Error {
+  constructor(detail = "seat limit exceeded") {
+    super(detail);
+    this.name = "SeatLimitExceededError";
+  }
+}
+
+export class NotWorkspaceAdminError extends Error {
+  constructor(detail = "not a workspace admin") {
+    super(detail);
+    this.name = "NotWorkspaceAdminError";
+  }
+}
+
+export class NoInvitationError extends Error {
+  constructor(detail = "no invitation") {
+    super(detail);
+    this.name = "NoInvitationError";
+  }
+}

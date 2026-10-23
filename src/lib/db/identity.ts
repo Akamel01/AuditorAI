@@ -12,6 +12,7 @@
 
 import { workspaceHash } from "@/lib/persistence/store";
 import { isDatabaseConfigured } from "./config";
+import type { MemberRole } from "./claim";
 import {
   CredentialRevokedError,
   DatabaseUnavailableError,
@@ -29,8 +30,17 @@ import { createPgSqlClient } from "./pg-client";
  *                        registration, so an unmigrated key keeps its data)
  *  - schema_not_applied— the database is reachable but the tenant schema is
  *                        not there (C3: degrade, never 503) */
+export type TenantSessionIdentity = { subject: string; email: string | null };
+
 export type TenantResolution =
-  | { mode: "postgres"; workspaceId: string; subjectId: string; legacyHash: string }
+  | {
+      mode: "postgres";
+      workspaceId: string;
+      subjectId: string;
+      subjectRole: MemberRole | null;
+      sessionSubject: string | null;
+      legacyHash: string;
+    }
   | {
       mode: "legacy";
       legacyHash: string;
@@ -40,8 +50,18 @@ export type TenantResolution =
 /** The claim document the tenant path presents. The RLS policies read it
  *  through public.app_claim_subject() / public.app_claim_workspace_id()
  *  (supabase/migrations/0002_rls_policies.sql). */
-export function claimsJson(subjectId: string, workspaceId: string): string {
-  return JSON.stringify({ sub: subjectId, workspace_id: workspaceId });
+export function claimsJson(
+  subjectId: string,
+  workspaceId: string,
+  role?: MemberRole | null,
+  email?: string | null,
+): string {
+  return JSON.stringify({
+    sub: subjectId,
+    workspace_id: workspaceId,
+    role: role ?? null,
+    email: email ?? null,
+  });
 }
 
 /** The client the tenant path uses: the injected (offline) client first, the
@@ -124,7 +144,10 @@ interface CredentialRow {
  *  5. the membership check, run under the claim -> WorkspaceMembershipError
  *  6. -> postgres / workspaceId / subjectId
  */
-export async function resolveTenant(presentedCredential: string): Promise<TenantResolution> {
+export async function resolveTenant(
+  presentedCredential: string,
+  session?: TenantSessionIdentity | null,
+): Promise<TenantResolution> {
   const legacyHash = workspaceHash(presentedCredential);
   if (!isTenantDatabaseAvailable()) {
     return { mode: "legacy", legacyHash, reason: "not_configured" };
@@ -167,7 +190,7 @@ export async function resolveTenant(presentedCredential: string): Promise<Tenant
         claimsJson(row.subject_id, row.workspace_id),
       ]);
       const res = await tx.query(
-        "select 1 from public.workspace_members where workspace_id = $1 and subject_id = $2",
+        "select 1 from public.workspace_members where workspace_id = $1 and subject_id = $2 and status <> 'revoked'",
         [row.workspace_id, row.subject_id],
       );
       return res.rows.length > 0;
@@ -183,10 +206,38 @@ export async function resolveTenant(presentedCredential: string): Promise<Tenant
     throw asDatabaseUnavailable(err);
   }
 
+  // When a session is present, read the session subject's membership row to
+  // obtain the role + email. DB-sourced, never asserted by the client.
+  let subjectRole: MemberRole | null = null;
+  const sessionSubject: string | null = session?.subject ?? null;
+  if (session) {
+    try {
+      const roleRow = await client.transaction(async (tx) => {
+        await tx.query("select set_config('request.jwt.claims', $1, true)", [
+          claimsJson(session.subject, row.workspace_id, null, session.email),
+        ]);
+        const res = await tx.query<{ role: MemberRole | null; email: string | null }>(
+          "select role, email from public.workspace_members where workspace_id = $1 and subject_id = $2",
+          [row.workspace_id, session.subject],
+        );
+        return res.rows[0];
+      });
+      subjectRole = roleRow?.role ?? null;
+      if (roleRow?.email) session.email = roleRow.email;
+    } catch (err) {
+      if (isSchemaNotApplied(err)) {
+        return { mode: "legacy", legacyHash, reason: "schema_not_applied" };
+      }
+      throw asDatabaseUnavailable(err);
+    }
+  }
+
   return {
     mode: "postgres",
     workspaceId: row.workspace_id,
     subjectId: row.subject_id,
+    subjectRole,
+    sessionSubject,
     legacyHash,
   };
 }
