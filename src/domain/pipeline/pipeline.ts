@@ -23,6 +23,14 @@ export interface PipelineRun {
   result: AuditResult;
   artifacts: AuditArtifact[];
   state: SharedState;
+  /** Per-stage wall-clock duration in ms, keyed by node id. */
+  stageDurationsMs: Record<string, number>;
+  /** Alias of stageDurationsMs (convenience). */
+  stageLatenciesMs: Record<string, number>;
+  /** Alias of stageDurationsMs (convenience). */
+  nodeDurationsMs: Record<string, number>;
+  /** Alias of stageDurationsMs (convenience). */
+  timings: Record<string, number>;
 }
 
 /** I/O required to dispatch the persistence node through runNodeAsync. */
@@ -139,7 +147,9 @@ export class DefaultAuditPipeline implements AuditPipeline {
     const adapter = opts?.aiAdapter;
     let state = this.initialState();
     const artifacts: AuditArtifact[] = [];
+    const stageDurationsMs: Record<string, number> = {};
     for (const id of BATCH_NODES) {
+      const t0 = performance.now();
       const out = await this.runNodeAsync(
         id,
         state,
@@ -155,6 +165,7 @@ export class DefaultAuditPipeline implements AuditPipeline {
         },
         artifacts,
       );
+      stageDurationsMs[id] = performance.now() - t0;
       state = out.state;
       artifacts.push(...out.artifacts);
     }
@@ -169,25 +180,44 @@ export class DefaultAuditPipeline implements AuditPipeline {
       state.candidate_findings && state.candidate_findings.length > 0
         ? { ...json, candidate_findings: state.candidate_findings }
         : json;
-    return { result, artifacts, state };
+    return {
+      result,
+      artifacts,
+      state,
+      stageDurationsMs,
+      stageLatenciesMs: stageDurationsMs,
+      nodeDurationsMs: stageDurationsMs,
+      timings: stageDurationsMs,
+    };
   }
 
   runAllArtifacts(project: Project, ranAtIso: string): PipelineRun {
     let state = this.initialState();
     const artifacts: AuditArtifact[] = [];
+    const stageDurationsMs: Record<string, number> = {};
     for (const id of BATCH_NODES) {
+      const t0 = performance.now();
       const res = this.runNode(id, state, {
         ranAtIso,
         project,
         versionStart: artifacts.length + 1,
       });
+      stageDurationsMs[id] = performance.now() - t0;
       state = mergeState(state, res.patch);
       artifacts.push(...res.artifacts);
     }
     if (!state.report_bundle) {
       throw new Error("pipeline batch run finished without a report bundle");
     }
-    return { result: state.report_bundle.json, artifacts, state };
+    return {
+      result: state.report_bundle.json,
+      artifacts,
+      state,
+      stageDurationsMs,
+      stageLatenciesMs: stageDurationsMs,
+      nodeDurationsMs: stageDurationsMs,
+      timings: stageDurationsMs,
+    };
   }
 
   runNode(nodeId: AgNodeId, state: SharedState, ctx: NodeRunCtx): NodeResult {
