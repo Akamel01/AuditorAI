@@ -2,6 +2,7 @@
 // Shares the DataStore seam; owns IssueRevisionConflictError and sequential
 // write-once revision semantics (ADR-0004).
 import type { AuditIssue, AuditResult } from "@/domain/types";
+import { legacyActor, assertWritableActor } from "@/domain/actor";
 import type { DataStore } from "./store";
 import { withPersistenceSingleWriter } from "./single-writer";
 import * as Keys from "./keys";
@@ -36,6 +37,7 @@ export class IssueLedger {
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
+    actor?: string,
   ): Promise<AuditIssue> {
     const prior = await this.listIssues(ws, projectId, auditId);
     const revision = (prior[prior.length - 1]?.revision ?? 0) + 1;
@@ -43,10 +45,11 @@ export class IssueLedger {
     if ((await this.store.get(key)) !== null) {
       throw new IssueRevisionConflictError(`revision ${revision} already exists`);
     }
+    const issuedBy = actor ? assertWritableActor(actor) : legacyActor(ws);
     const issue: AuditIssue = {
       revision,
       issued_at: issuedAtIso,
-      issued_by: "auditor",
+      issued_by: issuedBy,
       result,
     };
     await this.store.put(key, issue);
