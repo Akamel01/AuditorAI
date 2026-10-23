@@ -2,6 +2,8 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { workspaceHash } from "./persistence";
+import { log } from "./logger";
+import { fireAlert } from "./alert";
 import { checkRateLimit } from "./ratelimit";
 import {
   CapabilityClaimNotIssuableError,
@@ -167,10 +169,13 @@ const REDACTED_MESSAGE = "internal server error";
 export function serverError(e: unknown) {
   const entry = ERROR_TABLE.find((m) => m.matches(e));
   if (!entry) {
-    console.error("[api]", e);
+    log("error", "unmapped server error", { error: String(e) });
     return NextResponse.json({ error: REDACTED_MESSAGE }, { status: 500 });
   }
-  console.error("[api]", e);
+  log("error", "server error", { status: entry.status, error: String(e) });
+  if (e instanceof StoreUnavailableError || e instanceof DatabaseUnavailableError) {
+    fireAlert({ kind: "storage_outage", message: "storage outage", details: { error: String(e) } });
+  }
   const message = entry.exposeMessage && e instanceof Error ? e.message : REDACTED_MESSAGE;
   return NextResponse.json({ error: message }, { status: entry.status });
 }

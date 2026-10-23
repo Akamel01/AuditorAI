@@ -9,6 +9,7 @@ import { getPipeline } from "@/domain/pipeline/pipeline";
 import { getPack } from "@/domain/packs";
 import type { JurisdictionId } from "@/domain/types";
 import { getAiAdapter } from "@/lib/ai";
+import { fireAlert } from "@/lib/alert";
 
 type Ctx = { params: Promise<{ projectId: string }> };
 
@@ -53,6 +54,7 @@ export async function POST(req: Request, ctx: Ctx) {
     await auth.repo.saveAudit(auth.ws, result);
     return NextResponse.json({ audit: result, stageDurationsMs }, { status: 201 });
   } catch (e) {
+    fireAlert({ kind: "audit_failure", message: "audit run failed", details: { error: String(e) } });
     return serverError(e);
   }
 }
