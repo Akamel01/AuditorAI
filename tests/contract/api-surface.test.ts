@@ -204,6 +204,7 @@ describe("api surface registry", () => {
       "GET /api/inputs/[jur]",
       "GET /api/jurisdictions",
       "GET /api/jurisdictions/[jur]/stages",
+      "GET /api/readiness",
     ]);
     for (const entry of registry.handlers) {
       const where = key(entry.method, entry.path);
@@ -224,6 +225,7 @@ describe("api surface registry", () => {
       "GET /api/inputs/[jur]",
       "GET /api/jurisdictions",
       "GET /api/jurisdictions/[jur]/stages",
+      "GET /api/readiness",
     ]);
     for (const entry of registry.handlers) {
       if (entry.auth === "public") {

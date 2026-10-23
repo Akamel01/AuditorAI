@@ -34,6 +34,7 @@ const API_ROUTES = [
   "/api/dev/coverage",
   "/api/dev/odd",
   "/api/dev/readiness",
+  "/api/readiness",
   "/api/dev/tickets",
   "/api/dev/harvest-stream",
   "/api/dev/harvest-stream/[id]",
