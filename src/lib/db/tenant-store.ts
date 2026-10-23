@@ -36,6 +36,8 @@ import { IssueRevisionConflictError } from "@/lib/persistence/issue-ledger";
 import type { SqlClient } from "./sql";
 import type { TenantRepository, TenantSession } from "./tenant-repository";
 import { asDatabaseUnavailable, claimsJson, sqlStateOf } from "./identity";
+import type { ActorId } from "@/domain/actor";
+import { legacyActor, assertWritableActor } from "@/domain/actor";
 
 interface ProjectRow {
   project_id: string;
@@ -44,6 +46,7 @@ interface ProjectRow {
   input_values: Project["input_values"];
   created_at: Date | string;
   updated_at: Date | string;
+  updated_by?: string | null;
 }
 
 /** A timestamptz column back to the ISO string the domain types use. */
@@ -80,7 +83,7 @@ export class PostgresTenantRepository implements TenantRepository {
     try {
       return await this.client.transaction(async (tx) => {
         await tx.query("select set_config('request.jwt.claims', $1, true)", [
-          claimsJson(this.session.subjectId, this.session.workspaceId),
+          claimsJson(this.session.subjectId, this.session.workspaceId, this.session.role, this.session.email),
         ]);
         return await fn(tx);
       });
@@ -98,23 +101,27 @@ export class PostgresTenantRepository implements TenantRepository {
       input_values: row.input_values,
       created_at: iso(row.created_at),
       updated_at: iso(row.updated_at),
+      updated_by: (row.updated_by ?? undefined) as ActorId | undefined,
     };
   }
 
   // ---- Projects ------------------------------------------------------------
 
-  async saveProject(_ws: string, project: Project): Promise<void> {
+  async saveProject(_ws: string, project: Project, actor?: ActorId): Promise<void> {
+    const resolved = actor ? assertWritableActor(actor) : null;
+    if (actor && resolved) project.updated_by = resolved;
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.projects
-           (workspace_id, project_id, metadata, stage_selection, input_values, created_at, updated_at)
-         values ($1, $2, $3::jsonb, $4::jsonb, $5::jsonb, $6::timestamptz, $7::timestamptz)
+           (workspace_id, project_id, metadata, stage_selection, input_values, created_at, updated_at, updated_by)
+         values ($1, $2, $3::jsonb, $4::jsonb, $5::jsonb, $6::timestamptz, $7::timestamptz, $8)
          on conflict (workspace_id, project_id) do update
            set metadata = excluded.metadata,
                stage_selection = excluded.stage_selection,
                input_values = excluded.input_values,
                created_at = excluded.created_at,
-               updated_at = excluded.updated_at`,
+               updated_at = excluded.updated_at,
+               updated_by = excluded.updated_by`,
         [
           this.session.workspaceId,
           project.project_id,
@@ -123,6 +130,7 @@ export class PostgresTenantRepository implements TenantRepository {
           JSON.stringify(project.input_values),
           project.created_at,
           project.updated_at,
+          resolved,
         ],
       );
     });
@@ -131,7 +139,7 @@ export class PostgresTenantRepository implements TenantRepository {
   async getProject(ws: string, id: string): Promise<Project | null> {
     const rows = await this.withClaim(async (tx) => {
       const res = await tx.query<ProjectRow>(
-        `select project_id, metadata, stage_selection, input_values, created_at, updated_at
+        `select project_id, metadata, stage_selection, input_values, created_at, updated_at, updated_by
            from public.projects
           where project_id = $1`,
         [id],
@@ -156,20 +164,23 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Audits --------------------------------------------------------------
 
-  async saveAudit(_ws: string, audit: AuditResult): Promise<void> {
+  async saveAudit(_ws: string, audit: AuditResult, actor?: ActorId): Promise<void> {
+    const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
     await this.withClaim(async (tx) => {
       await tx.query(
-        `insert into public.audits (workspace_id, project_id, audit_id, ran_at, payload)
-         values ($1, $2, $3, $4::timestamptz, $5::jsonb)
+        `insert into public.audits (workspace_id, project_id, audit_id, ran_at, payload, produced_by)
+         values ($1, $2, $3, $4::timestamptz, $5::jsonb, $6)
          on conflict (workspace_id, project_id, audit_id) do update
            set ran_at = excluded.ran_at,
-               payload = excluded.payload`,
+               payload = excluded.payload,
+               produced_by = excluded.produced_by`,
         [
           this.session.workspaceId,
           audit.project_id,
           audit.audit_id,
           audit.ran_at,
           JSON.stringify(audit),
+          resolved,
         ],
       );
     });
@@ -207,7 +218,9 @@ export class PostgresTenantRepository implements TenantRepository {
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
+    actor?: ActorId,
   ): Promise<AuditIssue> {
+    const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
     return this.withClaim(async (tx) => {
       const prior = await tx.query<{ revision: number }>(
         "select coalesce(max(revision), 0) as revision from public.audit_issues where project_id = $1 and audit_id = $2",
@@ -217,7 +230,7 @@ export class PostgresTenantRepository implements TenantRepository {
       const issue: AuditIssue = {
         revision,
         issued_at: issuedAtIso,
-        issued_by: "auditor",
+        issued_by: resolved,
         result,
       };
       const inserted = await tx.query<{ revision: number }>(
@@ -271,21 +284,25 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Attachments ----------------------------------------------------------
 
-  async saveAttachment(_ws: string, attachment: Attachment): Promise<void> {
+  async saveAttachment(_ws: string, attachment: Attachment, actor?: ActorId): Promise<void> {
+    const resolved = actor ? assertWritableActor(actor) : null;
+    if (actor && resolved) attachment.uploaded_by = resolved;
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.attachments
-           (workspace_id, project_id, attachment_id, created_at, payload)
-         values ($1, $2, $3, $4::timestamptz, $5::jsonb)
+           (workspace_id, project_id, attachment_id, created_at, payload, uploaded_by)
+         values ($1, $2, $3, $4::timestamptz, $5::jsonb, $6)
          on conflict (workspace_id, project_id, attachment_id) do update
            set created_at = excluded.created_at,
-               payload = excluded.payload`,
+               payload = excluded.payload,
+               uploaded_by = excluded.uploaded_by`,
         [
           this.session.workspaceId,
           attachment.project_id,
           attachment.attachment_id,
           attachment.created_at,
           JSON.stringify(attachment),
+          resolved,
         ],
       );
     });
@@ -316,7 +333,7 @@ export class PostgresTenantRepository implements TenantRepository {
    *  operation (project-store.ts:68-91). The KV's delByPrefix has no
    *  transactional equivalent and is NOT ported. Throws
    *  UnknownAttachmentError when no such record exists. */
-  async deleteAttachment(_ws: string, projectId: string, id: string): Promise<void> {
+  async deleteAttachment(_ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
     await this.withClaim(async (tx) => {
       const deleted = await tx.query<{ attachment_id: string }>(
         "delete from public.attachments where project_id = $1 and attachment_id = $2 returning attachment_id",
@@ -341,9 +358,10 @@ export class PostgresTenantRepository implements TenantRepository {
         }
       }
       if (!touched) return;
+      const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
       await tx.query(
-        "update public.projects set input_values = $1::jsonb, updated_at = $2::timestamptz where project_id = $3",
-        [JSON.stringify(inputValues), new Date().toISOString(), projectId],
+        "update public.projects set input_values = $1::jsonb, updated_at = $2::timestamptz, updated_by = $3 where project_id = $4",
+        [JSON.stringify(inputValues), new Date().toISOString(), resolved, projectId],
       );
     });
   }
@@ -358,6 +376,7 @@ export class PostgresTenantRepository implements TenantRepository {
     _ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
+    _actor?: ActorId,
   ): Promise<{ stored: number }> {
     const sized: { art: AuditArtifact; seq: number }[] = [];
     let seq = 0;

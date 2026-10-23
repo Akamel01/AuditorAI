@@ -3,6 +3,7 @@
 // Swapping stores = env change, never code change. Repository owns the physical
 // key scheme exclusively; no other module assembles or parses storage keys.
 import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
+import type { ActorId } from "@/domain/actor";
 import type { AuditArtifact } from "@/domain/pipeline/types";
 import {
   getDataStore,
@@ -97,8 +98,8 @@ export class Repository {
 
   // ---- Projects ------------------------------------------------------------
 
-  async saveProject(ws: string, project: Project) {
-    return this.projectStore.saveProject(ws, project);
+  async saveProject(ws: string, project: Project, actor?: ActorId) {
+    return this.projectStore.saveProject(ws, project, actor);
   }
   async getProject(ws: string, id: string): Promise<Project | null> {
     return this.projectStore.getProject(ws, id);
@@ -109,8 +110,8 @@ export class Repository {
 
   // ---- Audits --------------------------------------------------------------
 
-  async saveAudit(ws: string, audit: AuditResult) {
-    return this.projectStore.saveAudit(ws, audit);
+  async saveAudit(ws: string, audit: AuditResult, actor?: ActorId) {
+    return this.projectStore.saveAudit(ws, audit, actor);
   }
   async getAudit(ws: string, projectId: string, auditId: string): Promise<AuditResult | null> {
     return this.projectStore.getAudit(ws, projectId, auditId);
@@ -130,8 +131,9 @@ export class Repository {
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
+    actor?: ActorId,
   ): Promise<AuditIssue> {
-    return this.issueLedger.saveIssue(ws, projectId, auditId, result, issuedAtIso);
+    return this.issueLedger.saveIssue(ws, projectId, auditId, result, issuedAtIso, actor);
   }
 
   async getIssue(
@@ -149,8 +151,8 @@ export class Repository {
 
   // ---- Attachments -----------------------------------------------------------
 
-  async saveAttachment(ws: string, attachment: Attachment) {
-    return this.projectStore.saveAttachment(ws, attachment);
+  async saveAttachment(ws: string, attachment: Attachment, actor?: ActorId) {
+    return this.projectStore.saveAttachment(ws, attachment, actor);
   }
   async getAttachment(ws: string, projectId: string, id: string): Promise<Attachment | null> {
     return this.projectStore.getAttachment(ws, projectId, id);
@@ -163,8 +165,8 @@ export class Repository {
    *  one operation: the id is stripped from every referencing input and emptied
    *  attachment arrays are removed. updated_at advances only when something
    *  changed. Throws UnknownAttachmentError when no such record exists. */
-  async deleteAttachment(ws: string, projectId: string, id: string): Promise<void> {
-    return this.projectStore.deleteAttachment(ws, projectId, id);
+  async deleteAttachment(ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
+    return this.projectStore.deleteAttachment(ws, projectId, id, actor);
   }
 
   // ---- Node-artifact persistence (N3) -----------------------------------------
@@ -176,6 +178,7 @@ export class Repository {
     ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
+    _actor?: ActorId,
   ) {
     return this.artifactTrail.saveArtifactTrailFor(ws, identity, artifacts);
   }

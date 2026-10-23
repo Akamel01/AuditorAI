@@ -428,6 +428,8 @@ describe("KV -> Postgres migration (offline)", () => {
       mode: "postgres",
       workspaceId: c.workspaceId,
       subjectId: c.subject,
+      subjectRole: null,
+      sessionSubject: null,
       legacyHash: c.hash,
     });
   });

@@ -17,11 +17,19 @@ import {
   UnknownAttachmentError,
 } from "./persistence";
 import {
+  AuthNotConfiguredError,
   CredentialRevokedError,
   DatabaseUnavailableError,
+  NoInvitationError,
+  NotSignedInError,
+  NotWorkspaceAdminError,
+  ProviderNotConfiguredError,
+  SeatLimitExceededError,
+  TenantStoreRequiredError,
   WorkspaceMembershipError,
 } from "./db/errors";
 import { resolveTenant, type TenantResolution } from "./db/identity";
+import { adminActorFor } from "./auth/actor";
 import { createTenantRepository } from "./db/repository-factory";
 import type { TenantRepository } from "./db/tenant-repository";
 import {
@@ -48,7 +56,7 @@ function adminDenial(): NextResponse {
  *  existence of the surface leaks nothing. */
 export async function requireAdmin(
   req: Request,
-): Promise<{ ok: true } | { ok: false; res: NextResponse }> {
+): Promise<{ ok: true; actor: ReturnType<typeof adminActorFor> } | { ok: false; res: NextResponse }> {
   const provided = req.headers.get(ADMIN_HEADER);
   const expected = process.env.ADMIN_KEY;
   if (!provided || !expected) return { ok: false, res: adminDenial() };
@@ -69,7 +77,7 @@ export async function requireAdmin(
   const a = createHash("sha256").update(provided).digest();
   const b = createHash("sha256").update(expected).digest();
   if (!timingSafeEqual(a, b)) return { ok: false, res: adminDenial() };
-  return { ok: true };
+  return { ok: true, actor: adminActorFor(workspaceHash(provided)) };
 }
 
 export async function requireWorkspace(
@@ -160,6 +168,13 @@ const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof DatabaseUnavailableError, status: 503, exposeMessage: false },
   { matches: (e) => e instanceof CredentialRevokedError, status: 401, exposeMessage: false },
   { matches: (e) => e instanceof WorkspaceMembershipError, status: 403, exposeMessage: false },
+  { matches: (e) => e instanceof NotSignedInError, status: 401, exposeMessage: false },
+  { matches: (e) => e instanceof AuthNotConfiguredError, status: 503, exposeMessage: false },
+  { matches: (e) => e instanceof ProviderNotConfiguredError, status: 503, exposeMessage: false },
+  { matches: (e) => e instanceof TenantStoreRequiredError, status: 409, exposeMessage: false },
+  { matches: (e) => e instanceof SeatLimitExceededError, status: 409, exposeMessage: false },
+  { matches: (e) => e instanceof NotWorkspaceAdminError, status: 403, exposeMessage: false },
+  { matches: (e) => e instanceof NoInvitationError, status: 401, exposeMessage: false },
 ];
 
 const REDACTED_MESSAGE = "internal server error";

@@ -1,0 +1,339 @@
+{
+  "ticket": "#54",
+  "branch": "oc/54",
+  "waves": [
+    {
+      "wave": 0,
+      "modules": ["M1"],
+      "reason": "The DAG root: the actor vocabulary (OD2), the read/write actor unions and the write-site guard (OD20-N5), the claim-document contract (the field names 0004's helpers read), the widened domain types (OD15) and the auth/notice configuration seam every other module reads. Nothing exists yet, so nothing can be parallel with it."
+    },
+    {
+      "wave": 1,
+      "modules": ["M2", "M7"],
+      "reason": "Two independent foundations. M2 is the Supabase Auth server core (no new runtime dependency, OD8) with the invite-only account-creation call (OD12). M7 is the operator-applied migration 0004 — it must land BEFORE every module that reads workspace_members.status/email/invited_by/expires_at/accepted_at/revoked_at or workspaces.seat_count (OD16), so it cannot wait for M4; it depends only on M1's claim-field contract. Disjoint file sets: src/lib/auth/** versus supabase/** and the migration-enumerating suite."
+    },
+    {
+      "wave": 2,
+      "modules": ["M3"],
+      "reason": "The session cookie seam. It verifies the access token, so it needs M2's verifier."
+    },
+    {
+      "wave": 3,
+      "modules": ["M4"],
+      "reason": "The identity seam (resolution, request actor, typed errors, the repository interface with the OPTIONAL actor parameter that keeps the wave green, OD15). It needs the actor vocabulary (M1), the session reader (M3) and the applied migration (M7, whose status column its membership check reads — OD16)."
+    },
+    {
+      "wave": 4,
+      "modules": ["M5", "M8", "M11"],
+      "reason": "Three consumers of the settled seams, none of which shares a file with another: M5 persists the actor through both adapters (never inside a payload document, OD13), M8 implements the seat arithmetic and the invite write on top of migration 0004 (OD4, INVITE_TTL_DAYS = 14), M11 adds the server-side credential lifecycle. They may run in parallel."
+    },
+    {
+      "wave": 5,
+      "modules": ["M6", "M9"],
+      "reason": "The mutation call sites hand the actor to the seam (M6, needs M5's signatures; the delete carries the actor too, OD20-N7) and the sign-in surface exposes the session behind the invite gate (M9, needs M8's membership lookup and M2/M3). Disjoint file sets: the seven tenant routes versus the six auth routes, the sign-in page and the app shell."
+    },
+    {
+      "wave": 6,
+      "modules": ["M10"],
+      "reason": "The team surface: the invite surface where the seat count is enforced and the ONLY account-creation path (OD12). It needs the seat service (M8), the session surface (M9) and M2's account-creation call."
+    },
+    {
+      "wave": 7,
+      "modules": ["M12"],
+      "reason": "The env surface and the repository records (security review, CONTEXT.md, docs/glossary.md, the ADR 0020). It lands last because its content describes what the code does."
+    }
+  ],
+  "modules": [
+    {
+      "id": "M1",
+      "purpose": "Foundation: the actor id vocabulary (u:<uuid> | legacy:<16-hex> | admin:<digest>, OD2), the read union AuditActor and the write union ActorId plus the write-site guard (OD20-N5), the claim-document contract (the role/email field names 0004's helpers read), the widened domain types (AuditIssue.issued_by, Project.updated_by, Attachment.uploaded_by — and NO AuditResult.produced_by, OD13), the auth/seat configuration accessors and the plain notice wording.",
+      "touches": [
+        "src/domain/actor.ts",
+        "src/lib/db/claim.ts",
+        "src/domain/types.ts",
+        "src/lib/auth/config.ts",
+        "src/lib/auth/notice.ts",
+        "tests/domain/actor-id.test.ts",
+        "src/lib/auth/__tests__/config.test.ts"
+      ],
+      "new_files": [
+        "src/domain/actor.ts",
+        "src/lib/db/claim.ts",
+        "src/lib/auth/config.ts",
+        "src/lib/auth/notice.ts",
+        "tests/domain/actor-id.test.ts",
+        "src/lib/auth/__tests__/config.test.ts"
+      ],
+      "tests": [
+        "tests/domain/actor-id.test.ts",
+        "src/lib/auth/__tests__/config.test.ts"
+      ],
+      "acceptance": ["AC7", "AC8", "AC22"],
+      "blocked_by": [],
+      "parallel_safe": true,
+      "implements": ["OD2", "OD13", "OD15", "OD20-N5"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the actor vocabulary, the claim contract and the auth config seam"
+    },
+    {
+      "id": "M2",
+      "purpose": "The Supabase Auth server core: the fetch wrapper over the Auth REST API with an injected fetchImpl, the PKCE helpers, the local HS256 access-token verification and the invite-only account-creation call (the Auth Admin API with email_confirm: true — there is NO signUpWithPassword, OD12). No new runtime dependency (OD8) and no new secret name (the service-role key is taken from the existing src/lib/db/admin.ts accessor).",
+      "touches": [
+        "src/lib/auth/supabase.ts",
+        "src/lib/auth/__tests__/supabase.test.ts"
+      ],
+      "new_files": ["src/lib/auth/supabase.ts", "src/lib/auth/__tests__/supabase.test.ts"],
+      "tests": ["src/lib/auth/__tests__/supabase.test.ts"],
+      "acceptance": ["AC2", "AC4", "AC5"],
+      "blocked_by": ["M1"],
+      "parallel_safe": true,
+      "implements": ["OD12", "OD6", "OD8"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the Supabase Auth server core with invite-only account creation"
+    },
+    {
+      "id": "M3",
+      "purpose": "The session cookie seam: read/verify the session, set and clear the httpOnly cookies, and own the PKCE verifier pair.",
+      "touches": ["src/lib/auth/session.ts", "src/lib/auth/__tests__/session.test.ts"],
+      "new_files": ["src/lib/auth/session.ts", "src/lib/auth/__tests__/session.test.ts"],
+      "tests": ["src/lib/auth/__tests__/session.test.ts"],
+      "acceptance": ["AC2", "AC4"],
+      "blocked_by": ["M2"],
+      "parallel_safe": true,
+      "implements": ["OD6"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the httpOnly session cookie seam and the PKCE pair"
+    },
+    {
+      "id": "M4",
+      "purpose": "The identity seam: resolveTenant gains the verified session, the member role and the email; requireWorkspace/requireAdmin return the request actor; the new typed errors join the ERROR_TABLE; the TenantRepository mutating methods gain the OPTIONAL actor parameter that keeps every wave green (OD15); the membership check is tightened with status <> 'revoked' (a 0004 column, hence the earlier wave, OD16).",
+      "touches": [
+        "src/lib/api.ts",
+        "src/lib/db/identity.ts",
+        "src/lib/db/errors.ts",
+        "src/lib/db/repository-factory.ts",
+        "src/lib/db/tenant-repository.ts",
+        "src/lib/auth/actor.ts",
+        "src/lib/auth/__tests__/actor.test.ts"
+      ],
+      "new_files": ["src/lib/auth/actor.ts", "src/lib/auth/__tests__/actor.test.ts"],
+      "tests": [
+        "src/lib/auth/__tests__/actor.test.ts",
+        "tests/integration/tenant-store-cutover.test.ts",
+        "tests/integration/database-not-configured.test.ts",
+        "tests/integration/admin-auth.test.ts",
+        "tests/integration/tenant-isolation.test.ts"
+      ],
+      "acceptance": ["AC6", "AC7", "AC11", "AC19", "AC20"],
+      "blocked_by": ["M1", "M3", "M7"],
+      "parallel_safe": true,
+      "implements": ["OD2", "OD3", "OD5", "OD15", "OD16", "OD18", "OD20-N3"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): resolve the request actor and thread it through the repository seam"
+    },
+    {
+      "id": "M5",
+      "purpose": "Actor propagation through the persistence seam: both adapters take the same optional actor (OD20-N8) and write it to sibling columns/fields only — never inside a payload document (OD13); the adapters derive legacyActor(ws) when the actor is absent; the KV-to-Postgres backfill overrides the constant with legacy:<hash> and preserves every other stored value (OD20-N4).",
+      "touches": [
+        "src/lib/persistence.ts",
+        "src/lib/persistence/issue-ledger.ts",
+        "src/lib/persistence/project-store.ts",
+        "src/lib/db/tenant-store.ts",
+        "src/lib/db/migration.ts",
+        "tests/domain/actor-propagation.test.ts",
+        "tests/domain/audit-issues.test.ts",
+        "tests/domain/audit-workspace.test.ts",
+        "tests/domain/persistence-contract-matrix.test.ts",
+        "tests/domain/artifact-persistence.test.ts",
+        "tests/domain/retention-policy.test.ts",
+        "tests/integration/devtab.test.ts",
+        "tests/integration/kv-to-postgres-migration.test.ts"
+      ],
+      "new_files": ["tests/domain/actor-propagation.test.ts"],
+      "tests": [
+        "tests/domain/actor-propagation.test.ts",
+        "tests/domain/audit-issues.test.ts",
+        "tests/domain/audit-workspace.test.ts",
+        "tests/domain/persistence-contract-matrix.test.ts",
+        "tests/domain/artifact-persistence.test.ts",
+        "tests/domain/retention-policy.test.ts",
+        "tests/integration/devtab.test.ts",
+        "tests/integration/kv-to-postgres-migration.test.ts"
+      ],
+      "acceptance": ["AC6", "AC7", "AC8", "AC9", "AC10"],
+      "blocked_by": ["M1", "M4", "M7"],
+      "parallel_safe": true,
+      "implements": ["OD2", "OD13", "OD20-N4", "OD20-N8"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): persist the actor beside the payload and keep the frozen bytes identical"
+    },
+    {
+      "id": "M6",
+      "purpose": "The seven tenant mutation call sites pass auth.actor into the repository seam — six write routes persist it, the delete route carries it through the same seam (OD20-N7). No behaviour change beyond the actor; the one-store-per-request invariant survives.",
+      "touches": [
+        "src/app/api/projects/route.ts",
+        "src/app/api/projects/[projectId]/route.ts",
+        "src/app/api/projects/[projectId]/audits/route.ts",
+        "src/app/api/projects/[projectId]/audits/[auditId]/route.ts",
+        "src/app/api/projects/[projectId]/audits/[auditId]/issues/route.ts",
+        "src/app/api/projects/[projectId]/attachments/[attachmentId]/route.ts",
+        "src/app/api/upload/route.ts",
+        "tests/integration/actor-routes.test.ts",
+        "tests/integration/candidate-review-route.test.ts"
+      ],
+      "new_files": ["tests/integration/actor-routes.test.ts"],
+      "tests": ["tests/integration/actor-routes.test.ts", "tests/integration/candidate-review-route.test.ts"],
+      "acceptance": ["AC6", "AC20"],
+      "blocked_by": ["M5"],
+      "parallel_safe": true,
+      "implements": ["OD2", "OD20-N7"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): pass the request actor from the mutation routes to the repository"
+    },
+    {
+      "id": "M7",
+      "purpose": "The operator-applied migration 0004: the seat allowance column with its column-level privilege shape (the app may read seat_count and never write it, OD19), the membership state columns, the role/status vocabulary constraints, the three actor columns (OD13), the two claim helpers and the four workspace_members policies (OD5, OD14) — plus the operator procedure in supabase/README.md (first owner, OD18; seat allowance; first credential). It owns the migration-enumerating test (OD17).",
+      "touches": [
+        "supabase/migrations/0004_seats_invites.sql",
+        "supabase/README.md",
+        "tests/integration/migration-0004.test.ts",
+        "tests/integration/tenant-rls.test.ts"
+      ],
+      "new_files": [
+        "supabase/migrations/0004_seats_invites.sql",
+        "tests/integration/migration-0004.test.ts"
+      ],
+      "tests": ["tests/integration/migration-0004.test.ts", "tests/integration/tenant-rls.test.ts"],
+      "acceptance": ["AC11", "AC16", "AC17", "AC18", "AC19", "AC24"],
+      "blocked_by": ["M1"],
+      "parallel_safe": true,
+      "implements": ["OD5", "OD14", "OD16", "OD17", "OD18", "OD19"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add migration 0004 for seats, membership state and the RLS hardening"
+    },
+    {
+      "id": "M8",
+      "purpose": "The seat and invitation service: the seat arithmetic (accepted members + pending unexpired invitations against workspaces.seat_count; a revoked member holds no seat, OD20-N9), the transactional invite write with the role assigned at invite time (OD14), the acceptance that binds a pending invitation to the signed-in subject, the membership lookup by email and the member listing filtered by workspace_id (OD20-N2). INVITE_TTL_DAYS = 14 is exported here (OD20-N1). The app never creates a workspace or an owner (OD18).",
+      "touches": ["src/lib/db/seats.ts", "tests/integration/seat-invite.test.ts"],
+      "new_files": ["src/lib/db/seats.ts", "tests/integration/seat-invite.test.ts"],
+      "tests": ["tests/integration/seat-invite.test.ts"],
+      "acceptance": ["AC11", "AC12", "AC13", "AC14", "AC15", "AC16", "AC17", "AC18", "AC19"],
+      "blocked_by": ["M1", "M4", "M7"],
+      "parallel_safe": true,
+      "implements": ["OD4", "OD18", "OD20-N1", "OD20-N2", "OD20-N9"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the seat and invitation service with the 14-day invite TTL"
+    },
+    {
+      "id": "M9",
+      "purpose": "The sign-in surface: the six server-mediated auth routes (config, email, provider sign-in, callback, sign-out, me), the sign-in page and its form, and the app-shell sign-in link. The email route is invite-gated (no invitation -> the plain notice, nothing created; OD12); there is no sign-up branch and next.config.ts is NOT touched (OD20-N6).",
+      "touches": [
+        "src/app/api/auth/config/route.ts",
+        "src/app/api/auth/email/route.ts",
+        "src/app/api/auth/signin/[provider]/route.ts",
+        "src/app/api/auth/callback/route.ts",
+        "src/app/api/auth/signout/route.ts",
+        "src/app/api/auth/me/route.ts",
+        "src/app/sign-in/page.tsx",
+        "src/app/_components/sign-in-form.tsx",
+        "src/app/_components/ui/app-shell.tsx",
+        "tests/integration/auth-routes.test.ts"
+      ],
+      "new_files": [
+        "src/app/api/auth/config/route.ts",
+        "src/app/api/auth/email/route.ts",
+        "src/app/api/auth/signin/[provider]/route.ts",
+        "src/app/api/auth/callback/route.ts",
+        "src/app/api/auth/signout/route.ts",
+        "src/app/api/auth/me/route.ts",
+        "src/app/sign-in/page.tsx",
+        "src/app/_components/sign-in-form.tsx",
+        "tests/integration/auth-routes.test.ts"
+      ],
+      "tests": ["tests/integration/auth-routes.test.ts"],
+      "acceptance": ["AC1", "AC2", "AC3", "AC4", "AC5"],
+      "blocked_by": ["M2", "M3", "M8"],
+      "parallel_safe": true,
+      "implements": ["OD6", "OD9", "OD11", "OD12"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the invite-gated sign-in surface and the sign-in page"
+    },
+    {
+      "id": "M10",
+      "purpose": "The team surface: the API where the seat count is enforced at invite (with the role chosen at invite time: member or admin, never owner, OD14), the invite list, and the acceptance endpoint — the ONLY place an account is created (the Auth Admin API, email_confirm: true, then the membership row is activated and the invitee is signed in, OD12) — plus the team page and panel with the plain notice when the tenant store is not live.",
+      "touches": [
+        "src/app/api/workspaces/team/route.ts",
+        "src/app/api/workspaces/team/accept/route.ts",
+        "src/app/team/page.tsx",
+        "src/app/_components/team-panel.tsx",
+        "tests/integration/team-routes.test.ts"
+      ],
+      "new_files": [
+        "src/app/api/workspaces/team/route.ts",
+        "src/app/api/workspaces/team/accept/route.ts",
+        "src/app/team/page.tsx",
+        "src/app/_components/team-panel.tsx",
+        "tests/integration/team-routes.test.ts"
+      ],
+      "tests": ["tests/integration/team-routes.test.ts"],
+      "acceptance": ["AC5", "AC11", "AC12", "AC13", "AC14"],
+      "blocked_by": ["M2", "M8", "M9"],
+      "parallel_safe": true,
+      "implements": ["OD4", "OD12", "OD14"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): add the team surface with the invite API and invite acceptance"
+    },
+    {
+      "id": "M11",
+      "purpose": "The credential lifecycle surface: server-side credential generation, the rotate/revoke endpoint (no first-credential issue action — the operator provisions that out of band), and the client that stores a server-issued key instead of minting one. Refused on the legacy path, where the key hash IS the KV namespace.",
+      "touches": [
+        "src/lib/db/credentials.ts",
+        "src/app/api/workspaces/credentials/route.ts",
+        "src/lib/client.ts",
+        "tests/integration/credential-lifecycle.test.ts"
+      ],
+      "new_files": [
+        "src/app/api/workspaces/credentials/route.ts",
+        "tests/integration/credential-lifecycle.test.ts"
+      ],
+      "tests": ["tests/integration/credential-lifecycle.test.ts"],
+      "acceptance": ["AC21"],
+      "blocked_by": ["M4"],
+      "parallel_safe": true,
+      "implements": ["OD3"],
+      "depends_on_shared_state": [],
+      "commit_message": "feat(#54): issue, rotate and revoke workspace credentials server-side"
+    },
+    {
+      "id": "M12",
+      "purpose": "The env surface and the records that must stop contradicting the code: .env.example (the five auth names, operator-side SEAT_COUNT_DEFAULT), the security review, CONTEXT.md and docs/glossary.md (G-2 satisfied on the Postgres path, still open on the legacy path, OD1), and the new ADR 0020 (the actor vocabulary, the seat model, INVITE_TTL_DAYS = 14, the invite-only account creation, the role-at-invite rule, the operator's provisioning steps and the owner-credential rules).",
+      "touches": [
+        ".env.example",
+        "CONTEXT.md",
+        "docs/glossary.md",
+        "docs/validation/security-review.md",
+        "docs/adr/0020-named-user-identity-and-seats.md",
+        "docs/adr/README.md",
+        "tests/integration/env-surface.test.ts",
+        "tests/integration/security-record.test.ts"
+      ],
+      "new_files": [
+        "docs/adr/0020-named-user-identity-and-seats.md",
+        "tests/integration/env-surface.test.ts",
+        "tests/integration/security-record.test.ts"
+      ],
+      "tests": [
+        "tests/integration/env-surface.test.ts",
+        "tests/integration/security-record.test.ts",
+        "tests/integration/secret-boundary.test.ts"
+      ],
+      "acceptance": ["AC22", "AC23"],
+      "blocked_by": ["M4", "M7"],
+      "parallel_safe": true,
+      "implements": ["OD1", "OD9", "OD12", "OD19", "OD20-N1", "OD20-N3", "OD20-N4"],
+      "depends_on_shared_state": [],
+      "commit_message": "docs(#54): declare the env surface and record the named-user identity model in ADR 0020"
+    }
+  ],
+  "shared_state": []
+}

@@ -213,6 +213,7 @@ function planRow(
   record: TenantRecord,
   document: Record<string, unknown>,
   workspaceId: string,
+  hash: string,
 ): RowPlan | null {
   switch (record.family) {
     case "project": {
@@ -263,7 +264,8 @@ function planRow(
     case "issue": {
       const issuedAt = asTimestamp(document.issued_at);
       if (!issuedAt) return null;
-      const issuedBy = typeof document.issued_by === "string" ? document.issued_by : "auditor";
+      const storedIssuedBy = typeof document.issued_by === "string" ? document.issued_by : "auditor";
+      const issuedBy = storedIssuedBy === "auditor" ? `legacy:${hash}` : storedIssuedBy;
       return {
         table: "audit_issues",
         key: record.key,
@@ -656,7 +658,7 @@ export async function migrateKvToPostgres(
         skipKey(report, record.key, "not_a_document");
         continue;
       }
-      const plan = planRow(record, object, workspaceId);
+      const plan = planRow(record, object, workspaceId, hash);
       if (!plan) {
         skipKey(report, record.key, "invalid_document");
         continue;
