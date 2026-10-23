@@ -25,12 +25,6 @@ export interface PipelineRun {
   state: SharedState;
   /** Per-stage wall-clock duration in ms, keyed by node id. */
   stageDurationsMs: Record<string, number>;
-  /** Alias of stageDurationsMs (convenience). */
-  stageLatenciesMs: Record<string, number>;
-  /** Alias of stageDurationsMs (convenience). */
-  nodeDurationsMs: Record<string, number>;
-  /** Alias of stageDurationsMs (convenience). */
-  timings: Record<string, number>;
 }
 
 /** I/O required to dispatch the persistence node through runNodeAsync. */
@@ -180,14 +174,12 @@ export class DefaultAuditPipeline implements AuditPipeline {
       state.candidate_findings && state.candidate_findings.length > 0
         ? { ...json, candidate_findings: state.candidate_findings }
         : json;
+    stageDurationsMs["AG-PERSIST"] = 0;
     return {
       result,
       artifacts,
       state,
       stageDurationsMs,
-      stageLatenciesMs: stageDurationsMs,
-      nodeDurationsMs: stageDurationsMs,
-      timings: stageDurationsMs,
     };
   }
 
@@ -209,14 +201,12 @@ export class DefaultAuditPipeline implements AuditPipeline {
     if (!state.report_bundle) {
       throw new Error("pipeline batch run finished without a report bundle");
     }
+    stageDurationsMs["AG-PERSIST"] = 0;
     return {
       result: state.report_bundle.json,
       artifacts,
       state,
       stageDurationsMs,
-      stageLatenciesMs: stageDurationsMs,
-      nodeDurationsMs: stageDurationsMs,
-      timings: stageDurationsMs,
     };
   }
 
