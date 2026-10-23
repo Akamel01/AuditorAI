@@ -8,6 +8,7 @@ import type { NextConfig } from "next";
  * pack-reading endpoint 500s (works locally, breaks when deployed).
  */
 const API_ROUTES = [
+  "/api/health",
   "/api/jurisdictions",
   "/api/jurisdictions/[jur]/stages",
   "/api/inputs/[jur]",
@@ -34,6 +35,7 @@ const API_ROUTES = [
   "/api/dev/coverage",
   "/api/dev/odd",
   "/api/dev/readiness",
+  "/api/readiness",
   "/api/dev/tickets",
   "/api/dev/harvest-stream",
   "/api/dev/harvest-stream/[id]",

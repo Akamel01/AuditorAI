@@ -201,9 +201,11 @@ describe("api surface registry", () => {
       .flatMap((r) => r.methods.map((m) => key(m, r.routePath)))
       .sort();
     expect(publicRoutes).toEqual([
+      "GET /api/health",
       "GET /api/inputs/[jur]",
       "GET /api/jurisdictions",
       "GET /api/jurisdictions/[jur]/stages",
+      "GET /api/readiness",
     ]);
     for (const entry of registry.handlers) {
       const where = key(entry.method, entry.path);
@@ -221,9 +223,11 @@ describe("api surface registry", () => {
       .map((h) => key(h.method, h.path))
       .sort();
     expect(publicRoutes).toEqual([
+      "GET /api/health",
       "GET /api/inputs/[jur]",
       "GET /api/jurisdictions",
       "GET /api/jurisdictions/[jur]/stages",
+      "GET /api/readiness",
     ]);
     for (const entry of registry.handlers) {
       if (entry.auth === "public") {
