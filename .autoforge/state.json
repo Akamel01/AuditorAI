@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "created": "2026-09-14T00:00:00Z",
-  "updated": "2026-10-22T10:00:00Z",
+  "updated": "2026-10-23T00:10:00Z",
   "ticket": "#54",
   "branch": "oc/54",
   "pull_request": null,
@@ -22,7 +22,7 @@
     "M11",
     "M12"
   ],
-  "execution": "Plan v2 APPROVED. See .autoforge/decisions/t54-execution-decision.md. Wave 0 (M1) is the root; wave 1 (M2+M7) parallel; wave 4 has three parallel modules (M5, M8, M11); wave 5 two (M6, M9). Amendments: drop SEAT_COUNT_DEFAULT; /api/auth/me returns 200 with null subject, not 401.",
+  "execution": "Wave 0 (M1) committed. Wave 1: M2 + M7 in parallel.",
   "validation": "",
   "artifacts": [
     ".autoforge/architecture/decisions-t54.md",
