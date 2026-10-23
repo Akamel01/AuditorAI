@@ -1,0 +1,69 @@
+{
+  "rule_set_version": "v1",
+  "frozen": true,
+  "provenance": {
+    "source": "scripts/harvest-track-a.ts:516-527",
+    "transcribed_on": "2026-10-22",
+    "note": "Frozen transcription of the live v1 rule set (STAGE_RULES + CANONICAL_STAGE). Behaviourally identical to scripts/harvest-track-a.ts; do not edit."
+  },
+  "scan": {
+    "mode": "head",
+    "chars": 8000
+  },
+  "cells": {
+    "FEASIBILITY_CONCEPT": "canada:FEASIBILITY_CONCEPT",
+    "PRELIMINARY_DESIGN": "canada:PRELIMINARY_DESIGN",
+    "DETAILED_DESIGN": "canada:DETAILED_DESIGN"
+  },
+  "note": "v1 carries no evidence entries: it is the historical baseline (scripts/harvest-track-a.ts:516-527), not an attested rule set. Each rule records its source line instead. PRE_OPENING is deliberately absent from cells (CANONICAL_STAGE has exactly 3 keys); v1 resolves it to cell_key \"\" through the unknown-stage rule. The evidence array of a v1 rule is empty on purpose - the loader's 'no rule without evidence' rejection applies to v2.",
+  "rules": [
+    {
+      "id": "v1-PRE_OPENING",
+      "pattern": "pre-?opening|avant\\s+ouverture|en\\s+service",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "en",
+      "stage": "PRE_OPENING",
+      "confidence_form": "named",
+      "source_line": "scripts/harvest-track-a.ts:517",
+      "evidence": []
+    },
+    {
+      "id": "v1-DETAILED_DESIGN",
+      "pattern": "stage\\s*3|detailed design|d[ée]taill[ée]e?\\b",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "en",
+      "stage": "DETAILED_DESIGN",
+      "confidence_form": "named",
+      "source_line": "scripts/harvest-track-a.ts:518",
+      "evidence": []
+    },
+    {
+      "id": "v1-PRELIMINARY_DESIGN",
+      "pattern": "stage\\s*2|preliminary design|pr[ée]liminaire",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "en",
+      "stage": "PRELIMINARY_DESIGN",
+      "confidence_form": "named",
+      "source_line": "scripts/harvest-track-a.ts:519",
+      "evidence": []
+    },
+    {
+      "id": "v1-FEASIBILITY_CONCEPT",
+      "pattern": "stage\\s*1|planning stage|functional plan|planification|[ée]tude de faisabilit[ée]",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "en",
+      "stage": "FEASIBILITY_CONCEPT",
+      "confidence_form": "named",
+      "source_line": "scripts/harvest-track-a.ts:520",
+      "evidence": []
+    }
+  ]
+}
