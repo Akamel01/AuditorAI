@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "created": "2026-09-14T00:00:00Z",
-  "updated": "2026-10-23T00:10:00Z",
+  "updated": "2026-10-23T00:20:00Z",
   "ticket": "#54",
   "branch": "oc/54",
   "pull_request": null,
@@ -22,7 +22,7 @@
     "M11",
     "M12"
   ],
-  "execution": "Wave 0 (M1) committed. Wave 1: M2 + M7 in parallel.",
+  "execution": "Wave 1 (M2+M7) committed. Wave 2: M3 (session cookie seam).",
   "validation": "",
   "artifacts": [
     ".autoforge/architecture/decisions-t54.md",
