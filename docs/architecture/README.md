@@ -5,3 +5,5 @@ Implementation / Depth / Seam / Adapter vocabulary), the development graph and a
 graph topologies, data flow, and deployment shape. If implementation contradicts
 these documents, either the code is wrong or an ADR supersedes the document — resolve
 explicitly, never silently.
+
+Architecture review 2026-10-25: `review-2026-10-25.md`.
