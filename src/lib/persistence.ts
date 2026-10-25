@@ -13,7 +13,6 @@ import {
   workspaceHash,
 } from "./persistence/store";
 import type { DataStore } from "./persistence/store";
-import * as Keys from "./persistence/keys";
 import { ProjectStore, UnknownAttachmentError } from "./persistence/project-store";
 import {
   ArtifactTrail,
@@ -51,48 +50,6 @@ export class Repository {
     this.projectStore = new ProjectStore(store);
     this.artifactTrail = new ArtifactTrail(store);
     this.issueLedger = new IssueLedger(store);
-  }
-
-  // ---- Key scheme ---------------------------------------------------------
-
-  static projectKey(ws: string, projectId: string): string {
-    return Keys.projectKey(ws, projectId);
-  }
-  static projectsPrefix(ws: string): string {
-    return Keys.projectsPrefix(ws);
-  }
-  static auditKey(ws: string, projectId: string, auditId: string): string {
-    return Keys.auditKey(ws, projectId, auditId);
-  }
-  static auditsPrefix(ws: string, projectId: string): string {
-    return Keys.auditsPrefix(ws, projectId);
-  }
-  static attachmentKey(ws: string, projectId: string, attachmentId: string): string {
-    return Keys.attachmentKey(ws, projectId, attachmentId);
-  }
-  static attachmentsPrefix(ws: string, projectId: string): string {
-    return Keys.attachmentsPrefix(ws, projectId);
-  }
-  static artifactKey(
-    ws: string,
-    projectId: string,
-    auditId: string,
-    nodeId: string,
-    seq: number,
-  ): string {
-    return Keys.artifactKey(ws, projectId, auditId, nodeId, seq);
-  }
-  static artifactTrailPrefix(ws: string, projectId: string, auditId: string): string {
-    return Keys.artifactTrailPrefix(ws, projectId, auditId);
-  }
-  static artifactSummaryKey(ws: string, projectId: string, auditId: string): string {
-    return Keys.artifactSummaryKey(ws, projectId, auditId);
-  }
-  static issueKey(ws: string, projectId: string, auditId: string, rev: number): string {
-    return Keys.issueKey(ws, projectId, auditId, rev);
-  }
-  static issuesPrefix(ws: string, projectId: string, auditId: string): string {
-    return Keys.issuesPrefix(ws, projectId, auditId);
   }
 
   // ---- Projects ------------------------------------------------------------
@@ -200,7 +157,4 @@ export class Repository {
     return this.artifactTrail.replayPlan(artifacts);
   }
 
-  private async pruneArtifactTrail(ws: string, projectId: string, auditId: string) {
-    return this.artifactTrail.pruneArtifactTrail(ws, projectId, auditId);
-  }
 }

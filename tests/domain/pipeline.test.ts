@@ -12,7 +12,8 @@ import {
 } from "@/domain/pipeline/pipeline";
 import { BATCH_NODES, DESCRIPTORS, NODE_FNS } from "@/domain/pipeline/registry";
 import { AG_NODE_IDS, PAYLOAD_KINDS } from "@/domain/pipeline/types";
-import { MemoryStore, Repository } from "@/lib/persistence";
+import { MemoryStore } from "@/lib/persistence";
+import * as Keys from "@/lib/persistence/keys";
 import { runAudit } from "@/domain/engine";
 import type { InputValueState, JurisdictionId, Project } from "@/domain/types";
 import type { AiAdapter } from "@/lib/ai";
@@ -212,7 +213,7 @@ describe("pipeline execution", () => {
     });
     expect(receipt.patch.persistence_ref?.audit_id).toBe(state.report_bundle!.json.audit_id);
     const stored = await store.get(
-      Repository.auditKey(
+      Keys.auditKey(
         "ws-hash",
         state.report_bundle!.json.project_id,
         receipt.patch.persistence_ref!.audit_id,
@@ -363,7 +364,7 @@ describe("pipeline execution", () => {
     );
     expect(out.state.persistence_ref?.audit_id).toBe(state.report_bundle!.json.audit_id);
     const stored = await store.get(
-      Repository.auditKey(
+      Keys.auditKey(
         "ws-hash",
         out.state.persistence_ref!.project_id,
         out.state.persistence_ref!.audit_id,
