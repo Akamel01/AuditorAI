@@ -8,7 +8,6 @@ import {
   Repository,
   UnknownAttachmentError,
 } from "@/lib/persistence";
-import * as Keys from "@/lib/persistence/keys";
 import type { AuditArtifact } from "@/domain/pipeline/types";
 import type { Project } from "@/domain/types";
 
@@ -117,8 +116,8 @@ describe("artifact trail persistence (N3)", () => {
     } satisfies Project);
 
     const got = await store.getMany<object>([
-      Keys.projectKey(WS, "P-a"),
-      Keys.projectKey(WS, "P-missing"),
+      Repository.projectKey(WS, "P-a"),
+      Repository.projectKey(WS, "P-missing"),
     ]);
     expect(got).toHaveLength(2);
     expect((got[0] as { project_id: string }).project_id).toBe("P-a");

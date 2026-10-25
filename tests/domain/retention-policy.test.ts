@@ -9,8 +9,8 @@ import {
   ArtifactTrail,
   MemoryStore,
   ProjectStore,
+  Repository,
 } from "@/lib/persistence";
-import * as Keys from "@/lib/persistence/keys";
 import {
   RETENTION_POLICY,
   RETENTION_TTL_DAYS,
@@ -145,7 +145,7 @@ describe("retention policy (F2)", () => {
     expect(backup.issues.map((i) => i.revision)).toEqual([1, 2]);
     const snapshot = JSON.parse(JSON.stringify(backup.issues)) as unknown[];
 
-    await store.delByPrefix(Keys.issuesPrefix(WS, P, A));
+    await store.delByPrefix(Repository.issuesPrefix(WS, P, A));
     expect(await ledger.listIssues(WS, P, A)).toHaveLength(0);
 
     expect(await ledger.restoreIssueLineage(WS, backup)).toEqual({ restored: 2, skipped: 0 });
@@ -160,7 +160,7 @@ describe("retention policy (F2)", () => {
     await ledger.saveIssue(WS, P, A, draft("a"), NOW);
     const backup = await ledger.exportIssueLineage(WS, P, A);
 
-    await store.put(Keys.issueKey(WS, P, A, 1), { ...backup.issues[0], issued_at: "tampered" });
+    await store.put(Repository.issueKey(WS, P, A, 1), { ...backup.issues[0], issued_at: "tampered" });
     await expect(ledger.restoreIssueLineage(WS, backup)).rejects.toBeInstanceOf(
       IssueRevisionConflictError,
     );

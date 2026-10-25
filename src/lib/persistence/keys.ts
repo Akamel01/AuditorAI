@@ -1,6 +1,6 @@
 // Sole owner of the physical key scheme (ADR-0001).
 // Every persistence module imports from here; outside persistence, callers
-// callers import directly from this module (ADR-0001).
+// must use Repository.*Key/Prefix helpers (grep ws: outside persistence stays zero).
 
 export function projectKey(ws: string, projectId: string): string {
   return `ws:${ws}:project:${projectId}`;
