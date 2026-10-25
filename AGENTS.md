@@ -2,6 +2,13 @@
 
 Working conventions for agent sessions in this repo. Read before committing.
 
+## Where things live
+
+- `CONTEXT.md` — domain terms and glossary.
+- `docs/architecture/overview.md` — module map.
+- `docs/architecture/README.md` — architecture index.
+- `docs/adr/` — Architecture Decision Records.
+
 ## Vault determinism (the race)
 
 `state/vault-notes.json` is compiled from `vault/` and CI checks it byte-for-byte
