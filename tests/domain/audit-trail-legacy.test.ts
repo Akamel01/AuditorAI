@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it } from "vitest";
-import { MemoryStore, Repository, setDataStoreForTests } from "@/lib/persistence";
+import { MemoryStore, Repository, setDataStoreForTests, IssueRevisionConflictError } from "@/lib/persistence";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
 import { verifyAuditTrail } from "@/domain/audit-trail";
 import * as Keys from "@/lib/persistence/keys";
-import { TrailStore } from "@/lib/persistence/trail-store";
+import { TrailStore, AuditTrailCorruptError } from "@/lib/persistence/trail-store";
 
 const NOW = "2026-08-23T12:00:00.000Z";
 const WS = "0123456789abcdef";
@@ -80,6 +80,8 @@ describe("audit-trail legacy", () => {
       "artifact_trail.saved",
     ]);
     entries.forEach((e, i) => expect(e.seq).toBe(i + 1));
+    const { auditTrailPayloadHash } = await import("@/domain/audit-trail");
+    for (const e of entries) expect(e.payload_hash).toBe(auditTrailPayloadHash(e.payload));
     expect(verifyAuditTrail(entries).ok).toBe(true);
   });
 
@@ -105,25 +107,78 @@ describe("audit-trail legacy", () => {
     const ae = (await repo3.listAuditTrail(ws))[0];
     expect(ae.actor).toBe("u:abc");
     expect(ae.payload.stored).toBe(1);
+    // fallback actor
+    const store4 = new MemoryStore();
+    setDataStoreForTests(store4);
+    const repo4 = new Repository(store4);
+    await repo4.saveArtifactTrailFor(ws, { projectId: "P-1", auditId: "A-1" }, []);
+    const ae2 = (await repo4.listAuditTrail(ws))[0];
+    expect(ae2.actor).toBe(`legacy:${ws}`);
     expect((await repo3.listAuditTrail(ws)).length).toBe(1);
   });
 
   it("c: auditor rejected before write", async () => {
-    for (const fn of [
-      async (repo: Repository, ws: string) => repo.saveProject(ws, project("P-1"), "auditor" as any),
-      async (repo: Repository, ws: string) => repo.saveAudit(ws, draft("A-1"), "auditor" as any),
-      async (repo: Repository, ws: string) => repo.saveIssue(ws, "P-1", "A-1", draft("A-1"), NOW, "auditor" as any),
-      async (repo: Repository, ws: string) => repo.saveAttachment(ws, attachment("att-1"), "auditor" as any),
-      async (repo: Repository, ws: string) => repo.deleteAttachment(ws, "P-1", "att-1", "auditor" as any),
-      async (repo: Repository, ws: string) => repo.saveArtifactTrailFor(ws, { projectId: "P-1", auditId: "A-1" }, [], "auditor" as any),
-    ]) {
+    // saveProject
+    {
       const store = new MemoryStore();
       setDataStoreForTests(store);
       const repo = new Repository(store);
       const ws = WS;
-      await expect(fn(repo, ws)).rejects.toThrow();
-      const entries = await repo.listAuditTrail(ws);
-      expect(entries.length).toBe(0);
+      await expect(repo.saveProject(ws, project("P-1"), "auditor" as any)).rejects.toThrow();
+      expect(await repo.getProject(ws, "P-1")).toBeNull();
+      expect((await repo.listAuditTrail(ws)).length).toBe(0);
+    }
+    // saveAudit
+    {
+      const store = new MemoryStore();
+      setDataStoreForTests(store);
+      const repo = new Repository(store);
+      const ws = WS;
+      await expect(repo.saveAudit(ws, draft("A-1"), "auditor" as any)).rejects.toThrow();
+      expect(await repo.getAudit(ws, "P-1", "A-1")).toBeNull();
+      expect((await repo.listAuditTrail(ws)).length).toBe(0);
+    }
+    // saveIssue
+    {
+      const store = new MemoryStore();
+      setDataStoreForTests(store);
+      const repo = new Repository(store);
+      const ws = WS;
+      await expect(repo.saveIssue(ws, "P-1", "A-1", draft("A-1"), NOW, "auditor" as any)).rejects.toThrow();
+      expect(await repo.listIssues(ws, "P-1", "A-1")).toEqual([]);
+      expect((await repo.listAuditTrail(ws)).length).toBe(0);
+    }
+    // saveAttachment
+    {
+      const store = new MemoryStore();
+      setDataStoreForTests(store);
+      const repo = new Repository(store);
+      const ws = WS;
+      await expect(repo.saveAttachment(ws, attachment("att-1"), "auditor" as any)).rejects.toThrow();
+      expect(await repo.getAttachment(ws, "P-1", "att-1")).toBeNull();
+      expect((await repo.listAuditTrail(ws)).length).toBe(0);
+    }
+    // deleteAttachment
+    {
+      const store = new MemoryStore();
+      setDataStoreForTests(store);
+      const repo = new Repository(store);
+      const ws = WS;
+      await repo.saveAttachment(ws, attachment("att-1"), "u:abc");
+      const before = (await repo.listAuditTrail(ws)).length;
+      await expect(repo.deleteAttachment(ws, "P-1", "att-1", "auditor" as any)).rejects.toThrow();
+      expect(await repo.getAttachment(ws, "P-1", "att-1")).not.toBeNull();
+      expect((await repo.listAuditTrail(ws)).length).toBe(before);
+    }
+    // saveArtifactTrailFor
+    {
+      const store = new MemoryStore();
+      setDataStoreForTests(store);
+      const repo = new Repository(store);
+      const ws = WS;
+      await expect(repo.saveArtifactTrailFor(ws, { projectId: "P-1", auditId: "A-1" }, [], "auditor" as any)).rejects.toThrow();
+      expect(await repo.listArtifacts(ws, "P-1", "A-1")).toEqual([]);
+      expect((await repo.listAuditTrail(ws)).length).toBe(0);
     }
   });
 
@@ -140,7 +195,10 @@ describe("audit-trail legacy", () => {
       if (prefix.includes("issue:")) return [];
       return origKeys(prefix);
     };
-    await expect(repo.saveIssue(ws, "P-1", "A-1", draft("A-1"), NOW, "u:abc")).rejects.toThrow();
+    await expect(repo.saveIssue(ws, "P-1", "A-1", draft("A-1"), NOW, "u:abc")).rejects.toBeInstanceOf(IssueRevisionConflictError);
+    store.keys = origKeys;
+    const issues = await repo.listIssues(ws, "P-1", "A-1");
+    expect(issues.length).toBe(1);
     const after = await repo.listAuditTrail(ws);
     expect(after.length).toBe(before);
   });
@@ -271,6 +329,12 @@ describe("audit-trail legacy", () => {
     expect(await repo.listAuditTrail(ws)).toEqual([]);
   });
 
+  it("n: TrailStore has no update/delete/remove", () => {
+    expect((TrailStore as any).prototype.update).toBeUndefined();
+    expect((TrailStore as any).prototype.delete).toBeUndefined();
+    expect((TrailStore as any).prototype.remove).toBeUndefined();
+  });
+
   it("m: failed append does not poison the chain", async () => {
     const store = new MemoryStore();
     let thrown = false;
@@ -291,6 +355,32 @@ describe("audit-trail legacy", () => {
     expect(entries.length).toBe(1);
     expect(entries[0].seq).toBe(1);
     expect(verifyAuditTrail(entries).ok).toBe(true);
+  });
+
+  it("o: corrupt head fails closed", async () => {
+    const store = new MemoryStore();
+    setDataStoreForTests(store);
+    const repo = new Repository(store);
+    const ws = WS;
+    await repo.saveProject(ws, project("P-1"), "u:abc");
+    const entry1 = (await repo.listAuditTrail(ws))[0];
+    const origGet = store.get.bind(store);
+    store.get = async <T>(key: string) => {
+      if (key === Keys.trailKey(ws, 1)) return null as T;
+      return origGet<T>(key);
+    };
+    await expect(repo.saveProject(ws, project("P-2"), "u:abc")).rejects.toBeInstanceOf(AuditTrailCorruptError);
+    // entry 1 unchanged, no seq 2
+    store.get = origGet;
+    const entries = await repo.listAuditTrail(ws);
+    expect(entries.length).toBe(1);
+    expect(entries[0].entry_hash).toBe(entry1.entry_hash);
+    // restore get, append again -> seq 2
+    await repo.saveProject(ws, project("P-2"), "u:abc");
+    const entries2 = await repo.listAuditTrail(ws);
+    expect(entries2.length).toBe(2);
+    expect(entries2[1].seq).toBe(2);
+    expect(entries2[1].prev_hash).toBe(entry1.entry_hash);
   });
 
   it("l: empty/blank workspace append throws and writes nothing", async () => {

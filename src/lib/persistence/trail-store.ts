@@ -14,6 +14,13 @@ import {
 // so cross-instance appends remain best-effort; upgrade when the store offers CAS.
 const chains = new Map<string, Promise<unknown>>();
 
+export class AuditTrailCorruptError extends Error {
+  constructor(detail: string) {
+    super(`audit trail corrupt: ${detail}`);
+    this.name = "AuditTrailCorruptError";
+  }
+}
+
 export class TrailStore {
   constructor(private store: DataStore) {}
 
@@ -32,9 +39,17 @@ export class TrailStore {
     const keys = await this.store.keys(prefix);
     keys.sort((a, b) => artifactSeqOf(a) - artifactSeqOf(b));
     const lastKey = keys[keys.length - 1];
-    const head = lastKey ? await this.store.get<AuditTrailEntry>(lastKey) : null;
-    const seq = (head?.seq ?? 0) + 1;
-    const prevHash = head?.entry_hash ?? AUDIT_TRAIL_GENESIS_HASH;
+    let seq = 1;
+    let prevHash = AUDIT_TRAIL_GENESIS_HASH;
+    if (lastKey) {
+      const parsedSeq = artifactSeqOf(lastKey);
+      const head = await this.store.get<AuditTrailEntry>(lastKey);
+      if (head === null || head.seq !== parsedSeq) {
+        throw new AuditTrailCorruptError(`unreadable or inconsistent head at seq ${parsedSeq}`);
+      }
+      seq = head.seq + 1;
+      prevHash = head.entry_hash;
+    }
     const recordedAt = new Date().toISOString();
     const entry = buildAuditTrailEntry({
       ...record,
@@ -43,7 +58,11 @@ export class TrailStore {
       prev_hash: prevHash,
       recorded_at: recordedAt,
     });
-    await this.store.put(Keys.trailKey(workspace, seq), entry);
+    const targetKey = Keys.trailKey(workspace, seq);
+    if ((await this.store.get(targetKey)) !== null) {
+      throw new AuditTrailCorruptError(`refusing to overwrite existing seq ${seq}`);
+    }
+    await this.store.put(targetKey, entry);
     return entry;
   }
 
