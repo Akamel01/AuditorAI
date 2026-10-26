@@ -187,12 +187,14 @@ describe("audit-trail legacy", () => {
       const repo = new Repository(store);
       const ws = WS;
       const p = project("P-1");
-      p.input_values = { x: { state: "provided", attachment_ids: ["att-4"] } as any };
+      p.input_values = { x: { state: "provided", attachments: ["att-4"] } as any };
       await repo.saveProject(ws, p, "u:abc");
       await repo.saveAttachment(ws, attachment("att-4"), "u:abc");
       await repo.deleteAttachment(ws, "P-1", "att-4", "u:abc");
       const entries = await repo.listAuditTrail(ws);
       expect(entries.filter((e) => e.action === "attachment.deleted").length).toBe(1);
+      const proj = await repo.getProject(ws, "P-1");
+      expect(JSON.stringify(proj?.input_values)).not.toContain("att-4");
     }
   });
 
@@ -267,6 +269,28 @@ describe("audit-trail legacy", () => {
     const repo = new Repository(store);
     const ws = WS;
     expect(await repo.listAuditTrail(ws)).toEqual([]);
+  });
+
+  it("m: failed append does not poison the chain", async () => {
+    const store = new MemoryStore();
+    let thrown = false;
+    const origPut = store.put.bind(store);
+    store.put = async (key: string, value: unknown) => {
+      if (!thrown && String(key).includes(":trail:")) {
+        thrown = true;
+        throw new Error("boom");
+      }
+      return origPut(key, value);
+    };
+    setDataStoreForTests(store);
+    const repo = new Repository(store);
+    const ws = WS;
+    await expect(repo.saveProject(ws, project("P-1"), "u:abc")).rejects.toThrow();
+    await repo.saveProject(ws, project("P-2"), "u:abc");
+    const entries = await repo.listAuditTrail(ws);
+    expect(entries.length).toBe(1);
+    expect(entries[0].seq).toBe(1);
+    expect(verifyAuditTrail(entries).ok).toBe(true);
   });
 
   it("l: empty/blank workspace append throws and writes nothing", async () => {

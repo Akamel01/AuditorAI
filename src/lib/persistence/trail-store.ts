@@ -22,8 +22,8 @@ export class TrailStore {
       return Promise.reject(new Error("workspace handle must not be empty"));
     }
     const prev = chains.get(workspace) ?? Promise.resolve();
-    const next = prev.then(() => this.doAppend(workspace, record));
-    chains.set(workspace, next);
+    const next = prev.then(() => this.doAppend(workspace, record), () => this.doAppend(workspace, record));
+    chains.set(workspace, next.catch(() => undefined));
     return next as Promise<AuditTrailEntry>;
   }
 
