@@ -92,6 +92,7 @@ describe("audit-trail routes", () => {
     await seed();
     const res = await getList(new Request("http://local/api/workspaces/audit-trail", { headers: headers(KEY_A) }));
     expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("no-store");
     const body = await res.json();
     expect(Object.keys(body).sort()).toEqual(["entries", "trail_starts_at", "verification", "workspace"].sort());
     expect(body.entries).toHaveLength(2);
@@ -113,6 +114,15 @@ describe("audit-trail routes", () => {
   });
 
   it("export returns 503 when signing key unset", async () => {
+    await seed();
+    const res = await getExport(new Request("http://local/api/workspaces/audit-trail/export", { headers: headers(KEY_A) }));
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body).toEqual({ error: "audit trail signing not configured" });
+  });
+
+  it("export returns 503 when signing key is blank", async () => {
+    process.env.AUDIT_TRAIL_SIGNING_KEY = "   ";
     await seed();
     const res = await getExport(new Request("http://local/api/workspaces/audit-trail/export", { headers: headers(KEY_A) }));
     expect(res.status).toBe(503);
@@ -156,12 +166,30 @@ describe("audit-trail routes", () => {
     const text = await res.text();
     const exported = JSON.parse(text);
     expect(exported.verification.ok).toBe(false);
+    expect(exported.verification.reason).toBe("entry_hash_mismatch");
+    expect(exported.verification.first_bad_seq).toBe(2);
     const key = process.env.AUDIT_TRAIL_SIGNING_KEY!;
     const vr = verifyAuditTrailExport(exported, key);
     expect(vr.ok).toBe(false);
     expect(vr.reason).toBe("chain_invalid");
     // no B entry
     expect(exported.entries.some((e: { subject?: { id?: string } }) => e.subject?.id === "P-B")).toBe(false);
+  });
+
+  it("export as workspace B contains only B entries", async () => {
+    process.env.AUDIT_TRAIL_SIGNING_KEY = "test-audit-trail-signing-key-0123456789";
+    await seed();
+    const res = await getExport(new Request("http://local/api/workspaces/audit-trail/export", { headers: headers(KEY_B) }));
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    const exported = JSON.parse(text);
+    expect(exported.workspace).toBe(WS_B);
+    expect(exported.entries).toHaveLength(1);
+    expect(exported.entries.every((e: { subject: { id: string } }) => e.subject.id === "P-B")).toBe(true);
+    expect(exported.entries.some((e: { subject: { id: string } }) => e.subject.id === "P-A")).toBe(false);
+    const key = process.env.AUDIT_TRAIL_SIGNING_KEY!;
+    const vr = verifyAuditTrailExport(exported, key);
+    expect(vr.ok).toBe(true);
   });
 
   it("maps AuditTrailTooLargeError to 413", () => {

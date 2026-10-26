@@ -8,12 +8,15 @@ export async function GET(req: Request) {
   try {
     const entries = await auth.repo.listAuditTrail(auth.ws);
     const verification = verifyAuditTrail(entries, { workspace: auth.ws });
-    return NextResponse.json({
-      workspace: auth.ws,
-      trail_starts_at: entries[0]?.recorded_at ?? null,
-      verification,
-      entries,
-    });
+    return NextResponse.json(
+      {
+        workspace: auth.ws,
+        trail_starts_at: entries[0]?.recorded_at ?? null,
+        verification,
+        entries,
+      },
+      { headers: { "cache-control": "no-store" } },
+    );
   } catch (e) {
     return serverError(e);
   }
