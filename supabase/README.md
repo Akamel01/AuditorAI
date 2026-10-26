@@ -1,7 +1,7 @@
 # AuditorAI tenant store — Supabase Postgres (ca-central-1)
 
 This directory holds the paste-ready SQL for the ticket's tenant store: the
-schema (9 tenant tables), the row-level-security policies, and the
+schema (10 tenant tables), the row-level-security policies, and the
 non-bypass application role. Region: **ca-central-1** (pinned in the `0001`
 header).
 
@@ -13,7 +13,9 @@ They are applied by the operator, by hand, to the live project.
 | File | What it does |
 |---|---|
 | `migrations/0001_tenant_schema.sql` | 9 tenant tables: `workspaces`, `workspace_members`, `workspace_credentials`, `projects`, `audits`, `audit_issues`, `attachments`, `artifacts`, `artifact_summaries` |
+| `migrations/0005_audit_trail.sql` | ticket #55: `audit_trail_entries` (append-only, hash-chained firm history; the tenth tenant table) |
 | `migrations/0002_rls_policies.sql` | `ENABLE` + `FORCE ROW LEVEL SECURITY` on all 9 tables, the three claim helpers, and every policy |
+| `migrations/0005_audit_trail.sql` | ticket #55: append-only `audit_trail_entries` with RLS enable+force, select/insert policies, update/delete revoked, append-only trigger |
 | `migrations/0003_roles.sql` | creates `auditorai_app` (NOSUPERUSER, NOBYPASSRLS, owns nothing) and grants it DML + `USAGE` + `EXECUTE` |
 | `migrations/0004_seats_invites.sql` | ticket #54: `workspaces.seat_count` (default 1), membership state columns, three actor columns, two claim helpers, the four `workspace_members` policies and the column-level privilege hardening |
 
@@ -143,6 +145,7 @@ without any policy recursion.
 - **Schema rollback:** `drop table` in reverse order
   (`artifact_summaries`, `artifacts`, `attachments`, `audit_issues`, `audits`,
   `projects`, `workspace_credentials`, `workspace_members`, `workspaces`).
+  For #55 prepend `audit_trail_entries` to the front of that list.
   This destroys only the Postgres copy; the KV source is never destroyed by any
   code path.
 
@@ -201,3 +204,25 @@ Re-runnability: every statement in `0004` is idempotent (`add column if not exis
 `create or replace function`, a guarded `add constraint`). A partial apply is
 repaired by running the file again. `revoke`/`grant` are idempotent by
 construction. No statement drops or renames anything.
+
+## Operator procedure — ticket #55 (audit trail)
+
+Apply `0005` after `0001 → 0002 → 0003 → 0004`, out of band, never by an agent:
+
+```bash
+export POSTGRES_URL_NON_POOLING='<operator-supplied direct connection string>'
+psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 -f supabase/migrations/0005_audit_trail.sql
+```
+
+Then set `AUDIT_TRAIL_SIGNING_KEY` (32+ random bytes, server-only, e.g.
+`openssl rand -hex 32`). The application records trail entries without the key,
+but the signed export route returns 503 until it is set. Keep retired keys to
+verify old exports.
+
+Reverse-drop order now starts with `audit_trail_entries`.
+
+Known cutover limit: the KV → Postgres migration does NOT copy
+`ws:<hash>:trail:*` keys. Export the signed JSON before cutover; the Postgres
+chain starts at the cutover. Legacy cross-instance ordering is best effort;
+Postgres is transactional. A store-write attacker can rewrite a suffix, so
+signed exports are the notarisation.
