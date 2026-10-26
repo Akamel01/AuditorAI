@@ -18,6 +18,7 @@ import {
   type QuestionMarkEntry,
 } from "@/domain/finding-review";
 import { PROMPT_HASH, PROMPT_VERSION, getAiAdapterId } from "@/lib/ai";
+import { auditPatchRequest, readJsonBody } from "@/lib/request-schema";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
 
@@ -38,13 +39,15 @@ export async function PATCH(req: Request, ctx: Ctx) {
     const audit = await auth.repo.getAudit(auth.ws, projectId, auditId);
     if (!audit) return notFound("audit not found");
 
-    const body = (await req.json()) as {
+    // G-6: the body is read only through the shared validator — shape errors
+    // answer 422; the consent/wording/index rules stay the domain's 400.
+    const body = await readJsonBody<{
       finding_updates?: FindingUpdateEntry[];
       question_marked?: QuestionMarkEntry[];
       candidate_promotions?: CandidatePromotion[];
       consent?: unknown;
       auditor_pseudonym?: string;
-    };
+    }>(req, auditPatchRequest);
 
     let next = audit;
     const updated = applyFindingUpdates(next, body.finding_updates ?? []);

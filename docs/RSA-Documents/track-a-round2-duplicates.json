@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "ticket": "Akamel01/AuditorAI#60",
+  "note": "Round 2 documents that were NOT ingested because their sha256 is already in the corpus. The known-hash gate runs after the bytes arrive, so each of these was downloaded in full and then discarded - never re-ingested, never written to disk.",
+  "duplicates": [
+    {
+      "source_url": "https://documents.ottawa.ca/sites/default/files/OC_Transpo_Transitway_Road_Safety_Audit.pdf",
+      "sha256": "a24707c6081a279fa899064bc95dba02d1664993f3b8c7b6491654f20b74789d",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-html-quarantine/OC_Transpo_Transitway_Road_Safety_Audit.pdf"
+    },
+    {
+      "source_url": "https://www.calgary.ca/content/dam/www/transportation/tp/documents/projects/current-planning-projects/glenmore-trail-100st/glenmore-tr-e-functional-study-appendix-h-1-road-safety-audit-report.pdf",
+      "sha256": "bb9850fe4780789ffe20b17c0a3d3182906b3e4010942d768abab4e920af343d",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": ""
+    },
+    {
+      "source_url": "https://www.calgary.ca/content/dam/www/transportation/tp/documents/projects/current-planning-projects/glenmore-trail-100st/glenmore-tr-e-functional-study-appendix-h-4-road-safety-audit-report.pdf",
+      "sha256": "dab3275e738b63b0c8ea7f7a076f5a3e58e703643f9682c96031acdbc3cfd8c1",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": ""
+    },
+    {
+      "source_url": "http://conf.tac-atc.ca/english/annualconference/tac2012/docs/session14/hildebrand.pdf",
+      "sha256": "433b3bdc53815225f5d37c60e8bdebd86ec8491a920da0cd853d0b7d50956834",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-html-quarantine/hildebrand.pdf"
+    },
+    {
+      "source_url": "https://foi.tfl.gov.uk/FOI-1053-1718/Road%20Safety%20Audit%20Stage%203%20Southwark_Redacted.pdf",
+      "sha256": "ff035a83467a0b7e3e997311f27319b8e55218eb7fa291589e9d188365c3a090",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": ""
+    },
+    {
+      "source_url": "https://www.transportation.alberta.ca/planningtools/Documents/Morcoar/RSA%20Guidelines%20Final%20Report.pdf",
+      "sha256": "8b12c2b41ed50c54b7a732f3050265d000b86f55ff98a43733be3bf8c39013fb",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/canadian/2004-rsa-guidelines-final-report.pdf"
+    },
+    {
+      "source_url": "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf",
+      "sha256": "a04c48f4ef339e7d8168e9ed3e230077e9db1c29f2f7e7c0410237bc716c3ced",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-html-quarantine/rsa-guidelines.pdf"
+    },
+    {
+      "source_url": "http://www.bv.transports.gouv.qc.ca/mono/0966548.pdf",
+      "sha256": "522f65ef7ecc675a6eef180153cee40ceb7000db2d8e8245bc40fd3d4bd6d3d8",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-html-quarantine/Road-Safety-Audit-Guidelines-FHWA_SA_06_06.pdf"
+    },
+    {
+      "source_url": "http://www.bv.transports.gouv.qc.ca/mono/1032147.pdf",
+      "sha256": "399bc1f511e450864c0f25e7480ef3c088ea6ec3e5eb345445d88c4fae628d2d",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "usa/fhwa-case-studies/FHWA-SA-16-026_Motorcycle_RSA_3_RSA.pdf"
+    },
+    {
+      "source_url": "http://www.bv.transports.gouv.qc.ca/mono/1112615.pdf",
+      "sha256": "f821e87e4db33fe3d0c104f234072deec783264709e979261d9ad73291471b24",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": ""
+    },
+    {
+      "source_url": "https://www.transportation.alberta.ca/PlanningTools/Documents/Morcoar/RSA%20Implementation%20Plan%20Final%20Report.pdf",
+      "sha256": "6177283b61030fe65044a84b83566ddb947c5201a77d8b2d5c75b84d1d0441ab",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/canadian/2004-rsa-implementation-plan-final-report.pdf"
+    },
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/driving/consequences/vision-zero/resource-kit-community-road-safety-toolkit-module3.pdf",
+      "sha256": "884c1b227ae16861b2b2f8df0ebbf399206a37d154b193929b213fadb33eb390",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-not-audit/resource-kit-community-road-safety-toolkit-module3.pdf"
+    },
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04a.pdf",
+      "sha256": "555848f63c690810661d7837b766ccb611f97ebe313a942bd413704745e947aa",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/track-a/bc-moti/t02-04a.pdf"
+    },
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04c.pdf",
+      "sha256": "75645c0e6de990fbc2db08decd6a04b1569cd1e81e94405f9b57b5978c1bfa48",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "quarantine/canadian-html-quarantine/t02-04c.pdf"
+    },
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/1994/t02-94_watermarked.pdf",
+      "sha256": "44991ba78cca45619af702216782668239e95b29bad39a64c57adc7af7c4ad1d",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/canadian/t02-94_watermarked.pdf"
+    },
+    {
+      "source_url": "https://www2.gov.bc.ca/assets/gov/driving-and-transportation/transportation-infrastructure/engineering-standards-and-guidelines/technical-circulars/2004/t02-04b.pdf",
+      "sha256": "84a70638ba6077885b2c17f94b36554cea4e65f9f001f7d0f8e1c1d0632a245b",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/track-a/bc-moti/t02-04b.pdf"
+    },
+    {
+      "source_url": "https://open.alberta.ca/dataset/c9e2f226-9518-45d2-806c-8558195d60c6/resource/fac2c710-26cc-47bb-a184-38d4ea2683e9/download/2004-rsa-guidelines-final-report.pdf",
+      "sha256": "8b12c2b41ed50c54b7a732f3050265d000b86f55ff98a43733be3bf8c39013fb",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/canadian/2004-rsa-guidelines-final-report.pdf"
+    },
+    {
+      "source_url": "https://open.alberta.ca/dataset/eb777feb-e6c8-4c45-b93b-62bed8f5c5a4/resource/1591d634-3ad1-45d8-8a65-e78ce6d7b232/download/2004-rsa-implementation-plan-final-report.pdf",
+      "sha256": "6177283b61030fe65044a84b83566ddb947c5201a77d8b2d5c75b84d1d0441ab",
+      "reason": "downloaded in full and then discarded: the corpus already holds this sha256",
+      "existing_path": "canada/canadian/2004-rsa-implementation-plan-final-report.pdf"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/auth-email-request.schema.json",
+  "title": "POST /api/auth/email request body",
+  "description": "Shape only. The invite gate and the credential check stay domain rules (src/app/api/auth/email/route.ts).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["email", "password"],
+  "properties": {
+    "email": { "type": "string", "minLength": 1 },
+    "password": { "type": "string", "minLength": 1 },
+    "workspace_id": { "type": "string" }
+  }
+}

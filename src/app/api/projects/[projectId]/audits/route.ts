@@ -4,11 +4,12 @@
 // drawings passed as image blocks (M3), respecting the vision budget.
 import { NextResponse } from "next/server";
 import { notFound, requireWorkspace, serverError } from "@/lib/api";
-import { runAudit } from "@/domain/engine";
+import type { AuditResult } from "@/domain/types";
 import { getPipeline } from "@/domain/pipeline/pipeline";
 import { getPack } from "@/domain/packs";
 import type { JurisdictionId } from "@/domain/types";
 import { getAiAdapter } from "@/lib/ai";
+import { fireAlert } from "@/lib/alert";
 
 type Ctx = { params: Promise<{ projectId: string }> };
 
@@ -30,21 +31,30 @@ export async function POST(req: Request, ctx: Ctx) {
 
     const ranAtIso = new Date().toISOString();
     const adapter = getAiAdapter();
-    const result = adapter.enabled
-      ? await getPipeline().runAllLive(project, ranAtIso, {
-          aiAdapter: adapter,
-          attachments: (await auth.repo.listAttachments(auth.ws, projectId)).map((a) => ({
-            attachment_id: a.attachment_id,
-            file_name: a.file_name,
-            data_url: a.data_url,
-          })),
-          candidateVocabulary: packVocabulary(project.stage_selection.jurisdiction),
-        })
-      : runAudit(project, ranAtIso);
+    let result: AuditResult;
+    let stageDurationsMs: Record<string, number> = {};
+    if (adapter.enabled) {
+      const run = await getPipeline().runAllLiveArtifacts(project, ranAtIso, {
+        aiAdapter: adapter,
+        attachments: (await auth.repo.listAttachments(auth.ws, projectId)).map((a) => ({
+          attachment_id: a.attachment_id,
+          file_name: a.file_name,
+          data_url: a.data_url,
+        })),
+        candidateVocabulary: packVocabulary(project.stage_selection.jurisdiction),
+      });
+      result = run.result;
+      stageDurationsMs = run.stageDurationsMs;
+    } else {
+      const run = getPipeline().runAllArtifacts(project, ranAtIso);
+      result = run.result;
+      stageDurationsMs = run.stageDurationsMs;
+    }
 
     await auth.repo.saveAudit(auth.ws, result, auth.actor);
-    return NextResponse.json({ audit: result }, { status: 201 });
+    return NextResponse.json({ audit: result, stageDurationsMs }, { status: 201 });
   } catch (e) {
+    fireAlert({ kind: "audit_failure", message: "audit run failed", details: { error: String(e) } });
     return serverError(e);
   }
 }

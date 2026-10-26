@@ -19,6 +19,7 @@ import { unreviewedCandidateLimitation } from "@/domain/candidate-review";
 import { evaluateEvidenceBinding } from "@/domain/evidence-binding";
 import { CapabilityClaimNotIssuableError } from "@/domain/pipeline/constants";
 import type { AuditResult, EvidenceOverride } from "@/domain/types";
+import { issueRequest, readJsonBody } from "@/lib/request-schema";
 
 type Ctx = { params: Promise<{ projectId: string; auditId: string }> };
 
@@ -32,24 +33,6 @@ export async function GET(req: Request, ctx: Ctx) {
   } catch (e) {
     return serverError(e);
   }
-}
-
-/** Read the optional request body: absent body => {}, malformed JSON => 400. */
-async function readBody(req: Request): Promise<
-  { ok: true; value: { evidence_override?: unknown } } | { ok: false }
-> {
-  const raw = await req.text();
-  if (raw.trim() === "") return { ok: true, value: {} };
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    return { ok: false };
-  }
-  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
-    return { ok: true, value: {} };
-  }
-  return { ok: true, value: parsed as { evidence_override?: unknown } };
 }
 
 export async function POST(req: Request, ctx: Ctx) {
@@ -78,12 +61,14 @@ export async function POST(req: Request, ctx: Ctx) {
       throw new CapabilityClaimNotIssuableError("outside_odd");
     }
 
-    const body = await readBody(req);
-    if (!body.ok) return badRequest("invalid request body: expected JSON");
+    // G-6: an absent body stays legal ({}); a malformed or off-shape body is 422.
+    const body = await readJsonBody<{ evidence_override?: unknown }>(req, issueRequest, {
+      allowEmpty: true,
+    });
 
     // A supplied override must name a reviewer: an override with no attributable
     // claim is not an override.
-    const rawOverride = body.value.evidence_override;
+    const rawOverride = body.evidence_override;
     let override: { auditor_pseudonym: string; note: string | null } | null = null;
     if (rawOverride !== undefined && rawOverride !== null) {
       const candidate =

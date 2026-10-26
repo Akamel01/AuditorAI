@@ -74,3 +74,35 @@ Frontier total: 19
 - `wayfinder:v2-agentic-platform` D1-admin-auth-seam-for-developer-surfaces — Admin auth seam — **closed**; the fail-closed identity pattern #53's tenant auth mirrors
 - `wayfinder:v2-agentic-platform` M1-image-storage-constraints-plus-decision — Image storage constraints — **closed**; KV payload caps #53 inherits or replaces
 - `wayfinder:v3-architecture-deepening` F3-rsc-initial-page-data — RSC/server-render initial page data from Repository — **closed**; already depends on the `Repository` surface #53 reimplements
+
+---
+
+# Tracker Index — ticket #60 discovery (2026-10-22)
+
+**Frontier index for ticket #60** (harvest round 2: free, wide search for public
+Canadian RSAs). Appended to the index of the lanes before it; each lane records its
+own view and none of them is overwritten.
+
+Rule: frontier = open + unblocked + unclaimed. Wayfinder paths checked: `.scratch/**/map.md` and `.scratch/**/issues/*.md` — two maps exist (`readiness-framework`, `learning-loop`) but neither covers the RSA harvest; no wayfinder map exists for #60/#41/#40, so all frontier items below are GitHub issues.
+
+## Frontier tickets (this work)
+
+- `GH:Akamel01/AuditorAI#60 — Harvest round 2: free, wide search for public Canadian RSAs with agent-reach — OPEN — this ticket`
+- `GH:Akamel01/AuditorAI#41 — Map: AuditorAI to enterprise production — Canada first — OPEN — context only (parent map)`
+
+## Predecessor (closed, not frontier)
+
+- `GH:Akamel01/AuditorAI#40 — Harvest Track A: fetch Canadian RSA docs — CLOSED — predecessor (PR #58 merged); report: docs/RSA-Documents/track-a-harvest-report.md`
+
+## Other open GitHub issues (not harvest-related; listed for completeness)
+
+- `GH:Akamel01/AuditorAI#56 — Daily backups … (G-4) — OPEN — unrelated (infra)`
+- `GH:Akamel01/AuditorAI#55 — Append-only audit trail … (G-3) — OPEN — unrelated (infra)`
+- `GH:Akamel01/AuditorAI#54 — Named-user accounts … (G-1, G-5) — OPEN — unrelated (auth)`
+- `GH:Akamel01/AuditorAI#53 — Supabase Postgres … (G-2, G-8) — OPEN — unrelated (data)`
+- `GH:Akamel01/AuditorAI#49 — Per-stage latency … (G-14) — OPEN — unrelated (observability)`
+- `GH:Akamel01/AuditorAI#48 — Health and readiness routes … (G-12) — OPEN — unrelated (observability)`
+- `GH:Akamel01/AuditorAI#47 — Inventoried, pinned dependencies … (G-7) — OPEN — unrelated (supply chain)`
+- `GH:Akamel01/AuditorAI#46 — Schema validation at every trust boundary … (G-6) — OPEN — unrelated (validation)`
+
+Frontier total (harvest-relevant): 2. Wayfinder maps for this work: none."

@@ -13,6 +13,7 @@ import {
 import type { MemberRole } from "@/lib/db/claim";
 import { tenantSqlClient } from "@/lib/db/identity";
 import { createInvite, seatSummary, type SeatContext } from "@/lib/db/seats";
+import { readJsonBody, teamInviteRequest } from "@/lib/request-schema";
 
 type Auth = Extract<Awaited<ReturnType<typeof requireWorkspace>>, { ok: true }>;
 
@@ -48,25 +49,11 @@ export async function POST(req: Request) {
     if (!auth.tenant) throw new TenantStoreRequiredError(tenantStoreNoticeText());
     const ctx = seatContext(auth, auth.tenant);
 
-    let body: Record<string, unknown>;
-    try {
-      body = (await req.json()) as Record<string, unknown>;
-    } catch {
-      return badRequest("invalid request body: expected JSON");
-    }
-    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const body = await readJsonBody<{ email: string; role?: MemberRole }>(req, teamInviteRequest);
+    const email = body.email.trim();
     if (!email) return badRequest("email is required");
-    const role = body.role;
-    if (role !== undefined && role !== "member" && role !== "admin" && role !== "owner") {
-      return badRequest("role must be member, admin or owner");
-    }
 
-    const invite = await createInvite(
-      tenantSqlClient(),
-      ctx,
-      email,
-      role as MemberRole | undefined,
-    );
+    const invite = await createInvite(tenantSqlClient(), ctx, email, body.role);
     return NextResponse.json({ invite }, { status: 201 });
   } catch (e) {
     return serverError(e);

@@ -2,6 +2,7 @@
 // configuration at request time and shows a plain notice when sign-in is not
 // configured. The browser never receives a token; forms post to the server.
 import Link from "next/link";
+import { SignInForm } from "@/app/_components/sign-in-form";
 import { authConfigured, authEnv, enabledProviders } from "@/lib/auth/config";
 import { authNoticeText } from "@/lib/auth/notice";
 
@@ -27,44 +28,7 @@ export default function SignInPage() {
         </p>
       ) : (
         <>
-          {emailEnabled ? (
-            <form method="post" action="/api/auth/email" className="flex flex-col gap-3">
-              <label className="flex flex-col gap-1 text-sm">
-                Email
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="rounded border border-line bg-transparent px-3 py-2"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-sm">
-                Password
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="rounded border border-line bg-transparent px-3 py-2"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-sm">
-                Workspace ID (only if you belong to more than one)
-                <input
-                  name="workspace_id"
-                  autoComplete="off"
-                  className="rounded border border-line bg-transparent px-3 py-2"
-                />
-              </label>
-              <button
-                type="submit"
-                className="rounded border border-line px-3 py-2 text-sm font-medium"
-              >
-                Sign in with email
-              </button>
-            </form>
-          ) : null}
+          {emailEnabled ? <SignInForm /> : null}
 
           {oauth.length ? (
             <div className="flex flex-col gap-2">

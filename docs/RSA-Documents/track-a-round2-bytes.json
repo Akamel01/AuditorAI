@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "ticket": "Akamel01/AuditorAI#60",
+  "note": "The 5 GB cap is cumulative over the corpus on the runner, not per round; a single document may not exceed 100 MiB. Both limits are enforced before any byte is written to disk. corpus_bytes_before is the corpus without this round's documents; fetched_this_round is what went over the wire, including the documents the known-hash gate downloaded in full and then discarded; downloaded_this_round is what was written to the corpus shelf.",
+  "cap_bytes": 5368709120,
+  "per_document_cap_bytes": 104857600,
+  "corpus_bytes_before": 74540,
+  "fetched_this_round": 139419291,
+  "downloaded_this_round": 51177492,
+  "discarded_bytes": 88241799,
+  "corpus_bytes_after": 51252032,
+  "remaining_bytes": 5317457088,
+  "skipped_for_cap": []
+}

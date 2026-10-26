@@ -7,6 +7,7 @@ import {
   serverError,
 } from "@/lib/api";
 import { patchProject, type PatchProjectInput } from "@/domain/project-edits";
+import { patchProjectRequest, readJsonBody } from "@/lib/request-schema";
 
 type Ctx = { params: Promise<{ projectId: string }> };
 
@@ -27,7 +28,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
     const project = await auth.repo.getProject(auth.ws, projectId);
     if (!project) return notFound("project not found");
 
-    const body = (await req.json()) as PatchProjectInput;
+    const body = await readJsonBody<PatchProjectInput>(req, patchProjectRequest);
     const outcome = patchProject(project, body, new Date().toISOString());
     if (!outcome.ok) return badRequest(outcome.error);
 

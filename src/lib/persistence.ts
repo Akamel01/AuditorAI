@@ -203,7 +203,4 @@ export class Repository {
     return this.artifactTrail.replayPlan(artifacts);
   }
 
-  private async pruneArtifactTrail(ws: string, projectId: string, auditId: string) {
-    return this.artifactTrail.pruneArtifactTrail(ws, projectId, auditId);
-  }
 }

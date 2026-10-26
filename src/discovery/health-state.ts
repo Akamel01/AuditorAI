@@ -4,12 +4,17 @@
 
 type DegradedMap = Map<string, boolean>;
 type CounterMap = Map<string, number>;
+import { fireAlert } from "@/lib/alert";
 
 const degradedFlags: DegradedMap = new Map();
 const zeroHitCounters: CounterMap = new Map();
 
 export function setProviderDegraded(providerId: string, degraded: boolean) {
+  const was = degradedFlags.get(providerId) ?? false;
   degradedFlags.set(providerId, degraded);
+  if (degraded && !was) {
+    fireAlert({ kind: "provider_failure", message: `provider degraded: ${providerId}` });
+  }
 }
 
 export function isProviderDegraded(providerId: string): boolean {

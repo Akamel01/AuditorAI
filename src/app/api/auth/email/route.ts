@@ -37,12 +37,12 @@ import {
   type AuthTokens,
 } from "@/lib/auth/supabase";
 import { applySessionCookies, sessionFromTokens } from "@/lib/auth/session";
+import { authEmailRequest, readJsonBody } from "@/lib/request-schema";
 
 interface Credentials {
   email: string;
   password: string;
   workspaceId: string | null;
-  formPost: boolean;
 }
 
 function isExpired(m: EmailMembership, now = Date.now()): boolean {
@@ -51,31 +51,18 @@ function isExpired(m: EmailMembership, now = Date.now()): boolean {
   return Number.isFinite(ms) && ms <= now;
 }
 
-async function readCredentials(req: Request): Promise<Credentials | null> {
-  const contentType = req.headers.get("content-type") ?? "";
-  const formPost =
-    contentType.includes("application/x-www-form-urlencoded") ||
-    contentType.includes("multipart/form-data");
-  if (formPost) {
-    const form = await req.formData();
-    return {
-      email: String(form.get("email") ?? ""),
-      password: String(form.get("password") ?? ""),
-      workspaceId: String(form.get("workspace_id") ?? "") || null,
-      formPost: true,
-    };
-  }
-  try {
-    const body = (await req.json()) as Record<string, unknown>;
-    return {
-      email: typeof body.email === "string" ? body.email : "",
-      password: typeof body.password === "string" ? body.password : "",
-      workspaceId: typeof body.workspace_id === "string" ? body.workspace_id : null,
-      formPost: false,
-    };
-  } catch {
-    return null;
-  }
+async function readCredentials(req: Request): Promise<Credentials> {
+  // The shared validator owns the body shape (422); the domain keeps the
+  // credential and invite rules. There is no second body reader.
+  const body = await readJsonBody<{ email: string; password: string; workspace_id?: string }>(
+    req,
+    authEmailRequest,
+  );
+  return {
+    email: body.email,
+    password: body.password,
+    workspaceId: body.workspace_id ?? null,
+  };
 }
 
 /** Pick the membership the request is signing in for. More than one pending
@@ -106,7 +93,7 @@ export async function POST(req: Request) {
     }
 
     const credentials = await readCredentials(req);
-    if (!credentials || !credentials.email.trim() || !credentials.password) {
+    if (!credentials.email.trim() || !credentials.password) {
       return badRequest("email and password are required");
     }
     const email = normalizeEmail(credentials.email);
@@ -156,9 +143,7 @@ export async function POST(req: Request) {
     }
     if (!tokens.subject) throw new NotSignedInError();
 
-    const res = credentials.formPost
-      ? NextResponse.redirect(new URL("/", req.url), 303)
-      : NextResponse.json({ ok: true });
+    const res = NextResponse.json({ ok: true });
     applySessionCookies(res, sessionFromTokens(tokens));
     return res;
   } catch (e) {

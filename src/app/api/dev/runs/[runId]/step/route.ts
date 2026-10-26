@@ -8,6 +8,7 @@
 // the dev console keeps the legacy KV repository by design (architecture D15).
 import { NextResponse } from "next/server";
 import { badRequest, requireAdmin, RequestContractError, serverError } from "@/lib/api";
+import { devRunStepRequest, readJsonBody } from "@/lib/request-schema";
 import { devWorkspaceHash, getSession, putSession } from "@/lib/devtab";
 import { getPipeline } from "@/domain/pipeline/pipeline";
 import { getPack } from "@/domain/packs";
@@ -27,16 +28,11 @@ export async function POST(req: Request, ctx: Ctx) {
     const session = getSession(runId);
     if (!session) return NextResponse.json({ error: "unknown runId" }, { status: 404 });
 
-    let body: { nodeId?: string; ai?: boolean; decisions?: AdjudicationDecision[] };
-    try {
-      body = (await req.json()) as {
-        nodeId?: string;
-        ai?: boolean;
-        decisions?: AdjudicationDecision[];
-      };
-    } catch (e) {
-      throw new RequestContractError(e instanceof Error ? e.message : String(e));
-    }
+    const body = await readJsonBody<{
+      nodeId?: string;
+      ai?: boolean;
+      decisions?: AdjudicationDecision[];
+    }>(req, devRunStepRequest);
     const nodeId = body.nodeId as AgNodeId | undefined;
     if (!nodeId) return badRequest("nodeId is required");
     const descriptor = getPipeline().describe().find((d) => d.id === nodeId);

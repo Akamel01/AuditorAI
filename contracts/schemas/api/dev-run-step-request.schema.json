@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/dev-run-step-request.schema.json",
+  "title": "POST /api/dev/runs/[runId]/step request body",
+  "description": "Shape only. 'nodeId is required' and the node-registry lookup stay domain 400s (src/app/api/dev/runs/[runId]/step/route.ts:41-43). A decision missing finding_id or action is now rejected by this schema with 422 — that is a NEW tightening, not preserved behaviour: the pipeline records a skipped reference and throws nothing (src/domain/pipeline/nodes/adjudication.ts:32-35). No real payload regresses (src/app/dev/page.tsx sends no decisions).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "nodeId": { "type": "string" },
+    "ai": { "type": "boolean" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "action"],
+        "properties": {
+          "finding_id": { "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": ["accept", "accept_with_edits", "reject", "escalate"]
+          },
+          "edited_statement_text": { "type": "string" },
+          "edited_recommendation_text": { "type": "string" },
+          "reviewer_note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -84,14 +84,6 @@ function jsonRequest(url: string, method: string, body?: unknown): Request {
   });
 }
 
-function formRequest(url: string, body: Record<string, string>): Request {
-  return new Request(url, {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(body).toString(),
-  });
-}
-
 interface FetchCall {
   url: string;
   body: unknown;
@@ -279,19 +271,24 @@ describe("email sign-in is invite-gated (AC5)", () => {
     expect(row.rows[0]).toEqual({ subject_id: "invitee-subject", status: "active" });
   });
 
-  it("a form post redirects on success", async () => {
+  it("the shared validator owns the body shape (422)", async () => {
     setAuthEnv();
-    stubAuthServer({ passwordFails: 0 });
+    const calls = stubAuthServer({});
 
-    const res = await emailRoute(
-      formRequest("http://local/api/auth/email", {
+    const missing = await emailRoute(
+      jsonRequest("http://local/api/auth/email", "POST", { email: INVITEE_EMAIL }),
+    );
+    expect(missing.status).toBe(422);
+
+    const extra = await emailRoute(
+      jsonRequest("http://local/api/auth/email", "POST", {
         email: INVITEE_EMAIL,
         password: "secret",
+        unexpected: "field",
       }),
     );
-    expect(res.status).toBe(303);
-    expect(res.headers.get("location")).toContain("/");
-    expect(res.headers.get("set-cookie")).toContain("auditorai.session=");
+    expect(extra.status).toBe(422);
+    expect(calls).toHaveLength(0);
   });
 });
 

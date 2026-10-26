@@ -312,7 +312,9 @@ describe("the committed report (M7 acceptance)", () => {
   });
 
   it("lists every manifest row with its tier, stage, split and licence verdict", () => {
-    for (const row of manifest) {
+    // This report is the record of round 1; the round-2 rows have their own
+    // report (tests/discovery/harvest-track-a-round2-report.test.ts).
+    for (const row of manifest.filter((r) => (r as { round?: string }).round !== "2")) {
       expect(fresh).toContain(row.sha256);
       expect(fresh).toContain(row.split);
       expect(fresh).toContain(row.licence_verdict);
