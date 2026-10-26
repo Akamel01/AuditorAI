@@ -52,7 +52,7 @@ export default function AuditTrailPage() {
   return (
     <AppShell>
       <div className="pt-10">
-        <Eyebrow code="Evidence">Evidence</Eyebrow>
+        <Eyebrow code="CH 0+000">Evidence</Eyebrow>
         <h1 className="text-[26px] font-semibold leading-tight">Audit trail</h1>
         <p className="mt-1.5 max-w-[60ch] text-[13px] leading-relaxed text-subtle">
           Append-only, hash-chained record of workspace mutations.
@@ -101,7 +101,7 @@ export default function AuditTrailPage() {
 
             {data.entries.length === 0 && (
               <div className="mt-6">
-                <EmptyState title="No recorded activity yet." hint="No recorded activity yet." />
+                <EmptyState title="No recorded activity yet." hint="Mutations of this workspace will appear here as an append-only chain." />
               </div>
             )}
 
