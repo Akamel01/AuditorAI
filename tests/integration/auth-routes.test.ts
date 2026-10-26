@@ -295,6 +295,38 @@ describe("email sign-in is invite-gated (AC5)", () => {
   });
 });
 
+describe("email provider gating", () => {
+  it("refuses email sign-in when email is disabled but another provider is configured", async () => {
+    setAuthEnv();
+    process.env.SUPABASE_AUTH_EMAIL_ENABLED = "false";
+    process.env.SUPABASE_AUTH_GOOGLE_ENABLED = "true";
+    process.env.SUPABASE_AUTH_REDIRECT_ORIGIN = "https://app.example";
+
+    const res = await emailRoute(
+      jsonRequest("http://local/api/auth/email", "POST", {
+        email: INVITEE_EMAIL,
+        password: "secret",
+      }),
+    );
+    expect(res.status).toBe(503);
+    expect(((await res.json()) as { error: string }).error).toBe(providerNoticeText("email"));
+  });
+
+  it("an active member with a wrong password gets 401, not a gateway error", async () => {
+    setAuthEnv();
+    stubAuthServer({ passwordFails: 99 });
+
+    const res = await emailRoute(
+      jsonRequest("http://local/api/auth/email", "POST", {
+        email: OWNER_EMAIL,
+        password: "wrong",
+      }),
+    );
+    expect(res.status).toBe(401);
+    expect(((await res.json()) as { error: string }).error).toBe("invalid email or password");
+  });
+});
+
 describe("tenant store required (409)", () => {
   it("sign-in refuses with the named notice while TENANT_STORE is not postgres", async () => {
     setAuthEnv();

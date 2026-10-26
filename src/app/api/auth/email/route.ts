@@ -6,8 +6,13 @@
 // pending invitation is being accepted (the Auth Admin API, email_confirm).
 import { NextResponse } from "next/server";
 import { badRequest, serverError } from "@/lib/api";
-import { authConfigured } from "@/lib/auth/config";
-import { authNoticeText, noInvitationNoticeText, tenantStoreNoticeText } from "@/lib/auth/notice";
+import { authConfigured, authEnv } from "@/lib/auth/config";
+import {
+  authNoticeText,
+  noInvitationNoticeText,
+  providerNoticeText,
+  tenantStoreNoticeText,
+} from "@/lib/auth/notice";
 import {
   acceptPendingInvite,
   listMembershipsByEmail,
@@ -20,6 +25,7 @@ import {
   InvalidCredentialsError,
   NoInvitationError,
   NotSignedInError,
+  ProviderNotConfiguredError,
   TenantStoreRequiredError,
   WorkspaceMembershipError,
 } from "@/lib/db/errors";
@@ -92,6 +98,9 @@ function selectMembership(rows: EmailMembership[], workspaceId: string | null): 
 export async function POST(req: Request) {
   try {
     if (!authConfigured()) throw new AuthNotConfiguredError(authNoticeText());
+    if (!authEnv().emailEnabled) {
+      throw new ProviderNotConfiguredError(providerNoticeText("email"));
+    }
     if (!isTenantDatabaseAvailable()) {
       throw new TenantStoreRequiredError(tenantStoreNoticeText());
     }
@@ -120,7 +129,22 @@ export async function POST(req: Request) {
       if (!(e instanceof AuthUpstreamError)) throw e;
       // Only accepting an invitation may create an account (OD12).
       if (selected.status !== "pending") throw new InvalidCredentialsError();
-      const created = await createUserWithPassword(email, credentials.password);
+      let created: { subject: string; email: string | null };
+      try {
+        created = await createUserWithPassword(email, credentials.password);
+      } catch (createError) {
+        // An existing account plus a wrong password is bad credentials, not a
+        // gateway fault (the Admin API refuses the duplicate).
+        if (
+          createError instanceof AuthUpstreamError &&
+          createError.status !== undefined &&
+          createError.status >= 400 &&
+          createError.status < 500
+        ) {
+          throw new InvalidCredentialsError();
+        }
+        throw createError;
+      }
       if (!created.subject) throw new AuthUpstreamError("auth upstream returned no subject");
       tokens = await signInWithPassword(email, credentials.password);
     }

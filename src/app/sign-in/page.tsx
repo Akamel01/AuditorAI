@@ -49,6 +49,14 @@ export default function SignInPage() {
                   className="rounded border border-line bg-transparent px-3 py-2"
                 />
               </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Workspace ID (only if you belong to more than one)
+                <input
+                  name="workspace_id"
+                  autoComplete="off"
+                  className="rounded border border-line bg-transparent px-3 py-2"
+                />
+              </label>
               <button
                 type="submit"
                 className="rounded border border-line px-3 py-2 text-sm font-medium"
