@@ -9,6 +9,7 @@ import Ajv from "ajv/dist/2020.js";
 import type { ErrorObject, Schema } from "ajv/dist/2020.js";
 import { RequestContractError } from "@/lib/api";
 import auditPatchRequestSchema from "../../contracts/schemas/api/audit-patch-request.schema.json";
+import authEmailRequestSchema from "../../contracts/schemas/api/auth-email-request.schema.json";
 import createProjectRequestSchema from "../../contracts/schemas/api/create-project-request.schema.json";
 import devDiscoveryRunRequestSchema from "../../contracts/schemas/api/dev-discovery-run-request.schema.json";
 import devHarvestStreamRequestSchema from "../../contracts/schemas/api/dev-harvest-stream-request.schema.json";
@@ -18,6 +19,7 @@ import devRunStepRequestSchema from "../../contracts/schemas/api/dev-run-step-re
 import devSecretsRequestSchema from "../../contracts/schemas/api/dev-secrets-request.schema.json";
 import issueRequestSchema from "../../contracts/schemas/api/issue-request.schema.json";
 import patchProjectRequestSchema from "../../contracts/schemas/api/patch-project-request.schema.json";
+import teamInviteRequestSchema from "../../contracts/schemas/api/team-invite-request.schema.json";
 import uploadFieldsSchema from "../../contracts/schemas/api/upload-fields.schema.json";
 
 // The repo's established Ajv options (src/domain/packs.ts:138).
@@ -40,6 +42,8 @@ export const devRunStepRequest = compileSchema(devRunStepRequestSchema);
 export const devDiscoveryRunRequest = compileSchema(devDiscoveryRunRequestSchema);
 export const devHarvestStreamRequest = compileSchema(devHarvestStreamRequestSchema);
 export const devSecretsRequest = compileSchema(devSecretsRequestSchema);
+export const authEmailRequest = compileSchema(authEmailRequestSchema);
+export const teamInviteRequest = compileSchema(teamInviteRequestSchema);
 
 /** The $id of every compiled validator — the link between the registry
  *  (contracts/api-surface.json) and the schema files on disk. */
@@ -55,6 +59,8 @@ export const REQUEST_SCHEMA_IDS = {
   devDiscoveryRunRequest: devDiscoveryRunRequestSchema.$id,
   devHarvestStreamRequest: devHarvestStreamRequestSchema.$id,
   devSecretsRequest: devSecretsRequestSchema.$id,
+  authEmailRequest: authEmailRequestSchema.$id,
+  teamInviteRequest: teamInviteRequestSchema.$id,
 } as const;
 
 export interface ReadJsonOptions {

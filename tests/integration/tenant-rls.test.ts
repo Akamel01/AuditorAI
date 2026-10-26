@@ -168,6 +168,7 @@ describe("row level security under a non-bypass role", () => {
       "0001_tenant_schema.sql",
       "0002_rls_policies.sql",
       "0003_roles.sql",
+      "0004_seats_invites.sql",
     ]);
     const tables = await rows<{ relname: string }>(
       "select relname from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r' order by relname",

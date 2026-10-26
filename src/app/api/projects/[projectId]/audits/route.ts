@@ -51,7 +51,7 @@ export async function POST(req: Request, ctx: Ctx) {
       stageDurationsMs = run.stageDurationsMs;
     }
 
-    await auth.repo.saveAudit(auth.ws, result);
+    await auth.repo.saveAudit(auth.ws, result, auth.actor);
     return NextResponse.json({ audit: result, stageDurationsMs }, { status: 201 });
   } catch (e) {
     fireAlert({ kind: "audit_failure", message: "audit run failed", details: { error: String(e) } });

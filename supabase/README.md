@@ -15,6 +15,7 @@ They are applied by the operator, by hand, to the live project.
 | `migrations/0001_tenant_schema.sql` | 9 tenant tables: `workspaces`, `workspace_members`, `workspace_credentials`, `projects`, `audits`, `audit_issues`, `attachments`, `artifacts`, `artifact_summaries` |
 | `migrations/0002_rls_policies.sql` | `ENABLE` + `FORCE ROW LEVEL SECURITY` on all 9 tables, the three claim helpers, and every policy |
 | `migrations/0003_roles.sql` | creates `auditorai_app` (NOSUPERUSER, NOBYPASSRLS, owns nothing) and grants it DML + `USAGE` + `EXECUTE` |
+| `migrations/0004_seats_invites.sql` | ticket #54: `workspaces.seat_count` (default 1), membership state columns, three actor columns, two claim helpers, the four `workspace_members` policies and the column-level privilege hardening |
 
 `0002` and `0003` depend on `0001`; `0003` grants execute on functions created
 by `0002`. Do not reorder, do not skip. The migrations are re-runnable:
@@ -144,3 +145,59 @@ without any policy recursion.
   `projects`, `workspace_credentials`, `workspace_members`, `workspaces`).
   This destroys only the Postgres copy; the KV source is never destroyed by any
   code path.
+
+## Operator procedure — ticket #54 (seats, invites, actor columns)
+
+Apply `0004` after `0001 → 0002 → 0003`, out of band, never by an agent.
+
+```bash
+# 0. the operator's shell has the direct connection string; it is never in the repo
+export POSTGRES_URL_NON_POOLING='<operator-supplied direct connection string>'
+
+# 1. apply the #54 migration (never by an agent)
+psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 -f supabase/migrations/0004_seats_invites.sql
+
+# 2. the seat allowance of a workspace (the entitlement). The app may only
+#    READ it (OD19); this statement is the only way it is written.
+psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
+  -c "update public.workspaces set seat_count = 25 where id = '<workspace-uuid>';"
+
+# The default a NEW workspace gets is 1 (column default). There is no env var
+# (SEAT_COUNT_DEFAULT is dropped); the operator provisions the number via the
+# statement above.
+
+# 3. the FIRST member of the workspace is its owner — provisioned OUT OF BAND
+#    (the app never creates an owner or a workspace, OD18):
+psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
+  -c "insert into public.workspace_members (workspace_id, subject_id, role, email, status, accepted_at)
+      values ('<workspace-uuid>','<supabase-user-uuid>','owner','owner@firm.com','active', now());"
+
+# 3b. the owner's FIRST credential (the app route cannot issue one): the key is
+#     operator-generated and the row is keyed by the SAME 16-hex workspaceHash
+#     the app computes (sha256(key) truncated to 16 hex chars):
+psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
+  -c "insert into public.workspace_credentials (credential_hash, workspace_id, subject_id)
+      values (left(encode(sha256('<operator-generated-key>'::bytea),'hex'),16),
+              '<workspace-uuid>','<supabase-user-uuid>');"
+
+# 4. flip the switch LAST (unchanged from #53):
+#    TENANT_STORE=postgres
+```
+
+`GET /api/auth/me` surfaces the signed-in user's uuid so the operator can paste it into step 3.
+
+### Sign-in token verification — HS256 only (important)
+
+`src/lib/auth/supabase.ts:verifyAccessToken` verifies **HS256 with
+`SUPABASE_JWT_SECRET` only**. Newer Supabase projects sign access tokens with
+**asymmetric keys** (ES256/RS256, published via JWKS) and do not expose a
+legacy JWT secret. On such a project the sign-in session will not verify:
+either use the project's **legacy JWT secret** for this deployment, or a
+follow-up must add JWKS/asymmetric verification to the same function. Nothing
+else in the app depends on the signing algorithm.
+
+Re-runnability: every statement in `0004` is idempotent (`add column if not exists`,
+`create index if not exists`, `drop policy if exists` + `create policy`,
+`create or replace function`, a guarded `add constraint`). A partial apply is
+repaired by running the file again. `revoke`/`grant` are idempotent by
+construction. No statement drops or renames anything.

@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       const existing = projectId ? await repo.listAttachments(auth.ws, projectId) : [];
       const built = await buildImageAttachment(form, file, existing);
       if (!built.ok) return badRequest(built.error);
-      await repo.saveAttachment(auth.ws, built.value);
+      await repo.saveAttachment(auth.ws, built.value, auth.actor);
       return NextResponse.json({ attachment: built.value });
     }
 

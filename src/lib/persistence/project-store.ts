@@ -1,6 +1,7 @@
 // ProjectStore — project / audit / attachment hats of the former Repository.
 // Shares the DataStore seam; owns no key literals (imports from keys.ts).
 import type { Attachment, AuditResult, Project } from "@/domain/types";
+import { assertWritableActor } from "@/domain/actor";
 import type { DataStore } from "./store";
 import * as Keys from "./keys";
 
@@ -16,7 +17,8 @@ export class ProjectStore {
 
   // ---- Projects -----------------------------------------------------------
 
-  async saveProject(ws: string, project: Project) {
+  async saveProject(ws: string, project: Project, actor?: string) {
+    if (actor) project.updated_by = assertWritableActor(actor);
     await this.store.put(Keys.projectKey(ws, project.project_id), project);
   }
   async getProject(ws: string, id: string): Promise<Project | null> {
@@ -32,7 +34,7 @@ export class ProjectStore {
 
   // ---- Audits --------------------------------------------------------------
 
-  async saveAudit(ws: string, audit: AuditResult) {
+  async saveAudit(ws: string, audit: AuditResult, _actor?: string) {
     await this.store.put(Keys.auditKey(ws, audit.project_id, audit.audit_id), audit);
   }
   async getAudit(ws: string, projectId: string, auditId: string): Promise<AuditResult | null> {
@@ -48,7 +50,8 @@ export class ProjectStore {
 
   // ---- Attachments -----------------------------------------------------------
 
-  async saveAttachment(ws: string, attachment: Attachment) {
+  async saveAttachment(ws: string, attachment: Attachment, actor?: string) {
+    if (actor) attachment.uploaded_by = assertWritableActor(actor);
     await this.store.put(
       Keys.attachmentKey(ws, attachment.project_id, attachment.attachment_id),
       attachment,
@@ -69,7 +72,7 @@ export class ProjectStore {
    *  one operation: the id is stripped from every referencing input and emptied
    *  attachment arrays are removed. updated_at advances only when something
    *  changed. Throws UnknownAttachmentError when no such record exists. */
-  async deleteAttachment(ws: string, projectId: string, id: string): Promise<void> {
+  async deleteAttachment(ws: string, projectId: string, id: string, _actor?: string): Promise<void> {
     const existing = await this.getAttachment(ws, projectId, id);
     if (!existing) throw new UnknownAttachmentError(id);
     await this.store.del(Keys.attachmentKey(ws, projectId, id));

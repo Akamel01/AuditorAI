@@ -17,13 +17,27 @@ import {
   UnknownAttachmentError,
 } from "./persistence";
 import {
+  AmbiguousInvitationError,
+  AuthNotConfiguredError,
   CredentialRevokedError,
   DatabaseUnavailableError,
+  InvalidCredentialsError,
+  NoInvitationError,
+  NotSignedInError,
+  NotWorkspaceAdminError,
+  ProviderNotConfiguredError,
+  SeatLimitExceededError,
+  TenantStoreRequiredError,
   WorkspaceMembershipError,
 } from "./db/errors";
+import { AuthUpstreamError } from "./auth/supabase";
 import { resolveTenant, type TenantResolution } from "./db/identity";
+import { actorForRequest } from "./auth/actor";
+import { readSession, type AuthSession } from "./auth/session";
+import { adminActor, type ActorId } from "@/domain/actor";
 import { createTenantRepository } from "./db/repository-factory";
 import type { TenantRepository } from "./db/tenant-repository";
+import type { MemberRole } from "./db/claim";
 import {
   legacyDatabaseStatus,
   postgresDatabaseStatus,
@@ -48,7 +62,7 @@ function adminDenial(): NextResponse {
  *  existence of the surface leaks nothing. */
 export async function requireAdmin(
   req: Request,
-): Promise<{ ok: true } | { ok: false; res: NextResponse }> {
+): Promise<{ ok: true; actor: ActorId } | { ok: false; res: NextResponse }> {
   const provided = req.headers.get(ADMIN_HEADER);
   const expected = process.env.ADMIN_KEY;
   if (!provided || !expected) return { ok: false, res: adminDenial() };
@@ -69,13 +83,29 @@ export async function requireAdmin(
   const a = createHash("sha256").update(provided).digest();
   const b = createHash("sha256").update(expected).digest();
   if (!timingSafeEqual(a, b)) return { ok: false, res: adminDenial() };
-  return { ok: true };
+  return { ok: true, actor: adminActor(workspaceHash(provided)) };
+}
+
+/** The tenant identity a request runs under, when Postgres serves it. */
+export interface RequestTenant {
+  workspaceId: string;
+  subjectId: string;
+  role: MemberRole | null;
+  email: string | null;
 }
 
 export async function requireWorkspace(
   req: Request,
 ): Promise<
-  | { ok: true; ws: string; repo: TenantRepository; databaseStatus: DatabaseStatus }
+  | {
+      ok: true;
+      ws: string;
+      repo: TenantRepository;
+      databaseStatus: DatabaseStatus;
+      session: AuthSession | null;
+      actor: ActorId;
+      tenant: RequestTenant | null;
+    }
   | { ok: false; res: NextResponse }
 > {
   const key = req.headers.get(WORKSPACE_HEADER);
@@ -111,8 +141,12 @@ export async function requireWorkspace(
   // the hard 503 is one line here: raise DatabaseNotConfiguredError instead of
   // returning the legacy resolution.
   let resolution: TenantResolution;
+  const session = readSession(req);
   try {
-    resolution = await resolveTenant(key);
+    resolution = await resolveTenant(
+      key,
+      session ? { subject: session.subject, email: session.email } : null,
+    );
   } catch (e) {
     return { ok: false, res: serverError(e) };
   }
@@ -121,7 +155,31 @@ export async function requireWorkspace(
     resolution.mode === "postgres"
       ? postgresDatabaseStatus()
       : legacyDatabaseStatus(resolution.reason);
-  return { ok: true, ws, repo, databaseStatus };
+  const tenant: RequestTenant | null =
+    resolution.mode === "postgres"
+      ? {
+          workspaceId: resolution.workspaceId,
+          subjectId: resolution.sessionSubject ?? resolution.subjectId,
+          role: resolution.subjectRole,
+          email: session?.email ?? null,
+        }
+      : null;
+  return {
+    ok: true,
+    ws,
+    repo,
+    databaseStatus,
+    session,
+    // Attribute u:<sub> only when the session subject is an active member of
+    // the resolved workspace (postgres mode with a non-null role); otherwise
+    // fall back to legacy:<hash>. On the legacy store a session never changes
+    // the actor, so pass null there too.
+    actor: actorForRequest(
+      resolution.mode === "postgres" && resolution.subjectRole !== null ? session : null,
+      resolution.legacyHash,
+    ),
+    tenant,
+  };
 }
 
 export function badRequest(message: string) {
@@ -160,6 +218,16 @@ const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof DatabaseUnavailableError, status: 503, exposeMessage: false },
   { matches: (e) => e instanceof CredentialRevokedError, status: 401, exposeMessage: false },
   { matches: (e) => e instanceof WorkspaceMembershipError, status: 403, exposeMessage: false },
+  { matches: (e) => e instanceof NotSignedInError, status: 401, exposeMessage: false },
+  { matches: (e) => e instanceof AuthNotConfiguredError, status: 503, exposeMessage: true },
+  { matches: (e) => e instanceof ProviderNotConfiguredError, status: 503, exposeMessage: true },
+  { matches: (e) => e instanceof TenantStoreRequiredError, status: 409, exposeMessage: true },
+  { matches: (e) => e instanceof SeatLimitExceededError, status: 409, exposeMessage: true },
+  { matches: (e) => e instanceof NotWorkspaceAdminError, status: 403, exposeMessage: true },
+  { matches: (e) => e instanceof InvalidCredentialsError, status: 401, exposeMessage: true },
+  { matches: (e) => e instanceof NoInvitationError, status: 401, exposeMessage: true },
+  { matches: (e) => e instanceof AmbiguousInvitationError, status: 409, exposeMessage: true },
+  { matches: (e) => e instanceof AuthUpstreamError, status: 502, exposeMessage: false },
 ];
 
 const REDACTED_MESSAGE = "internal server error";

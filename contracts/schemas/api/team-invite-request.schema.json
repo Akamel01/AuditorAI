@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditorai.dev/schemas/api/team-invite-request.schema.json",
+  "title": "POST /api/workspaces/seats request body",
+  "description": "Shape only. The role-at-invite matrix and the seat limit stay domain rules (src/lib/db/seats.ts).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["email"],
+  "properties": {
+    "email": { "type": "string", "minLength": 1 },
+    "role": { "type": "string", "enum": ["member", "admin", "owner"] }
+  }
+}

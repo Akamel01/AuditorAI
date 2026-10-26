@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       newProjectId: newId("P"),
     });
     if (!outcome.ok) return badRequest(outcome.error);
-    await auth.repo.saveProject(auth.ws, outcome.value);
+    await auth.repo.saveProject(auth.ws, outcome.value, auth.actor);
     return NextResponse.json({ project: outcome.value }, { status: 201 });
   } catch (e) {
     return serverError(e);

@@ -1,6 +1,8 @@
 // Canonical domain types. Vocabulary is governed by CONTEXT.md.
 // ADR-0002 governs stage semantics; ADR-0003 governs finding semantics.
 
+import type { AuditActor } from "./actor";
+
 export type CanonicalStage =
   | "FEASIBILITY_CONCEPT"
   | "PRELIMINARY_DESIGN"
@@ -61,6 +63,7 @@ export interface Attachment {
   bytes: number;
   data_url: string;
   created_at: string;
+  uploaded_by?: AuditActor;
 }
 
 export interface InputValue {
@@ -79,6 +82,7 @@ export interface Project {
   input_values: Record<string, InputValue>;
   created_at: string;
   updated_at: string;
+  updated_by?: AuditActor;
 }
 
 export interface FindingEvidence {
@@ -301,6 +305,6 @@ export interface AuditResult {
 export interface AuditIssue {
   revision: number;
   issued_at: string;
-  issued_by: "auditor";
+  issued_by: AuditActor;
   result: AuditResult;
 }

@@ -32,7 +32,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
     const outcome = patchProject(project, body, new Date().toISOString());
     if (!outcome.ok) return badRequest(outcome.error);
 
-    await auth.repo.saveProject(auth.ws, outcome.value);
+    await auth.repo.saveProject(auth.ws, outcome.value, auth.actor);
     return NextResponse.json({ project: outcome.value });
   } catch (e) {
     return serverError(e);

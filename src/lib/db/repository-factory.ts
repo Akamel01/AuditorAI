@@ -25,6 +25,8 @@ export function createTenantRepository(resolution: TenantResolution): TenantRepo
       workspaceId: resolution.workspaceId,
       subjectId: resolution.subjectId,
       legacyHash: resolution.legacyHash,
+      role: resolution.subjectRole,
+      email: null,
     });
   }
   // legacy: the KV store serves the workspace — not_configured,

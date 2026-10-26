@@ -207,7 +207,7 @@ async function newPostgresRepository(): Promise<TenantRepository> {
     [workspaceId, `matrix-${pgSeq}`, legacyHash],
   );
   const client = createPgliteSqlClient(pgDb as unknown as PgliteLike);
-  return new PostgresTenantRepository(client, { workspaceId, subjectId, legacyHash });
+  return new PostgresTenantRepository(client, { workspaceId, subjectId, legacyHash, role: null, email: null });
 }
 
 const repositories: Array<[string, () => Promise<TenantRepository>]> = [

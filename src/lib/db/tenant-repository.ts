@@ -13,17 +13,19 @@
 //
 // Server-only: domain types only, no client code, no secret.
 
+import type { MemberRole } from "@/lib/db/claim";
 import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
 import type { AuditArtifact } from "@/domain/pipeline/types";
+import type { ActorId } from "@/domain/actor";
 
 export interface TenantRepository {
   // ---- Projects ------------------------------------------------------------
-  saveProject(ws: string, project: Project): Promise<void>;
+  saveProject(ws: string, project: Project, actor?: ActorId): Promise<void>;
   getProject(ws: string, id: string): Promise<Project | null>;
   listProjects(ws: string): Promise<Project[]>;
 
   // ---- Audits --------------------------------------------------------------
-  saveAudit(ws: string, audit: AuditResult): Promise<void>;
+  saveAudit(ws: string, audit: AuditResult, actor?: ActorId): Promise<void>;
   getAudit(ws: string, projectId: string, auditId: string): Promise<AuditResult | null>;
   listAudits(ws: string, projectId: string): Promise<AuditResult[]>;
 
@@ -34,6 +36,7 @@ export interface TenantRepository {
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
+    actor?: ActorId,
   ): Promise<AuditIssue>;
   getIssue(
     ws: string,
@@ -44,12 +47,12 @@ export interface TenantRepository {
   listIssues(ws: string, projectId: string, auditId: string): Promise<AuditIssue[]>;
 
   // ---- Attachments ----------------------------------------------------------
-  saveAttachment(ws: string, attachment: Attachment): Promise<void>;
+  saveAttachment(ws: string, attachment: Attachment, actor?: ActorId): Promise<void>;
   getAttachment(ws: string, projectId: string, id: string): Promise<Attachment | null>;
   listAttachments(ws: string, projectId: string): Promise<Attachment[]>;
   /** Delete an attachment AND repair Project.input_values references as one
    *  operation. Throws UnknownAttachmentError when no such record exists. */
-  deleteAttachment(ws: string, projectId: string, id: string): Promise<void>;
+  deleteAttachment(ws: string, projectId: string, id: string, actor?: ActorId): Promise<void>;
 
   // ---- Node-artifact persistence (N3) ---------------------------------------
   /** Store the full artifact trail of one audit run, pruning the previous trail
@@ -58,6 +61,7 @@ export interface TenantRepository {
     ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
+    actor?: ActorId,
   ): Promise<{ stored: number }>;
   getArtifact(
     ws: string,
@@ -81,4 +85,8 @@ export interface TenantSession {
   subjectId: string;
   /** The 16-hex workspaceHash of the presented credential. */
   legacyHash: string;
+  /** DB-sourced role of the acting subject (OD11). */
+  role: MemberRole | null;
+  /** DB-sourced email of the acting subject. */
+  email: string | null;
 }
