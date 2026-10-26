@@ -28,7 +28,7 @@ jobs:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         run: npx tsx scripts/run-eval.ts ${{ inputs.mode == 'dry-run' && '--dry-run' || '' }}
       - name: upload scorecards
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: eval-scorecards-${{ github.run_id }}
           path: state/eval-scorecards/
