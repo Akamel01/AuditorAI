@@ -42,6 +42,12 @@ export function issuesPrefix(ws: string, projectId: string, auditId: string): st
   return `ws:${ws}:issue:${projectId}:${auditId}:`;
 }
 
+export function trailKey(ws: string, seq: number): string {
+  return `ws:${ws}:trail:${seq}`;
+}
+export function trailPrefix(ws: string): string {
+  return `ws:${ws}:trail:`;
+}
 export const artifactSeqOf = (key: string): number => {
   const n = Number.parseInt(key.slice(key.lastIndexOf(":") + 1), 10);
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;

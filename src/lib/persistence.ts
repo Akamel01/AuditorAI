@@ -5,6 +5,9 @@
 import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
 import type { ActorId } from "@/domain/actor";
 import type { AuditArtifact } from "@/domain/pipeline/types";
+import type { AuditTrailEntry } from "@/domain/audit-trail";
+import { evidenceRefsOf } from "@/domain/audit-trail";
+import { assertWritableActor, legacyActor } from "@/domain/actor";
 import {
   getDataStore,
   KvRestStore,
@@ -23,6 +26,7 @@ import {
 } from "./persistence/artifact-trail";
 import type { ArtifactSummary } from "./persistence/artifact-trail";
 import { IssueLedger, IssueRevisionConflictError } from "./persistence/issue-ledger";
+import { TrailStore } from "./persistence/trail-store";
 
 // Re-export seam symbols so existing imports from "@/lib/persistence" stay green.
 export {
@@ -47,11 +51,13 @@ export class Repository {
   private projectStore: ProjectStore;
   private artifactTrail: ArtifactTrail;
   private issueLedger: IssueLedger;
+  private trailStore: TrailStore;
 
   constructor(private store: DataStore) {
     this.projectStore = new ProjectStore(store);
     this.artifactTrail = new ArtifactTrail(store);
     this.issueLedger = new IssueLedger(store);
+    this.trailStore = new TrailStore(store);
   }
 
   // ---- Key scheme ---------------------------------------------------------
@@ -99,7 +105,16 @@ export class Repository {
   // ---- Projects ------------------------------------------------------------
 
   async saveProject(ws: string, project: Project, actor?: ActorId) {
-    return this.projectStore.saveProject(ws, project, actor);
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const result = await this.projectStore.saveProject(ws, project, actor);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "project.saved",
+      subject: { type: "project", id: project.project_id, project_id: project.project_id, audit_id: null },
+      evidence_refs: [],
+      payload: { project_id: project.project_id, updated_at: project.updated_at },
+    });
+    return result;
   }
   async getProject(ws: string, id: string): Promise<Project | null> {
     return this.projectStore.getProject(ws, id);
@@ -111,7 +126,16 @@ export class Repository {
   // ---- Audits --------------------------------------------------------------
 
   async saveAudit(ws: string, audit: AuditResult, actor?: ActorId) {
-    return this.projectStore.saveAudit(ws, audit, actor);
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const result = await this.projectStore.saveAudit(ws, audit, actor);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "audit.saved",
+      subject: { type: "audit", id: audit.audit_id, project_id: audit.project_id, audit_id: audit.audit_id },
+      evidence_refs: evidenceRefsOf(audit),
+      payload: { project_id: audit.project_id, audit_id: audit.audit_id, ran_at: audit.ran_at, finding_count: audit.findings.length },
+    });
+    return result;
   }
   async getAudit(ws: string, projectId: string, auditId: string): Promise<AuditResult | null> {
     return this.projectStore.getAudit(ws, projectId, auditId);
@@ -132,8 +156,17 @@ export class Repository {
     result: AuditResult,
     issuedAtIso: string,
     actor?: ActorId,
-  ): Promise<AuditIssue> {
-    return this.issueLedger.saveIssue(ws, projectId, auditId, result, issuedAtIso, actor);
+   ): Promise<AuditIssue> {
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const issue = await this.issueLedger.saveIssue(ws, projectId, auditId, result, issuedAtIso, actor);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "issue.issued",
+      subject: { type: "issue", id: `${auditId}#I${issue.revision}`, project_id: projectId, audit_id: auditId },
+      evidence_refs: evidenceRefsOf(result),
+      payload: { project_id: projectId, audit_id: auditId, revision: issue.revision },
+    });
+    return issue;
   }
 
   async getIssue(
@@ -152,7 +185,16 @@ export class Repository {
   // ---- Attachments -----------------------------------------------------------
 
   async saveAttachment(ws: string, attachment: Attachment, actor?: ActorId) {
-    return this.projectStore.saveAttachment(ws, attachment, actor);
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const result = await this.projectStore.saveAttachment(ws, attachment, actor);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "attachment.saved",
+      subject: { type: "attachment", id: attachment.attachment_id, project_id: attachment.project_id, audit_id: null },
+      evidence_refs: [],
+      payload: { project_id: attachment.project_id, attachment_id: attachment.attachment_id, bytes: attachment.bytes, mime: attachment.mime },
+    });
+    return result;
   }
   async getAttachment(ws: string, projectId: string, id: string): Promise<Attachment | null> {
     return this.projectStore.getAttachment(ws, projectId, id);
@@ -166,7 +208,16 @@ export class Repository {
    *  attachment arrays are removed. updated_at advances only when something
    *  changed. Throws UnknownAttachmentError when no such record exists. */
   async deleteAttachment(ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
-    return this.projectStore.deleteAttachment(ws, projectId, id, actor);
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const result = await this.projectStore.deleteAttachment(ws, projectId, id, actor);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "attachment.deleted",
+      subject: { type: "attachment", id, project_id: projectId, audit_id: null },
+      evidence_refs: [],
+      payload: { project_id: projectId, attachment_id: id },
+    });
+    return result;
   }
 
   // ---- Node-artifact persistence (N3) -----------------------------------------
@@ -178,9 +229,18 @@ export class Repository {
     ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
-    _actor?: ActorId,
+    actor?: ActorId,
   ) {
-    return this.artifactTrail.saveArtifactTrailFor(ws, identity, artifacts);
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const result = await this.artifactTrail.saveArtifactTrailFor(ws, identity, artifacts);
+    await this.trailStore.append(ws, {
+      actor: trailActor,
+      action: "artifact_trail.saved",
+      subject: { type: "artifact_trail", id: identity.auditId, project_id: identity.projectId, audit_id: identity.auditId },
+      evidence_refs: [],
+      payload: { project_id: identity.projectId, audit_id: identity.auditId, stored: result.stored },
+    });
+    return result;
   }
 
   async getArtifact(
@@ -195,6 +255,10 @@ export class Repository {
 
   async listArtifacts(ws: string, projectId: string, auditId: string): Promise<AuditArtifact[]> {
     return this.artifactTrail.listArtifacts(ws, projectId, auditId);
+  }
+
+  async listAuditTrail(ws: string): Promise<AuditTrailEntry[]> {
+    return this.trailStore.list(ws);
   }
 
   /** Replay rule: verified artifacts are trusted as-is; anything else must be
