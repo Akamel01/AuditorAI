@@ -38,6 +38,9 @@ import type { TenantRepository, TenantSession } from "./tenant-repository";
 import { asDatabaseUnavailable, claimsJson, sqlStateOf } from "./identity";
 import type { ActorId } from "@/domain/actor";
 import { legacyActor, assertWritableActor } from "@/domain/actor";
+import { evidenceRefsOf } from "@/domain/audit-trail";
+import { AUDIT_TRAIL_GENESIS_HASH, buildAuditTrailEntry } from "@/domain/audit-trail";
+import type { AuditTrailEntry, AuditTrailRecordInput } from "@/domain/audit-trail";
 
 interface ProjectRow {
   project_id: string;
@@ -61,7 +64,8 @@ function asStoreError(err: unknown): unknown {
   if (
     err instanceof UnknownAttachmentError ||
     err instanceof IssueRevisionConflictError ||
-    err instanceof ArtifactTooLargeError
+    err instanceof ArtifactTooLargeError ||
+    err instanceof AuditTrailConflictError
   ) {
     return err;
   }
@@ -70,6 +74,13 @@ function asStoreError(err: unknown): unknown {
   }
   if (sqlStateOf(err)) return err;
   return asDatabaseUnavailable(err);
+}
+
+export class AuditTrailConflictError extends Error {
+  constructor(message = "audit trail seq conflict") {
+    super(message);
+    this.name = "AuditTrailConflictError";
+  }
 }
 
 export class PostgresTenantRepository implements TenantRepository {
@@ -107,9 +118,10 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Projects ------------------------------------------------------------
 
-  async saveProject(_ws: string, project: Project, actor?: ActorId): Promise<void> {
+  async saveProject(ws: string, project: Project, actor?: ActorId): Promise<void> {
     const resolved = actor ? assertWritableActor(actor) : null;
     if (actor && resolved) project.updated_by = resolved;
+    const trailActor = resolved ?? legacyActor(ws);
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.projects
@@ -133,6 +145,13 @@ export class PostgresTenantRepository implements TenantRepository {
           resolved,
         ],
       );
+      await this.appendTrail(tx, ws, {
+        actor: trailActor,
+        action: "project.saved",
+        subject: { type: "project", id: project.project_id, project_id: project.project_id, audit_id: null },
+        evidence_refs: [],
+        payload: { project_id: project.project_id, updated_at: project.updated_at },
+      });
     });
   }
 
@@ -164,8 +183,8 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Audits --------------------------------------------------------------
 
-  async saveAudit(_ws: string, audit: AuditResult, actor?: ActorId): Promise<void> {
-    const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
+  async saveAudit(ws: string, audit: AuditResult, actor?: ActorId): Promise<void> {
+    const resolved = actor ? assertWritableActor(actor) : legacyActor(ws);
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.audits (workspace_id, project_id, audit_id, ran_at, payload, produced_by)
@@ -183,6 +202,13 @@ export class PostgresTenantRepository implements TenantRepository {
           resolved,
         ],
       );
+      await this.appendTrail(tx, ws, {
+        actor: resolved,
+        action: "audit.saved",
+        subject: { type: "audit", id: audit.audit_id, project_id: audit.project_id, audit_id: audit.audit_id },
+        evidence_refs: evidenceRefsOf(audit),
+        payload: { project_id: audit.project_id, audit_id: audit.audit_id, ran_at: audit.ran_at, finding_count: audit.findings.length },
+      });
     });
   }
 
@@ -213,14 +239,14 @@ export class PostgresTenantRepository implements TenantRepository {
    *  issuance cannot overwrite history — the insert simply returns no row and
    *  the conflict is raised (issue-ledger.ts:43-45). */
   async saveIssue(
-    _ws: string,
+    ws: string,
     projectId: string,
     auditId: string,
     result: AuditResult,
     issuedAtIso: string,
     actor?: ActorId,
   ): Promise<AuditIssue> {
-    const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
+    const resolved = actor ? assertWritableActor(actor) : legacyActor(ws);
     return this.withClaim(async (tx) => {
       const prior = await tx.query<{ revision: number }>(
         "select coalesce(max(revision), 0) as revision from public.audit_issues where project_id = $1 and audit_id = $2",
@@ -252,6 +278,13 @@ export class PostgresTenantRepository implements TenantRepository {
       if (inserted.rows.length === 0) {
         throw new IssueRevisionConflictError(`revision ${revision} already exists`);
       }
+      await this.appendTrail(tx, ws, {
+        actor: resolved,
+        action: "issue.issued",
+        subject: { type: "issue", id: `${auditId}#I${revision}`, project_id: projectId, audit_id: auditId },
+        evidence_refs: evidenceRefsOf(result),
+        payload: { project_id: projectId, audit_id: auditId, revision },
+      });
       return issue;
     });
   }
@@ -284,9 +317,10 @@ export class PostgresTenantRepository implements TenantRepository {
 
   // ---- Attachments ----------------------------------------------------------
 
-  async saveAttachment(_ws: string, attachment: Attachment, actor?: ActorId): Promise<void> {
+  async saveAttachment(ws: string, attachment: Attachment, actor?: ActorId): Promise<void> {
     const resolved = actor ? assertWritableActor(actor) : null;
     if (actor && resolved) attachment.uploaded_by = resolved;
+    const trailActor = resolved ?? legacyActor(ws);
     await this.withClaim(async (tx) => {
       await tx.query(
         `insert into public.attachments
@@ -305,6 +339,13 @@ export class PostgresTenantRepository implements TenantRepository {
           resolved,
         ],
       );
+      await this.appendTrail(tx, ws, {
+        actor: trailActor,
+        action: "attachment.saved",
+        subject: { type: "attachment", id: attachment.attachment_id, project_id: attachment.project_id, audit_id: null },
+        evidence_refs: [],
+        payload: { project_id: attachment.project_id, attachment_id: attachment.attachment_id, bytes: attachment.bytes, mime: attachment.mime },
+      });
     });
   }
 
@@ -333,7 +374,8 @@ export class PostgresTenantRepository implements TenantRepository {
    *  operation (project-store.ts:68-91). The KV's delByPrefix has no
    *  transactional equivalent and is NOT ported. Throws
    *  UnknownAttachmentError when no such record exists. */
-  async deleteAttachment(_ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
+  async deleteAttachment(ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
     await this.withClaim(async (tx) => {
       const deleted = await tx.query<{ attachment_id: string }>(
         "delete from public.attachments where project_id = $1 and attachment_id = $2 returning attachment_id",
@@ -347,22 +389,30 @@ export class PostgresTenantRepository implements TenantRepository {
         [projectId],
       );
       const row = project.rows[0];
-      if (!row) return;
-      const inputValues = row.input_values ?? {};
       let touched = false;
-      for (const value of Object.values(inputValues)) {
-        if (value.attachments?.includes(id)) {
-          value.attachments = value.attachments.filter((a) => a !== id);
-          if (value.attachments.length === 0) delete value.attachments;
-          touched = true;
+      if (row) {
+        const inputValues = row.input_values ?? {};
+        for (const value of Object.values(inputValues)) {
+          if (value.attachments?.includes(id)) {
+            value.attachments = value.attachments.filter((a) => a !== id);
+            if (value.attachments.length === 0) delete value.attachments;
+            touched = true;
+          }
+        }
+        if (touched) {
+          await tx.query(
+            "update public.projects set input_values = $1::jsonb, updated_at = $2::timestamptz, updated_by = $3 where project_id = $4",
+            [JSON.stringify(inputValues), new Date().toISOString(), trailActor, projectId],
+          );
         }
       }
-      if (!touched) return;
-      const resolved = actor ? assertWritableActor(actor) : legacyActor(this.session.legacyHash);
-      await tx.query(
-        "update public.projects set input_values = $1::jsonb, updated_at = $2::timestamptz, updated_by = $3 where project_id = $4",
-        [JSON.stringify(inputValues), new Date().toISOString(), resolved, projectId],
-      );
+      await this.appendTrail(tx, ws, {
+        actor: trailActor,
+        action: "attachment.deleted",
+        subject: { type: "attachment", id, project_id: projectId, audit_id: null },
+        evidence_refs: [],
+        payload: { project_id: projectId, attachment_id: id },
+      });
     });
   }
 
@@ -373,11 +423,12 @@ export class PostgresTenantRepository implements TenantRepository {
    *  is enforced BEFORE any insert and raises ArtifactTooLargeError
    *  (artifact-trail.ts:10,44-47). */
   async saveArtifactTrailFor(
-    _ws: string,
+    ws: string,
     identity: { projectId: string; auditId: string },
     artifacts: AuditArtifact[],
-    _actor?: ActorId,
+    actor?: ActorId,
   ): Promise<{ stored: number }> {
+    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
     const sized: { art: AuditArtifact; seq: number }[] = [];
     let seq = 0;
     for (const art of artifacts) {
@@ -444,6 +495,13 @@ export class PostgresTenantRepository implements TenantRepository {
           ],
         );
       }
+      await this.appendTrail(tx, ws, {
+        actor: trailActor,
+        action: "artifact_trail.saved",
+        subject: { type: "artifact_trail", id: identity.auditId, project_id: identity.projectId, audit_id: identity.auditId },
+        evidence_refs: [],
+        payload: { project_id: identity.projectId, audit_id: identity.auditId, stored: seq },
+      });
     });
     return { stored: seq };
   }
@@ -473,5 +531,94 @@ export class PostgresTenantRepository implements TenantRepository {
       );
       return res.rows.map((r) => r.payload);
     });
+  }
+
+  async listAuditTrail(ws: string): Promise<AuditTrailEntry[]> {
+    return this.withClaim(async (tx) => {
+      const res = await tx.query<{
+        seq: number | string;
+        recorded_at: Date | string;
+        actor: string;
+        action: string;
+        subject_type: string;
+        subject_id: string;
+        project_id: string | null;
+        audit_id: string | null;
+        evidence_refs: unknown;
+        payload: unknown;
+        payload_hash: string;
+        prev_hash: string;
+        entry_hash: string;
+      }>(
+        `select seq, recorded_at, actor, action, subject_type, subject_id, project_id, audit_id,
+                evidence_refs, payload, payload_hash, prev_hash, entry_hash
+           from public.audit_trail_entries
+          order by seq asc`,
+      );
+      return res.rows.map((r) => ({
+        seq: Number(r.seq),
+        workspace: ws,
+        recorded_at: iso(r.recorded_at),
+        actor: r.actor as AuditTrailEntry["actor"],
+        action: r.action as AuditTrailEntry["action"],
+        subject: {
+          type: r.subject_type as AuditTrailEntry["subject"]["type"],
+          id: r.subject_id,
+          project_id: r.project_id,
+          audit_id: r.audit_id,
+        },
+        evidence_refs: (r.evidence_refs ?? []) as string[],
+        payload: (r.payload ?? {}) as AuditTrailEntry["payload"],
+        payload_hash: r.payload_hash,
+        prev_hash: r.prev_hash,
+        entry_hash: r.entry_hash,
+      }));
+    });
+  }
+
+  private async appendTrail(tx: SqlClient, ws: string, record: AuditTrailRecordInput): Promise<AuditTrailEntry> {
+    await tx.query("select pg_advisory_xact_lock(hashtext($1))", [this.session.workspaceId]);
+    const head = await tx.query<{ seq: number | string; entry_hash: string }>(
+      "select seq, entry_hash from public.audit_trail_entries order by seq desc limit 1",
+    );
+    const last = head.rows[0];
+    const seq = Number(last?.seq ?? 0) + 1;
+    const prev = last?.entry_hash ?? AUDIT_TRAIL_GENESIS_HASH;
+    const recorded_at = new Date().toISOString();
+    const entry = buildAuditTrailEntry({
+      workspace: ws,
+      seq,
+      prev_hash: prev,
+      recorded_at,
+      ...record,
+    });
+    const inserted = await tx.query<{ seq: number | string }>(
+      `insert into public.audit_trail_entries
+         (workspace_id, seq, recorded_at, actor, action, subject_type, subject_id, project_id, audit_id,
+          evidence_refs, payload, payload_hash, prev_hash, entry_hash)
+       values ($1,$2,$3::timestamptz,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14)
+       on conflict (workspace_id, seq) do nothing
+       returning seq`,
+      [
+        this.session.workspaceId,
+        entry.seq,
+        entry.recorded_at,
+        entry.actor,
+        entry.action,
+        entry.subject.type,
+        entry.subject.id,
+        entry.subject.project_id,
+        entry.subject.audit_id,
+        JSON.stringify(entry.evidence_refs),
+        JSON.stringify(entry.payload),
+        entry.payload_hash,
+        entry.prev_hash,
+        entry.entry_hash,
+      ],
+    );
+    if (inserted.rows.length === 0) {
+      throw new AuditTrailConflictError(`audit trail seq ${entry.seq} already exists`);
+    }
+    return entry;
   }
 }

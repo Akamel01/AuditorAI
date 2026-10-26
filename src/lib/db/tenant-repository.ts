@@ -8,14 +8,16 @@
 //   - every STATIC key helper (:58-96).
 //
 // The legacy Repository class therefore satisfies this interface structurally,
-// so src/lib/persistence.ts needs NO edit — the two adapters are
-// interchangeable behind this type (D16).
+// including listAuditTrail (added for ticket #55), so src/lib/persistence.ts
+// needs no further edit — the two adapters are interchangeable behind this
+// type (D16).
 //
 // Server-only: domain types only, no client code, no secret.
 
 import type { MemberRole } from "@/lib/db/claim";
 import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
 import type { AuditArtifact } from "@/domain/pipeline/types";
+import type { AuditTrailEntry } from "@/domain/audit-trail";
 import type { ActorId } from "@/domain/actor";
 
 export interface TenantRepository {
@@ -71,6 +73,12 @@ export interface TenantRepository {
     seq: number,
   ): Promise<AuditArtifact | null>;
   listArtifacts(ws: string, projectId: string, auditId: string): Promise<AuditArtifact[]>;
+
+  // ---- Audit trail (append-only firm history) -------------------------------
+  /** The append-only firm history, ascending by seq. Reads only: every write is
+   *  made by a mutation method inside that mutation's transaction. There is no
+   *  update or delete method by design. */
+  listAuditTrail(ws: string): Promise<AuditTrailEntry[]>;
 }
 
 /** The tenant identity a Postgres session runs under. It is produced in ONE

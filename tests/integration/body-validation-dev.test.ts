@@ -42,6 +42,7 @@ beforeAll(() => {
     del: (k) => mem.del(k),
     delByPrefix: (p) => mem.delByPrefix(p),
     setIfAbsent: (k, v, t) => mem.setIfAbsent(k, v, t),
+    createIfAbsent: (k, v) => mem.createIfAbsent(k, v),
   };
   setDataStoreForTests(kv);
 });

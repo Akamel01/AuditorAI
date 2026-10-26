@@ -146,3 +146,36 @@ export function fetchVault<T = unknown>(): Promise<T> {
 export function syncVault<T = unknown>(): Promise<T> {
   return adminApi<T>("/api/dev/vault/sync", { method: "POST" });
 }
+
+export async function downloadTrailExport(): Promise<void> {
+  const res = await fetch("/api/workspaces/audit-trail/export", {
+    method: "GET",
+    headers: { "x-workspace-key": ensureWorkspaceKey() },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    let msg = `Request failed (${res.status})`;
+    try {
+      const data = (await res.json()) as { error?: string };
+      if (data?.error) msg = data.error;
+    } catch {
+      // ignore
+    }
+    throw new Error(msg);
+  }
+  const blob = await res.blob();
+  let filename = `audit-trail-${new Date().toISOString().slice(0, 10)}.json`;
+  const cd = res.headers.get("content-disposition");
+  if (cd) {
+    const m = /filename="?([^";]+)"?/i.exec(cd);
+    if (m && m[1]) filename = m[1];
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}

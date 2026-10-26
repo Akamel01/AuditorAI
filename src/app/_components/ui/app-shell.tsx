@@ -30,6 +30,12 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
               Workspace
             </Link>
             <Link
+              href="/audit-trail"
+              className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
+            >
+              Audit trail
+            </Link>
+            <Link
               href="/dev/mission-control"
               className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
             >

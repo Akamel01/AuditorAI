@@ -41,6 +41,8 @@ const API_ROUTES = [
   "/api/auth/signout",
   "/api/auth/me",
   "/api/workspaces/seats",
+  "/api/workspaces/audit-trail",
+  "/api/workspaces/audit-trail/export",
   "/api/readiness",
   "/api/dev/tickets",
   "/api/dev/harvest-stream",

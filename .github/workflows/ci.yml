@@ -84,6 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ADMIN_KEY: test-admin-key-0123456789abcdef
+      AUDIT_TRAIL_SIGNING_KEY: test-audit-trail-signing-key-0123456789
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

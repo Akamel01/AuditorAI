@@ -46,7 +46,7 @@ interface DbLike {
 
 const MIGRATIONS_DIR = path.resolve(process.cwd(), "supabase/migrations");
 
-/** The nine tenant tables (M1): RLS is enabled AND forced on each of them. */
+/** The ten tenant tables (M3): RLS is enabled AND forced on each of them. */
 const TENANT_TABLES = [
   "workspaces",
   "workspace_members",
@@ -57,6 +57,7 @@ const TENANT_TABLES = [
   "attachments",
   "artifacts",
   "artifact_summaries",
+  "audit_trail_entries",
 ] as const;
 
 /** The proof role: NOSUPERUSER, NOBYPASSRLS, owner of nothing. */
@@ -169,6 +170,7 @@ describe("row level security under a non-bypass role", () => {
       "0002_rls_policies.sql",
       "0003_roles.sql",
       "0004_seats_invites.sql",
+      "0005_audit_trail.sql",
     ]);
     const tables = await rows<{ relname: string }>(
       "select relname from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r' order by relname",
@@ -206,7 +208,7 @@ describe("row level security under a non-bypass role", () => {
     expect(current.rows[0].current_user).toBe(PROOF_ROLE);
   });
 
-  it("has FORCE ROW LEVEL SECURITY on all nine tenant tables", async () => {
+  it("has FORCE ROW LEVEL SECURITY on all ten tenant tables", async () => {
     const forced = await rows<{
       relname: string;
       relrowsecurity: boolean;

@@ -11,6 +11,8 @@ import {
   StageNotEligibleError,
 } from "@/domain/pipeline/constants";
 import { UploadError } from "./extract";
+import { AuditTrailSigningNotConfiguredError } from "./audit-trail-signing";
+import { AuditTrailTooLargeError } from "@/domain/audit-trail";
 import {
   ArtifactTooLargeError,
   StoreUnavailableError,
@@ -209,6 +211,8 @@ const ERROR_TABLE: ErrorMappingEntry[] = [
   { matches: (e) => e instanceof CapabilityClaimNotIssuableError, status: 422, exposeMessage: true },
   { matches: (e) => e instanceof UploadError, status: 400, exposeMessage: true },
   { matches: (e) => e instanceof ArtifactTooLargeError, status: 413, exposeMessage: true },
+  { matches: (e) => e instanceof AuditTrailSigningNotConfiguredError, status: 503, exposeMessage: true },
+  { matches: (e) => e instanceof AuditTrailTooLargeError, status: 413, exposeMessage: true },
   { matches: (e) => e instanceof UnknownAttachmentError, status: 400, exposeMessage: true },
   { matches: (e) => e instanceof RequestContractError, status: 422, exposeMessage: true },
   { matches: (e) => e instanceof StoreUnavailableError, status: 503, exposeMessage: false },

@@ -15,6 +15,7 @@ import { legacySubjectFor, workspaceUuidFor } from "@/lib/db/migration";
 import { PostgresTenantRepository } from "@/lib/db/tenant-store";
 import type { TenantRepository } from "@/lib/db/tenant-repository";
 import { workspaceHash } from "@/lib/persistence/store";
+import { verifyAuditTrail } from "@/domain/audit-trail";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
 import { ATTACHMENT_MAX_BYTES } from "@/domain/types";
 import type { AgNodeId, AuditArtifact } from "@/domain/pipeline/types";
@@ -48,6 +49,11 @@ class FakeKvStore implements DataStore {
       }
     }
     return n;
+  }
+  async createIfAbsent(key: string, value: unknown): Promise<boolean> {
+    if (this.m.has(key)) return false;
+    this.m.set(key, JSON.stringify(value));
+    return true;
   }
 }
 
@@ -353,6 +359,30 @@ describe.each(repositories)("repository contract: %s", (_name, make) => {
   itRepo("a missing artifact resolves to null", async () => {
     const repo = await make();
     expect(await repo.getArtifact(WS, "P-1", "A-1", "AG-PERSIST", 1)).toBeNull();
+  });
+
+  itRepo("records a trail entry for a save and verifies", async () => {
+    const repo = await make();
+    await repo.saveProject(WS, projectFixture("P-1", NOW));
+    const entries = await repo.listAuditTrail(WS);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].action).toBe("project.saved");
+    expect(verifyAuditTrail(entries).ok).toBe(true);
+  });
+
+  itRepo("lists trail entries in ascending seq order", async () => {
+    const repo = await make();
+    await repo.saveProject(WS, projectFixture("P-1", NOW));
+    await repo.saveProject(WS, projectFixture("P-2", LATE));
+    const entries = await repo.listAuditTrail(WS);
+    expect(entries.map((e) => e.seq)).toEqual([1, 2]);
+  });
+
+  itRepo("records the supplied actor on the trail", async () => {
+    const repo = await make();
+    await repo.saveProject(WS, projectFixture("P-1", NOW), "u:abc" as never);
+    const entries = await repo.listAuditTrail(WS);
+    expect(entries[0].actor).toBe("u:abc");
   });
 });
 

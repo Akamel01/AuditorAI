@@ -87,6 +87,9 @@ describe("harvest-health bridge (M-R8)", () => {
       async setIfAbsent(_k: string, _v: string, _ttl: number): Promise<boolean> {
         throw new Error("down");
       }
+      async createIfAbsent(_k: string, _v: unknown): Promise<boolean> {
+        throw new Error("down");
+      }
     }
 
     const health = await bridgeHarvestHealth(new FailStore(), 50);
@@ -113,6 +116,9 @@ describe("harvest-health bridge (M-R8)", () => {
       async del(_k: string): Promise<void> { throw new Error("down"); }
       async delByPrefix(_p: string): Promise<number> { throw new Error("down"); }
       async setIfAbsent(_k: string, _v: string, _ttl: number): Promise<boolean> {
+        throw new Error("down");
+      }
+      async createIfAbsent(_k: string, _v: unknown): Promise<boolean> {
         throw new Error("down");
       }
     }
