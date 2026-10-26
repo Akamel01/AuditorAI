@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import fs from "node:fs";
 
-const KEY = "e2e-trail-workspace-key-00000000";
+const KEY = "e2e-trail-" + crypto.randomUUID();
 
 test("audit trail: verified chain, export signed JSON", async ({ page }) => {
   await page.addInitScript(
@@ -18,7 +18,7 @@ test("audit trail: verified chain, export signed JSON", async ({ page }) => {
 
   await page.goto("/audit-trail");
   await expect(page.getByTestId("trail-verify-ok")).toBeVisible();
-  await expect(page.locator("tr", { hasText: "project.saved" })).toBeVisible();
+  await expect(page.locator("tr", { hasText: "project.saved" }).first()).toBeVisible();
   await expect(page.getByText(/Trail begins at .* prior history is not chained\./)).toBeVisible();
   await expect(page.getByTestId("trail-print")).toHaveText("print / save PDF");
 

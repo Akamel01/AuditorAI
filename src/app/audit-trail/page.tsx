@@ -38,6 +38,7 @@ export default function AuditTrailPage() {
   }, []);
 
   async function onExport() {
+    setError(null);
     try {
       await downloadTrailExport();
     } catch (e) {
@@ -107,7 +108,7 @@ export default function AuditTrailPage() {
 
             {data.entries.length > 0 && (
               <div className="mt-6 overflow-x-auto rounded-md border border-hairline bg-surface">
-                <table className="w-full text-[12px]">
+                <table className="w-full text-[12px] print:text-[10px]">
                   <thead>
                     <tr className="border-b border-hairline text-left font-mono text-[10.5px] uppercase tracking-[0.08em] text-faint">
                       <th className="px-3 py-2">seq</th>
@@ -123,16 +124,16 @@ export default function AuditTrailPage() {
                     {data.entries.map((e: AuditTrailEntry) => (
                       <tr key={e.seq} className="border-b border-hairline last:border-b-0">
                         <td className="px-3 py-2 font-mono">{e.seq}</td>
-                        <td className="px-3 py-2 font-mono">{e.recorded_at}</td>
+                        <td className="px-3 py-2 font-mono">{e.recorded_at ?? ""}</td>
                         <td className="px-3 py-2">
-                          {e.actor === "auditor" ? "unattributed (pre-account record)" : e.actor}
+                          {e.actor === "auditor" ? "unattributed (pre-account record)" : (e.actor ?? "unknown")}
                         </td>
-                        <td className="px-3 py-2">{e.action}</td>
+                        <td className="px-3 py-2">{e.action ?? "unknown"}</td>
                         <td className="px-3 py-2 font-mono">
-                          {e.subject.type} {e.subject.id}
+                          {e.subject?.type ?? "?"} {e.subject?.id ?? "?"}
                         </td>
-                        <td className="px-3 py-2 font-mono">{e.evidence_refs.length}</td>
-                        <td className="px-3 py-2 font-mono">{e.payload_hash.slice(0, 12)}</td>
+                        <td className="px-3 py-2 font-mono">{e.evidence_refs?.length ?? 0}</td>
+                        <td className="px-3 py-2 font-mono">{String(e.payload_hash ?? "").slice(0, 12)}</td>
                       </tr>
                     ))}
                   </tbody>
