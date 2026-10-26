@@ -10,6 +10,7 @@ export interface AuthTokens {
   expiresIn: number;
   subject: string;
   email: string | null;
+  emailVerified: boolean;
 }
 
 export class AuthUpstreamError extends Error {
@@ -37,14 +38,30 @@ function fetchImplOf(opts?: { fetchImpl?: typeof fetch }): typeof fetch {
   return opts?.fetchImpl ?? fetch;
 }
 
+function emailVerifiedFromToken(accessToken: string): boolean {
+  try {
+    const parts = accessToken.split(".");
+    if (parts.length !== 3) return false;
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+    const v = payload?.email_verified;
+    return v === true || v === "true";
+  } catch {
+    return false;
+  }
+}
+
 function mapTokens(body: Record<string, unknown>): AuthTokens {
   const user = (body.user ?? {}) as Record<string, unknown>;
+  const accessToken = String(body.access_token ?? "");
+  const confirmedAt = user.email_confirmed_at;
+  const fromUser = typeof confirmedAt === "string" && confirmedAt.trim().length > 0;
   return {
-    accessToken: String(body.access_token ?? ""),
+    accessToken,
     refreshToken: String(body.refresh_token ?? ""),
     expiresIn: Number(body.expires_in ?? 0),
     subject: String(user.id ?? body.sub ?? ""),
     email: (user.email ?? body.email ?? null) as string | null,
+    emailVerified: fromUser || emailVerifiedFromToken(accessToken),
   };
 }
 
@@ -80,25 +97,34 @@ export async function signInWithPassword(
   return mapTokens(body);
 }
 
-export async function createUserWithPassword(
+// GoTrue's /invite does not carry redirect_to or PKCE, so the magic link
+// (/auth/v1/otp) is the mechanism that binds the invitation to a verified inbox.
+export async function sendMagicLink(
   email: string,
-  password: string,
-  opts?: { fetchImpl?: typeof fetch },
-): Promise<{ subject: string; email: string | null }> {
-  const f = fetchImplOf(opts);
+  opts: { redirectTo: string; codeChallenge: string },
+  reqOpts?: { fetchImpl?: typeof fetch },
+): Promise<void> {
+  const f = fetchImplOf(reqOpts);
   const serviceKey = supabaseServiceRoleKey();
   if (!serviceKey) throw new AuthUpstreamError("auth not configured");
-  const body = await postJson(
-    "/auth/v1/admin/users",
-    { email, password, email_confirm: true },
-    { apikey: anonKey(), Authorization: `Bearer ${serviceKey}` },
-    f,
+  const res = await f(
+    `${baseUrl()}/auth/v1/otp?redirect_to=${encodeURIComponent(opts.redirectTo)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: anonKey(),
+        Authorization: `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify({
+        email,
+        create_user: true,
+        code_challenge: opts.codeChallenge,
+        code_challenge_method: "S256",
+      }),
+    },
   );
-  const user = (body.user ?? body) as Record<string, unknown>;
-  return {
-    subject: String(user.id ?? ""),
-    email: (user.email ?? null) as string | null,
-  };
+  if (!res.ok) throw new AuthUpstreamError("auth upstream error", res.status);
 }
 
 export async function exchangeCodeForTokens(

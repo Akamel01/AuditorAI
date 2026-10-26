@@ -15,5 +15,5 @@ export function noInvitationNoticeText(): string {
 }
 
 export function invitationPendingNoticeText(): string {
-  return "your invitation is pending — accept it";
+  return "check your email to accept the invitation";
 }

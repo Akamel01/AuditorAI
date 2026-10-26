@@ -110,8 +110,8 @@ export function newPkce(): { verifier: string; challenge: string } {
   return { verifier, challenge };
 }
 
-export function applyPkceCookie(res: NextResponse, verifier: string): void {
-  res.cookies.set(PKCE_COOKIE, verifier, baseCookieOpts(600));
+export function applyPkceCookie(res: NextResponse, verifier: string, maxAge = 600): void {
+  res.cookies.set(PKCE_COOKIE, verifier, baseCookieOpts(maxAge));
 }
 
 /** The verifier is single-use: expire it on the callback response. */

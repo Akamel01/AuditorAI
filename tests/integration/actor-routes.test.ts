@@ -18,6 +18,8 @@ const WS = "33333333-3333-3333-3333-333333333333";
 const KEY = "actor-route-workspace-key-0123456789";
 const SUBJECT = "user-subject-123";
 const EMAIL = "member@example.com";
+const STRANGER_SUBJECT = "stranger-subject";
+const STRANGER_EMAIL = "stranger@example.com";
 const JWT_SECRET = "actor-route-jwt-secret";
 const SUPABASE_URL = "https://example.supabase.co";
 
@@ -39,22 +41,31 @@ function mintToken(sub: string, email: string): string {
   return `${header}.${payload}.${sig}`;
 }
 
-function headers(withSession: boolean): Record<string, string> {
+function headers(withSession: boolean, subject?: string, email?: string): Record<string, string> {
   const h: Record<string, string> = {
     "x-workspace-key": KEY,
     "content-type": "application/json",
   };
   if (withSession) {
-    const token = mintToken(SUBJECT, EMAIL);
+    const resolvedSubject =
+      subject ?? SUBJECT;
+    const resolvedEmail =
+      email ??
+      (resolvedSubject === SUBJECT
+        ? EMAIL
+        : resolvedSubject === STRANGER_SUBJECT
+          ? STRANGER_EMAIL
+          : `${resolvedSubject}@example.com`);
+    const token = mintToken(resolvedSubject, resolvedEmail);
     h.cookie = `auditorai.session=${token}; auditorai.refresh=refresh-token`;
   }
   return h;
 }
 
-function projectRequest(withSession: boolean): Request {
+function projectRequest(withSession: boolean, subject?: string, email?: string): Request {
   return new Request("http://local/api/projects", {
     method: "POST",
-    headers: headers(withSession),
+    headers: headers(withSession, subject, email),
     body: JSON.stringify({
       name: "Actor provenance project",
       jurisdiction: "UK",
@@ -132,6 +143,24 @@ describe("actor provenance on a mutation (AC6/AC7)", () => {
     const body = (await res.json()) as { project: { updated_by?: string } };
     expect(body.project.updated_by).toBe(`legacy:${workspaceHash(KEY)}`);
     expect(body.project.updated_by).not.toBe("auditor");
+  });
+
+  it("a postgres signed-in non-member records legacy:<16-hex>, never u:stranger", async () => {
+    const res = await createProject(projectRequest(true, STRANGER_SUBJECT, STRANGER_EMAIL));
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as { project: { updated_by?: string } };
+    expect(body.project.updated_by).toBe(`legacy:${workspaceHash(KEY)}`);
+    expect(body.project.updated_by).not.toBe(`u:${STRANGER_SUBJECT}`);
+  });
+
+  it("a legacy-store caller with a session records legacy:<16-hex>", async () => {
+    setSqlClientForTests(null);
+    delete process.env.TENANT_STORE;
+
+    const res = await createProject(projectRequest(true));
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as { project: { updated_by?: string } };
+    expect(body.project.updated_by).toBe(`legacy:${workspaceHash(KEY)}`);
   });
 });
 

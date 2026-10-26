@@ -91,7 +91,7 @@ interface FetchCall {
 
 function stubAuthServer(opts: {
   passwordFails?: number;
-  tokens?: { access_token: string; refresh_token: string; expires_in: number; user: { id: string; email: string } };
+  tokens?: { access_token: string; refresh_token: string; expires_in: number; user: { id: string; email: string; email_confirmed_at?: string } };
 }): FetchCall[] {
   const calls: FetchCall[] = [];
   let passwordCalls = 0;
@@ -112,6 +112,9 @@ function stubAuthServer(opts: {
         return new Response(JSON.stringify({ error: "invalid_grant" }), { status: 400 });
       }
       return new Response(JSON.stringify(tokens), { status: 200 });
+    }
+    if (url.includes("/auth/v1/otp")) {
+      return new Response(JSON.stringify({}), { status: 200 });
     }
     if (url.includes("/auth/v1/admin/users")) {
       return new Response(JSON.stringify({ user: { id: tokens.user.id, email: tokens.user.email } }), { status: 200 });
@@ -242,9 +245,10 @@ describe("email sign-in is invite-gated (AC5)", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it("a pending invitation creates the account (email_confirm) and sets an httpOnly session", async () => {
+  it("a pending invitation sends a magic link (202) and leaves the row pending", async () => {
     setAuthEnv();
-    const calls = stubAuthServer({ passwordFails: 1 });
+    process.env.SUPABASE_AUTH_REDIRECT_ORIGIN = "https://app.example";
+    const calls = stubAuthServer({});
 
     const res = await emailRoute(
       jsonRequest("http://local/api/auth/email", "POST", {
@@ -252,23 +256,54 @@ describe("email sign-in is invite-gated (AC5)", () => {
         password: "secret",
       }),
     );
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(202);
     const body = await res.json();
-    expect(JSON.stringify(body)).not.toContain("access-token-value");
-    expect(JSON.stringify(body)).not.toContain("refresh-token-value");
+    expect(body).toMatchObject({ ok: true, notice: "check your email to accept the invitation" });
 
-    const setCookie = res.headers.get("set-cookie") ?? "";
-    expect(setCookie).toContain("auditorai.session=access-token-value");
-    expect(setCookie.toLowerCase()).toContain("httponly");
+    const otpCall = calls.find((c) => c.url.includes("/auth/v1/otp"));
+    expect(otpCall).toBeDefined();
+    expect(otpCall!.url).toContain("redirect_to=https%3A%2F%2Fapp.example%2Fapi%2Fauth%2Fcallback");
+    expect(otpCall!.body).toMatchObject({
+      email: INVITEE_EMAIL,
+      create_user: true,
+      code_challenge_method: "S256",
+    });
+    expect(typeof (otpCall!.body as Record<string, unknown>).code_challenge).toBe("string");
+    expect((otpCall!.body as Record<string, unknown>).code_challenge).not.toBe("");
 
     const adminCall = calls.find((c) => c.url.includes("/auth/v1/admin/users"));
-    expect(adminCall?.body).toMatchObject({ email: INVITEE_EMAIL, email_confirm: true });
+    expect(adminCall).toBeUndefined();
+    const pwCall = calls.find((c) => c.url.includes("grant_type=password"));
+    expect(pwCall).toBeUndefined();
+
+    const setCookie = res.headers.get("set-cookie") ?? "";
+    expect(setCookie).toContain("auditorai.pkce=");
+    expect(setCookie).not.toContain("auditorai.session=");
 
     const row = await db.query<{ subject_id: string; status: string }>(
       "select subject_id, status from public.workspace_members where workspace_id = $1 and email = $2",
       [WS, INVITEE_EMAIL],
     );
-    expect(row.rows[0]).toEqual({ subject_id: "invitee-subject", status: "active" });
+    expect(row.rows[0].status).toBe("pending");
+    expect(row.rows[0].subject_id.startsWith("pending:")).toBe(true);
+  });
+
+  it("an existing active member signs in with a password", async () => {
+    setAuthEnv();
+    const calls = stubAuthServer({});
+
+    const res = await emailRoute(
+      jsonRequest("http://local/api/auth/email", "POST", {
+        email: OWNER_EMAIL,
+        password: "secret",
+      }),
+    );
+    expect(res.status).toBe(200);
+    const setCookie = res.headers.get("set-cookie") ?? "";
+    expect(setCookie).toContain("auditorai.session=access-token-value");
+
+    const adminCall = calls.find((c) => c.url.includes("/auth/v1/admin/users"));
+    expect(adminCall).toBeUndefined();
   });
 
   it("the shared validator owns the body shape (422)", async () => {
@@ -370,5 +405,71 @@ describe("OAuth callback", () => {
     expect(setCookie).toContain("auditorai.pkce=");
     const pkceCall = calls.find((c) => c.url.includes("grant_type=pkce"));
     expect(pkceCall?.body).toMatchObject({ auth_code: "the-code", code_verifier: "the-verifier" });
+  });
+
+  it("callback without verified email leaves the invite pending", async () => {
+    setAuthEnv();
+    stubAuthServer({});
+    const res = await callbackRoute(
+      new Request("http://local/api/auth/callback?code=the-code", {
+        headers: { cookie: "auditorai.pkce=the-verifier" },
+      }),
+    );
+    expect(res.status).toBe(303);
+    const row = await db.query<{ subject_id: string; status: string }>(
+      "select subject_id, status from public.workspace_members where workspace_id = $1 and email = $2",
+      [WS, INVITEE_EMAIL],
+    );
+    expect(row.rows[0].status).toBe("pending");
+    expect(row.rows[0].subject_id.startsWith("pending:")).toBe(true);
+  });
+
+  it("callback with user.email_confirmed_at binds the invite", async () => {
+    setAuthEnv();
+    stubAuthServer({
+      tokens: {
+        access_token: "access-token-value",
+        refresh_token: "refresh-token-value",
+        expires_in: 3600,
+        user: { id: "invitee-subject", email: INVITEE_EMAIL, email_confirmed_at: "2024-01-01T00:00:00Z" },
+      },
+    });
+    const res = await callbackRoute(
+      new Request("http://local/api/auth/callback?code=the-code", {
+        headers: { cookie: "auditorai.pkce=the-verifier" },
+      }),
+    );
+    expect(res.status).toBe(303);
+    const row = await db.query<{ subject_id: string; status: string }>(
+      "select subject_id, status from public.workspace_members where workspace_id = $1 and email = $2",
+      [WS, INVITEE_EMAIL],
+    );
+    expect(row.rows[0]).toEqual({ subject_id: "invitee-subject", status: "active" });
+  });
+
+  it("callback with email_verified in the JWT binds the invite", async () => {
+    setAuthEnv();
+    const header = Buffer.from(JSON.stringify({ alg: "none" })).toString("base64url");
+    const payload = Buffer.from(JSON.stringify({ email_verified: true })).toString("base64url");
+    const jwt = `${header}.${payload}.x`;
+    stubAuthServer({
+      tokens: {
+        access_token: jwt,
+        refresh_token: "refresh-token-value",
+        expires_in: 3600,
+        user: { id: "invitee-subject", email: INVITEE_EMAIL },
+      },
+    });
+    const res = await callbackRoute(
+      new Request("http://local/api/auth/callback?code=the-code", {
+        headers: { cookie: "auditorai.pkce=the-verifier" },
+      }),
+    );
+    expect(res.status).toBe(303);
+    const row = await db.query<{ subject_id: string; status: string }>(
+      "select subject_id, status from public.workspace_members where workspace_id = $1 and email = $2",
+      [WS, INVITEE_EMAIL],
+    );
+    expect(row.rows[0]).toEqual({ subject_id: "invitee-subject", status: "active" });
   });
 });

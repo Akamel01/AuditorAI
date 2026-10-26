@@ -2,19 +2,20 @@
 //
 // The browser never receives a token. The route is INVITE-GATED (OD12): an
 // email with no invitation (and no accepted membership) gets the plain notice
-// and the Auth server is never called. Account creation happens only when a
-// pending invitation is being accepted (the Auth Admin API, email_confirm).
+// and the Auth server is never called. A pending invitation no longer creates
+// an account here; instead the inbox is proven by sending a magic link, and the
+// invitation is bound in /api/auth/callback only after the email is verified.
 import { NextResponse } from "next/server";
 import { badRequest, serverError } from "@/lib/api";
 import { authConfigured, authEnv } from "@/lib/auth/config";
 import {
   authNoticeText,
+  invitationPendingNoticeText,
   noInvitationNoticeText,
   providerNoticeText,
   tenantStoreNoticeText,
 } from "@/lib/auth/notice";
 import {
-  acceptPendingInvite,
   listMembershipsByEmail,
   normalizeEmail,
   type EmailMembership,
@@ -32,11 +33,11 @@ import {
 import { isTenantDatabaseAvailable, tenantSqlClient } from "@/lib/db/identity";
 import {
   AuthUpstreamError,
-  createUserWithPassword,
+  sendMagicLink,
   signInWithPassword,
   type AuthTokens,
 } from "@/lib/auth/supabase";
-import { applySessionCookies, sessionFromTokens } from "@/lib/auth/session";
+import { applyPkceCookie, applySessionCookies, newPkce, sessionFromTokens } from "@/lib/auth/session";
 import { authEmailRequest, readJsonBody } from "@/lib/request-schema";
 
 interface Credentials {
@@ -52,8 +53,6 @@ function isExpired(m: EmailMembership, now = Date.now()): boolean {
 }
 
 async function readCredentials(req: Request): Promise<Credentials> {
-  // The shared validator owns the body shape (422); the domain keeps the
-  // credential and invite rules. There is no second body reader.
   const body = await readJsonBody<{ email: string; password: string; workspace_id?: string }>(
     req,
     authEmailRequest,
@@ -65,8 +64,6 @@ async function readCredentials(req: Request): Promise<Credentials> {
   };
 }
 
-/** Pick the membership the request is signing in for. More than one pending
- *  invitation without an explicit workspace is an error, never rows[0]. */
 function selectMembership(rows: EmailMembership[], workspaceId: string | null): EmailMembership {
   if (workspaceId) {
     const chosen = rows.find((m) => m.workspaceId === workspaceId);
@@ -99,7 +96,6 @@ export async function POST(req: Request) {
     const email = normalizeEmail(credentials.email);
     const client = tenantSqlClient();
 
-    // The invite gate runs BEFORE any call to the Auth server (AC5).
     const memberships = await listMembershipsByEmail(client, email);
     if (!memberships.length) throw new NoInvitationError(noInvitationNoticeText());
 
@@ -109,37 +105,29 @@ export async function POST(req: Request) {
       throw new NoInvitationError(noInvitationNoticeText());
     }
 
+    // Pending invitation: prove inbox ownership via magic link instead of
+    // creating an account. Binding happens in /api/auth/callback.
+    if (selected.status === "pending") {
+      const origin = authEnv().redirectOrigin;
+      if (!origin) throw new ProviderNotConfiguredError(providerNoticeText("email"));
+      const redirectTo = `${origin.replace(/\/$/, "")}/api/auth/callback`;
+      const { verifier, challenge } = newPkce();
+      await sendMagicLink(email, { redirectTo, codeChallenge: challenge });
+      const res = NextResponse.json(
+        { ok: true, notice: invitationPendingNoticeText() },
+        { status: 202 },
+      );
+      applyPkceCookie(res, verifier, 3600);
+      return res;
+    }
+
+    // Active membership: password sign-in only.
     let tokens: AuthTokens;
     try {
       tokens = await signInWithPassword(email, credentials.password);
     } catch (e) {
       if (!(e instanceof AuthUpstreamError)) throw e;
-      // Only accepting an invitation may create an account (OD12).
-      if (selected.status !== "pending") throw new InvalidCredentialsError();
-      let created: { subject: string; email: string | null };
-      try {
-        created = await createUserWithPassword(email, credentials.password);
-      } catch (createError) {
-        // An existing account plus a wrong password is bad credentials, not a
-        // gateway fault (the Admin API refuses the duplicate).
-        if (
-          createError instanceof AuthUpstreamError &&
-          createError.status !== undefined &&
-          createError.status >= 400 &&
-          createError.status < 500
-        ) {
-          throw new InvalidCredentialsError();
-        }
-        throw createError;
-      }
-      if (!created.subject) throw new AuthUpstreamError("auth upstream returned no subject");
-      tokens = await signInWithPassword(email, credentials.password);
-    }
-
-    // A pending invitation is bound to the signed-in subject exactly once.
-    if (selected.status === "pending") {
-      const accepted = await acceptPendingInvite(client, tokens.subject, email, selected.workspaceId);
-      if (!accepted) throw new NoInvitationError(noInvitationNoticeText());
+      throw new InvalidCredentialsError();
     }
     if (!tokens.subject) throw new NotSignedInError();
 

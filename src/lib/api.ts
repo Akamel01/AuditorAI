@@ -170,7 +170,14 @@ export async function requireWorkspace(
     repo,
     databaseStatus,
     session,
-    actor: actorForRequest(session, resolution.legacyHash),
+    // Attribute u:<sub> only when the session subject is an active member of
+    // the resolved workspace (postgres mode with a non-null role); otherwise
+    // fall back to legacy:<hash>. On the legacy store a session never changes
+    // the actor, so pass null there too.
+    actor: actorForRequest(
+      resolution.mode === "postgres" && resolution.subjectRole !== null ? session : null,
+      resolution.legacyHash,
+    ),
     tenant,
   };
 }

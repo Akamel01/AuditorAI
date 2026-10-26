@@ -6,6 +6,7 @@ import { useState } from "react";
  *  request validator owns the body shape; the browser never receives a token. */
 export function SignInForm() {
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -14,6 +15,7 @@ export function SignInForm() {
     const workspaceId = String(form.get("workspace_id") ?? "").trim();
     setBusy(true);
     setError(null);
+    setNotice(null);
     try {
       const res = await fetch("/api/auth/email", {
         method: "POST",
@@ -24,11 +26,15 @@ export function SignInForm() {
           ...(workspaceId ? { workspace_id: workspaceId } : {}),
         }),
       });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; notice?: string };
       if (res.ok) {
+        if (data.notice) {
+          setNotice(data.notice);
+          return;
+        }
         window.location.assign("/");
         return;
       }
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
       setError(data.error ?? "sign-in failed");
     } catch {
       setError("sign-in failed");
@@ -77,6 +83,11 @@ export function SignInForm() {
       {error ? (
         <p role="alert" className="text-sm">
           {error}
+        </p>
+      ) : null}
+      {notice ? (
+        <p role="status" className="text-sm">
+          {notice}
         </p>
       ) : null}
     </form>

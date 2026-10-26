@@ -40,7 +40,7 @@ export async function GET(req: Request) {
     const tokens = await exchangeCodeForTokens(code, verifier);
     if (!tokens.subject) throw new AuthUpstreamError("auth upstream returned no subject");
 
-    if (tokens.email) {
+    if (tokens.email && tokens.emailVerified) {
       try {
         await bindPendingInvite(tokens.subject, tokens.email);
       } catch {

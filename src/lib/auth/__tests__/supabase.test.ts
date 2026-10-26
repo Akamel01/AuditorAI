@@ -216,7 +216,7 @@ describe("supabase auth module", () => {
     expect(calls.some((u) => u.includes("/auth/v1/logout"))).toBe(true);
   });
 
-  it("createUserWithPassword posts to admin/users with email_confirm:true and service-role key", async () => {
+  it("sendMagicLink posts to /auth/v1/otp with redirect_to, body, and service-role key", async () => {
     let captured: { url: string; body: unknown; headers: Record<string, string> } | null = null;
     const fakeFetch = (async (url: string, init?: RequestInit) => {
       captured = {
@@ -224,19 +224,16 @@ describe("supabase auth module", () => {
         body: JSON.parse(String(init?.body)),
         headers: init?.headers as Record<string, string>,
       };
-      return new Response(
-        JSON.stringify({ user: { id: "new-subj", email: "new@example.com" } }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({}), { status: 200, headers: { "Content-Type": "application/json" } });
     }) as unknown as typeof fetch;
-    const res = await supabase.createUserWithPassword("new@example.com", "pw", {
-      fetchImpl: fakeFetch,
-    });
-    expect(captured!.url).toContain("/auth/v1/admin/users");
-    expect((captured!.body as Record<string, unknown>).email_confirm).toBe(true);
+    await supabase.sendMagicLink("new@example.com", { redirectTo: "https://app.example/api/auth/callback", codeChallenge: "challenge-xyz" }, { fetchImpl: fakeFetch });
+    expect(captured!.url).toContain("/auth/v1/otp?redirect_to=");
+    expect(captured!.url).toContain("redirect_to=https%3A%2F%2Fapp.example%2Fapi%2Fauth%2Fcallback");
+    expect((captured!.body as Record<string, unknown>).email).toBe("new@example.com");
+    expect((captured!.body as Record<string, unknown>).create_user).toBe(true);
+    expect((captured!.body as Record<string, unknown>).code_challenge_method).toBe("S256");
+    expect((captured!.body as Record<string, unknown>).code_challenge).toBe("challenge-xyz");
     expect(captured!.headers.Authorization).toBe("Bearer service-role-key-999");
-    expect(res.subject).toBe("new-subj");
-    expect(res.email).toBe("new@example.com");
   });
 
   it("has no signUpWithPassword export", () => {
