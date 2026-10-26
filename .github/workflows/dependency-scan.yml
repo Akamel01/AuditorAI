@@ -1,0 +1,98 @@
+name: dependency scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "41 6 * * 1" # weekly, Monday 06:41 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: runtime inventory, SBOM and audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: inventory and pin check
+        run: |
+          node -e '
+          const fs = require("node:fs");
+          const pkg = require("./package.json");
+          const doc = fs.readFileSync("docs/security/dependency-inventory.md", "utf8");
+          const deps = Object.keys(pkg.dependencies).sort();
+          const rows = [...doc.matchAll(/^\| `([^`]+)` \| ([^|]+?) \|/gm)].map((m) => [m[1].trim(), m[2].trim()]);
+          const names = rows.map(([name]) => name).sort();
+          const duplicate = names.filter((name, i) => i > 0 && names[i - 1] === name);
+          const missing = deps.filter((dep) => !names.includes(dep));
+          const stale = names.filter((name) => !deps.includes(name));
+          const unpinned = deps.filter((dep) => !/^\d+\.\d+\.\d+$/.test(pkg.dependencies[dep]));
+          const mismatch = rows
+            .filter(([name, version]) => deps.includes(name) && pkg.dependencies[name] !== version)
+            .map(([name, version]) => `${name}: doc ${version} != manifest ${pkg.dependencies[name]}`);
+          if (missing.length || stale.length || unpinned.length || mismatch.length || duplicate.length) {
+            console.error("inventory drift", { missing, stale, unpinned, mismatch, duplicate });
+            process.exit(1);
+          }
+          console.log(`inventory and pins OK: ${deps.length} runtime deps`);
+          '
+
+      - name: generate SBOM
+        run: npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev > "$RUNNER_TEMP/sbom.cdx.json"
+
+      - name: install runtime tree
+        run: npm ci --omit=dev
+
+      - name: audit runtime
+        id: audit
+        continue-on-error: true
+        run: |
+          rc=0
+          npm audit --omit=dev --audit-level=high --json > "$RUNNER_TEMP/audit-runtime.json" || rc=$?
+          node -e '
+          const report = require(process.argv[1]);
+          const counts = report.metadata.vulnerabilities;
+          console.log(`## Runtime audit — ${counts.total} advisories (${counts.critical} critical, ${counts.high} high)`);
+          if (counts.total === 0) {
+            console.log("No runtime advisories. Gate: pass.");
+          } else {
+            console.log("| package | severity | direct | fix |");
+            console.log("|---|---|---|---|");
+            for (const [name, finding] of Object.entries(report.vulnerabilities || {})) {
+              const fix = finding.fixAvailable === true ? "npm audit fix" : finding.fixAvailable ? "manual/breaking" : "none";
+              console.log(`| ${name} | ${finding.severity} | ${finding.isDirect} | ${fix} |`);
+            }
+          }
+          ' "$RUNNER_TEMP/audit-runtime.json" >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+
+      - name: upload audit and SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-scan-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/audit-runtime.json
+            ${{ runner.temp }}/sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: enforce severity gate
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::error::runtime dependency audit did not pass — high/critical advisories or a scan error; see the step summary and artifact"
+          exit 1
