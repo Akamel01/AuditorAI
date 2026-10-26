@@ -158,9 +158,13 @@ export function canonicalJson(value: unknown): string {
     throw new TypeError(`unsupported value type: ${t}`);
   }
   if (Array.isArray(value)) {
-    // undefined holes / sparse arrays are not allowed
-    if (value.some((v) => v === undefined)) throw new TypeError("undefined array element");
-    return "[" + value.map(canonicalJson).join(",") + "]";
+    // undefined holes / sparse arrays are not allowed (some skips holes)
+    const out: string[] = [];
+    for (let i = 0; i < value.length; i++) {
+      if (!(i in value)) throw new TypeError("sparse array hole");
+      out.push(canonicalJson(value[i]));
+    }
+    return "[" + out.join(",") + "]";
   }
   if (t === "object") {
     const proto = Object.getPrototypeOf(value);
@@ -259,7 +263,11 @@ function isShapeValid(value: unknown): value is AuditTrailEntry {
   if (typeof e.actor !== "string") return false;
   if (!isAuditTrailAction(e.action as string)) return false;
   if (!isSubjectValid(e.subject)) return false;
-  if (!Array.isArray(e.evidence_refs) || !e.evidence_refs.every((x) => typeof x === "string")) return false;
+  if (!Array.isArray(e.evidence_refs)) return false;
+  for (let i = 0; i < e.evidence_refs.length; i++) {
+    if (!(i in e.evidence_refs)) return false;
+    if (typeof e.evidence_refs[i] !== "string") return false;
+  }
   if (!isPayloadValid(e.payload)) return false;
   if (typeof e.payload_hash !== "string" || !HEX64.test(e.payload_hash)) return false;
   if (typeof e.prev_hash !== "string" || !HEX64.test(e.prev_hash)) return false;

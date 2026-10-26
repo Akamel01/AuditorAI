@@ -81,6 +81,10 @@ describe("canonicalJson", () => {
     expect(() => canonicalJson([undefined])).toThrow(TypeError);
     expect(() => canonicalJson({ a: [undefined] })).toThrow(TypeError);
   });
+  it("throws on sparse arrays", () => {
+    expect(() => canonicalJson(Array(1))).toThrow(TypeError);
+    expect(() => canonicalJson([, 1] as unknown)).toThrow(TypeError);
+  });
   it("drops undefined object props before recursing", () => {
     expect(canonicalJson({ a: undefined })).toBe("{}");
   });
@@ -133,6 +137,11 @@ describe("shape invalid", () => {
     bad.entry_hash = auditTrailEntryHash(bad);
     const r2 = verifyAuditTrail([bad]);
     expect(r2.reason).toBe("invalid_shape");
+  });
+  it("rejects sparse evidence_refs", () => {
+    const e = makeEntry(1);
+    const bad = { ...e, evidence_refs: Array(2) as unknown as string[] };
+    expect(verifyAuditTrail([bad]).reason).toBe("invalid_shape");
   });
   it("rejects empty subject id", () => {
     const e = makeEntry(1);
@@ -528,6 +537,25 @@ describe("signing", () => {
 });
 
 describe("cap", () => {
+  it("derives trail_starts_at from first entry when omitted", () => {
+    const e1 = makeEntry(1);
+    const v = verifyAuditTrail([e1]);
+    const body = buildAuditTrailExport({
+      workspace: "ws",
+      exported_at: "2026-01-01T00:00:00.000Z",
+      entries: [e1],
+      verification: v,
+    });
+    expect(body.trail_starts_at).toBe(e1.recorded_at);
+    const empty = buildAuditTrailExport({
+      workspace: "ws",
+      exported_at: "2026-01-01T00:00:00.000Z",
+      entries: [],
+      verification: verifyAuditTrail([]),
+    });
+    expect(empty.trail_starts_at).toBeNull();
+  });
+
   it("accepts 20000 and rejects 20001", () => {
     const e1 = makeEntry(1);
     const okEntries: AuditTrailEntry[] = Array.from({ length: AUDIT_TRAIL_MAX_EXPORT_ENTRIES }, () => e1);
@@ -543,14 +571,20 @@ describe("cap", () => {
     expect(body.trail_starts_at).toBe(e1.recorded_at);
 
     const tooMany: AuditTrailEntry[] = Array.from({ length: AUDIT_TRAIL_MAX_EXPORT_ENTRIES + 1 }, () => e1);
-    expect(() =>
+    try {
       buildAuditTrailExport({
         workspace: "ws",
         exported_at: "2026-01-01T00:00:00.000Z",
         entries: tooMany,
         verification: v,
-      }),
-    ).toThrow(AuditTrailTooLargeError);
+      });
+      throw new Error("expected throw");
+    } catch (err) {
+      const e = err as AuditTrailTooLargeError;
+      expect(e).toBeInstanceOf(AuditTrailTooLargeError);
+      expect(e.count).toBe(AUDIT_TRAIL_MAX_EXPORT_ENTRIES + 1);
+      expect(e.cap).toBe(AUDIT_TRAIL_MAX_EXPORT_ENTRIES);
+    }
   });
 });
 
