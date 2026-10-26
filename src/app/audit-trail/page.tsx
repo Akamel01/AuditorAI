@@ -49,6 +49,7 @@ export default function AuditTrailPage() {
   const v = data?.verification;
   const headHash = v?.head?.entry_hash ?? null;
   const headSeq = v?.head?.seq ?? null;
+  const entries = (data?.entries ?? []).filter((e): e is AuditTrailEntry => Boolean(e));
 
   return (
     <AppShell>
@@ -100,13 +101,13 @@ export default function AuditTrailPage() {
                 : "No recorded activity yet. Prior history is not chained."}
             </div>
 
-            {data.entries.length === 0 && (
+            {entries.length === 0 && (
               <div className="mt-6">
                 <EmptyState title="No recorded activity yet." hint="Mutations of this workspace will appear here as an append-only chain." />
               </div>
             )}
 
-            {data.entries.length > 0 && (
+            {entries.length > 0 && (
               <div className="mt-6 overflow-x-auto rounded-md border border-hairline bg-surface">
                 <table className="w-full text-[12px] print:text-[10px]">
                   <thead>
@@ -121,9 +122,9 @@ export default function AuditTrailPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.entries.map((e: AuditTrailEntry) => (
-                      <tr key={e.seq} className="border-b border-hairline last:border-b-0">
-                        <td className="px-3 py-2 font-mono">{e.seq}</td>
+                    {entries.map((e: AuditTrailEntry, i: number) => (
+                      <tr key={e.seq ?? i} className="border-b border-hairline last:border-b-0">
+                        <td className="px-3 py-2 font-mono">{e.seq ?? "?"}</td>
                         <td className="px-3 py-2 font-mono">{e.recorded_at ?? ""}</td>
                         <td className="px-3 py-2">
                           {e.actor === "auditor" ? "unattributed (pre-account record)" : (e.actor ?? "unknown")}
