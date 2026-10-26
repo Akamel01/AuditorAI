@@ -146,25 +146,6 @@ describe("session cookie seam", () => {
     expect(challenge).toBe(expected);
   });
 
-  it("newPkce aliases pkcePair", () => {
-    const a = session.newPkce();
-    const b = session.pkcePair();
-    expect(b.verifier.length).toBeGreaterThanOrEqual(43);
-    expect(typeof a.challenge).toBe("string");
-  });
-
-  it("setSessionCookies alias works", () => {
-    const res = new NextResponse(null);
-    session.setSessionCookies(res, {
-      subject: "u",
-      email: null,
-      accessToken: "at",
-      refreshToken: "rt",
-      expiresAt: 0,
-    });
-    expect(res.headers.get("set-cookie")).toContain("auditorai.session=at");
-  });
-
   it("pkceVerifierFromCookie reads PKCE cookie", () => {
     const req = new Request("http://x/", { headers: { cookie: "auditorai.pkce=verifier-xyz" } });
     expect(session.pkceVerifierFromCookie(req)).toBe("verifier-xyz");

@@ -26,7 +26,7 @@ export async function DELETE(req: Request, ctx: Ctx) {
   if (!auth.ok) return auth.res;
   try {
     const { projectId, attachmentId } = await ctx.params;
-    await auth.repo.deleteAttachment(auth.ws, projectId, attachmentId);
+    await auth.repo.deleteAttachment(auth.ws, projectId, attachmentId, auth.actor);
     return NextResponse.json({ deleted: attachmentId });
   } catch (e) {
     return serverError(e);

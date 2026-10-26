@@ -148,6 +148,7 @@ export async function POST(req: Request, ctx: Ctx) {
       auditId,
       frozen,
       new Date().toISOString(),
+      auth.actor,
     );
     return NextResponse.json({ issue }, { status: 201 });
   } catch (e) {

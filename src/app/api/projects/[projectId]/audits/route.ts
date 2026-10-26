@@ -42,7 +42,7 @@ export async function POST(req: Request, ctx: Ctx) {
         })
       : runAudit(project, ranAtIso);
 
-    await auth.repo.saveAudit(auth.ws, result);
+    await auth.repo.saveAudit(auth.ws, result, auth.actor);
     return NextResponse.json({ audit: result }, { status: 201 });
   } catch (e) {
     return serverError(e);

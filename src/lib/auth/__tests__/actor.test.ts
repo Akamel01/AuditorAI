@@ -1,26 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { resolveActor, legacyActorFor, adminActorFor, actorForRequest } from "@/lib/auth/actor";
-
-
-function mkReq(cookie?: string): Request {
-  const headers: Record<string, string> = {};
-  if (cookie) headers.cookie = cookie;
-  return new Request("http://localhost/api/x", { headers });
-}
+import { actorForRequest } from "@/lib/auth/actor";
+import { legacyActor, adminActor } from "@/domain/actor";
 
 describe("actor", () => {
-  it("resolveActor returns null without session", () => {
-    expect(resolveActor(mkReq())).toBeNull();
-  });
-
-  it("legacyActorFor returns legacy:<16-hex>", () => {
-    const v = legacyActorFor("abcdef0123456789");
+  it("the domain legacy actor is legacy:<16-hex>", () => {
+    const v = legacyActor("abcdef0123456789");
     expect(v).toBe("legacy:abcdef0123456789");
   });
 
-  it("adminActorFor returns admin:<digest>", () => {
-    const v = adminActorFor("deadbeef");
+  it("the domain admin actor is admin:<digest>", () => {
+    const v = adminActor("deadbeef");
     expect(v).toBe("admin:deadbeef");
   });
 

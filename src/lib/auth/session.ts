@@ -98,8 +98,6 @@ export function applySessionCookies(
   res.cookies.set(REFRESH_COOKIE, session.refreshToken, baseCookieOpts());
 }
 
-export const setSessionCookies = applySessionCookies;
-
 export function clearSessionCookies(res: NextResponse): void {
   res.cookies.set(SESSION_COOKIE, "", baseCookieOpts(0));
   res.cookies.set(REFRESH_COOKIE, "", baseCookieOpts(0));
@@ -112,7 +110,32 @@ export function newPkce(): { verifier: string; challenge: string } {
   return { verifier, challenge };
 }
 
-export const pkcePair = newPkce;
+export function applyPkceCookie(res: NextResponse, verifier: string): void {
+  res.cookies.set(PKCE_COOKIE, verifier, baseCookieOpts(600));
+}
+
+/** The verifier is single-use: expire it on the callback response. */
+export function clearPkceCookie(res: NextResponse): void {
+  res.cookies.set(PKCE_COOKIE, "", baseCookieOpts(0));
+}
+
+/** The browser never holds a token: the server turns the verified Auth tokens
+ *  into the httpOnly session it stores in the cookie. */
+export function sessionFromTokens(tokens: {
+  accessToken: string;
+  refreshToken: string;
+  subject: string;
+  email: string | null;
+  expiresIn: number;
+}): AuthSession {
+  return {
+    subject: tokens.subject,
+    email: tokens.email,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    expiresAt: Math.floor(Date.now() / 1000) + tokens.expiresIn,
+  };
+}
 
 export function pkceVerifierFromCookie(
   input: Request | string | null | undefined,

@@ -8,7 +8,7 @@ import {
   assertWritableActor,
   pendingSubjectFor,
 } from "@/domain/actor";
-import { tenantClaimJson } from "@/lib/db/claim";
+import { claimsJson } from "@/lib/db/identity";
 
 describe("actor id", () => {
   it("constructors", () => {
@@ -43,13 +43,8 @@ describe("actor id", () => {
     expect(a).not.toBe(b);
   });
 
-  it("tenantClaimJson emits exactly four fields", () => {
-    const json = tenantClaimJson({
-      sub: "s",
-      workspace_id: "w",
-      role: "member",
-      email: "e@x.com",
-    });
+  it("the claim document emits exactly four fields", () => {
+    const json = claimsJson("s", "w", "member", "e@x.com");
     const parsed = JSON.parse(json);
     expect(Object.keys(parsed)).toEqual(["sub", "workspace_id", "role", "email"]);
   });

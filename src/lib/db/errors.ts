@@ -51,6 +51,13 @@ export class NotSignedInError extends Error {
   }
 }
 
+export class InvalidCredentialsError extends Error {
+  constructor(detail = "invalid email or password") {
+    super(detail);
+    this.name = "InvalidCredentialsError";
+  }
+}
+
 export class AuthNotConfiguredError extends Error {
   constructor(detail = "auth not configured") {
     super(detail);
@@ -90,5 +97,14 @@ export class NoInvitationError extends Error {
   constructor(detail = "no invitation") {
     super(detail);
     this.name = "NoInvitationError";
+  }
+}
+
+/** The email has pending invitations in more than one workspace and the
+ *  request did not name which one to accept. Never silently pick one. */
+export class AmbiguousInvitationError extends Error {
+  constructor(detail = "multiple pending invitations; choose a workspace") {
+    super(detail);
+    this.name = "AmbiguousInvitationError";
   }
 }

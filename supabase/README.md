@@ -186,6 +186,16 @@ psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
 
 `GET /api/auth/me` surfaces the signed-in user's uuid so the operator can paste it into step 3.
 
+### Sign-in token verification — HS256 only (important)
+
+`src/lib/auth/supabase.ts:verifyAccessToken` verifies **HS256 with
+`SUPABASE_JWT_SECRET` only**. Newer Supabase projects sign access tokens with
+**asymmetric keys** (ES256/RS256, published via JWKS) and do not expose a
+legacy JWT secret. On such a project the sign-in session will not verify:
+either use the project's **legacy JWT secret** for this deployment, or a
+follow-up must add JWKS/asymmetric verification to the same function. Nothing
+else in the app depends on the signing algorithm.
+
 Re-runnability: every statement in `0004` is idempotent (`add column if not exists`,
 `create index if not exists`, `drop policy if exists` + `create policy`,
 `create or replace function`, a guarded `add constraint`). A partial apply is

@@ -83,7 +83,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
       next = promoted.value;
     }
 
-    await auth.repo.saveAudit(auth.ws, next);
+    await auth.repo.saveAudit(auth.ws, next, auth.actor);
     return NextResponse.json({ audit: next });
   } catch (e) {
     return serverError(e);

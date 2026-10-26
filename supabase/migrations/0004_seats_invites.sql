@@ -96,12 +96,16 @@ create or replace function public.app_claim_email() returns text language sql st
 
 -- ---------- 5. the membership policies ----------
 -- SELECT (RLS HOLE 2, OD5.2 + OD20-N2): a member reads the member list of
--- their OWN workspace. The ONLY row a caller may see outside its own
--- workspace is its OWN pending invitation (an invitee is not a member yet).
+-- their OWN workspace. Outside its own workspace a caller may see only the
+-- rows bound to its OWN verified email (its invitation, and any membership it
+-- already accepted), never another member's row. The sign-in surface needs the
+-- own-email branch to resolve a returning member (and to refuse a silent
+-- rows[0] when the email belongs to several workspaces); the workspace branch
+-- is what makes the member list a per-workspace list.
 drop policy if exists workspace_members_select on public.workspace_members;
 create policy workspace_members_select on public.workspace_members for select
   using (workspace_id = public.app_claim_workspace_id()
-         or (email = public.app_claim_email() and status = 'pending'));
+         or email = public.app_claim_email());
 
 -- INSERT (RLS HOLE 3, OD5.3 + OD14): the inviter inserts a member row for
 -- ANOTHER subject, with the role carried in the claim. 'admin' is granted only
