@@ -16,8 +16,8 @@ src/
     project-edits.ts             pure project create/patch policy (stage gate, no-silent-
                                  detach merge); routes parse → call → respond
     finding-review.ts            reviewer-status actions + PATCH payload shape (ADR-0003)
-     audit-trail.ts              append-only hash-chained audit trail domain model, hashes, verify, signed export (ticket #55)
-     candidate-review.ts          candidate promotion: F-AI-* minting, wording-gate parity,
+    audit-trail.ts               append-only hash-chained audit trail domain model, hashes, verify, signed export (ticket #55)
+    candidate-review.ts          candidate promotion: F-AI-* minting, wording-gate parity,
                                  index-stable batch application (ADR-0006)
     engine.ts                    runAudit(): thin compatibility facade over pipeline.runAll
     pipeline/                    registry-driven audit graph

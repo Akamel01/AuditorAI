@@ -139,9 +139,12 @@ export class AuditTrailTooLargeError extends Error {
 
 // --- canonical JSON ---------------------------------------------------------
 
+// Honest limit: the chain proves internal consistency only. A store-write attacker can
+// recompute a suffix and the chain will still verify; a signed export made before the
+// rewrite is the notarisation. Tail truncation is undetectable without an external head.
 export function canonicalJson(value: unknown): string {
   if (value === null) return "null";
-  if (value === undefined) return undefined as unknown as string;
+  if (value === undefined) throw new TypeError("undefined is not serialisable");
   const t = typeof value;
   if (t === "string") return JSON.stringify(value);
   if (t === "boolean") return value ? "true" : "false";
@@ -155,6 +158,8 @@ export function canonicalJson(value: unknown): string {
     throw new TypeError(`unsupported value type: ${t}`);
   }
   if (Array.isArray(value)) {
+    // undefined holes / sparse arrays are not allowed
+    if (value.some((v) => v === undefined)) throw new TypeError("undefined array element");
     return "[" + value.map(canonicalJson).join(",") + "]";
   }
   if (t === "object") {
@@ -167,7 +172,7 @@ export function canonicalJson(value: unknown): string {
     const parts: string[] = [];
     for (const k of keys) {
       const v = obj[k];
-      if (v === undefined) continue;
+      if (v === undefined) continue; // drop before recursing
       parts.push(JSON.stringify(k) + ":" + canonicalJson(v));
     }
     return "{" + parts.join(",") + "}";
@@ -237,8 +242,16 @@ export function evidenceRefsOf(source: EvidenceRefSource): string[] {
 
 // --- verify -----------------------------------------------------------------
 
-function isShapeValid(value: unknown): value is AuditTrailEntry {
+const HEX64 = /^[0-9a-f]{64}$/;
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+
+function isShapeValid(value: unknown): value is AuditTrailEntry {
+  if (!isPlainObject(value)) return false;
   const e = value as Record<string, unknown>;
   if (typeof e.seq !== "number" || !Number.isInteger(e.seq) || e.seq < 1) return false;
   if (typeof e.workspace !== "string") return false;
@@ -248,14 +261,14 @@ function isShapeValid(value: unknown): value is AuditTrailEntry {
   if (!isSubjectValid(e.subject)) return false;
   if (!Array.isArray(e.evidence_refs) || !e.evidence_refs.every((x) => typeof x === "string")) return false;
   if (!isPayloadValid(e.payload)) return false;
-  if (typeof e.payload_hash !== "string") return false;
-  if (typeof e.prev_hash !== "string") return false;
-  if (typeof e.entry_hash !== "string") return false;
+  if (typeof e.payload_hash !== "string" || !HEX64.test(e.payload_hash)) return false;
+  if (typeof e.prev_hash !== "string" || !HEX64.test(e.prev_hash)) return false;
+  if (typeof e.entry_hash !== "string" || !HEX64.test(e.entry_hash)) return false;
   return true;
 }
 
 function isSubjectValid(value: unknown): value is AuditTrailSubject {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  if (!isPlainObject(value)) return false;
   const s = value as Record<string, unknown>;
   const types: AuditTrailSubjectType[] = [
     "project",
@@ -265,14 +278,14 @@ function isSubjectValid(value: unknown): value is AuditTrailSubject {
     "artifact_trail",
   ];
   if (!types.includes(s.type as AuditTrailSubjectType)) return false;
-  if (typeof s.id !== "string") return false;
+  if (typeof s.id !== "string" || s.id === "") return false;
   if (s.project_id !== null && typeof s.project_id !== "string") return false;
   if (s.audit_id !== null && typeof s.audit_id !== "string") return false;
   return true;
 }
 
 function isPayloadValid(value: unknown): value is AuditTrailPayload {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  if (!isPlainObject(value)) return false;
   for (const v of Object.values(value as Record<string, unknown>)) {
     const t = typeof v;
     if (v === null) continue;
@@ -504,7 +517,8 @@ export function verifyAuditTrailExport(
     typeof exported !== "object" ||
     !exported.signature ||
     typeof exported.signature.key_id !== "string" ||
-    typeof exported.signature.value !== "string"
+    typeof exported.signature.value !== "string" ||
+    exported.signature.alg !== "hmac-sha256"
   ) {
     const chain =
       exported && Array.isArray((exported as { entries?: unknown }).entries)

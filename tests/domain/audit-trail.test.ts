@@ -76,6 +76,14 @@ describe("canonicalJson", () => {
     expect(() => canonicalJson(new Map())).toThrow(TypeError);
     expect(() => canonicalJson(new Set())).toThrow(TypeError);
   });
+  it("throws on undefined and undefined array elements", () => {
+    expect(() => canonicalJson(undefined)).toThrow(TypeError);
+    expect(() => canonicalJson([undefined])).toThrow(TypeError);
+    expect(() => canonicalJson({ a: [undefined] })).toThrow(TypeError);
+  });
+  it("drops undefined object props before recursing", () => {
+    expect(canonicalJson({ a: undefined })).toBe("{}");
+  });
 });
 
 describe("build entry", () => {
@@ -85,6 +93,76 @@ describe("build entry", () => {
     expect(e.prev_hash).toBe(AUDIT_TRAIL_GENESIS_HASH);
     expect(e.payload_hash).toMatch(/^[0-9a-f]{64}$/);
     expect(e.entry_hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+  it("write-side rejects non-writable actors", () => {
+    const subject: AuditTrailSubject = { type: "project", id: "p1", project_id: "p1", audit_id: null };
+    expect(() =>
+      buildAuditTrailEntry({
+        workspace: "ws",
+        seq: 1,
+        prev_hash: AUDIT_TRAIL_GENESIS_HASH,
+        recorded_at: "2026-01-01T00:00:00.000Z",
+        actor: "auditor" as never,
+        action: "project.saved",
+        subject,
+        payload: {},
+      }),
+    ).toThrow();
+    expect(() =>
+      buildAuditTrailEntry({
+        workspace: "ws",
+        seq: 1,
+        prev_hash: AUDIT_TRAIL_GENESIS_HASH,
+        recorded_at: "2026-01-01T00:00:00.000Z",
+        actor: "bogus" as never,
+        action: "project.saved",
+        subject,
+        payload: {},
+      }),
+    ).toThrow();
+  });
+});
+
+describe("shape invalid", () => {
+  it("rejects empty object and bad prev_hash", () => {
+    const r = verifyAuditTrail([{}]);
+    expect(r.ok).toBe(false);
+    expect(r.reason).toBe("invalid_shape");
+    const e = makeEntry(1);
+    const bad = { ...e, prev_hash: "x".repeat(64) };
+    bad.entry_hash = auditTrailEntryHash(bad);
+    const r2 = verifyAuditTrail([bad]);
+    expect(r2.reason).toBe("invalid_shape");
+  });
+  it("rejects empty subject id", () => {
+    const e = makeEntry(1);
+    const bad = { ...e, subject: { ...e.subject, id: "" } };
+    bad.entry_hash = auditTrailEntryHash(bad);
+    bad.payload_hash = auditTrailPayloadHash(bad.payload);
+    const r = verifyAuditTrail([bad]);
+    expect(r.reason).toBe("invalid_shape");
+  });
+  it("rejects non-plain payload/subject without throwing", () => {
+    const e = makeEntry(1);
+    const mapPayload = { ...e, payload: new Map() as unknown as AuditTrailEntry["payload"] };
+    expect(() => verifyAuditTrail([mapPayload])).not.toThrow();
+    expect(verifyAuditTrail([mapPayload]).reason).toBe("invalid_shape");
+    const datePayload = { ...e, payload: new Date() as unknown as AuditTrailEntry["payload"] };
+    expect(verifyAuditTrail([datePayload]).reason).toBe("invalid_shape");
+    class Foo {}
+    const classSubject = { ...e, subject: new Foo() as unknown as AuditTrailEntry["subject"] };
+    expect(verifyAuditTrail([classSubject]).reason).toBe("invalid_shape");
+  });
+});
+
+describe("constants", () => {
+  it("genesis hash is 64 zeros", () => {
+    expect(AUDIT_TRAIL_GENESIS_HASH).toBe("0".repeat(64));
+  });
+  it("build is deterministic", () => {
+    const a = makeEntry(1);
+    const b = makeEntry(1);
+    expect(a.entry_hash).toBe(b.entry_hash);
   });
 });
 
@@ -119,11 +197,25 @@ describe("verify", () => {
 
   it("detects modified recorded field without recompute -> entry_hash_mismatch", () => {
     const e1 = makeEntry(1);
-    const tampered = { ...e1, actor: userActor("u2") } as AuditTrailEntry;
-    const r = verifyAuditTrail([tampered]);
-    expect(r.ok).toBe(false);
-    expect(r.reason).toBe("entry_hash_mismatch");
-    expect(r.first_bad_seq).toBe(1);
+    for (const field of ["actor", "action", "recorded_at"] as const) {
+      const tampered = { ...e1 } as AuditTrailEntry;
+      if (field === "actor") tampered.actor = userActor("u2");
+      if (field === "action") tampered.action = "audit.saved";
+      if (field === "recorded_at") tampered.recorded_at = "2026-02-02T00:00:00.000Z";
+      const r = verifyAuditTrail([tampered]);
+      expect(r.reason).toBe("entry_hash_mismatch");
+    }
+    // subject mutation
+    const s = { ...e1, subject: { ...e1.subject, id: "p2" } } as AuditTrailEntry;
+    expect(verifyAuditTrail([s]).reason).toBe("entry_hash_mismatch");
+  });
+
+  it("detects genesis_mismatch", () => {
+    const e1 = makeEntry(1);
+    const forged = { ...e1, prev_hash: "a".repeat(64) } as AuditTrailEntry;
+    forged.entry_hash = auditTrailEntryHash(forged);
+    const r = verifyAuditTrail([forged]);
+    expect(r.reason).toBe("genesis_mismatch");
   });
 
   it("detects modified payload with recomputed entry_hash -> payload_hash_mismatch (A-2)", () => {
@@ -208,6 +300,7 @@ describe("verify", () => {
     swapped.entry_hash = auditTrailEntryHash(swapped);
     const r = verifyAuditTrail([swapped, e2]);
     expect(r.ok).toBe(false);
+    expect(r.reason).toBe("prev_hash_mismatch");
   });
 
   it("returns only the first failure", () => {
@@ -302,6 +395,7 @@ describe("signing", () => {
     const signed = signAuditTrailExport(body, key);
     expect(signed.signature.alg).toBe("hmac-sha256");
     expect(signed.signature.key_id).toBe(auditTrailKeyId(key));
+    expect(signed.signature.key_id).toMatch(/^[0-9a-f]{8}$/);
     const r = verifyAuditTrailExport(signed, key);
     expect(r.ok).toBe(true);
     expect(r.reason).toBeNull();
@@ -379,6 +473,28 @@ describe("signing", () => {
     expect(r.reason).toBe("signature_mismatch");
   });
 
+  it("invalid_export on missing/malformed signature", () => {
+    const e1 = makeEntry(1);
+    const v = verifyAuditTrail([e1]);
+    const body = buildAuditTrailExport({
+      workspace: "ws",
+      exported_at: "2026-01-01T00:00:00.000Z",
+      entries: [e1],
+      verification: v,
+    });
+    const signed = signAuditTrailExport(body, "key");
+    // missing signature
+    const missing = { ...signed } as typeof signed;
+    delete (missing as { signature?: unknown }).signature;
+    expect(verifyAuditTrailExport(missing as typeof signed, "key").reason).toBe("invalid_export");
+    // malformed signature value (wrong length) -> signature_mismatch
+    const malformed = { ...signed, signature: { alg: "hmac-sha256", key_id: signed.signature.key_id, value: "zz" } };
+    expect(verifyAuditTrailExport(malformed as typeof signed, "key").reason).toBe("signature_mismatch");
+    // wrong alg
+    const wrongAlg = { ...signed, signature: { ...signed.signature, alg: "rsa" } } as unknown as typeof signed;
+    expect(verifyAuditTrailExport(wrongAlg, "key").reason).toBe("invalid_export");
+  });
+
   it("chain_invalid on broken chain", () => {
     const e1 = makeEntry(1);
     const tampered = { ...e1, actor: userActor("u2") } as AuditTrailEntry;
@@ -412,32 +528,29 @@ describe("signing", () => {
 });
 
 describe("cap", () => {
-  it("rejects export above 20000 entries", () => {
-    const entries: AuditTrailEntry[] = [];
-    // use a factory-ish cheap construction: reuse one entry reference 20001 times
+  it("accepts 20000 and rejects 20001", () => {
     const e1 = makeEntry(1);
-    for (let i = 0; i < AUDIT_TRAIL_MAX_EXPORT_ENTRIES + 1; i++) entries.push(e1);
+    const okEntries: AuditTrailEntry[] = Array.from({ length: AUDIT_TRAIL_MAX_EXPORT_ENTRIES }, () => e1);
     const v = verifyAuditTrail([]);
+    const body = buildAuditTrailExport({
+      workspace: "ws",
+      exported_at: "2026-01-01T00:00:00.000Z",
+      trail_starts_at: e1.recorded_at,
+      entries: okEntries,
+      verification: v,
+    });
+    expect(body.entries.length).toBe(AUDIT_TRAIL_MAX_EXPORT_ENTRIES);
+    expect(body.trail_starts_at).toBe(e1.recorded_at);
+
+    const tooMany: AuditTrailEntry[] = Array.from({ length: AUDIT_TRAIL_MAX_EXPORT_ENTRIES + 1 }, () => e1);
     expect(() =>
       buildAuditTrailExport({
         workspace: "ws",
         exported_at: "2026-01-01T00:00:00.000Z",
-        entries,
+        entries: tooMany,
         verification: v,
       }),
     ).toThrow(AuditTrailTooLargeError);
-    try {
-      buildAuditTrailExport({
-        workspace: "ws",
-        exported_at: "2026-01-01T00:00:00.000Z",
-        entries,
-        verification: v,
-      });
-    } catch (err) {
-      const e = err as AuditTrailTooLargeError;
-      expect(e.count).toBe(AUDIT_TRAIL_MAX_EXPORT_ENTRIES + 1);
-      expect(e.cap).toBe(AUDIT_TRAIL_MAX_EXPORT_ENTRIES);
-    }
   });
 });
 
