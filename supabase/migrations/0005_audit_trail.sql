@@ -24,7 +24,9 @@ create table if not exists public.audit_trail_entries (
   constraint audit_trail_entries_refs_array     check (jsonb_typeof(evidence_refs) = 'array'),
   constraint audit_trail_entries_payload_object check (jsonb_typeof(payload) = 'object'),
   constraint audit_trail_entries_hash_shape     check (
-    length(prev_hash) = 64 and length(payload_hash) = 64 and length(entry_hash) = 64
+    prev_hash ~ '^[0-9a-f]{64}$' and
+    payload_hash ~ '^[0-9a-f]{64}$' and
+    entry_hash ~ '^[0-9a-f]{64}$'
   )
 );
 
@@ -34,8 +36,8 @@ create index if not exists audit_trail_entries_recorded_idx
 create index if not exists audit_trail_entries_project_idx
   on public.audit_trail_entries (workspace_id, project_id, seq);
 
-alter table public.audit_trail_entries enable row level security;
-alter table public.audit_trail_entries force row level security;
+ALTER TABLE public.audit_trail_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_trail_entries FORCE ROW LEVEL SECURITY;
 
 drop policy if exists audit_trail_entries_select on public.audit_trail_entries;
 create policy audit_trail_entries_select on public.audit_trail_entries for select

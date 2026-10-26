@@ -13,11 +13,10 @@ They are applied by the operator, by hand, to the live project.
 | File | What it does |
 |---|---|
 | `migrations/0001_tenant_schema.sql` | 9 tenant tables: `workspaces`, `workspace_members`, `workspace_credentials`, `projects`, `audits`, `audit_issues`, `attachments`, `artifacts`, `artifact_summaries` |
-| `migrations/0005_audit_trail.sql` | ticket #55: `audit_trail_entries` (append-only, hash-chained firm history; the tenth tenant table) |
 | `migrations/0002_rls_policies.sql` | `ENABLE` + `FORCE ROW LEVEL SECURITY` on all 9 tables, the three claim helpers, and every policy |
-| `migrations/0005_audit_trail.sql` | ticket #55: append-only `audit_trail_entries` with RLS enable+force, select/insert policies, update/delete revoked, append-only trigger |
 | `migrations/0003_roles.sql` | creates `auditorai_app` (NOSUPERUSER, NOBYPASSRLS, owns nothing) and grants it DML + `USAGE` + `EXECUTE` |
 | `migrations/0004_seats_invites.sql` | ticket #54: `workspaces.seat_count` (default 1), membership state columns, three actor columns, two claim helpers, the four `workspace_members` policies and the column-level privilege hardening |
+| `migrations/0005_audit_trail.sql` | ticket #55: adds the tenth tenant table `audit_trail_entries` (append-only, hash-chained firm history) with RLS enable+force, select/insert policies, revoked update/delete, and an append-only trigger |
 
 `0002` and `0003` depend on `0001`; `0003` grants execute on functions created
 by `0002`. Do not reorder, do not skip. The migrations are re-runnable:
