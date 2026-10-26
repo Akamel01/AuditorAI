@@ -364,6 +364,21 @@ describe.each(repositories)("repository contract: %s", (_name, make) => {
     expect(entries[0].action).toBe("project.saved");
     expect(verifyAuditTrail(entries).ok).toBe(true);
   });
+
+  itRepo("lists trail entries in ascending seq order", async () => {
+    const repo = await make();
+    await repo.saveProject(WS, projectFixture("P-1", NOW));
+    await repo.saveProject(WS, projectFixture("P-2", LATE));
+    const entries = await repo.listAuditTrail(WS);
+    expect(entries.map((e) => e.seq)).toEqual([1, 2]);
+  });
+
+  itRepo("records the supplied actor on the trail", async () => {
+    const repo = await make();
+    await repo.saveProject(WS, projectFixture("P-1", NOW), "u:abc" as never);
+    const entries = await repo.listAuditTrail(WS);
+    expect(entries[0].actor).toBe("u:abc");
+  });
 });
 
 // ---------------------------------------------------------------------------

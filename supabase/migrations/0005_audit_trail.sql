@@ -1,8 +1,9 @@
 -- 0005_audit_trail.sql
 -- Append-only, hash-chained per-workspace audit trail (ticket #55, G-3).
 -- Operator applies by hand, in order after 0001..0004. Idempotent and re-runnable.
--- No update or delete path exists: no policy, no privilege, and a trigger refuses
--- any mutation attempt.
+-- Append-only for the application: no update/delete policy and those privileges
+-- are revoked from auditorai_app. The table owner retains out-of-band access;
+-- owner tampering is detectable via verifyAuditTrail and the signed export.
 
 create table if not exists public.audit_trail_entries (
   workspace_id  uuid        not null references public.workspaces(id) on delete cascade,
@@ -52,18 +53,3 @@ revoke all on public.audit_trail_entries from auditorai_app;
 grant select, insert on public.audit_trail_entries to auditorai_app;
 revoke update, delete, truncate, references, trigger
   on public.audit_trail_entries from auditorai_app;
-
-create or replace function public.audit_trail_entries_no_mutation()
-returns trigger
-language plpgsql
-as $$
-begin
-  raise exception 'audit_trail_entries is append-only (attempted %)', tg_op;
-end;
-$$;
-
-drop trigger if exists audit_trail_entries_no_mutation on public.audit_trail_entries;
-create trigger audit_trail_entries_no_mutation
-  before update or delete on public.audit_trail_entries
-  for each row
-  execute function public.audit_trail_entries_no_mutation();

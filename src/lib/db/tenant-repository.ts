@@ -8,8 +8,9 @@
 //   - every STATIC key helper (:58-96).
 //
 // The legacy Repository class therefore satisfies this interface structurally,
-// so src/lib/persistence.ts needs NO edit — the two adapters are
-// interchangeable behind this type (D16).
+// including listAuditTrail (added for ticket #55), so src/lib/persistence.ts
+// needs no further edit — the two adapters are interchangeable behind this
+// type (D16).
 //
 // Server-only: domain types only, no client code, no secret.
 
