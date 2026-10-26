@@ -102,10 +102,15 @@ export class Repository {
     return Keys.issuesPrefix(ws, projectId, auditId);
   }
 
+  private trailActorFor(ws: string, actor?: ActorId): ActorId {
+    if (!ws || !ws.trim()) throw new Error("workspace handle must not be empty");
+    return actor ? assertWritableActor(actor) : legacyActor(ws);
+  }
+
   // ---- Projects ------------------------------------------------------------
 
   async saveProject(ws: string, project: Project, actor?: ActorId) {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const result = await this.projectStore.saveProject(ws, project, actor);
     await this.trailStore.append(ws, {
       actor: trailActor,
@@ -126,7 +131,7 @@ export class Repository {
   // ---- Audits --------------------------------------------------------------
 
   async saveAudit(ws: string, audit: AuditResult, actor?: ActorId) {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const result = await this.projectStore.saveAudit(ws, audit, actor);
     await this.trailStore.append(ws, {
       actor: trailActor,
@@ -157,7 +162,7 @@ export class Repository {
     issuedAtIso: string,
     actor?: ActorId,
    ): Promise<AuditIssue> {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const issue = await this.issueLedger.saveIssue(ws, projectId, auditId, result, issuedAtIso, actor);
     await this.trailStore.append(ws, {
       actor: trailActor,
@@ -185,7 +190,7 @@ export class Repository {
   // ---- Attachments -----------------------------------------------------------
 
   async saveAttachment(ws: string, attachment: Attachment, actor?: ActorId) {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const result = await this.projectStore.saveAttachment(ws, attachment, actor);
     await this.trailStore.append(ws, {
       actor: trailActor,
@@ -208,7 +213,7 @@ export class Repository {
    *  attachment arrays are removed. updated_at advances only when something
    *  changed. Throws UnknownAttachmentError when no such record exists. */
   async deleteAttachment(ws: string, projectId: string, id: string, actor?: ActorId): Promise<void> {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const result = await this.projectStore.deleteAttachment(ws, projectId, id, actor);
     await this.trailStore.append(ws, {
       actor: trailActor,
@@ -231,7 +236,7 @@ export class Repository {
     artifacts: AuditArtifact[],
     actor?: ActorId,
   ) {
-    const trailActor = actor ? assertWritableActor(actor) : legacyActor(ws);
+    const trailActor = this.trailActorFor(ws, actor);
     const result = await this.artifactTrail.saveArtifactTrailFor(ws, identity, artifacts);
     await this.trailStore.append(ws, {
       actor: trailActor,

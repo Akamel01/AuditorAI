@@ -383,6 +383,16 @@ describe("audit-trail legacy", () => {
     expect(entries2[1].prev_hash).toBe(entry1.entry_hash);
   });
 
+  it("p: empty workspace rejected before write", async () => {
+    const store = new MemoryStore();
+    setDataStoreForTests(store);
+    const repo = new Repository(store);
+    await expect(repo.saveProject("", project("P-1"))).rejects.toThrow();
+    expect(await repo.getProject("", "P-1")).toBeNull();
+    const keys = await store.keys("ws::trail:");
+    expect(keys.length).toBe(0);
+  });
+
   it("l: empty/blank workspace append throws and writes nothing", async () => {
     const store = new MemoryStore();
     const ts = new TrailStore(store);
