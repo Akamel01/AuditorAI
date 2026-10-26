@@ -25,6 +25,8 @@ export interface DataStore {
   delByPrefix(prefix: string): Promise<number>;
   /** SET NX EX — true if set (OK), false if already exists. Used for harvest:lock. */
   setIfAbsent?(key: string, value: string, ttlSeconds: number): Promise<boolean>;
+  /** Atomic create with no TTL; true if created, false if the key already exists. */
+  createIfAbsent(key: string, value: unknown): Promise<boolean>;
 }
 
 export class MemoryStore implements DataStore {
@@ -79,6 +81,11 @@ export class MemoryStore implements DataStore {
       if ((tm as any).unref) (tm as any).unref();
       this.t.set(key, tm);
     }
+    return true;
+  }
+  async createIfAbsent(key: string, value: unknown): Promise<boolean> {
+    if (this.m.has(key)) return false;
+    this.m.set(key, JSON.stringify(value));
     return true;
   }
 }
@@ -151,10 +158,21 @@ export class KvRestStore implements DataStore {
     return matches.length;
   }
 
-  async setIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
-    const json = await this.call(["SET", key, value, "NX", "EX", String(ttlSeconds)]);
+  private async setNx(key: string, raw: string, ttlSeconds?: number): Promise<boolean> {
+    const cmd = ttlSeconds !== undefined
+      ? ["SET", key, raw, "NX", "EX", String(ttlSeconds)]
+      : ["SET", key, raw, "NX"];
+    const json = await this.call(cmd);
     // Upstash returns "OK" when set, null when not set
     return json.result === "OK";
+  }
+
+  async setIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    return this.setNx(key, value, ttlSeconds);
+  }
+
+  async createIfAbsent(key: string, value: unknown): Promise<boolean> {
+    return this.setNx(key, JSON.stringify(value));
   }
 }
 
@@ -215,6 +233,13 @@ function createFallbackStore(): DataStore {
         return await kv.setIfAbsent(key, value, ttlSeconds);
       } catch {
         return fallback.setIfAbsent(key, value, ttlSeconds);
+      }
+    },
+    async createIfAbsent(key: string, value: unknown): Promise<boolean> {
+      try {
+        return await kv.createIfAbsent(key, value);
+      } catch {
+        return fallback.createIfAbsent(key, value);
       }
     },
   };

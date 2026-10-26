@@ -1,7 +1,7 @@
 // Failure alerting: structured alert on a failing audit, provider or storage outage.
 import { log } from "@/lib/logger";
 
-export type AlertKind = "audit_failure" | "provider_failure" | "storage_outage" | "generic";
+export type AlertKind = "audit_failure" | "provider_failure" | "storage_outage" | "generic" | "audit_trail_failure";
 
 export interface AlertPayload {
   kind?: AlertKind;

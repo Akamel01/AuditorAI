@@ -45,6 +45,9 @@ export function issuesPrefix(ws: string, projectId: string, auditId: string): st
 export function trailKey(ws: string, seq: number): string {
   return `ws:${ws}:trail:${seq}`;
 }
+export function trailHeadKey(ws: string): string {
+  return `ws:${ws}:trail-head`;
+}
 export function trailPrefix(ws: string): string {
   return `ws:${ws}:trail:`;
 }

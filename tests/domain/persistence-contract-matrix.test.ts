@@ -50,6 +50,11 @@ class FakeKvStore implements DataStore {
     }
     return n;
   }
+  async createIfAbsent(key: string, value: unknown): Promise<boolean> {
+    if (this.m.has(key)) return false;
+    this.m.set(key, JSON.stringify(value));
+    return true;
+  }
 }
 
 const stores: Array<[string, () => DataStore]> = [

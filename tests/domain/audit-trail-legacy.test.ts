@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { MemoryStore, Repository, setDataStoreForTests, IssueRevisionConflictError } from "@/lib/persistence";
 import type { Attachment, AuditResult, Project } from "@/domain/types";
 import { verifyAuditTrail } from "@/domain/audit-trail";
 import * as Keys from "@/lib/persistence/keys";
-import { TrailStore, AuditTrailCorruptError } from "@/lib/persistence/trail-store";
+import { TrailStore, AuditTrailCorruptError, AuditTrailRaceError } from "@/lib/persistence/trail-store";
 
 const NOW = "2026-08-23T12:00:00.000Z";
 const WS = "0123456789abcdef";
@@ -338,13 +338,13 @@ describe("audit-trail legacy", () => {
   it("m: failed append does not poison the chain", async () => {
     const store = new MemoryStore();
     let thrown = false;
-    const origPut = store.put.bind(store);
-    store.put = async (key: string, value: unknown) => {
+    const origCreate = store.createIfAbsent.bind(store);
+    store.createIfAbsent = async (key: string, value: unknown) => {
       if (!thrown && String(key).includes(":trail:")) {
         thrown = true;
         throw new Error("boom");
       }
-      return origPut(key, value);
+      return origCreate(key, value);
     };
     setDataStoreForTests(store);
     const repo = new Repository(store);
@@ -391,6 +391,119 @@ describe("audit-trail legacy", () => {
     expect(await repo.getProject("", "P-1")).toBeNull();
     const keys = await store.keys("ws::trail:");
     expect(keys.length).toBe(0);
+  });
+
+  it("q: two TrailStore instances over one MemoryStore produce contiguous seqs", async () => {
+    const store = new MemoryStore();
+    const ts1 = new TrailStore(store);
+    const ts2 = new TrailStore(store);
+    const ws = "ws-q-unique";
+    const rec = (i: number) => ({
+      actor: "u:abc",
+      action: "project.saved",
+      subject: { type: "project", id: `P-${i}`, project_id: `P-${i}`, audit_id: null },
+    });
+    await Promise.all(
+      Array.from({ length: 10 }, (_, i) => (i % 2 === 0 ? ts1 : ts2).append(ws, rec(i) as any)),
+    );
+    const entries = await (async () => {
+      const ks = await store.keys(`ws:${ws}:trail:`);
+      ks.sort((a, b) => Number(a.slice(a.lastIndexOf(":") + 1)) - Number(b.slice(b.lastIndexOf(":") + 1)));
+      const loaded = await store.getMany<any>(ks);
+      return loaded.filter(Boolean);
+    })();
+    expect(entries.map((e: any) => e.seq)).toEqual(Array.from({ length: 10 }, (_, i) => i + 1));
+    expect(verifyAuditTrail(entries).ok).toBe(true);
+    const ids = entries.map((e: any) => e.subject.id);
+    for (let i = 0; i < 10; i++) expect(ids).toContain(`P-${i}`);
+  });
+
+  it("r: KEYS not used per write beyond first", async () => {
+    const store = new MemoryStore();
+    const ts = new TrailStore(store);
+    const ws = "ws-r-unique";
+    const keysSpy = vi.spyOn(store, "keys");
+    await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-1", project_id: "P-1", audit_id: null } });
+    const firstCalls = keysSpy.mock.calls.length;
+    expect(firstCalls).toBeLessThanOrEqual(1);
+    await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-2", project_id: "P-2", audit_id: null } });
+    expect(keysSpy.mock.calls.length).toBe(firstCalls);
+    keysSpy.mockRestore();
+  });
+
+  it("s: stale pointer recovery", async () => {
+    const store = new MemoryStore();
+    const ts = new TrailStore(store);
+    const ws = "ws-s-unique";
+    for (let i = 0; i < 3; i++) {
+      await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: `P-${i}`, project_id: `P-${i}`, audit_id: null } });
+    }
+    const entries = await (async () => {
+      const ks = await store.keys(`ws:${ws}:trail:`);
+      ks.sort((a, b) => Number(a.slice(a.lastIndexOf(":") + 1)) - Number(b.slice(b.lastIndexOf(":") + 1)));
+      const loaded = await store.getMany<any>(ks);
+      return loaded.filter(Boolean);
+    })();
+    // rewrite head pointer to seq 1
+    await store.put(Keys.trailHeadKey(ws), { seq: 1, entry_hash: entries[0].entry_hash });
+    // KEYS must not be needed: a stale pointer is recovered by probing forward
+    const origKeys = store.keys.bind(store);
+    store.keys = async () => {
+      throw new Error("KEYS must not be called with a present pointer");
+    };
+    const e4 = await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-3", project_id: "P-3", audit_id: null } });
+    expect(e4.seq).toBe(4);
+    store.keys = origKeys;
+    const all = await ts.list(ws);
+    expect(verifyAuditTrail(all).ok).toBe(true);
+    // delete head pointer -> KEYS fallback, append -> seq 5
+    await store.del(Keys.trailHeadKey(ws));
+    const e5 = await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-4", project_id: "P-4", audit_id: null } });
+    expect(e5.seq).toBe(5);
+  });
+
+  it("t: retries exhausted -> typed error and alert", async () => {
+    const store = new MemoryStore();
+    const orig = store.createIfAbsent.bind(store);
+    store.createIfAbsent = async () => false;
+    const ts = new TrailStore(store);
+    const ws = "ws-t-unique";
+    const errSpy = vi.spyOn(console, "error");
+    await expect(
+      ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-1", project_id: "P-1", audit_id: null } }),
+    ).rejects.toBeInstanceOf(AuditTrailRaceError);
+    const lines = errSpy.mock.calls.map((c) => String(c[0]));
+    const alertLine = lines.find((l) => l.includes('"alert":true'));
+    expect(alertLine).toBeTruthy();
+    expect(alertLine).toContain(ws);
+    expect(alertLine).toContain("project.saved");
+    expect(alertLine).toContain("P-1");
+    errSpy.mockRestore();
+    store.createIfAbsent = orig;
+  });
+
+  it("u: corrupt head fails closed and fires alert", async () => {
+    const store = new MemoryStore();
+    const ts = new TrailStore(store);
+    const ws = "ws-u-unique";
+    await ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-1", project_id: "P-1", audit_id: null } });
+    const origGet = store.get.bind(store);
+    store.get = async <T>(key: string) => {
+      if (key === Keys.trailKey(ws, 1)) return null as T;
+      return origGet<T>(key);
+    };
+    const errSpy = vi.spyOn(console, "error");
+    await expect(
+      ts.append(ws, { actor: "u:abc", action: "project.saved", subject: { type: "project", id: "P-2", project_id: "P-2", audit_id: null } }),
+    ).rejects.toBeInstanceOf(AuditTrailCorruptError);
+    const lines = errSpy.mock.calls.map((c) => String(c[0]));
+    const alertLine = lines.find((l) => l.includes("ALERT:"));
+    expect(alertLine).toBeTruthy();
+    expect(alertLine).toContain(ws);
+    expect(alertLine).toContain("project.saved");
+    expect(alertLine).toContain("P-2");
+    errSpy.mockRestore();
+    store.get = origGet;
   });
 
   it("l: empty/blank workspace append throws and writes nothing", async () => {

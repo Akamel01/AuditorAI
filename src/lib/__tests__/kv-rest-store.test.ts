@@ -61,6 +61,19 @@ describe("KvRestStore (fetch-mocked)", () => {
     expect(JSON.parse(String(init.body))).toEqual(["SET", "k1", JSON.stringify({ a: 1 })]);
   });
 
+  it("createIfAbsent issues one flat SET NX with no expiry", async () => {
+    const store = new KvRestStore("http://kv", "tok");
+    mock.mockResolvedValueOnce(okResponse("OK"));
+    expect(await store.createIfAbsent("k1", { a: 1 })).toBe(true);
+    const [, init] = mock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual(["SET", "k1", JSON.stringify({ a: 1 }), "NX"]);
+
+    mock.mockResolvedValueOnce(okResponse(null));
+    expect(await store.createIfAbsent("k1", { a: 1 })).toBe(false);
+    const [, init2] = mock.mock.calls[1] as [string, RequestInit];
+    expect((JSON.parse(String(init2.body)) as string[]).includes("EX")).toBe(false);
+  });
+
   it("get parses present values and returns null only for genuinely absent keys", async () => {
     const store = new KvRestStore("http://kv", "tok");
     mock.mockResolvedValueOnce(okResponse(JSON.stringify({ a: 1 })));
