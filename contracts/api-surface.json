@@ -487,6 +487,24 @@
       "body_schema": "https://auditorai.dev/schemas/api/team-invite-request.schema.json",
       "invalid_body_status": 422,
       "public_reason": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces/audit-trail",
+      "auth": "workspace",
+      "body": "none",
+      "body_schema": null,
+      "invalid_body_status": null,
+      "public_reason": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces/audit-trail/export",
+      "auth": "workspace",
+      "body": "none",
+      "body_schema": null,
+      "invalid_body_status": null,
+      "public_reason": ""
     }
   ]
 }
