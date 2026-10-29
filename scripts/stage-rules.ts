@@ -552,6 +552,12 @@ function namedStagesOf(text: string, ruleSet: RuleSet): Set<CanonicalStage> {
   return set;
 }
 
+function isCombinedStageHeading(t: string): boolean {
+  const a = /\bstages?\b[^.\n]{0,20}\b(?:\d+|one|two|three)\b[^.\n]{0,10}\b(?:and|&|\/|,)\b[^.\n]{0,10}\b(?:\d+|one|two|three)\b/i;
+  const b = /\bstages?\s+(?:\d+|one|two|three)\s*(?:and|&|\/|,)\s*(?:\d+|one|two|three)\b/i;
+  return a.test(t) || b.test(t);
+}
+
 function isReferenceList(t: string): boolean {
   if (/\b(?:19|20)\d{2}\b/.test(t) && /[,"]/.test(t)) return true;
   if (/^\p{Lu}[\p{L}'’.-]+(?:\s+\p{Lu}{1,3})?,\s/u.test(t)) return true;
@@ -695,6 +701,7 @@ function clearSections(region: string, ruleSet: RuleSet, cfg: SectionConfig): Se
     const headStages = namedStagesOf(region.slice(span.start, h.lineEnd), ruleSet);
     if (headStages.size !== 1) continue;
     const stage = [...headStages][0];
+    if (isCombinedStageHeading(collapse(h.heading))) continue;
     const headingText = region.slice(span.start, h.lineEnd);
     const hd = classify(headingText, { title: "", hint: "UNSTAGED" }, ruleSet);
     const c = hd.candidates.find(

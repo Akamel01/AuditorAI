@@ -33,9 +33,9 @@
     ],
     "comparable_rows": 32,
     "non_comparable_rows": 1,
-    "v3_documents_with_sections": 22,
-    "v3_documents_without_sections": 11,
-    "v3_stage_sections": 64,
+    "v3_documents_with_sections": 21,
+    "v3_documents_without_sections": 12,
+    "v3_stage_sections": 63,
     "v3_documents_with_multiple_section_stages": 5
   },
   "coverage_candidates": [
@@ -83,9 +83,9 @@
       "v2_documents_clear": 1,
       "v3_documents": 14,
       "v3_documents_clear": 1,
-      "v3_section_documents": 14,
+      "v3_section_documents": 13,
       "v3_section_documents_clear": 1,
-      "v3_stage_sections": 27,
+      "v3_stage_sections": 26,
       "v3_stage_sections_clear": 3,
       "delta_documents": 11
     },
@@ -127,9 +127,9 @@
       "v2_documents_clear": 1,
       "v3_documents": 14,
       "v3_documents_clear": 1,
-      "v3_section_documents": 14,
+      "v3_section_documents": 13,
       "v3_section_documents_clear": 1,
-      "v3_stage_sections": 27,
+      "v3_stage_sections": 26,
       "v3_stage_sections_clear": 3
     },
     {
@@ -779,38 +779,16 @@
           "rule_ids": [
             "CA-FEAS"
           ],
-          "evidence_scope": "body",
+          "evidence_scope": "title",
           "matched_phrase": "STAGE 1",
           "offset": 9
         }
       ],
-      "section_stages": [
-        "FEASIBILITY_CONCEPT"
-      ],
-      "sections": [
-        {
-          "heading": "COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE",
-          "span": {
-            "start": 0,
-            "end": 1772
-          },
-          "candidate": {
-            "stage": "FEASIBILITY_CONCEPT",
-            "cell_key": "canada:FEASIBILITY_CONCEPT",
-            "confidence": "interpreted",
-            "rule_ids": [
-              "CA-FEAS"
-            ],
-            "evidence_scope": "body",
-            "matched_phrase": "STAGE 1",
-            "offset": 9
-          },
-          "evidence_region": "heading"
-        }
-      ],
+      "section_stages": [],
+      "sections": [],
       "body_available_v3": true,
       "comparable": true,
-      "source": "text"
+      "source": "title"
     },
     {
       "project_id": "PRJ-ea7eb92962bd4c2f",

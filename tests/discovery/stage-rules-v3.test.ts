@@ -287,6 +287,14 @@ describe("stage-rules v3 refinement", () => {
 
 });
 
+describe("stage-rules v3 combined", () => {
+  it("T23 combined-stage heading yields no clear section", () => {
+    const text = "COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE\n" + "b".repeat(90);
+    const doc = classifyDocument(text, ctx, v3);
+    expect(doc.sections.every((s: { heading: string }) => !/COMBINED STAGE 1 AND 2/.test(s.heading))).toBe(true);
+  });
+});
+
 function collapse(s: string): string {
   return s.replace(/\s+/g, " ").trim();
 }

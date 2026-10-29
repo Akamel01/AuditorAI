@@ -13,8 +13,8 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 
 - rows: 33
 - v2 ambiguous: 25; non-ambiguous: 8
-- docs with >=1 clear section: 22; without: 11
-- stage sections: 64
+- docs with >=1 clear section: 21; without: 12
+- stage sections: 63
 - docs with >=2 distinct section stages: 5
 - comparable: 32; non-comparable: 1
 - bodies available: 33; unavailable: 0
@@ -23,7 +23,7 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 
 | Stage | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ documents |
 |---|---|---|---|---|---|
-| FEASIBILITY_CONCEPT | 3 | 14 | 14 | 27 | 11 |
+| FEASIBILITY_CONCEPT | 3 | 14 | 13 | 26 | 11 |
 | PRELIMINARY_DESIGN | 1 | 6 | 6 | 13 | 5 |
 | DETAILED_DESIGN | 0 | 5 | 5 | 15 | 5 |
 | PRE_OPENING | 0 | 2 | 2 | 4 | 2 |
@@ -32,7 +32,7 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 | MULTI_STAGE | 25 | 7 | 0 | 0 | -18 |
 | UNSTAGED | 4 | 4 | 0 | 0 | 0 |
 
-25 of 33 ambiguous under v2; under v3, 5 documents have >= 2 distinct section stages, 64 stage sections were earned across 22 documents, and 11 documents have no clear section and use the v2-equivalent fallback.
+25 of 33 ambiguous under v2; under v3, 5 documents have >= 2 distinct section stages, 63 stage sections were earned across 21 documents, and 12 documents have no clear section and use the v2-equivalent fallback.
 
 ## §3 By Canadian cell
 
@@ -40,7 +40,7 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 
 | Cell | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ |
 |---|---|---|---|---|---|
-| `canada:FEASIBILITY_CONCEPT` | 3 | 14 | 14 | 27 | 11 |
+| `canada:FEASIBILITY_CONCEPT` | 3 | 14 | 13 | 26 | 11 |
 | `canada:PRELIMINARY_DESIGN` | 1 | 6 | 6 | 13 | 5 |
 | `canada:DETAILED_DESIGN` | 0 | 5 | 5 | 15 | 5 |
 
@@ -67,7 +67,7 @@ Coverage candidate shas: `0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa4171
 | `1d5879a68c55` | ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME | MULTI_STAGE (ambiguous) | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×1 | FEASIBILITY_CONCEPT: ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME |  |
 | `299ac961228e` | A795 Ambridge Bypass | MULTI_STAGE (ambiguous) | MULTI_STAGE | PRELIMINARY_DESIGN, FEASIBILITY_CONCEPT | PRELIMINARY_DESIGN×2; FEASIBILITY_CONCEPT×1 | PRELIMINARY_DESIGN: Stage 2 Road Safety Audit; FEASIBILITY_CONCEPT: 3. Items Raised At The Stage 1 Audit |  |
 | `2b3115c3438b` | CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project | MULTI_STAGE (ambiguous) | DETAILED_DESIGN | DETAILED_DESIGN | DETAILED_DESIGN×1 | DETAILED_DESIGN: CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project |  |
-| `2d4322f39383` | COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×1 | FEASIBILITY_CONCEPT: COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE |  |
+| `2d4322f39383` | COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | — | — | — |  |
 | `2d8e41b8631a` | DBFL Consulting Engineers | MULTI_STAGE (ambiguous) | DETAILED_DESIGN | DETAILED_DESIGN | DETAILED_DESIGN×1 | DETAILED_DESIGN: Stage 3 Road Safety Audit |  |
 | `2ea94190b6df` | Proceedings of the 18th Canadian Multidisciplinary Road Safety Conference, Whistler, BC June 8-11, 2008 | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
 | `3048eccbe2de` | Transportation Association of Canada | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
