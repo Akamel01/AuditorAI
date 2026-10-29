@@ -288,6 +288,17 @@ export interface CoverageV3Json {
     v2_ambiguous: number;
     v2_non_ambiguous: number;
     coverage_candidate_shas: string[];
+    document_partition: {
+      total: number;
+      v2_ambiguous_resolved: number;
+      v2_ambiguous_unresolved: number;
+      v2_unstaged: number;
+      v2_single_stage: number;
+      resolved_single_stage: number;
+      resolved_multi_stage: number;
+      with_sections: number;
+      without_sections: number;
+    };
     comparable_rows: number;
     non_comparable_rows: number;
     v3_documents_with_sections: number;
@@ -1300,6 +1311,14 @@ export function renderCoverageV3Table(json: CoverageV3Json): string {
     out.push(`- unavailable rows: ${json.bodies.unavailable_rows.map((r) => r.sha256).join(", ")}`);
   }
   out.push("");
+  // §1.1
+  const dp = json.denominators.document_partition;
+  out.push("## §1.1 Document-level decomposition");
+  out.push("");
+  out.push(`${dp.total} = ${dp.v2_ambiguous_resolved} resolved v2-ambiguous + ${dp.v2_ambiguous_unresolved} unresolved v2-ambiguous (MULTI_STAGE fallback) + ${dp.v2_unstaged} v2 UNSTAGED + ${dp.v2_single_stage} v2 single-stage.`);
+  out.push(`Of the ${dp.v2_ambiguous_resolved} resolved: ${dp.resolved_single_stage} single-stage + ${dp.resolved_multi_stage} multi-stage (the ${dp.resolved_multi_stage} multi-stage docs appear in more than one stage row).`);
+  out.push(`${dp.with_sections} docs have >=1 clear section; ${dp.without_sections} have none.`);
+  out.push("");
   // §2
   out.push("## §2 Before/after by stage (33 Track A documents)");
   out.push("");
@@ -1314,6 +1333,8 @@ export function renderCoverageV3Table(json: CoverageV3Json): string {
   const Z = d.v3_documents_with_sections;
   const N = d.v3_documents_without_sections;
   out.push(`${d.v2_ambiguous} of ${d.rows} ambiguous under v2; under v3, ${X} documents have >= 2 distinct section stages, ${Y} stage sections were earned across ${Z} documents, and ${N} documents have no clear section and use the v2-equivalent fallback.`);
+  out.push("");
+  out.push("Footnote: the MULTI_STAGE row is the no-section fallback count (" + dp.v2_ambiguous_unresolved + "); the " + dp.resolved_multi_stage + " multi-stage documents with sections are counted in their earned canonical stage rows, so the per-stage rows do not sum to 33.");
   out.push("");
   // §3a
   out.push("## §3 By Canadian cell");
@@ -1670,6 +1691,15 @@ function runCompareV3(flags: Flags): number {
     return row.sections.some((s) => s.candidate.stage === S);
   }
   const stageOrder = ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN", "PRE_OPENING", "EXISTING", "CONSTRUCTION", "MULTI_STAGE", "UNSTAGED"];
+  const v2AmbiguousResolved = rows.filter((r) => r.ambiguous_v2 && r.sections.length > 0).length;
+  const v2AmbiguousUnresolved = rows.filter((r) => r.ambiguous_v2 && r.sections.length === 0).length;
+  const v2Unstaged = rows.filter((r) => r.stage_v2_primary === "UNSTAGED").length;
+  const v2SingleStage = rows.filter((r) => !r.ambiguous_v2 && r.stage_v2_primary !== "UNSTAGED").length;
+  const resolvedMultiStage = rows.filter((r) => r.ambiguous_v2 && r.sections.length > 0 && r.section_stages.length >= 2).length;
+  const resolvedSingleStage = v2AmbiguousResolved - resolvedMultiStage;
+  const withSections = rows.filter((r) => r.sections.length > 0).length;
+  const withoutSections = rows.filter((r) => r.sections.length === 0).length;
+
   const stages = stageOrder.map((S) => {
     const v2Documents = rows.filter((r) => r.stage_v2_primary === S).length;
     const v3Documents = rows.filter((r) => earned(r, S)).length;
@@ -1766,6 +1796,17 @@ function runCompareV3(flags: Flags): number {
       v2_ambiguous: v2Ambiguous,
       v2_non_ambiguous: rows.length - v2Ambiguous,
       coverage_candidate_shas: [...candidateShas].sort(),
+    document_partition: {
+      total: rows.length,
+      v2_ambiguous_resolved: v2AmbiguousResolved,
+      v2_ambiguous_unresolved: v2AmbiguousUnresolved,
+      v2_unstaged: v2Unstaged,
+      v2_single_stage: v2SingleStage,
+      resolved_single_stage: resolvedSingleStage,
+      resolved_multi_stage: resolvedMultiStage,
+      with_sections: withSections,
+      without_sections: withoutSections,
+    },
     comparable_rows: rows.filter((r) => r.comparable).length,
       non_comparable_rows: rows.filter((r) => !r.comparable).length,
       v3_documents_with_sections: rows.filter((r) => r.sections.length > 0).length,

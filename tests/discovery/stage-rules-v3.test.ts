@@ -231,10 +231,10 @@ describe("stage-rules v3", () => {
   });
 
   it("T19 TOC vs legitimate trailing number", () => {
-    const tocText = "2 Items Raised at Previous Stage 1 Road Safety Audit 7\nfoo\n2 Items Raised at Previous Stage 1 Road Safety\nAudit\n" + "b".repeat(90);
+    const tocText = "2 Items Raised at Previous Stage 1 Road Safety Audit 7\nfoo\n2. PRELIMINARY DESIGN STAGE AUDIT\n" + "b".repeat(90);
     const tocDoc = classifyDocument(tocText, ctx, v3);
     expect(tocDoc.sections.some((s: { heading: string }) => s.heading === "2 Items Raised at Previous Stage 1 Road Safety Audit 7")).toBe(false);
-    expect(tocDoc.sections.some((s: { heading: string }) => /^2 Items Raised at Previous Stage 1 Road Safety$/.test(s.heading))).toBe(true);
+    expect(tocDoc.sections.some((s: { heading: string }) => s.heading === "2. PRELIMINARY DESIGN STAGE AUDIT")).toBe(true);
 
     const tocText2 = "4. PROBLEMS IDENTIFIED AT THIS STAGE 1 ROAD SAFETY AUDIT 8\nfoo\n4. PROBLEMS IDENTIFIED AT THIS STAGE 1 ROAD SAFETY\n" + "b".repeat(90);
     const tocDoc2 = classifyDocument(tocText2, ctx, v3);
@@ -292,6 +292,27 @@ describe("stage-rules v3 combined", () => {
     const text = "COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE\n" + "b".repeat(90);
     const doc = classifyDocument(text, ctx, v3);
     expect(doc.sections.every((s: { heading: string }) => !/COMBINED STAGE 1 AND 2/.test(s.heading))).toBe(true);
+  });
+});
+
+describe("stage-rules v3 PR #88 guards", () => {
+  it("T24 carry-over items stage 1 no FEAS, current PRELIM remains", () => {
+    const text = readFileSync("tests/fixtures/stage-rules/sections/carry-over-items-stage1.txt", "utf8");
+    const doc = classifyDocument(text, ctx, v3);
+    expect(doc.sections.every((s: { candidate: { stage: string } }) => s.candidate.stage !== "FEASIBILITY_CONCEPT")).toBe(true);
+    expect(doc.sections.some((s: { candidate: { stage: string } }) => s.candidate.stage === "PRELIMINARY_DESIGN")).toBe(true);
+  });
+  it("T25 carry-over previous stage no FEAS, current PRELIM remains", () => {
+    const text = readFileSync("tests/fixtures/stage-rules/sections/carry-over-previous-stage.txt", "utf8");
+    const doc = classifyDocument(text, ctx, v3);
+    expect(doc.sections.every((s: { candidate: { stage: string } }) => s.candidate.stage !== "FEASIBILITY_CONCEPT")).toBe(true);
+    expect(doc.sections.some((s: { candidate: { stage: string } }) => s.candidate.stage === "PRELIMINARY_DESIGN")).toBe(true);
+  });
+  it("T26 generic planning yields no clear section", () => {
+    const text = readFileSync("tests/fixtures/stage-rules/sections/generic-planning.txt", "utf8");
+    const doc = classifyDocument(text, ctx, v3);
+    expect(doc.sections).toEqual([]);
+    expect(doc.decision).toEqual(classify(text, ctx, v3));
   });
 });
 

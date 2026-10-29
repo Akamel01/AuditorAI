@@ -31,12 +31,23 @@
     "coverage_candidate_shas": [
       "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95"
     ],
+    "document_partition": {
+      "total": 33,
+      "v2_ambiguous_resolved": 17,
+      "v2_ambiguous_unresolved": 8,
+      "v2_unstaged": 4,
+      "v2_single_stage": 4,
+      "resolved_single_stage": 14,
+      "resolved_multi_stage": 3,
+      "with_sections": 20,
+      "without_sections": 13
+    },
     "comparable_rows": 32,
     "non_comparable_rows": 1,
-    "v3_documents_with_sections": 21,
-    "v3_documents_without_sections": 12,
-    "v3_stage_sections": 63,
-    "v3_documents_with_multiple_section_stages": 5
+    "v3_documents_with_sections": 20,
+    "v3_documents_without_sections": 13,
+    "v3_stage_sections": 60,
+    "v3_documents_with_multiple_section_stages": 3
   },
   "coverage_candidates": [
     {
@@ -81,13 +92,13 @@
       "priority": 0.9231,
       "v2_documents": 3,
       "v2_documents_clear": 1,
-      "v3_documents": 14,
+      "v3_documents": 11,
       "v3_documents_clear": 1,
-      "v3_section_documents": 13,
+      "v3_section_documents": 10,
       "v3_section_documents_clear": 1,
-      "v3_stage_sections": 26,
+      "v3_stage_sections": 23,
       "v3_stage_sections_clear": 3,
-      "delta_documents": 11
+      "delta_documents": 8
     },
     {
       "cell_key": "canada:PRELIMINARY_DESIGN",
@@ -125,11 +136,11 @@
       "stage": "FEASIBILITY_CONCEPT",
       "v2_documents": 3,
       "v2_documents_clear": 1,
-      "v3_documents": 14,
+      "v3_documents": 11,
       "v3_documents_clear": 1,
-      "v3_section_documents": 13,
+      "v3_section_documents": 10,
       "v3_section_documents_clear": 1,
-      "v3_stage_sections": 26,
+      "v3_stage_sections": 23,
       "v3_stage_sections_clear": 3
     },
     {
@@ -191,7 +202,7 @@
       "stage": "MULTI_STAGE",
       "v2_documents": 25,
       "v2_documents_clear": 0,
-      "v3_documents": 7,
+      "v3_documents": 8,
       "v3_documents_clear": 0,
       "v3_section_documents": 0,
       "v3_section_documents_clear": 0,
@@ -214,6 +225,12 @@
     {
       "sha256": "0d9a76ff4e71e2b48ff2a5d96081dd7ee5419ec58275ed8587d246d0a0b2793c",
       "title": "Transitway Station Design",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "1530d327c4c3df7a6240d1cee914f9b1519083b7ba360404c714a5619cc95a19",
+      "title": "MINISTÈRE DES TRANSPORTS ET DE LA MOBILITÉ DURABLE",
       "stage_v2": "MULTI_STAGE",
       "stage_v3": "MULTI_STAGE"
     },
@@ -489,47 +506,80 @@
       "cell_key_v2": "",
       "ambiguous_v2": true,
       "body_available_v2": true,
-      "stage_v3_primary": "FEASIBILITY_CONCEPT",
-      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
-      "confidence_v3": "authoritative",
-      "ambiguous_v3": false,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
       "candidates": [
         {
           "stage": "FEASIBILITY_CONCEPT",
           "cell_key": "canada:FEASIBILITY_CONCEPT",
-          "confidence": "authoritative",
+          "confidence": "inferred",
           "rule_ids": [
             "CA-FEAS"
           ],
           "evidence_scope": "body",
           "matched_phrase": "planification",
-          "offset": 32434
-        }
-      ],
-      "section_stages": [
-        "FEASIBILITY_CONCEPT"
-      ],
-      "sections": [
+          "offset": 5901
+        },
         {
-          "heading": "4.1 La planification annuelle des audits",
-          "span": {
-            "start": 32427,
-            "end": 33446
-          },
-          "candidate": {
-            "stage": "FEASIBILITY_CONCEPT",
-            "cell_key": "canada:FEASIBILITY_CONCEPT",
-            "confidence": "authoritative",
-            "rule_ids": [
-              "CA-FEAS"
-            ],
-            "evidence_scope": "body",
-            "matched_phrase": "planification",
-            "offset": 32434
-          },
-          "evidence_region": "heading"
+          "stage": "PRE_OPENING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PREOPEN"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "avant l’ouverture",
+          "offset": 24989
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "après ouverture",
+          "offset": 66243
+        },
+        {
+          "stage": "CONSTRUCTION",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-CONSTR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "travaux",
+          "offset": 24776
+        },
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PRELIM-FR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "préliminaire",
+          "offset": 20950
+        },
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-DETAIL-FR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "avant-projet définitif",
+          "offset": 36049
         }
       ],
+      "section_stages": [],
+      "sections": [],
       "body_available_v3": true,
       "comparable": true,
       "source": "text"
@@ -603,10 +653,10 @@
       "cell_key_v2": "",
       "ambiguous_v2": true,
       "body_available_v2": true,
-      "stage_v3_primary": "MULTI_STAGE",
-      "cell_key_v3": "",
-      "confidence_v3": "inferred",
-      "ambiguous_v3": true,
+      "stage_v3_primary": "PRELIMINARY_DESIGN",
+      "cell_key_v3": "canada:PRELIMINARY_DESIGN",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
       "candidates": [
         {
           "stage": "PRELIMINARY_DESIGN",
@@ -618,22 +668,10 @@
           "evidence_scope": "body",
           "matched_phrase": "Stage 2",
           "offset": 35
-        },
-        {
-          "stage": "FEASIBILITY_CONCEPT",
-          "cell_key": "canada:FEASIBILITY_CONCEPT",
-          "confidence": "interpreted",
-          "rule_ids": [
-            "CA-FEAS"
-          ],
-          "evidence_scope": "body",
-          "matched_phrase": "Stage 1",
-          "offset": 8797
         }
       ],
       "section_stages": [
-        "PRELIMINARY_DESIGN",
-        "FEASIBILITY_CONCEPT"
+        "PRELIMINARY_DESIGN"
       ],
       "sections": [
         {
@@ -652,25 +690,6 @@
             "evidence_scope": "body",
             "matched_phrase": "Stage 2",
             "offset": 35
-          },
-          "evidence_region": "heading"
-        },
-        {
-          "heading": "3. Items Raised At The Stage 1 Audit",
-          "span": {
-            "start": 8774,
-            "end": 8893
-          },
-          "candidate": {
-            "stage": "FEASIBILITY_CONCEPT",
-            "cell_key": "canada:FEASIBILITY_CONCEPT",
-            "confidence": "interpreted",
-            "rule_ids": [
-              "CA-FEAS"
-            ],
-            "evidence_scope": "body",
-            "matched_phrase": "Stage 1",
-            "offset": 8797
           },
           "evidence_region": "heading"
         },
@@ -1622,10 +1641,10 @@
       "cell_key_v2": "",
       "ambiguous_v2": true,
       "body_available_v2": true,
-      "stage_v3_primary": "MULTI_STAGE",
-      "cell_key_v3": "",
-      "confidence_v3": "inferred",
-      "ambiguous_v3": true,
+      "stage_v3_primary": "PRELIMINARY_DESIGN",
+      "cell_key_v3": "canada:PRELIMINARY_DESIGN",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
       "candidates": [
         {
           "stage": "PRELIMINARY_DESIGN",
@@ -1637,22 +1656,10 @@
           "evidence_scope": "body",
           "matched_phrase": "Stage 2",
           "offset": 234
-        },
-        {
-          "stage": "FEASIBILITY_CONCEPT",
-          "cell_key": "canada:FEASIBILITY_CONCEPT",
-          "confidence": "interpreted",
-          "rule_ids": [
-            "CA-FEAS"
-          ],
-          "evidence_scope": "body",
-          "matched_phrase": "Stage 1",
-          "offset": 7074
         }
       ],
       "section_stages": [
-        "PRELIMINARY_DESIGN",
-        "FEASIBILITY_CONCEPT"
+        "PRELIMINARY_DESIGN"
       ],
       "sections": [
         {
@@ -1671,25 +1678,6 @@
             "evidence_scope": "body",
             "matched_phrase": "Stage 2",
             "offset": 234
-          },
-          "evidence_region": "heading"
-        },
-        {
-          "heading": "2 Items Raised at Previous Stage 1 Road Safety",
-          "span": {
-            "start": 7047,
-            "end": 7196
-          },
-          "candidate": {
-            "stage": "FEASIBILITY_CONCEPT",
-            "cell_key": "canada:FEASIBILITY_CONCEPT",
-            "confidence": "interpreted",
-            "rule_ids": [
-              "CA-FEAS"
-            ],
-            "evidence_scope": "body",
-            "matched_phrase": "Stage 1",
-            "offset": 7074
           },
           "evidence_region": "heading"
         },

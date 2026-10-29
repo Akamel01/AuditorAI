@@ -13,26 +13,34 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 
 - rows: 33
 - v2 ambiguous: 25; non-ambiguous: 8
-- docs with >=1 clear section: 21; without: 12
-- stage sections: 63
-- docs with >=2 distinct section stages: 5
+- docs with >=1 clear section: 20; without: 13
+- stage sections: 60
+- docs with >=2 distinct section stages: 3
 - comparable: 32; non-comparable: 1
 - bodies available: 33; unavailable: 0
+
+## §1.1 Document-level decomposition
+
+33 = 17 resolved v2-ambiguous + 8 unresolved v2-ambiguous (MULTI_STAGE fallback) + 4 v2 UNSTAGED + 4 v2 single-stage.
+Of the 17 resolved: 14 single-stage + 3 multi-stage (the 3 multi-stage docs appear in more than one stage row).
+20 docs have >=1 clear section; 13 have none.
 
 ## §2 Before/after by stage (33 Track A documents)
 
 | Stage | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ documents |
 |---|---|---|---|---|---|
-| FEASIBILITY_CONCEPT | 3 | 14 | 13 | 26 | 11 |
+| FEASIBILITY_CONCEPT | 3 | 11 | 10 | 23 | 8 |
 | PRELIMINARY_DESIGN | 1 | 6 | 6 | 13 | 5 |
 | DETAILED_DESIGN | 0 | 5 | 5 | 15 | 5 |
 | PRE_OPENING | 0 | 2 | 2 | 4 | 2 |
 | EXISTING | 0 | 1 | 1 | 3 | 1 |
 | CONSTRUCTION | 0 | 1 | 1 | 2 | 1 |
-| MULTI_STAGE | 25 | 7 | 0 | 0 | -18 |
+| MULTI_STAGE | 25 | 8 | 0 | 0 | -17 |
 | UNSTAGED | 4 | 4 | 0 | 0 | 0 |
 
-25 of 33 ambiguous under v2; under v3, 5 documents have >= 2 distinct section stages, 63 stage sections were earned across 21 documents, and 12 documents have no clear section and use the v2-equivalent fallback.
+25 of 33 ambiguous under v2; under v3, 3 documents have >= 2 distinct section stages, 60 stage sections were earned across 20 documents, and 13 documents have no clear section and use the v2-equivalent fallback.
+
+Footnote: the MULTI_STAGE row is the no-section fallback count (8); the 3 multi-stage documents with sections are counted in their earned canonical stage rows, so the per-stage rows do not sum to 33.
 
 ## §3 By Canadian cell
 
@@ -40,7 +48,7 @@ Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA
 
 | Cell | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ |
 |---|---|---|---|---|---|
-| `canada:FEASIBILITY_CONCEPT` | 3 | 14 | 13 | 26 | 11 |
+| `canada:FEASIBILITY_CONCEPT` | 3 | 11 | 10 | 23 | 8 |
 | `canada:PRELIMINARY_DESIGN` | 1 | 6 | 6 | 13 | 5 |
 | `canada:DETAILED_DESIGN` | 0 | 5 | 5 | 15 | 5 |
 
@@ -63,9 +71,9 @@ Coverage candidate shas: `0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa4171
 | `0421ca4b9d06` | APPENDIX H | MULTI_STAGE (ambiguous) | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN×1 | PRELIMINARY_DESIGN: Road Safety Audit – Preliminary Design Stage |  |
 | `0af7ea584ae0` | PLANNING STAGE | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×3 | FEASIBILITY_CONCEPT: PLANNING STAGE |  |
 | `0d9a76ff4e71` | Transitway Station Design | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
-| `1530d327c4c3` | MINISTÈRE DES TRANSPORTS ET DE LA MOBILITÉ DURABLE | MULTI_STAGE (ambiguous) | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×1 | FEASIBILITY_CONCEPT: 4.1 La planification annuelle des audits |  |
+| `1530d327c4c3` | MINISTÈRE DES TRANSPORTS ET DE LA MOBILITÉ DURABLE | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
 | `1d5879a68c55` | ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME | MULTI_STAGE (ambiguous) | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×1 | FEASIBILITY_CONCEPT: ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME |  |
-| `299ac961228e` | A795 Ambridge Bypass | MULTI_STAGE (ambiguous) | MULTI_STAGE | PRELIMINARY_DESIGN, FEASIBILITY_CONCEPT | PRELIMINARY_DESIGN×2; FEASIBILITY_CONCEPT×1 | PRELIMINARY_DESIGN: Stage 2 Road Safety Audit; FEASIBILITY_CONCEPT: 3. Items Raised At The Stage 1 Audit |  |
+| `299ac961228e` | A795 Ambridge Bypass | MULTI_STAGE (ambiguous) | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN×2 | PRELIMINARY_DESIGN: Stage 2 Road Safety Audit |  |
 | `2b3115c3438b` | CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project | MULTI_STAGE (ambiguous) | DETAILED_DESIGN | DETAILED_DESIGN | DETAILED_DESIGN×1 | DETAILED_DESIGN: CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project |  |
 | `2d4322f39383` | COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | — | — | — |  |
 | `2d8e41b8631a` | DBFL Consulting Engineers | MULTI_STAGE (ambiguous) | DETAILED_DESIGN | DETAILED_DESIGN | DETAILED_DESIGN×1 | DETAILED_DESIGN: Stage 3 Road Safety Audit |  |
@@ -77,7 +85,7 @@ Coverage candidate shas: `0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa4171
 | `478f0847ff25` | A Process Management Approach to | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
 | `555848f63c69` | Technical Circular T-02/04 | UNSTAGED | UNSTAGED | — | — | — |  |
 | `5d29a43bb076` | City of Ottawa Project Agreement - Schedule 15-2 Part 2 | MULTI_STAGE (ambiguous) | MULTI_STAGE | FEASIBILITY_CONCEPT, PRELIMINARY_DESIGN | FEASIBILITY_CONCEPT×2; PRELIMINARY_DESIGN×2 | FEASIBILITY_CONCEPT: 1. Road Safety Audit Certificate (Stage 1); PRELIMINARY_DESIGN: 2. Road Safety Audit Certificate (Stage 2) |  |
-| `603f3f01f781` | Proposed Lidl Store: Mottingham Road Bromley | MULTI_STAGE (ambiguous) | MULTI_STAGE | PRELIMINARY_DESIGN, FEASIBILITY_CONCEPT | PRELIMINARY_DESIGN×3; FEASIBILITY_CONCEPT×1 | PRELIMINARY_DESIGN: Road Safety Audit: Stage 2, Proposed Lidl Store: Mottingham Road Bromley; FEASIBILITY_CONCEPT: 2 Items Raised at Previous Stage 1 Road Safety |  |
+| `603f3f01f781` | Proposed Lidl Store: Mottingham Road Bromley | MULTI_STAGE (ambiguous) | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN | PRELIMINARY_DESIGN×3 | PRELIMINARY_DESIGN: Road Safety Audit: Stage 2, Proposed Lidl Store: Mottingham Road Bromley |  |
 | `60d10b708b62` | Bessborough Housing Development Road Safety Audit – Stage 1 | MULTI_STAGE (ambiguous) | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT | FEASIBILITY_CONCEPT×2 | FEASIBILITY_CONCEPT: Stage 1 Road Safety Audit |  |
 | `6c0ffc7cd483` | M E M O / N O T E D E S E R V I C E | MULTI_STAGE (ambiguous) | MULTI_STAGE | — | — | — |  |
 | `7b9715f0d030` | Annex 6 – Road Safety Audit | MULTI_STAGE (ambiguous) | DETAILED_DESIGN | DETAILED_DESIGN | DETAILED_DESIGN×1 | DETAILED_DESIGN: Road Safety Audit Report – Detailed Design |  |
@@ -99,6 +107,7 @@ Coverage candidate shas: `0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa4171
 | sha (12) | title | v2 | v3 |
 |---|---|---|---|
 | `0d9a76ff4e71` | Transitway Station Design | MULTI_STAGE | MULTI_STAGE |
+| `1530d327c4c3` | MINISTÈRE DES TRANSPORTS ET DE LA MOBILITÉ DURABLE | MULTI_STAGE | MULTI_STAGE |
 | `2ea94190b6df` | Proceedings of the 18th Canadian Multidisciplinary Road Safety Conference, Whistler, BC June 8-11, 2008 | MULTI_STAGE | MULTI_STAGE |
 | `3048eccbe2de` | Transportation Association of Canada | MULTI_STAGE | MULTI_STAGE |
 | `32bced315fcd` | UNION ECONOMIQUE ET MONETAIRE | MULTI_STAGE | MULTI_STAGE |

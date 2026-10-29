@@ -702,12 +702,18 @@ function clearSections(region: string, ruleSet: RuleSet, cfg: SectionConfig): Se
     if (headStages.size !== 1) continue;
     const stage = [...headStages][0];
     if (isCombinedStageHeading(collapse(h.heading))) continue;
+    const carryOver = /\bitems\s+raised\s+at\s+(?:the\s+)?(?:previous\s+)?stage\s*(?:\d+|one|two|three)\b/i.test(collapse(h.heading)) &&
+      (/\bprevious\b/i.test(collapse(h.heading)) || /\bstage\s*(?:1|one)\b/i.test(collapse(h.heading)));
+    if (carryOver || /\bprevious\s+stage\b/i.test(collapse(h.heading))) continue;
     const headingText = region.slice(span.start, h.lineEnd);
     const hd = classify(headingText, { title: "", hint: "UNSTAGED" }, ruleSet);
     const c = hd.candidates.find(
       (cand) => cand.stage === stage && cand.rule_ids.some((id) => nt1.get(id) === stage),
     );
     if (!c) continue;
+    const mp = collapse(c.matched_phrase).toLowerCase();
+    if ((mp === "planification" || mp === "planning") &&
+        !/stage|étape|etape|phase|faisabilité|feasibility/i.test(collapse(h.heading))) continue;
     const absolute = span.start + c.offset;
     if (!(span.start <= absolute && absolute < span.end)) continue;
     out.push({

@@ -90,6 +90,9 @@ describe("stage-rules v3 artifacts", () => {
     expect(json.denominators.v3_stage_sections).toBe(totalSections);
     expect(json.denominators.v3_documents_with_sections + json.denominators.v3_documents_without_sections).toBe(33);
     expect(json.denominators.v3_documents_with_multiple_section_stages).toBe(rows.filter((r: any) => r.section_stages.length >= 2).length);
+    const dp = json.denominators.document_partition;
+    expect(dp.v2_ambiguous_resolved + dp.v2_ambiguous_unresolved + dp.v2_unstaged + dp.v2_single_stage).toBe(33);
+    expect(dp.with_sections + dp.without_sections).toBe(33);
   });
 
   it("A6 count invariants", () => {
@@ -106,6 +109,8 @@ describe("stage-rules v3 artifacts", () => {
     expect(stageV2Sum).toBe(33);
     expect(json.cells.length).toBe(3);
     expect(json.stages.length).toBe(8);
+    const multiRow = json.stages.find((s: any) => s.stage === "MULTI_STAGE");
+    expect(multiRow.v3_documents).toBe(json.denominators.document_partition.v2_ambiguous_unresolved);
     expect(json.coverage_candidates.length).toBe(3);
     for (const c of json.coverage_candidates) {
       expect(c.v3_documents).toBeGreaterThanOrEqual(c.v3_section_documents);
