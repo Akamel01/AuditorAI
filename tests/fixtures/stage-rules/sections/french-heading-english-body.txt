@@ -1,0 +1,2 @@
+1. ÉTUDE DÉTAILLÉE
+The detailed design stage is discussed in the body with detailed design phrase repeated here to be long enough for a section.

@@ -1,0 +1,9 @@
+STAGE 2 (PRELIMINARY DESIGN STAGE) AUDIT
+This section describes preliminary design stage audit work with enough body text to exceed the eighty character minimum section length requirement.
+
+1.1.1 In 2020, OC Transpo commissioned an independent station design safety study of five stations.
+
+2 Hildebrand ED, Ross A, Robichaud K "The Effectiveness of Transitional Speed Zones", ITE Journal, October 2004, 30-38.
+
+2.0 FINDINGS
+Findings listed here are neutral and do not name a single named tier one stage.

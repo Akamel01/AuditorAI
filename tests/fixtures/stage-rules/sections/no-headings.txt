@@ -1,0 +1,5 @@
+This document discusses preliminary design and detailed design in prose without any headings.
+
+It mentions stage 2 and stage 3 in passing but has no numbered, all-caps, or title-case stage heading that is isolated or repeated.
+
+The body contains enough text to be scanned but no clear section boundaries exist.

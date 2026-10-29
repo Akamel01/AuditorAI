@@ -1,0 +1,12 @@
+Road Safety Audit – Preliminary Design Stage
+
+Neutral text between headers that is long enough to matter for section boundaries.
+
+Road Safety Audit – Preliminary Design Stage
+
+More neutral text in the middle of the document to separate the repeated headers.
+
+Road Safety Audit – Preliminary Design Stage
+
+1. INTRODUCTION
+This introduction section has enough body text to exceed the minimum section length of eighty characters for the single stage document.
