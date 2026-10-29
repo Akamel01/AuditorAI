@@ -1,0 +1,2866 @@
+{
+  "rule_sets": {
+    "v2": {
+      "path": "docs/research/stage-rules/stage-rules.v2.json",
+      "sha256": "347bd328d910a924cc2b54b41a1c2dcce9b755942cc811377565712f3d920d8a"
+    },
+    "v3": {
+      "path": "docs/research/stage-rules/stage-rules.v3.json",
+      "sha256": "d374cfffd198965b1afa10f1d7d9952668f3caac8ea55486d807f832051523da"
+    }
+  },
+  "v2_sidecar": {
+    "path": "docs/research/stage-rules/classifications-v2.jsonl",
+    "sha256": "41ea6f87361d69ac055609b2d581f86bef8b243236b4d9bb71ce046db425e8c1",
+    "rows": 33
+  },
+  "manifest": {
+    "path": "docs/RSA-Documents/canada-intake-manifest.jsonl",
+    "sha256": "74cd84dd4ccf7de15fe4741745f416a46c908f036a3dcdce2bbc5e9f8a98b391",
+    "rows": 33
+  },
+  "bodies": {
+    "available": 33,
+    "unavailable": 0,
+    "unavailable_rows": []
+  },
+  "denominators": {
+    "rows": 33,
+    "v2_ambiguous": 25,
+    "v2_non_ambiguous": 8,
+    "coverage_candidate_shas": [
+      "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95"
+    ],
+    "comparable_rows": 32,
+    "non_comparable_rows": 1,
+    "v3_documents_with_sections": 22,
+    "v3_documents_without_sections": 11,
+    "v3_stage_sections": 64,
+    "v3_documents_with_multiple_section_stages": 5
+  },
+  "coverage_candidates": [
+    {
+      "cell_key": "canada:FEASIBILITY_CONCEPT",
+      "stage": "FEASIBILITY_CONCEPT",
+      "target": 13,
+      "priority": 0.9231,
+      "v2_documents": 1,
+      "v3_documents": 1,
+      "v3_section_documents": 1,
+      "v3_stage_sections": 3,
+      "delta_documents": 0
+    },
+    {
+      "cell_key": "canada:PRELIMINARY_DESIGN",
+      "stage": "PRELIMINARY_DESIGN",
+      "target": 41,
+      "priority": 3,
+      "v2_documents": 0,
+      "v3_documents": 0,
+      "v3_section_documents": 0,
+      "v3_stage_sections": 0,
+      "delta_documents": 0
+    },
+    {
+      "cell_key": "canada:DETAILED_DESIGN",
+      "stage": "DETAILED_DESIGN",
+      "target": 41,
+      "priority": 3,
+      "v2_documents": 0,
+      "v3_documents": 0,
+      "v3_section_documents": 0,
+      "v3_stage_sections": 0,
+      "delta_documents": 0
+    }
+  ],
+  "cells": [
+    {
+      "cell_key": "canada:FEASIBILITY_CONCEPT",
+      "stage": "FEASIBILITY_CONCEPT",
+      "target": 13,
+      "priority": 0.9231,
+      "v2_documents": 3,
+      "v2_documents_clear": 1,
+      "v3_documents": 14,
+      "v3_documents_clear": 1,
+      "v3_section_documents": 14,
+      "v3_section_documents_clear": 1,
+      "v3_stage_sections": 27,
+      "v3_stage_sections_clear": 3,
+      "delta_documents": 11
+    },
+    {
+      "cell_key": "canada:PRELIMINARY_DESIGN",
+      "stage": "PRELIMINARY_DESIGN",
+      "target": 41,
+      "priority": 3,
+      "v2_documents": 1,
+      "v2_documents_clear": 0,
+      "v3_documents": 6,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 6,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 13,
+      "v3_stage_sections_clear": 0,
+      "delta_documents": 5
+    },
+    {
+      "cell_key": "canada:DETAILED_DESIGN",
+      "stage": "DETAILED_DESIGN",
+      "target": 41,
+      "priority": 3,
+      "v2_documents": 0,
+      "v2_documents_clear": 0,
+      "v3_documents": 5,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 5,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 15,
+      "v3_stage_sections_clear": 0,
+      "delta_documents": 5
+    }
+  ],
+  "stages": [
+    {
+      "stage": "FEASIBILITY_CONCEPT",
+      "v2_documents": 3,
+      "v2_documents_clear": 1,
+      "v3_documents": 14,
+      "v3_documents_clear": 1,
+      "v3_section_documents": 14,
+      "v3_section_documents_clear": 1,
+      "v3_stage_sections": 27,
+      "v3_stage_sections_clear": 3
+    },
+    {
+      "stage": "PRELIMINARY_DESIGN",
+      "v2_documents": 1,
+      "v2_documents_clear": 0,
+      "v3_documents": 6,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 6,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 13,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "DETAILED_DESIGN",
+      "v2_documents": 0,
+      "v2_documents_clear": 0,
+      "v3_documents": 5,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 5,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 15,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "PRE_OPENING",
+      "v2_documents": 0,
+      "v2_documents_clear": 0,
+      "v3_documents": 2,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 2,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 4,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "EXISTING",
+      "v2_documents": 0,
+      "v2_documents_clear": 0,
+      "v3_documents": 1,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 1,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 3,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "CONSTRUCTION",
+      "v2_documents": 0,
+      "v2_documents_clear": 0,
+      "v3_documents": 1,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 1,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 2,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "MULTI_STAGE",
+      "v2_documents": 25,
+      "v2_documents_clear": 0,
+      "v3_documents": 7,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 0,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 0,
+      "v3_stage_sections_clear": 0
+    },
+    {
+      "stage": "UNSTAGED",
+      "v2_documents": 4,
+      "v2_documents_clear": 0,
+      "v3_documents": 4,
+      "v3_documents_clear": 0,
+      "v3_section_documents": 0,
+      "v3_section_documents_clear": 0,
+      "v3_stage_sections": 0,
+      "v3_stage_sections_clear": 0
+    }
+  ],
+  "unresolved": [
+    {
+      "sha256": "0d9a76ff4e71e2b48ff2a5d96081dd7ee5419ec58275ed8587d246d0a0b2793c",
+      "title": "Transitway Station Design",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "2ea94190b6df90060009794589689884d0db779299cc99ee5dcd1e8887c2602e",
+      "title": "Proceedings of the 18th Canadian Multidisciplinary Road Safety Conference, Whistler, BC June 8-11, 2008",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "3048eccbe2ded598efc5da89d76ffcf4ae2c4ba5a546f05e45bc503b49d6782c",
+      "title": "Transportation Association of Canada",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "32bced315fcd5b017484fa5ab4dd9953b55597c5e4720ae84d0f536a84a24174",
+      "title": "UNION ECONOMIQUE ET MONETAIRE",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "478f0847ff252df721bc836c70d22ec69e804d55df364bd2f456f5214c812d4f",
+      "title": "A Process Management Approach to",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "555848f63c690810661d7837b766ccb611f97ebe313a942bd413704745e947aa",
+      "title": "Technical Circular T-02/04",
+      "stage_v2": "UNSTAGED",
+      "stage_v3": "UNSTAGED"
+    },
+    {
+      "sha256": "6c0ffc7cd48358f9a371f9e8fa3b80f0867b4b9a0ffbeb356772dee289dd3e84",
+      "title": "M E M O / N O T E D E S E R V I C E",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "84a70638ba6077885b2c17f94b36554cea4e65f9f001f7d0f8e1c1d0632a245b",
+      "title": "Date: March 17, 2004",
+      "stage_v2": "UNSTAGED",
+      "stage_v3": "UNSTAGED"
+    },
+    {
+      "sha256": "a8020b20b358d0befe238f37d311ff9d9cda4bfdff503b66956a65a3f12939f7",
+      "title": "M E M O / N O T E D E S E R V I C E",
+      "stage_v2": "MULTI_STAGE",
+      "stage_v3": "MULTI_STAGE"
+    },
+    {
+      "sha256": "d16763daf5d40cf67e8a7256087e28398ba1b602775310e8501b92b114b10665",
+      "title": "Note Méthodologique : audit de sécurité routière asr",
+      "stage_v2": "UNSTAGED",
+      "stage_v3": "UNSTAGED"
+    },
+    {
+      "sha256": "f5b7f30aa814612f71fbd3b2557dc0b40c6de309925a2bc1ec526cf4d0bf141f",
+      "title": "FULL DAYS",
+      "stage_v2": "UNSTAGED",
+      "stage_v3": "UNSTAGED"
+    }
+  ],
+  "rows": [
+    {
+      "project_id": "PRJ-28b5ea11f997bb59",
+      "sha256": "0421ca4b9d060656d33304110b65bef2c00602cd037c3ee4bcb73fd4e0daf4a6",
+      "title": "APPENDIX H",
+      "tier": "T1",
+      "ca_province": "ON",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "PRELIMINARY_DESIGN",
+      "cell_key_v3": "canada:PRELIMINARY_DESIGN",
+      "confidence_v3": "authoritative",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "authoritative",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "preliminary design",
+          "offset": 380
+        }
+      ],
+      "section_stages": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "Road Safety Audit – Preliminary Design Stage",
+          "span": {
+            "start": 360,
+            "end": 3514
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "authoritative",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "preliminary design",
+            "offset": 380
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-d8c82b96d74c1c92",
+      "sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95",
+      "title": "PLANNING STAGE",
+      "tier": "T3",
+      "ca_province": "AB",
+      "lang": "en",
+      "licence_verdict": "CLEAR",
+      "stage_v2_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v2": "canada:FEASIBILITY_CONCEPT",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "planning stage",
+          "offset": 10
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "PLANNING STAGE",
+          "span": {
+            "start": 10,
+            "end": 25
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "authoritative",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "planning stage",
+            "offset": 10
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "STAGE 1 – 2041",
+          "span": {
+            "start": 73,
+            "end": 88
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 1",
+            "offset": 73
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "RE: Planning Stage – Road Safety Audit of the North East Edmonton Ring",
+          "span": {
+            "start": 325,
+            "end": 816
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "authoritative",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "planning stage",
+            "offset": 329
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-a7c26e65924e6100",
+      "sha256": "0d9a76ff4e71e2b48ff2a5d96081dd7ee5419ec58275ed8587d246d0a0b2793c",
+      "title": "Transitway Station Design",
+      "tier": "T3",
+      "ca_province": "ON",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-AMBIG-PCT"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "50% [assumed] • Design",
+          "offset": 50859
+        },
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-AMBIG-PCT"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "50% [assumed] • Design",
+          "offset": 50859
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-73a0e7139715a60f",
+      "sha256": "1530d327c4c3df7a6240d1cee914f9b1519083b7ba360404c714a5619cc95a19",
+      "title": "MINISTÈRE DES TRANSPORTS ET DE LA MOBILITÉ DURABLE",
+      "tier": "T1",
+      "ca_province": "QC",
+      "lang": "fr",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "authoritative",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "authoritative",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "planification",
+          "offset": 32434
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "4.1 La planification annuelle des audits",
+          "span": {
+            "start": 32427,
+            "end": 33446
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "authoritative",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "planification",
+            "offset": 32434
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-07fc03d41ebb546a",
+      "sha256": "1d5879a68c55f76a927a5e1de4a84853b75ff1a9b396304ce6b2622a7338bfab",
+      "title": "ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "STAGE 1",
+          "offset": 18
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "ROAD SAFETY AUDIT STAGE 1: SPRINT SCHEME",
+          "span": {
+            "start": 0,
+            "end": 1568
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 1",
+            "offset": 18
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-c9243fbd6a926921",
+      "sha256": "299ac961228e56fded0a38ab623cabce184ce3b1fcb6c3461a8a81dd6b11bee7",
+      "title": "A795 Ambridge Bypass",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 35
+        },
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 8797
+        }
+      ],
+      "section_stages": [
+        "PRELIMINARY_DESIGN",
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 2 Road Safety Audit",
+          "span": {
+            "start": 35,
+            "end": 249
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 35
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "3. Items Raised At The Stage 1 Audit",
+          "span": {
+            "start": 8774,
+            "end": 8893
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 8797
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "4. Items Raised At This Stage 2 Audit",
+          "span": {
+            "start": 10074,
+            "end": 10186
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 10098
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-2cb3fd5d40374895",
+      "sha256": "2b3115c3438b11fe5a25f270d8f855e502d4969a71d76dc1a4ab6d23a9280860",
+      "title": "CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "DETAILED_DESIGN",
+      "cell_key_v3": "canada:DETAILED_DESIGN",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 3",
+          "offset": 22
+        }
+      ],
+      "section_stages": [
+        "DETAILED_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "CCTT Briefing Note on Stage 3 Road Safety Audit for Trams to Newhaven Project",
+          "span": {
+            "start": 0,
+            "end": 4894
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 22
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-32b23afb80a396bf",
+      "sha256": "2d4322f393836b8c31b05fab0e203ace8a8a766a0d5602f6a2c85a703849eb7b",
+      "title": "COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v2": "canada:FEASIBILITY_CONCEPT",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "STAGE 1",
+          "offset": 9
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "COMBINED STAGE 1 AND 2 ROAD SAFETY AUDIT DESIGNERS’ RESPONSE",
+          "span": {
+            "start": 0,
+            "end": 1772
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 1",
+            "offset": 9
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-ea7eb92962bd4c2f",
+      "sha256": "2d8e41b8631a7bb40c523b65541bbebffe0128ec398d11bfe6d4abc0c0fa6156",
+      "title": "DBFL Consulting Engineers",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "DETAILED_DESIGN",
+      "cell_key_v3": "canada:DETAILED_DESIGN",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 3",
+          "offset": 136
+        }
+      ],
+      "section_stages": [
+        "DETAILED_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 3 Road Safety Audit",
+          "span": {
+            "start": 136,
+            "end": 1840
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 136
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-5c789bbce55832fb",
+      "sha256": "2ea94190b6df90060009794589689884d0db779299cc99ee5dcd1e8887c2602e",
+      "title": "Proceedings of the 18th Canadian Multidisciplinary Road Safety Conference, Whistler, BC June 8-11, 2008",
+      "tier": "T3",
+      "ca_province": "NB",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "detail design",
+          "offset": 5655
+        },
+        {
+          "stage": "PRE_OPENING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PREOPEN"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "pre-opening",
+          "offset": 5670
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "existing road",
+          "offset": 4242
+        },
+        {
+          "stage": "CONSTRUCTION",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-CONSTR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "travaux",
+          "offset": 2375
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-eb73942c254e44a7",
+      "sha256": "3048eccbe2ded598efc5da89d76ffcf4ae2c4ba5a546f05e45bc503b49d6782c",
+      "title": "Transportation Association of Canada",
+      "tier": "T1",
+      "ca_province": "NB",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "preliminary design",
+          "offset": 1222
+        },
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "detailed design",
+          "offset": 1261
+        },
+        {
+          "stage": "PRE_OPENING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PREOPEN"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "pre-opening",
+          "offset": 1330
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-f2c9cb4553ac44dc",
+      "sha256": "32bced315fcd5b017484fa5ab4dd9953b55597c5e4720ae84d0f536a84a24174",
+      "title": "UNION ECONOMIQUE ET MONETAIRE",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "fr",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "planification",
+          "offset": 6725
+        },
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-DETAIL-FR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "détaillée",
+          "offset": 6796
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-6f2b33d50e16d1bf",
+      "sha256": "37863ef8e7134dc993ea5c2530df347c7bb0f290c3a4ca73e50e6615e81b137e",
+      "title": "VOLUME 4: ROAD SAFETY AUDITS Final Draft: 25 May 1999 6-1",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "STAGE 3",
+          "offset": 60
+        },
+        {
+          "stage": "CONSTRUCTION",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-CONSTR"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "construction stage",
+          "offset": 6727
+        },
+        {
+          "stage": "PRE_OPENING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PREOPEN"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "pre-opening",
+          "offset": 7767
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Existing Facilit",
+          "offset": 11987
+        }
+      ],
+      "section_stages": [
+        "DETAILED_DESIGN",
+        "CONSTRUCTION",
+        "PRE_OPENING",
+        "EXISTING"
+      ],
+      "sections": [
+        {
+          "heading": "6 STAGE 3 ROAD",
+          "span": {
+            "start": 58,
+            "end": 73
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 3",
+            "offset": 60
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "6.1 The Stage 3 Road Safety Audit: Detailed Design",
+          "span": {
+            "start": 592,
+            "end": 1612
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 600
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "6.2 Reasons for Conducting a Stage 3: Detailed",
+          "span": {
+            "start": 1612,
+            "end": 3211
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 1641
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "6.5 The Stage 3: Detailed Design Stage Road",
+          "span": {
+            "start": 3842,
+            "end": 4000
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 3850
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "6.6 Checklist for the Stage 3: Detailed Design",
+          "span": {
+            "start": 4000,
+            "end": 4595
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 4022
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "7.5 The Stage 4: Construction Stage Road Safety",
+          "span": {
+            "start": 6710,
+            "end": 7163
+          },
+          "candidate": {
+            "stage": "CONSTRUCTION",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-CONSTR"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "construction stage",
+            "offset": 6727
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "7.6 Checklist for the Stage 4: Construction Stage",
+          "span": {
+            "start": 7163,
+            "end": 7685
+          },
+          "candidate": {
+            "stage": "CONSTRUCTION",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-CONSTR"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "construction stage",
+            "offset": 7194
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "8.1 The Stage 5 Road Safety Audit: Pre-opening",
+          "span": {
+            "start": 7732,
+            "end": 8557
+          },
+          "candidate": {
+            "stage": "PRE_OPENING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-PREOPEN"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "pre-opening",
+            "offset": 7767
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "8.5 The Stage 5: Pre-opening Stage Road Safety",
+          "span": {
+            "start": 10929,
+            "end": 11083
+          },
+          "candidate": {
+            "stage": "PRE_OPENING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-PREOPEN"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "pre-opening",
+            "offset": 10946
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "8.6 Checklist for the Stage 5: Pre-opening Stage",
+          "span": {
+            "start": 11083,
+            "end": 11631
+          },
+          "candidate": {
+            "stage": "PRE_OPENING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-PREOPEN"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "pre-opening",
+            "offset": 11114
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "9.1 Road Safety Audits on Existing Facilities and",
+          "span": {
+            "start": 11961,
+            "end": 13201
+          },
+          "candidate": {
+            "stage": "EXISTING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-EXISTING"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Existing Facilit",
+            "offset": 11987
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "9.6 The Stage 6: Existing Facility Road Safety Audit",
+          "span": {
+            "start": 15847,
+            "end": 16280
+          },
+          "candidate": {
+            "stage": "EXISTING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-EXISTING"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Existing Facilit",
+            "offset": 15864
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "9.7 Checklist for the Stage 6: Existing Facility Road",
+          "span": {
+            "start": 16280,
+            "end": 17071
+          },
+          "candidate": {
+            "stage": "EXISTING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-EXISTING"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Existing Facilit",
+            "offset": 16311
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-1d71f303f146eea4",
+      "sha256": "3b987d48a116d49af851c6b830a30ee3cc64e4b14931845b70215cc9f162e265",
+      "title": "DESIGNER’S RESPONSE",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v2": "canada:FEASIBILITY_CONCEPT",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "STAGE 1",
+          "offset": 23
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "TO STAGE 1 ROAD SAFETY AUDIT",
+          "span": {
+            "start": 20,
+            "end": 49
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 1",
+            "offset": 23
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Report Title Designer’s Response to Stage 1 Road Safety Audit",
+          "span": {
+            "start": 179,
+            "end": 760
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 215
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-39023ec90843cb07",
+      "sha256": "478f0847ff252df721bc836c70d22ec69e804d55df364bd2f456f5214c812d4f",
+      "title": "A Process Management Approach to",
+      "tier": "T1",
+      "ca_province": "AB",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "detailed design",
+          "offset": 8977
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "in-service road",
+          "offset": 1407
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-667d360379e0181e",
+      "sha256": "555848f63c690810661d7837b766ccb611f97ebe313a942bd413704745e947aa",
+      "title": "Technical Circular T-02/04",
+      "tier": "T1",
+      "ca_province": "BC",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "UNSTAGED",
+      "cell_key_v2": "",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "UNSTAGED",
+      "cell_key_v3": "",
+      "confidence_v3": null,
+      "ambiguous_v3": false,
+      "candidates": [],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "hint"
+    },
+    {
+      "project_id": "PRJ-a7c26e65924e6100",
+      "sha256": "5d29a43bb0769eba393f41f8a8d2d51ac44fb53b4f5be348d3218b2513023a66",
+      "title": "City of Ottawa Project Agreement - Schedule 15-2 Part 2",
+      "tier": "T1",
+      "ca_province": "ON",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 231
+        },
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 274
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT",
+        "PRELIMINARY_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "1. Road Safety Audit Certificate (Stage 1)",
+          "span": {
+            "start": 197,
+            "end": 240
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 231
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "2. Road Safety Audit Certificate (Stage 2)",
+          "span": {
+            "start": 240,
+            "end": 283
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 274
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "ROAD SAFETY AUDIT CERTIFICATE (STAGE 1)",
+          "span": {
+            "start": 495,
+            "end": 3585
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 1",
+            "offset": 526
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "ROAD SAFETY AUDIT CERTIFICATE (STAGE 2)",
+          "span": {
+            "start": 3585,
+            "end": 6665
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 2",
+            "offset": 3616
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-4095d02718d6daa6",
+      "sha256": "603f3f01f78134f63b8131b36025fe07a1107bb1925cdb3eb2a160f7c094583e",
+      "title": "Proposed Lidl Store: Mottingham Road Bromley",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 234
+        },
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 7074
+        }
+      ],
+      "section_stages": [
+        "PRELIMINARY_DESIGN",
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Road Safety Audit: Stage 2, Proposed Lidl Store: Mottingham Road Bromley",
+          "span": {
+            "start": 215,
+            "end": 796
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 234
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "2 Items Raised at Previous Stage 1 Road Safety",
+          "span": {
+            "start": 7047,
+            "end": 7196
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 7074
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "3 Items Raised at this Stage 2 Road Safety Audit",
+          "span": {
+            "start": 17433,
+            "end": 17795
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 17456
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "STAGE 2 ROAD SAFETY AUDIT",
+          "span": {
+            "start": 18086,
+            "end": 18193
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 2",
+            "offset": 18086
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-05ec5bdf01a10e27",
+      "sha256": "60d10b708b629f4d5c3bdea575a1519e50d33ffb13781777bd21bb3df187d0aa",
+      "title": "Bessborough Housing Development Road Safety Audit – Stage 1",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 260
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 1 Road Safety Audit",
+          "span": {
+            "start": 260,
+            "end": 490
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 260
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Bessborough Housing Development Road Safety Audit – Stage 1",
+          "span": {
+            "start": 16866,
+            "end": 17556
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 16918
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-a7c26e65924e6100",
+      "sha256": "6c0ffc7cd48358f9a371f9e8fa3b80f0867b4b9a0ffbeb356772dee289dd3e84",
+      "title": "M E M O / N O T E D E S E R V I C E",
+      "tier": "T1",
+      "ca_province": "ON",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 2525
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "In-Service Road",
+          "offset": 1494
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-e89f3692351bda29",
+      "sha256": "7b9715f0d03000e487953485e65b582da6148c054aabb49038de63c3e7b4f76a",
+      "title": "Annex 6 – Road Safety Audit",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "DETAILED_DESIGN",
+      "cell_key_v3": "canada:DETAILED_DESIGN",
+      "confidence_v3": "authoritative",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "authoritative",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "detailed design",
+          "offset": 119
+        }
+      ],
+      "section_stages": [
+        "DETAILED_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "Road Safety Audit Report – Detailed Design",
+          "span": {
+            "start": 92,
+            "end": 1923
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "authoritative",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "detailed design",
+            "offset": 119
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-667d360379e0181e",
+      "sha256": "84a70638ba6077885b2c17f94b36554cea4e65f9f001f7d0f8e1c1d0632a245b",
+      "title": "Date: March 17, 2004",
+      "tier": "T1",
+      "ca_province": "BC",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "UNSTAGED",
+      "cell_key_v2": "",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "UNSTAGED",
+      "cell_key_v3": "",
+      "confidence_v3": null,
+      "ambiguous_v3": false,
+      "candidates": [],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "hint"
+    },
+    {
+      "project_id": "PRJ-ef5f0a56347fc521",
+      "sha256": "a6e1a1e96a0ba0ed3a7ade3742e53795cbe9ea76e237ac8e2ed7c638a9697545",
+      "title": "Road Safety Audit Stage 1 -",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 18
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Road Safety Audit Stage 1 -",
+          "span": {
+            "start": 0,
+            "end": 137
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 18
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Road Safety Audit Stage 1 - Designer's Response",
+          "span": {
+            "start": 245,
+            "end": 358
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 263
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Safety Audit Stage 1 - Designer's Response | 13078-HYD-P2-XX-",
+          "span": {
+            "start": 358,
+            "end": 420
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 371
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-88b775db65711af2",
+      "sha256": "a7d0fc4ae596a595c6d5b3d8ec92e0b1b37a228b2ddbeea56c9edef8fb986baf",
+      "title": "PROPOSED WORKS IN KILLORGLIN",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 70
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Road Safety Audit Stage 1",
+          "span": {
+            "start": 52,
+            "end": 99
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 70
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Document Title Road Safety Audit Stage 1",
+          "span": {
+            "start": 414,
+            "end": 659
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 447
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-a7c26e65924e6100",
+      "sha256": "a8020b20b358d0befe238f37d311ff9d9cda4bfdff503b66956a65a3f12939f7",
+      "title": "M E M O / N O T E D E S E R V I C E",
+      "tier": "T1",
+      "ca_province": "ON",
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 2525
+        },
+        {
+          "stage": "EXISTING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-EXISTING"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "In-Service Road",
+          "offset": 1255
+        }
+      ],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-745a08ce487faa19",
+      "sha256": "babe092a5473ed64e211f7a86dc76b700db5196cc4324ac613049b73f69894bc",
+      "title": "WAITEMATA GREENWAYS PRE-OPENING",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "PRE_OPENING",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "PRE_OPENING",
+          "cell_key": "",
+          "confidence": "inferred",
+          "rule_ids": [
+            "CA-PREOPEN"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "pre-opening",
+          "offset": 20
+        }
+      ],
+      "section_stages": [
+        "PRE_OPENING"
+      ],
+      "sections": [
+        {
+          "heading": "WAITEMATA GREENWAYS PRE-OPENING",
+          "span": {
+            "start": 0,
+            "end": 32
+          },
+          "candidate": {
+            "stage": "PRE_OPENING",
+            "cell_key": "",
+            "confidence": "inferred",
+            "rule_ids": [
+              "CA-PREOPEN"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "pre-opening",
+            "offset": 20
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-1d71f303f146eea4",
+      "sha256": "bc5880b404bdc6c3ada65f7acf7a3da0953375849890c3f91f75126990d56c13",
+      "title": "CONFIDENTIAL",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 221
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 1 Road Safety Audit",
+          "span": {
+            "start": 221,
+            "end": 339
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 221
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Comments at this Stage 1 Road Safety Audit",
+          "span": {
+            "start": 7770,
+            "end": 11720
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 7787
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Designer’s Response to RSA (Stage 1)",
+          "span": {
+            "start": 26454,
+            "end": 26539
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 26482
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-c83bc70651060880",
+      "sha256": "d16763daf5d40cf67e8a7256087e28398ba1b602775310e8501b92b114b10665",
+      "title": "Note Méthodologique : audit de sécurité routière asr",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "fr",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "UNSTAGED",
+      "cell_key_v2": "",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "UNSTAGED",
+      "cell_key_v3": "",
+      "confidence_v3": null,
+      "ambiguous_v3": false,
+      "candidates": [],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "hint"
+    },
+    {
+      "project_id": "PRJ-c6dead8b4cabf4f6",
+      "sha256": "d4a57774fc55afc276d961c27fbc10d5ea49adb96238d0c52b9ada4dced8d4da",
+      "title": "23-160-006.01",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 16
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 1 Road Safety Audit Designer’s Response",
+          "span": {
+            "start": 16,
+            "end": 78
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 16
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Report Title: Stage 1 Road Safety Audit Designer’s Response –",
+          "span": {
+            "start": 78,
+            "end": 441
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 92
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Report Title: Stage 1 RSA Designer’s Response",
+          "span": {
+            "start": 441,
+            "end": 5684
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 455
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-1d48b358e9743b2f",
+      "sha256": "e8810b8a08ac067455bb869cec1bf246dcf3f718498672669039059282dddede",
+      "title": "A795 Ambridge Bypass",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "PRELIMINARY_DESIGN",
+      "cell_key_v2": "canada:PRELIMINARY_DESIGN",
+      "ambiguous_v2": false,
+      "body_available_v2": true,
+      "stage_v3_primary": "PRELIMINARY_DESIGN",
+      "cell_key_v3": "canada:PRELIMINARY_DESIGN",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 2",
+          "offset": 35
+        }
+      ],
+      "section_stages": [
+        "PRELIMINARY_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 2 Road Safety Audit",
+          "span": {
+            "start": 35,
+            "end": 145
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 35
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Stage 2 Road Safety Audit Response Report",
+          "span": {
+            "start": 145,
+            "end": 281
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 145
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "3. Items Raised At The Stage 2 Audit",
+          "span": {
+            "start": 6302,
+            "end": 6429
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 6325
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-70f386166e5cdafc",
+      "sha256": "ececad09778175b4624f4fed327b078eca1982012cf4cd587431c04c4b510893",
+      "title": "OCTOBER 2024 FINAL",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "MULTI_STAGE",
+      "cell_key_v3": "",
+      "confidence_v3": "inferred",
+      "ambiguous_v3": true,
+      "candidates": [
+        {
+          "stage": "DETAILED_DESIGN",
+          "cell_key": "canada:DETAILED_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-DETAIL"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 3",
+          "offset": 67
+        },
+        {
+          "stage": "PRELIMINARY_DESIGN",
+          "cell_key": "canada:PRELIMINARY_DESIGN",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-PRELIM"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "STAGE 2",
+          "offset": 13465
+        }
+      ],
+      "section_stages": [
+        "DETAILED_DESIGN",
+        "PRELIMINARY_DESIGN"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 3 Road Safety Audit",
+          "span": {
+            "start": 67,
+            "end": 167
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 67
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Stage 3 Road Safety Audit WSP",
+          "span": {
+            "start": 404,
+            "end": 503
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 404
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Stage 3 Road Safety Audit Project No: UK-70104511",
+          "span": {
+            "start": 1887,
+            "end": 1989
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 3",
+            "offset": 1887
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "COMMENTS AND RECOMMENDATIONS BY THE STAGE 2 ROAD SAFETY AUDIT TEAM",
+          "span": {
+            "start": 13429,
+            "end": 14153
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 2",
+            "offset": 13465
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "STAGE 3 ROAD SAFETY AUDIT TEAM COMMENTS",
+          "span": {
+            "start": 14200,
+            "end": 15039
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 3",
+            "offset": 14200
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "DESIGN TEAM RESPONSE TO STAGE 3 AUDIT TEAM COMMENTS–",
+          "span": {
+            "start": 15039,
+            "end": 15373
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 3",
+            "offset": 15063
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "DESIGN TEAM RESPONSE TO STAGE 3 AUDIT TEAM COMMENTS",
+          "span": {
+            "start": 18864,
+            "end": 19079
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 3",
+            "offset": 18888
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "DESIGN TEAM RESPONSE TO STAGE 3 AUDIT TEAM RECOMMENDATION",
+          "span": {
+            "start": 47535,
+            "end": 47734
+          },
+          "candidate": {
+            "stage": "DETAILED_DESIGN",
+            "cell_key": "canada:DETAILED_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-DETAIL"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "STAGE 3",
+            "offset": 47559
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Stage 2 RSA",
+          "span": {
+            "start": 56370,
+            "end": 56541
+          },
+          "candidate": {
+            "stage": "PRELIMINARY_DESIGN",
+            "cell_key": "canada:PRELIMINARY_DESIGN",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-PRELIM"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 2",
+            "offset": 56370
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-2a9c17ec85dd3678",
+      "sha256": "ed2c0d69446169b221217c97861c335e7d675e1bb68dc9c8cbf4b201163030d2",
+      "title": "Stage 1 Road Safety Audit",
+      "tier": "T3",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "MULTI_STAGE",
+      "cell_key_v2": "",
+      "ambiguous_v2": true,
+      "body_available_v2": true,
+      "stage_v3_primary": "FEASIBILITY_CONCEPT",
+      "cell_key_v3": "canada:FEASIBILITY_CONCEPT",
+      "confidence_v3": "interpreted",
+      "ambiguous_v3": false,
+      "candidates": [
+        {
+          "stage": "FEASIBILITY_CONCEPT",
+          "cell_key": "canada:FEASIBILITY_CONCEPT",
+          "confidence": "interpreted",
+          "rule_ids": [
+            "CA-FEAS"
+          ],
+          "evidence_scope": "body",
+          "matched_phrase": "Stage 1",
+          "offset": 1
+        }
+      ],
+      "section_stages": [
+        "FEASIBILITY_CONCEPT"
+      ],
+      "sections": [
+        {
+          "heading": "Stage 1 Road Safety Audit",
+          "span": {
+            "start": 1,
+            "end": 80
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 1
+          },
+          "evidence_region": "heading"
+        },
+        {
+          "heading": "Stage – Stage 1",
+          "span": {
+            "start": 169,
+            "end": 253
+          },
+          "candidate": {
+            "stage": "FEASIBILITY_CONCEPT",
+            "cell_key": "canada:FEASIBILITY_CONCEPT",
+            "confidence": "interpreted",
+            "rule_ids": [
+              "CA-FEAS"
+            ],
+            "evidence_scope": "body",
+            "matched_phrase": "Stage 1",
+            "offset": 177
+          },
+          "evidence_region": "heading"
+        }
+      ],
+      "body_available_v3": true,
+      "comparable": true,
+      "source": "text"
+    },
+    {
+      "project_id": "PRJ-1e0c5ba07bc7b5a2",
+      "sha256": "f5b7f30aa814612f71fbd3b2557dc0b40c6de309925a2bc1ec526cf4d0bf141f",
+      "title": "FULL DAYS",
+      "tier": "T1",
+      "ca_province": null,
+      "lang": "en",
+      "licence_verdict": "RESTRICTED",
+      "stage_v2_primary": "UNSTAGED",
+      "cell_key_v2": "",
+      "ambiguous_v2": false,
+      "body_available_v2": false,
+      "stage_v3_primary": "UNSTAGED",
+      "cell_key_v3": "",
+      "confidence_v3": null,
+      "ambiguous_v3": false,
+      "candidates": [],
+      "section_stages": [],
+      "sections": [],
+      "body_available_v3": true,
+      "comparable": false,
+      "source": "hint"
+    }
+  ]
+}
