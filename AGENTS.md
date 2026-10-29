@@ -8,6 +8,7 @@ Working conventions for agent sessions in this repo. Read before committing.
 - `docs/architecture/overview.md` — module map.
 - `docs/architecture/README.md` — architecture index.
 - `docs/adr/` — Architecture Decision Records.
+- `docs/research/enterprise-gap-audit.md` — enterprise-readiness verdicts and ranked gaps.
 
 ## Vault determinism (the race)
 
