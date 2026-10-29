@@ -38,9 +38,11 @@ import { withHostBudget } from "../src/discovery/ratelimit.js";
 import { crawlDelayMs, isAllowed, robotsFor, HARVEST_USER_AGENT } from "../src/discovery/robots.js";
 import {
   classify,
+  classifyDocument,
   loadRuleSet,
   type Confidence,
   type RuleSet,
+  type SectionDecision,
   type StageCandidate,
 } from "./stage-rules.js";
 import { detectStage } from "./harvest-track-a.js";
@@ -65,6 +67,11 @@ const DEFAULT_SIDECAR_OUT = "docs/research/stage-rules/classifications-v2.jsonl"
 const DEFAULT_AMBIGUOUS_OUT = "docs/research/stage-rules/ambiguous-v2.md";
 const DEFAULT_INVENTORY = "docs/RSA-Documents/track-a-ondisk-inventory.jsonl";
 const DEFAULT_COVERAGE = "state/odd-coverage.json";
+const DEFAULT_RULES_V3 = "docs/research/stage-rules/stage-rules.v3.json";
+const DEFAULT_V3_OUT = "docs/research/stage-rules/coverage-v3-vs-v2.md";
+const DEFAULT_V3_JSON_OUT = "docs/research/stage-rules/coverage-v3-vs-v2.json";
+const DEFAULT_V3_SIDECAR_OUT = "docs/research/stage-rules/classifications-v3.jsonl";
+const DEFAULT_V2_SIDECAR = "docs/research/stage-rules/classifications-v2.jsonl";
 
 /** The download bound (plan A10): 25 MB per file, 64 MB per run, enforced while streaming. */
 const MAX_FILE_BYTES = 25_000_000;
@@ -212,6 +219,111 @@ export interface CoverageJson {
 // small helpers
 // ---------------------------------------------------------------------------
 
+export interface SectionSidecarRow {
+  project_id: string;
+  sha256: string;
+  title: string;
+  tier: string;
+  ca_province: string | null;
+  lang: string;
+  licence_verdict: string;
+  stage_v2_primary: string;
+  cell_key_v2: string;
+  ambiguous_v2: boolean;
+  body_available_v2: boolean;
+  stage_v3_primary: string;
+  cell_key_v3: string;
+  confidence_v3: Confidence | null;
+  ambiguous_v3: boolean;
+  candidates: StageCandidate[];
+  section_stages: string[];
+  sections: SectionDecision[];
+  body_available_v3: boolean;
+  comparable: boolean;
+  source: string;
+}
+
+export interface CoverageV3CellRow {
+  cell_key: string;
+  stage: string;
+  target: number | null;
+  priority: number | null;
+  v2_documents: number;
+  v2_documents_clear: number;
+  v3_documents: number;
+  v3_documents_clear: number;
+  v3_section_documents: number;
+  v3_section_documents_clear: number;
+  v3_stage_sections: number;
+  v3_stage_sections_clear: number;
+  delta_documents: number;
+}
+
+export interface CoverageV3StageRow {
+  stage: string;
+  v2_documents: number;
+  v2_documents_clear: number;
+  v3_documents: number;
+  v3_documents_clear: number;
+  v3_section_documents: number;
+  v3_section_documents_clear: number;
+  v3_stage_sections: number;
+  v3_stage_sections_clear: number;
+}
+
+export interface CoverageV3Json {
+  rule_sets: {
+    v2: { path: string; sha256: string };
+    v3: { path: string; sha256: string };
+  };
+  v2_sidecar: { path: string; sha256: string; rows: number };
+  manifest: { path: string; sha256: string; rows: number };
+  bodies: {
+    available: number;
+    unavailable: number;
+    unavailable_rows: { sha256: string; reason: string }[];
+  };
+  denominators: {
+    rows: number;
+    v2_ambiguous: number;
+    v2_non_ambiguous: number;
+    coverage_candidate_shas: string[];
+    document_partition: {
+      total: number;
+      v2_ambiguous_resolved: number;
+      v2_ambiguous_unresolved: number;
+      v2_unstaged: number;
+      v2_single_stage: number;
+      resolved_single_stage: number;
+      resolved_multi_stage: number;
+      with_sections: number;
+      without_sections: number;
+    };
+    comparable_rows: number;
+    non_comparable_rows: number;
+    v3_documents_with_sections: number;
+    v3_documents_without_sections: number;
+    v3_stage_sections: number;
+    v3_documents_with_multiple_section_stages: number;
+  };
+  coverage_candidates: {
+    cell_key: string;
+    stage: string;
+    target: number | null;
+    priority: number | null;
+    v2_documents: number;
+    v3_documents: number;
+    v3_section_documents: number;
+    v3_stage_sections: number;
+    delta_documents: number;
+  }[];
+  cells: CoverageV3CellRow[];
+  stages: CoverageV3StageRow[];
+  unresolved: { sha256: string; title: string; stage_v2: string; stage_v3: string }[];
+  rows: SectionSidecarRow[];
+}
+
+
 class UsageError extends Error {}
 class FatalError extends Error {}
 
@@ -259,6 +371,20 @@ function assertNotFrozen(file: string): void {
   const rel = path.relative(REPO, path.resolve(REPO, file));
   if (rel.startsWith(FROZEN_TREE + path.sep) || rel === FROZEN_TREE) {
     throw new UsageError(`refusing to write inside the frozen tree: ${FROZEN_TREE}/`);
+  }
+}
+
+const V3_OUTPUT_ALLOWLIST = new Set([
+  "docs/research/stage-rules/coverage-v3-vs-v2.md",
+  "docs/research/stage-rules/coverage-v3-vs-v2.json",
+  "docs/research/stage-rules/classifications-v3.jsonl",
+]);
+
+/** Guard so compare-v3/render-v3 can never write a v1/v2 artifact path. */
+export function assertV3OutputPath(file: string): void {
+  const rel = path.relative(REPO, path.resolve(REPO, file)).split(path.sep).join("/");
+  if (!V3_OUTPUT_ALLOWLIST.has(rel)) {
+    throw new UsageError(`output path not in v3 allowlist: ${rel}`);
   }
 }
 
@@ -1157,6 +1283,139 @@ export function renderCoverageTable(json: CoverageJson): string {
   return out.join("\n");
 }
 
+export function renderCoverageV3Table(json: CoverageV3Json): string {
+  const out: string[] = [];
+  const d = json.denominators;
+  out.push("# Stage coverage under rule set v3 versus v2");
+  out.push("");
+  out.push("Ticket: `Akamel01/AuditorAI#69`. v3 policy: section-aware; rules unchanged from v2.");
+  out.push("");
+  out.push(`- v2 rules: \`${json.rule_sets.v2.path}\` (\`${json.rule_sets.v2.sha256}\`)`);
+  out.push(`- v3 rules: \`${json.rule_sets.v3.path}\` (\`${json.rule_sets.v3.sha256}\`)`);
+  out.push(`- v2 sidecar: \`${json.v2_sidecar.path}\` (\`${json.v2_sidecar.sha256}\`), ${json.v2_sidecar.rows} rows`);
+  out.push(`- manifest: \`${json.manifest.path}\` (\`${json.manifest.sha256}\`), ${json.manifest.rows} rows`);
+  out.push("");
+  out.push("Repro: `npx tsx scripts/harvest-stage-rules-v2.ts compare-v3 --manifest docs/RSA-Documents/canada-intake-manifest.jsonl --cache .autoforge/tmp/stage-rules-v2-cache --rules-v2 docs/research/stage-rules/stage-rules.v2.json --rules-v3 docs/research/stage-rules/stage-rules.v3.json --v2-sidecar docs/research/stage-rules/classifications-v2.jsonl --json-out docs/research/stage-rules/coverage-v3-vs-v2.json --sidecar-out docs/research/stage-rules/classifications-v3.jsonl --out docs/research/stage-rules/coverage-v3-vs-v2.md`");
+  out.push("");
+  // §1
+  out.push("## §1 Denominators");
+  out.push("");
+  out.push(`- rows: ${d.rows}`);
+  out.push(`- v2 ambiguous: ${d.v2_ambiguous}; non-ambiguous: ${d.v2_non_ambiguous}`);
+  out.push(`- docs with >=1 clear section: ${d.v3_documents_with_sections}; without: ${d.v3_documents_without_sections}`);
+  out.push(`- stage sections: ${d.v3_stage_sections}`);
+  out.push(`- docs with >=2 distinct section stages: ${d.v3_documents_with_multiple_section_stages}`);
+  out.push(`- comparable: ${d.comparable_rows}; non-comparable: ${d.non_comparable_rows}`);
+  out.push(`- bodies available: ${json.bodies.available}; unavailable: ${json.bodies.unavailable}`);
+  if (json.bodies.unavailable_rows.length) {
+    out.push(`- unavailable rows: ${json.bodies.unavailable_rows.map((r) => r.sha256).join(", ")}`);
+  }
+  out.push("");
+  // §1.1
+  const dp = json.denominators.document_partition;
+  out.push("## §1.1 Document-level decomposition");
+  out.push("");
+  out.push(`${dp.total} = ${dp.v2_ambiguous_resolved} resolved v2-ambiguous + ${dp.v2_ambiguous_unresolved} unresolved v2-ambiguous (MULTI_STAGE fallback) + ${dp.v2_unstaged} v2 UNSTAGED + ${dp.v2_single_stage} v2 single-stage.`);
+  out.push(`Of the ${dp.v2_ambiguous_resolved} resolved: ${dp.resolved_single_stage} single-stage + ${dp.resolved_multi_stage} multi-stage (the ${dp.resolved_multi_stage} multi-stage docs appear in more than one stage row).`);
+  out.push(`${dp.with_sections} docs have >=1 clear section; ${dp.without_sections} have none.`);
+  out.push("");
+  // §2
+  out.push("## §2 Before/after by stage (33 Track A documents)");
+  out.push("");
+  out.push("| Stage | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ documents |");
+  out.push("|---|---|---|---|---|---|");
+  for (const s of json.stages) {
+    out.push(`| ${s.stage} | ${s.v2_documents} | ${s.v3_documents} | ${s.v3_section_documents} | ${s.v3_stage_sections} | ${s.v3_documents - s.v2_documents} |`);
+  }
+  out.push("");
+  const X = d.v3_documents_with_multiple_section_stages;
+  const Y = d.v3_stage_sections;
+  const Z = d.v3_documents_with_sections;
+  const N = d.v3_documents_without_sections;
+  out.push(`${d.v2_ambiguous} of ${d.rows} ambiguous under v2; under v3, ${X} documents have >= 2 distinct section stages, ${Y} stage sections were earned across ${Z} documents, and ${N} documents have no clear section and use the v2-equivalent fallback.`);
+  out.push("");
+  out.push("Footnote: the MULTI_STAGE row is the no-section fallback count (" + dp.v2_ambiguous_unresolved + "); the " + dp.resolved_multi_stage + " multi-stage documents with sections are counted in their earned canonical stage rows, so the per-stage rows do not sum to 33.");
+  out.push("");
+  // §3a
+  out.push("## §3 By Canadian cell");
+  out.push("");
+  out.push("### §3a Stage attribution over all 33 docs");
+  out.push("");
+  out.push("| Cell | v2 documents | v3 documents | v3 section documents | v3 stage sections | Δ |");
+  out.push("|---|---|---|---|---|---|");
+  for (const c of json.cells) {
+    out.push(`| \`${c.cell_key}\` | ${c.v2_documents} | ${c.v3_documents} | ${c.v3_section_documents} | ${c.v3_stage_sections} | ${c.delta_documents} |`);
+  }
+  out.push("");
+  out.push("### §3b ODD coverage candidates");
+  out.push("");
+  out.push("coverage candidates only; not the 33-doc population");
+  out.push("");
+  out.push("Coverage candidate shas: " + json.denominators.coverage_candidate_shas.map((x: string) => "`" + x + "`").join(", "));
+  out.push("");
+  out.push("| Cell | target | v2 candidate documents | v3 candidate documents | v3 candidate section documents | v3 candidate stage sections | Δ |");
+  out.push("|---|---|---|---|---|---|---|");
+  for (const c of json.coverage_candidates) {
+    out.push(`| \`${c.cell_key}\` | ${c.target ?? "—"} | ${c.v2_documents} | ${c.v3_documents} | ${c.v3_section_documents} | ${c.v3_stage_sections} | ${c.delta_documents} |`);
+  }
+  out.push("");
+  // §4
+  out.push("## §4 Per-document (33 rows)");
+  out.push("");
+  out.push("| sha (12) | title | v2 primary | v3 primary | v3 section stages | stage sections | first heading per stage | flags |");
+  out.push("|---|---|---|---|---|---|---|---|");
+  for (const r of json.rows) {
+    const v2prim = r.ambiguous_v2 ? `${r.stage_v2_primary} (ambiguous)` : r.stage_v2_primary;
+    const secStages = r.section_stages.join(", ") || "—";
+
+    // build stage sections counts
+    const counts: Record<string, number> = {};
+    for (const s of r.sections) counts[s.candidate.stage] = (counts[s.candidate.stage] ?? 0) + 1;
+    const stageSectionsStr = Object.entries(counts).map(([k, v]) => `${k}×${v}`).join("; ") || "—";
+    // first heading per stage in document order
+    const firstByStage: string[] = [];
+    const seen = new Set<string>();
+    for (const s of r.sections) {
+      if (!seen.has(s.candidate.stage)) {
+        seen.add(s.candidate.stage);
+        firstByStage.push(`${s.candidate.stage}: ${s.heading}`);
+      }
+    }
+    const firstHeading = firstByStage.join("; ") || "—";
+    const flagParts = [!r.body_available_v3 ? "(body unavailable in v3 cache)" : "", r.body_available_v2 === false ? "(title-only in v2 sidecar)" : ""].filter(Boolean);
+    const finalFlags = flagParts.join("; ");
+    out.push(`| \`${shortSha(r.sha256)}\` | ${cellText(r.title)} | ${v2prim} | ${r.stage_v3_primary} | ${secStages} | ${stageSectionsStr} | ${cellText(firstHeading)} | ${finalFlags} |`);
+  }
+  out.push("");
+  // §5
+  out.push("## §5 Unresolved");
+  out.push("");
+  if (json.unresolved.length === 0) {
+    out.push("No unresolved rows.");
+  } else {
+    out.push("| sha (12) | title | v2 | v3 |");
+    out.push("|---|---|---|---|");
+    for (const u of json.unresolved) {
+      out.push(`| \`${shortSha(u.sha256)}\` | ${cellText(u.title)} | ${u.stage_v2} | ${u.stage_v3} |`);
+    }
+  }
+  out.push("");
+  // §6
+  out.push("## §6 Caveats");
+  out.push("");
+  out.push("- Re-labelling, not new coverage (33 committed rows; only 3 Canadian T3).");
+  out.push("- Documents vs stage sections: a document earning a stage in N sections counts once in documents, N in stage sections.");
+  out.push("- A MULTI_STAGE document can earn several cells through sections.");
+  out.push("- Title evidence is dropped from the v3 document decision when sections exist (v2 sidecar preserves it).");
+  out.push("- Inherited v2 rule coarseness bounds precision (e.g. a 'Stage 1 items' heading in a Stage 2 report earns FEASIBILITY).");
+  out.push("- Cache comparability: `f5b7f30a…` is title-only in the v2 sidecar but has a body in the v3 cache (non-comparable); `37863ef8…` was restored and is comparable.");
+  out.push("- The 33-doc corpus has one coverage candidate (`0af7ea58...`); the committed v2 Table B's 1/0/1 includes the inventory-only `a24707c6...` (no v3 body/verdict) and is not comparable; no new document was fetched.");
+  out.push("- 32 RESTRICTED / 1 CLEAR; no new documents.");
+  out.push("- `comparable` means body availability only.");
+  out.push("");
+  return out.join("\n");
+}
+
 /**
  * The movement detail table (§4): one row per corpus document, both v1 verdicts,
  * the v2 verdict and whether the row changed cell.
@@ -1252,6 +1511,330 @@ export function renderAmbiguousTable(rows: SidecarRow[]): string {
 }
 
 // ---------------------------------------------------------------------------
+// compare-v3
+// ---------------------------------------------------------------------------
+
+function runCompareV3(flags: Flags): number {
+  const manifestPath = flags.str("manifest", DEFAULT_MANIFEST);
+  const cacheDir = flags.str("cache", DEFAULT_CACHE);
+  const rulesV2Path = flags.str("rules-v2", DEFAULT_RULES);
+  const rulesV3Path = flags.str("rules-v3", DEFAULT_RULES_V3);
+  const v2SidecarPath = flags.str("v2-sidecar", DEFAULT_V2_SIDECAR);
+  const jsonOutPath = flags.str("json-out", DEFAULT_V3_JSON_OUT);
+  const sidecarOutPath = flags.str("sidecar-out", DEFAULT_V3_SIDECAR_OUT);
+  const outPath = flags.str("out", DEFAULT_V3_OUT);
+  const coveragePath = flags.str("coverage", DEFAULT_COVERAGE);
+
+  for (const file of [jsonOutPath, sidecarOutPath, outPath]) {
+    assertNotFrozen(file);
+    assertV3OutputPath(file);
+  }
+
+  const manifestFile = path.resolve(REPO, manifestPath);
+  if (!existsSync(manifestFile)) throw new UsageError(`manifest not found: ${manifestPath}`);
+  let manifest: ManifestRow[];
+  try {
+    manifest = readJsonl<ManifestRow>(manifestFile);
+  } catch (error) {
+    throw new FatalError(`unreadable manifest: ${manifestPath} (${String(error)})`);
+  }
+  const v2SidecarFile = path.resolve(REPO, v2SidecarPath);
+  if (!existsSync(v2SidecarFile)) throw new UsageError(`v2 sidecar not found: ${v2SidecarPath}`);
+  let v2Sidecar: Record<string, unknown>[];
+  try {
+    v2Sidecar = readJsonl<Record<string, unknown>>(v2SidecarFile);
+  } catch (error) {
+    throw new FatalError(`unreadable v2 sidecar: ${v2SidecarPath} (${String(error)})`);
+  }
+  const coverageFile = path.resolve(REPO, coveragePath);
+  if (!existsSync(coverageFile)) throw new UsageError(`coverage file not found: ${coveragePath}`);
+
+  const inventoryFile = path.resolve(REPO, DEFAULT_INVENTORY);
+  const inventory = existsSync(inventoryFile) ? readJsonl<InventoryRow>(inventoryFile) : [];
+  const licence = existsSync(path.join(REPO, "docs/RSA-Documents/LICENSE-REGISTER.md"))
+    ? parseLicenceRegister(readFileSync(path.join(REPO, "docs/RSA-Documents/LICENSE-REGISTER.md"), "utf8"))
+    : new Map();
+  const merged = mergeRows(inventory, manifest as unknown as ReportManifestRow[], licence as Parameters<typeof mergeRows>[2]);
+
+  // load v3 rules, require version v3
+  const rulesV3Raw = readJson<Record<string, unknown>>(path.resolve(REPO, rulesV3Path));
+  if ((rulesV3Raw as {rule_set_version?: string}).rule_set_version !== "v3") throw new UsageError(`rule set must be v3: ${rulesV3Path}`);
+  const v3 = loadRuleSet(rulesV3Raw);
+  // v2 rules loaded only for sha; not used beyond pin
+  loadRuleSet(readJson<unknown>(path.resolve(REPO, rulesV2Path)));
+
+  // v2 sidecar must match manifest sha set, 33 rows
+  if (manifest.length !== 33) throw new FatalError(`manifest must have 33 rows, got ${manifest.length}`);
+  if (v2Sidecar.length !== 33) throw new FatalError(`v2 sidecar must have 33 rows, got ${v2Sidecar.length}`);
+  const manifestShas = new Set(manifest.map((r) => r.sha256));
+  const sidecarShas = new Set(v2Sidecar.map((r) => String(r.sha256)));
+  if (manifestShas.size !== 33 || sidecarShas.size !== 33) throw new FatalError("duplicate sha in manifest or sidecar");
+  for (const sha of manifestShas) if (!sidecarShas.has(sha)) throw new FatalError(`sha mismatch: ${sha}`);
+  for (const sha of sidecarShas) if (!manifestShas.has(sha)) throw new FatalError(`sha mismatch: ${sha}`);
+
+  const v2BySha = new Map(v2Sidecar.map((r) => [String(r.sha256), r]));
+
+  const cache = path.resolve(REPO, cacheDir);
+  const bodies = new Map<string, string>();
+  if (existsSync(cache)) {
+    for (const entry of readdirSync(cache)) {
+      if (!entry.endsWith(".txt")) continue;
+      bodies.set(entry.slice(0, -4), readFileSync(path.join(cache, entry), "utf8"));
+    }
+  }
+
+  const coverage = readJson<{ cells: { cell_key: string; target: number; priority: number }[] }>(coverageFile);
+  const cellTargets = new Map(coverage.cells.map((cell) => [cell.cell_key, cell]));
+
+  // repo predicate for coverage candidates (Canadian T3/T4, mapped cell, rsa-sample, not duplicate, not BLOCKED)
+  // We apply to the 33 sidecar rows by licence/manifest; manifest has tier, ca_province. Need merged? Plan says apply repo predicate to the 33 sidecar rows.
+  // We'll compute candidates from manifest rows where canadian? We don't have merged easily. Use simple: ca_province not null (Canadian), tier T3/T4, klass rsa-sample assumed for all manifest rows? Manifest rows lack klass/duplicate.
+  // The plan states only 0af7ea58 is candidate. We'll just include all 3 cells with v2/v3 counts based on candidate shas known? Instead, apply predicate using manifest: canadian = ca_province not null; tier T3/T4; not blocked (licence_verdict !== BLOCKED); klass/duplicate unknown -> assume all manifest rows are rsa-sample non-duplicate (as v2 sidecar candidate logic used effective cell).
+  // Simpler: coverage_candidates = the 3 cells; v2_documents from committed v2 cell occupancy among candidates. We need identify candidate shas. Use the same candidateShas as runCompare? Hard. We'll compute candidate shas as manifest rows that are Canadian T3/T4 and not BLOCKED (all 33 manifest? Actually only 3 Canadian T3). Let's filter.
+
+
+  const sorted = [...manifest].sort((a, b) => (a.sha256 < b.sha256 ? -1 : a.sha256 > b.sha256 ? 1 : 0));
+  const rows: SectionSidecarRow[] = [];
+  const unavailableRows: { sha256: string; reason: string }[] = [];
+  let anyMissing = false;
+
+  for (const row of sorted) {
+    const body = bodies.get(row.sha256) ?? "";
+    const bodyAvailable = body.length > 0;
+    if (!bodyAvailable) {
+      anyMissing = true;
+      unavailableRows.push({ sha256: row.sha256, reason: "no cached body text" });
+    }
+
+    const ctx = { title: row.title ?? "", hint: NEUTRAL_HINT };
+    const after = classifyDocument(body, ctx, v3);
+
+    // assert sections
+    const normalize = typeof v3.scan.normalize === "string" ? v3.scan.normalize : null;
+    const region = (normalize ? body.normalize(normalize) : body).slice(0, v3.scan.chars);
+    let prevEnd = -1;
+    for (const sec of after.sections) {
+      if (!(0 <= sec.span.start && sec.span.start < sec.span.end && sec.span.end <= region.length)) {
+        throw new FatalError(`section span violation ${row.sha256} ${sec.heading}`);
+      }
+      if (sec.span.start < prevEnd) throw new FatalError(`section overlap ${row.sha256}`);
+      prevEnd = sec.span.end;
+      if (!(sec.span.start <= sec.candidate.offset && sec.candidate.offset < sec.span.end)) {
+        throw new FatalError(`offset violation ${row.sha256} ${sec.heading}`);
+      }
+      if (findPhrase(region.slice(sec.span.start, sec.span.end), sec.candidate.matched_phrase) < 0) {
+        throw new FatalError(`phrase containment violation ${row.sha256} ${sec.heading}`);
+      }
+    }
+
+    const v2row = v2BySha.get(row.sha256);
+    const stageV2Primary = String(v2row?.stage_v2_primary ?? "");
+    const cellKeyV2 = String(v2row?.cell_key_v2 ?? "");
+    const ambiguousV2 = (v2row?.ambiguous_v2 ?? v2row?.ambiguous) === true;
+    const bodyAvailableV2 = (v2row?.body_available_v2 ?? v2row?.body_available) === true ? true : (v2row?.body_available_v2 ?? v2row?.body_available) === false ? false : bodyAvailable;
+
+    const sectionStages = [...new Set(after.sections.map((s) => s.candidate.stage))];
+
+    rows.push({
+      project_id: row.project_id,
+      sha256: row.sha256,
+      title: row.title ?? "",
+      tier: row.tier,
+      ca_province: row.ca_province || null,
+      lang: row.lang ?? "en",
+      licence_verdict: row.licence_verdict,
+      stage_v2_primary: stageV2Primary,
+      cell_key_v2: cellKeyV2,
+      ambiguous_v2: ambiguousV2,
+      body_available_v2: bodyAvailableV2,
+      stage_v3_primary: after.decision.stage,
+      cell_key_v3: after.decision.cell_key,
+      confidence_v3: after.decision.confidence,
+      ambiguous_v3: after.decision.ambiguous,
+      candidates: after.decision.candidates,
+      section_stages: sectionStages,
+      sections: after.sections,
+      body_available_v3: bodyAvailable,
+      comparable: bodyAvailableV2 === bodyAvailable,
+      source: bodyAvailable ? after.decision.source : "title",
+    });
+  }
+
+  rows.sort((a, b) => (a.sha256 < b.sha256 ? -1 : a.sha256 > b.sha256 ? 1 : 0));
+
+  const canonicalCells = new Set(["canada:FEASIBILITY_CONCEPT","canada:PRELIMINARY_DESIGN","canada:DETAILED_DESIGN"]);
+  const mergedBySha = new Map(merged.map((m) => [m.sha256, m]));
+  const candidateShas = new Set<string>();
+  const missingMappings: string[] = [];
+  for (const row of rows) {
+    const mrow = mergedBySha.get(row.sha256);
+    if (!mrow) { missingMappings.push(row.sha256); continue; }
+    const isCandidateBase = mrow.canadian && (mrow.tier === "T3" || mrow.tier === "T4") && mrow.klass === "rsa-sample" && !mrow.duplicate && mrow.licence !== "BLOCKED";
+    if (!isCandidateBase) continue;
+    const v2cell = row.cell_key_v2;
+    const v3earnedCell = row.sections.length > 0
+      ? (row.sections.find((s) => s.candidate.cell_key && canonicalCells.has(s.candidate.cell_key))?.candidate.cell_key ?? "")
+      : row.cell_key_v3;
+    const underV2 = canonicalCells.has(v2cell);
+    const underV3 = canonicalCells.has(v3earnedCell);
+    if (underV2 || underV3) candidateShas.add(row.sha256);
+  }
+  if (missingMappings.length) console.log("missing merged mappings: " + missingMappings.join(", "));
+
+  // counts per canonical stage
+  function earned(row: SectionSidecarRow, S: string): boolean {
+    const sectionEarned = row.sections.some((s) => s.candidate.stage === S);
+    const fallbackEarned = row.sections.length === 0 && row.stage_v3_primary === S;
+    return sectionEarned || fallbackEarned;
+  }
+  function sectionEarned(row: SectionSidecarRow, S: string): boolean {
+    return row.sections.some((s) => s.candidate.stage === S);
+  }
+  const stageOrder = ["FEASIBILITY_CONCEPT", "PRELIMINARY_DESIGN", "DETAILED_DESIGN", "PRE_OPENING", "EXISTING", "CONSTRUCTION", "MULTI_STAGE", "UNSTAGED"];
+  const v2AmbiguousResolved = rows.filter((r) => r.ambiguous_v2 && r.sections.length > 0).length;
+  const v2AmbiguousUnresolved = rows.filter((r) => r.ambiguous_v2 && r.sections.length === 0).length;
+  const v2Unstaged = rows.filter((r) => r.stage_v2_primary === "UNSTAGED").length;
+  const v2SingleStage = rows.filter((r) => !r.ambiguous_v2 && r.stage_v2_primary !== "UNSTAGED").length;
+  const resolvedMultiStage = rows.filter((r) => r.ambiguous_v2 && r.sections.length > 0 && r.section_stages.length >= 2).length;
+  const resolvedSingleStage = v2AmbiguousResolved - resolvedMultiStage;
+  const withSections = rows.filter((r) => r.sections.length > 0).length;
+  const withoutSections = rows.filter((r) => r.sections.length === 0).length;
+
+  const stages = stageOrder.map((S) => {
+    const v2Documents = rows.filter((r) => r.stage_v2_primary === S).length;
+    const v3Documents = rows.filter((r) => earned(r, S)).length;
+    const v3SectionDocuments = rows.filter((r) => sectionEarned(r, S)).length;
+    const v3StageSections = rows.reduce((n, r) => n + r.sections.filter((s) => s.candidate.stage === S).length, 0);
+    return {
+      stage: S,
+      v2_documents: v2Documents,
+      v2_documents_clear: rows.filter((r) => r.stage_v2_primary === S && r.licence_verdict === "CLEAR").length,
+      v3_documents: v3Documents,
+      v3_documents_clear: rows.filter((r) => earned(r, S) && r.licence_verdict === "CLEAR").length,
+      v3_section_documents: v3SectionDocuments,
+      v3_section_documents_clear: rows.filter((r) => sectionEarned(r, S) && r.licence_verdict === "CLEAR").length,
+      v3_stage_sections: v3StageSections,
+      v3_stage_sections_clear: rows.reduce((n, r) => n + (r.licence_verdict === "CLEAR" ? r.sections.filter((s) => s.candidate.stage === S).length : 0), 0),
+    };
+  });
+
+  const cells = CANADIAN_CELLS.map((cellKey) => {
+    const stage = cellKey.split(":")[1];
+    // map cell to stage canonical: FEASIBILITY_CONCEPT etc
+    const canonStage = stage;
+    const v2Documents = rows.filter((r) => r.cell_key_v2 === cellKey).length;
+    const v3DocsSet = new Set<string>();
+    for (const r of rows) {
+      const secEarned = r.sections.some((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey);
+      const fallbackEarned = r.sections.length === 0 && r.stage_v3_primary === canonStage && r.cell_key_v3 === cellKey;
+      if (secEarned || fallbackEarned) v3DocsSet.add(r.sha256);
+    }
+    const v3Documents2 = v3DocsSet.size;
+    const v3SectionDocuments = rows.filter((r) => r.sections.some((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey)).length;
+    const v3StageSections = rows.reduce((n, r) => n + r.sections.filter((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey).length, 0);
+    const target = cellTargets.get(cellKey);
+    return {
+      cell_key: cellKey,
+      stage: canonStage,
+      target: target ? target.target : null,
+      priority: target ? target.priority : null,
+      v2_documents: v2Documents,
+      v2_documents_clear: rows.filter((r) => r.cell_key_v2 === cellKey && r.licence_verdict === "CLEAR").length,
+      v3_documents: v3Documents2,
+      v3_documents_clear: [...v3DocsSet].filter((sha) => rows.find((r) => r.sha256 === sha)?.licence_verdict === "CLEAR").length,
+      v3_section_documents: v3SectionDocuments,
+      v3_section_documents_clear: rows.filter((r) => r.sections.some((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey) && r.licence_verdict === "CLEAR").length,
+      v3_stage_sections: v3StageSections,
+      v3_stage_sections_clear: rows.reduce((n, r) => n + (r.licence_verdict === "CLEAR" ? r.sections.filter((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey).length : 0), 0),
+      delta_documents: v3Documents2 - v2Documents,
+    };
+  });
+
+  // coverage candidates
+  const coverageCandidates = CANADIAN_CELLS.map((cellKey) => {
+    const canonStage = cellKey.split(":")[1];
+    const candRows = rows.filter((r) => candidateShas.has(r.sha256));
+    const v2Documents = candRows.filter((r) => r.cell_key_v2 === cellKey).length;
+    const v3DocsSet = new Set<string>();
+    for (const r of candRows) {
+      const secEarned = r.sections.some((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey);
+      const fallbackEarned = r.sections.length === 0 && r.stage_v3_primary === canonStage && r.cell_key_v3 === cellKey;
+      if (secEarned || fallbackEarned) v3DocsSet.add(r.sha256);
+    }
+    const v3Documents = v3DocsSet.size;
+    const v3SectionDocuments = candRows.filter((r) => r.sections.some((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey)).length;
+    const v3StageSections = candRows.reduce((n, r) => n + r.sections.filter((s) => s.candidate.stage === canonStage && s.candidate.cell_key === cellKey).length, 0);
+    const target = cellTargets.get(cellKey);
+    return {
+      cell_key: cellKey,
+      stage: canonStage,
+      target: target ? target.target : null,
+      priority: target ? target.priority : null,
+      v2_documents: v2Documents,
+      v3_documents: v3Documents,
+      v3_section_documents: v3SectionDocuments,
+      v3_stage_sections: v3StageSections,
+      delta_documents: v3Documents - v2Documents,
+    };
+  });
+
+  const v2Ambiguous = rows.filter((r) => r.ambiguous_v2).length;
+  const json: CoverageV3Json = {
+    rule_sets: {
+      v2: { path: displayPath(rulesV2Path), sha256: sha256File(path.resolve(REPO, rulesV2Path)) },
+      v3: { path: displayPath(rulesV3Path), sha256: sha256File(path.resolve(REPO, rulesV3Path)) },
+    },
+    v2_sidecar: { path: displayPath(v2SidecarPath), sha256: sha256File(v2SidecarFile), rows: v2Sidecar.length },
+    manifest: { path: displayPath(manifestPath), sha256: sha256File(manifestFile), rows: manifest.length },
+    bodies: {
+      available: rows.filter((r) => r.body_available_v3).length,
+      unavailable: rows.filter((r) => !r.body_available_v3).length,
+      unavailable_rows: unavailableRows.sort((a, b) => (a.sha256 < b.sha256 ? -1 : 1)),
+    },
+    denominators: {
+      rows: rows.length,
+      v2_ambiguous: v2Ambiguous,
+      v2_non_ambiguous: rows.length - v2Ambiguous,
+      coverage_candidate_shas: [...candidateShas].sort(),
+    document_partition: {
+      total: rows.length,
+      v2_ambiguous_resolved: v2AmbiguousResolved,
+      v2_ambiguous_unresolved: v2AmbiguousUnresolved,
+      v2_unstaged: v2Unstaged,
+      v2_single_stage: v2SingleStage,
+      resolved_single_stage: resolvedSingleStage,
+      resolved_multi_stage: resolvedMultiStage,
+      with_sections: withSections,
+      without_sections: withoutSections,
+    },
+    comparable_rows: rows.filter((r) => r.comparable).length,
+      non_comparable_rows: rows.filter((r) => !r.comparable).length,
+      v3_documents_with_sections: rows.filter((r) => r.sections.length > 0).length,
+      v3_documents_without_sections: rows.filter((r) => r.sections.length === 0).length,
+      v3_stage_sections: rows.reduce((n, r) => n + r.sections.length, 0),
+      v3_documents_with_multiple_section_stages: rows.filter((r) => r.section_stages.length >= 2).length,
+    },
+    coverage_candidates: coverageCandidates,
+    cells,
+    stages,
+    unresolved: rows
+      .filter((r) => r.sections.length === 0 && (r.stage_v3_primary === "MULTI_STAGE" || r.stage_v3_primary === "UNSTAGED"))
+      .map((r) => ({ sha256: r.sha256, title: r.title, stage_v2: r.stage_v2_primary, stage_v3: r.stage_v3_primary }))
+      .sort((a, b) => (a.sha256 < b.sha256 ? -1 : 1)),
+    rows,
+  };
+
+  // write outputs
+  writeOutput(jsonOutPath, JSON.stringify(json, null, 2) + "\n");
+  const sidecarLines = rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
+  writeOutput(sidecarOutPath, sidecarLines);
+  writeOutput(outPath, renderCoverageV3Table(json));
+
+  console.log(`compare-v3: ${rows.length} rows, ${json.denominators.v3_stage_sections} stage sections, ${json.denominators.v3_documents_with_sections} docs with sections`);
+  return anyMissing ? EXIT_PARTIAL : EXIT_OK;
+}
+
+// ---------------------------------------------------------------------------
 // render
 // ---------------------------------------------------------------------------
 
@@ -1290,6 +1873,21 @@ function runRender(flags: Flags): number {
   return EXIT_OK;
 }
 
+function runRenderV3(flags: Flags): number {
+  const from = flags.str("from", "");
+  const outPath = flags.str("out", "");
+  if (!from) throw new UsageError("render-v3 needs --from <json>");
+  if (!outPath) throw new UsageError("render-v3 needs --out <md>");
+  const file = path.resolve(REPO, from);
+  if (!existsSync(file)) throw new UsageError(`input not found: ${from}`);
+  const json = JSON.parse(readFileSync(file, "utf8")) as CoverageV3Json;
+  assertNotFrozen(outPath);
+  assertV3OutputPath(outPath);
+  writeOutput(path.resolve(REPO, outPath), renderCoverageV3Table(json));
+  console.log(`wrote ${displayPath(outPath)} (v3 coverage md from the json companion)`);
+  return EXIT_OK;
+}
+
 // ---------------------------------------------------------------------------
 // main
 // ---------------------------------------------------------------------------
@@ -1300,7 +1898,9 @@ verbs:
   selftest  load both rule sets, compile every regex with its recorded flags
   fetch     the ONLY network path: stream the corpus into the gitignored cache
   compare   offline: classify the corpus under v1 and v2, write the 4 outputs
+  compare-v3 offline: classify the 33-doc corpus under v3, before from the committed v2 sidecar
   render    offline: re-render the coverage md or the ambiguity list
+  render-v3 offline: re-render the v3 coverage md from its json companion
 
 common flags:
   --manifest <file>      the corpus of record (default ${DEFAULT_MANIFEST})
@@ -1364,10 +1964,26 @@ export async function main(): Promise<number> {
             coverage: "string",
           }),
         );
+      case "compare-v3":
+        return runCompareV3(
+          Flags.parse(rest, {
+            manifest: "string",
+            cache: "string",
+            "rules-v2": "string",
+            "rules-v3": "string",
+            "v2-sidecar": "string",
+            "json-out": "string",
+            "sidecar-out": "string",
+            out: "string",
+            coverage: "string",
+          }),
+        );
       case "render":
         return runRender(
           Flags.parse(rest, { from: "string", out: "string", "ambiguous-out": "string" }),
         );
+      case "render-v3":
+        return runRenderV3(Flags.parse(rest, { from: "string", out: "string" }));
       default:
         throw new UsageError(`unknown verb: ${verb}`);
     }

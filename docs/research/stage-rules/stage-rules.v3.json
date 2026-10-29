@@ -1,0 +1,602 @@
+{
+  "rule_set_version": "v3",
+  "frozen": true,
+  "provenance": {
+    "source": "ticket #69; .autoforge/plans/plan-69.md M1",
+    "transcribed_on": "2026-10-22",
+    "reference_pdfs": "docs/references/CA/*.pdf - text extracted with unpdf (node_modules/unpdf 1.8.1), NFC-normalised, whitespace-collapsed for phrase matching",
+    "corpus_manifest": "docs/RSA-Documents/canada-intake-manifest.jsonl",
+    "note": "section-aware classifier; rules unchanged from v2; sections policy added. Corpus evidence names a manifest sha256. A title-phrase corpus entry is attested only where the phrase was measured in that row's committed title field; a body-phrase corpus entry is attested:false and is attested at fetch time (M4). No corpus body text is committed here - only short term quotes and source references."
+  },
+  "scan": {
+    "mode": "whole",
+    "chars": 1000000,
+    "normalize": "NFC"
+  },
+  "cells": {
+    "FEASIBILITY_CONCEPT": "canada:FEASIBILITY_CONCEPT",
+    "PRELIMINARY_DESIGN": "canada:PRELIMINARY_DESIGN",
+    "DETAILED_DESIGN": "canada:DETAILED_DESIGN",
+    "PRE_OPENING": "",
+    "EXISTING": "",
+    "CONSTRUCTION": ""
+  },
+  "note": "Rule ids are exactly the 17 enumerated in .autoforge/plans/plan-t62.md M1.2 (plan-t62.md:143-160) and .autoforge/execution/work-order-t62.json. Tier 1 = named specific stage; tier 2 = ambiguity rule, exactly two candidates, no cell, confidence inferred. CA-ASSET records asset_type only: no stage, no cell. French tier-1 / tier-2 split (M1 review fix round, Amendment A): CA-PRELIM-FR owns the NAMED forms 'avant-projet pr[ée]liminaire' and 'plans et devis pr[ée]liminaires'; CA-DETAIL-FR owns 'avant-projet d[ée]finitif' and 'plans et devis d[ée]finitifs'; CA-AMBIG-AVP owns the BARE 'avant-projet' (not qualified by pr[ée]liminaire / d[ée]finitif) via a negative lookahead, so the tier-2 rule is reachable for a document that has a body (D11 tier 1 wins). CA-PRELIM-FR and CA-DETAIL-FR keep the bare v1-parity French forms pr[ée]liminaire and d[ée]taill[ée]e? so that no document leaves a canonical cell (see the notes on those rules and plan-t62.md Amendment A).",
+  "rules": [
+    {
+      "id": "CA-FEAS",
+      "pattern": "planning\\s+stage|feasibility\\s+(?:stage|study)|stage\\s*(?:1|one)\\b|étude\\s+de\\s+faisabilité|planification",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "FEASIBILITY_CONCEPT",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "planning stage",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "planning stage",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "planning stage",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "planning stage",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "feasibility stage",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "PLANNING STAGE",
+          "kind": "corpus",
+          "corpus_sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95",
+          "attested": true,
+          "note": "corpus title, manifest row 1 (tier T3, stage FEASIBILITY_CONCEPT)"
+        },
+        {
+          "phrase": "Stage 1 Road Safety Audit",
+          "kind": "corpus",
+          "corpus_sha256": "ed2c0d69446169b221217c97861c335e7d675e1bb68dc9c8cbf4b201163030d2",
+          "attested": true,
+          "note": "corpus title, manifest row 19 (tier T3, stage FEASIBILITY_CONCEPT)"
+        }
+      ]
+    },
+    {
+      "id": "CA-PRELIM",
+      "pattern": "preliminary\\s+design(?:\\s+stage)?|draft\\s+design|stage\\s*(?:2|two)\\b|plans\\s+et\\s+devis\\s+pr[ée]liminaires",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "PRELIMINARY_DESIGN",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "preliminary design",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "preliminary design",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "preliminary design",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "preliminary design",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "preliminary design",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "draft design",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-DETAIL",
+      "pattern": "detailed\\s+design|detail\\s+design|stage\\s*(?:3|three)\\b|plans\\s+et\\s+devis\\s+d[ée]finitifs",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "DETAILED_DESIGN",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "detailed design",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "detailed design",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "detailed design",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "detailed design",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "detailed design",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "detail design",
+          "kind": "corpus",
+          "corpus_sha256": "2ea94190b6df90060009794589689884d0db779299cc99ee5dcd1e8887c2602e",
+          "attested": false,
+          "note": "body attestation at fetch time (M4) - the body is not committed (Crown copyright). Manifest row 23 is the UNB conference paper whose v1 label was PRE_OPENING (the mislabel this rule fixes)."
+        },
+        {
+          "phrase": "Stage 3 Road Safety Audit",
+          "kind": "corpus",
+          "corpus_sha256": "2b3115c3438b11fe5a25f270d8f855e502d4969a71d76dc1a4ab6d23a9280860",
+          "attested": true,
+          "note": "corpus title, manifest row 13 (tier T1, stage MULTI_STAGE)"
+        }
+      ]
+    },
+    {
+      "id": "CA-PREOPEN",
+      "pattern": "pre-?opening|avant\\s+(?:son\\s+|l['’])ouverture",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "PRE_OPENING",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "pre-opening",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "pre-opening",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "pre-opening",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "pre-opening",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "pre-opening",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "avant son ouverture",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "WAITEMATA GREENWAYS PRE-OPENING",
+          "kind": "corpus",
+          "corpus_sha256": "babe092a5473ed64e211f7a86dc76b700db5196cc4324ac613049b73f69894bc",
+          "attested": true,
+          "note": "corpus title, manifest row 9 (tier T1, stage MULTI_STAGE)"
+        }
+      ]
+    },
+    {
+      "id": "CA-EXISTING",
+      "pattern": "in[\\s-]?service\\s+(?:road|highway|corridor|facilit|review|audit)|existing\\s+(?:road|highway|corridor|facilit)|post[\\s-]?opening|already\\s+in\\s+service|apr[èe]s\\s+ouverture",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "EXISTING",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "existing road",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "existing road",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "existing road",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "existing road",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "already in service",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "post-opening",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "post opening",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true,
+          "note": "the SPACED spelling of the same stage phrase (measured 2026-10-22 in the UNB guidelines: '3.4.5.4 post opening and in service (stage 5)'). CA-EXISTING accepts one space or one hyphen between the two words, so both spellings match."
+        },
+        {
+          "phrase": "après ouverture",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-CONSTR",
+      "pattern": "construction\\s+(?:phase|stage)|during\\s+construction|des\\s+travaux|travaux",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "CONSTRUCTION",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "construction stage",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "construction stage",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "during construction",
+          "kind": "reference-doc",
+          "reference_doc": "bct-moti-rsa-guidelines-tc-t02-04c-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "des travaux",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-PRELIM-FR",
+      "pattern": "avant-projet\\s+pr[ée]liminaire|plans\\s+et\\s+devis\\s+pr[ée]liminaires|pr[ée]liminaire",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "fr",
+      "stage": "PRELIMINARY_DESIGN",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "avant-projet préliminaire",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "plans et devis préliminaires",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "préliminaire",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true,
+          "note": "v1-parity bare French form (scripts/harvest-track-a.ts:519 - v1's PRELIMINARY_DESIGN rule carries pr[ée]liminaire) - retained in v2 so that no document leaves the canada:PRELIMINARY_DESIGN cell (a v1->v2 coverage regression is the opposite of this ticket's goal). Measured in the QC guide on 2026-10-22 (unpdf extraction): the standalone word 'préliminaire' occurs 8 times, 7 of them inside 'avant-projet préliminaire' and 1 standalone ('préliminaire de l'ordre de déplacement'). Sanctioned by .autoforge/plans/plan-t62.md Amendment A."
+        }
+      ]
+    },
+    {
+      "id": "CA-DETAIL-FR",
+      "pattern": "plans\\s+et\\s+devis\\s+d[ée]finitifs|avant-projet\\s+d[ée]finitif|d[ée]taill[ée]e?\\b",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "fr",
+      "stage": "DETAILED_DESIGN",
+      "confidence_form": "named",
+      "evidence": [
+        {
+          "phrase": "plans et devis définitifs",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "avant-projet définitif",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "analyse détaillée",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": true,
+          "note": "v1-parity bare French form (scripts/harvest-track-a.ts:518 - v1's DETAILED_DESIGN rule carries d[ée]taill[ée]e?\\b) - retained in v2 so that no document leaves the canada:DETAILED_DESIGN cell. Measured in the QC guide on 2026-10-22 (unpdf extraction): the only occurrence of 'détaillée' in the 7 committed reference PDFs is this one, in the QC guide's negative statement 'l'audit n'est pas une analyse détaillée d'accidents' - the quote is attested, but its context is a disclaimer, not a stage label. Sanctioned by .autoforge/plans/plan-t62.md Amendment A."
+        }
+      ]
+    },
+    {
+      "id": "CA-PCT-DETAIL",
+      "pattern": "(?:9\\d|100)\\s*%[\\s\\S]{0,60}?(?:design|de[ée]tail|d[ée]taill|plan)",
+      "flags": "i",
+      "scope": "any",
+      "tier": 1,
+      "language": "en",
+      "stage": "DETAILED_DESIGN",
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "90% to 95% stage of the design",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "90%-100% Design Audit",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-AMBIG-FUNCPLAN",
+      "pattern": "functional\\s+plan(?:ning)?",
+      "flags": "i",
+      "scope": "any",
+      "tier": 2,
+      "language": "en",
+      "candidates": [
+        "FEASIBILITY_CONCEPT",
+        "PRELIMINARY_DESIGN"
+      ],
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "functional plan",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-guidelines-2004.pdf",
+          "attested": true
+        },
+        {
+          "phrase": "functional plan",
+          "kind": "reference-doc",
+          "reference_doc": "alberta-transportation-rsa-implementation-plan-2004.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-AMBIG-CONCEPT",
+      "pattern": "concept\\s+(?:design|stage)",
+      "flags": "i",
+      "scope": "any",
+      "tier": 2,
+      "language": "en",
+      "candidates": [
+        "FEASIBILITY_CONCEPT",
+        "PRELIMINARY_DESIGN"
+      ],
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "concept design",
+          "kind": "reference-doc",
+          "reference_doc": "ontario-good-roads-rsa-guideline-2023.pdf",
+          "attested": true
+        }
+      ]
+    },
+    {
+      "id": "CA-AMBIG-AVP",
+      "pattern": "avant-projet(?!\\s+(?:pr[ée]liminaire|d[ée]finitif))",
+      "flags": "i",
+      "scope": "any",
+      "tier": 2,
+      "language": "fr",
+      "candidates": [
+        "FEASIBILITY_CONCEPT",
+        "PRELIMINARY_DESIGN"
+      ],
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "avant-projet",
+          "kind": "reference-doc",
+          "reference_doc": "qc-mtq-guide-audits-securite-routiere-2012.pdf",
+          "attested": false,
+          "note": "the BARE (unqualified) 'avant-projet' is the genuinely ambiguous French form - the two qualified forms are named tier-1 stages (CA-PRELIM-FR 'avant-projet préliminaire', CA-DETAIL-FR 'avant-projet définitif'), so the negative lookahead keeps this tier-2 rule disjoint from both. Measured on 2026-10-22 (unpdf extraction of all 7 committed reference PDFs): the unqualified form has 0 occurrences - the 8 occurrences of the string 'avant-projet' in the QC guide are all qualified ('avant-projet préliminaire' / 'avant-projet définitif'). The rule therefore ships attested:false; the corpus attestation happens at fetch time (M4)."
+        }
+      ]
+    },
+    {
+      "id": "CA-AMBIG-PCT",
+      "pattern": "\\d{1,3}\\s*%[\\s\\S]{0,60}?(?:design|de[ée]tail|d[ée]taill|plan)",
+      "flags": "i",
+      "scope": "any",
+      "tier": 2,
+      "language": "en",
+      "candidates": [
+        "PRELIMINARY_DESIGN",
+        "DETAILED_DESIGN"
+      ],
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "75% design",
+          "kind": "reference-doc",
+          "reference_doc": "unb-transportation-group-rsa-guidelines.pdf",
+          "attested": true,
+          "note": "the 30 % / 60 % rungs of ticket #62 are declared intent - the corpus uses 50 % / 75 % / 95 %, so the pattern is NN% and not a hard-coded 30/60. Tier 1 CA-PCT-DETAIL wins for 90 %-100 %. The attested occurrence of '75% design' is a UNB FIGURE CAPTION ('... Photo 24. Pole in pedestrian path ... 75% DESIGN STAGE -NEW FACILITY ROUTE 20 HIGH SPEED CONNECTOR ...'), not prose: the plan's AB guideline sentence ('before 75% completion of the project and is the equivalent of the 90% to 95% stage of the design') is 17 words and exceeds the 10-word TERM-quote cap, so the caption is cited instead. The AB sentence is NOT claimed as attested here."
+        }
+      ]
+    },
+    {
+      "id": "CA-PRELIM-TICKET",
+      "pattern": "conception\\s+pr[ée]liminaire",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "fr",
+      "stage": "PRELIMINARY_DESIGN",
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "conception préliminaire",
+          "kind": "ticket-declared",
+          "attested": false,
+          "note": "ticket #62's own term, shipped as an accepted alias of avant-projet préliminaire. 0 hits in the 7 committed reference PDFs (measured 2026-10-22 by unpdf extraction); corpus attestation happens at fetch time (M4)."
+        },
+        {
+          "phrase": "conception préliminaire",
+          "kind": "corpus",
+          "corpus_sha256": "1530d327c4c3df7a6240d1cee914f9b1519083b7ba360404c714a5619cc95a19",
+          "attested": false,
+          "note": "corpus body attestation at fetch time (M4) - manifest row 26 (lang fr, tier T1); the body is not committed"
+        }
+      ]
+    },
+    {
+      "id": "CA-DETAIL-TICKET",
+      "pattern": "conception\\s+d[ée]taill[ée]e?",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "fr",
+      "stage": "DETAILED_DESIGN",
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "conception détaillée",
+          "kind": "ticket-declared",
+          "attested": false,
+          "note": "ticket #62's own term, shipped as an accepted alias of avant-projet définitif. 0 hits in the 7 committed reference PDFs (measured 2026-10-22 by unpdf extraction); corpus attestation happens at fetch time (M4)."
+        }
+      ]
+    },
+    {
+      "id": "CA-EXISTING-TICKET",
+      "pattern": "audit\\s+de\\s+s[ée]curit[ée]\\s+routi[èe]re\\s+en\\s+exploitation|en\\s+exploitation",
+      "flags": "i",
+      "scope": "text",
+      "tier": 1,
+      "language": "fr",
+      "stage": "EXISTING",
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "audit de sécurité routière en exploitation",
+          "kind": "ticket-declared",
+          "attested": false,
+          "note": "ticket #62's own term, a near-miss of the real MTQ term. 0 hits in the 7 committed reference PDFs (measured 2026-10-22 by unpdf extraction); corpus attestation happens at fetch time (M4). In the QC guide 'exploitation' occurs only in 'Dossier de transfert à l'exploitation'."
+        }
+      ]
+    },
+    {
+      "id": "CA-ASSET",
+      "pattern": "station|corridor|functional\\s+design",
+      "flags": "i",
+      "scope": "title",
+      "tier": 1,
+      "language": "en",
+      "asset_type": "station",
+      "confidence_form": "derived",
+      "evidence": [
+        {
+          "phrase": "Transitway Station Design",
+          "kind": "corpus",
+          "corpus_sha256": "0d9a76ff4e71e2b48ff2a5d96081dd7ee5419ec58275ed8587d246d0a0b2793c",
+          "attested": true,
+          "note": "corpus title, manifest row 7 (tier T3, stage UNSTAGED); title-scoped rule - no body needed. Records asset_type only: never a stage, never a cell."
+        }
+      ]
+    }
+  ],
+  "sections": {
+    "enabled": true,
+    "min_section_chars": 80,
+    "max_heading_chars": 120
+  }
+}

@@ -57,12 +57,36 @@ export interface StageRule {
   source_line?: string;
 }
 
+export interface SectionConfig {
+  enabled: boolean;
+  min_section_chars: number;
+  max_heading_chars: number;
+}
+
+export interface SectionSpan {
+  start: number;
+  end: number;
+}
+
+export interface SectionDecision {
+  heading: string;
+  span: SectionSpan;
+  candidate: StageCandidate;
+  evidence_region: "heading" | "body";
+}
+
+export interface DocumentDecision {
+  decision: StageDecision;
+  sections: SectionDecision[];
+}
+
 export interface RuleSet {
   rule_set_version: string;
   frozen: boolean;
   scan: { mode: string; chars: number; normalize?: string };
   cells: Record<string, string>;
   rules: StageRule[];
+  sections?: SectionConfig;
 }
 
 export interface StageCandidate {
@@ -249,12 +273,28 @@ export function loadRuleSet(json: unknown): RuleSet {
       ...(typeof raw.source_line === "string" ? { source_line: raw.source_line } : {}),
     };
   });
+  let sections: SectionConfig | undefined;
+  if (json.sections !== undefined) {
+    if (!isObject(json.sections)) throw new Error("stage-rules: sections must be an object");
+    const sec = json.sections;
+    if (typeof sec.enabled !== "boolean") throw new Error("stage-rules: sections.enabled must be boolean");
+    for (const key of ["min_section_chars", "max_heading_chars"] as const) {
+      if (typeof sec[key] !== "number" || !Number.isInteger(sec[key]) || sec[key] <= 0)
+        throw new Error(`stage-rules: sections.${key} must be a positive integer`);
+    }
+    sections = {
+      enabled: sec.enabled,
+      min_section_chars: sec.min_section_chars as number,
+      max_heading_chars: sec.max_heading_chars as number,
+    };
+  }
   return {
     rule_set_version: version,
     frozen: json.frozen === true,
     scan,
     cells,
     rules,
+    ...(sections ? { sections } : {}),
   };
 }
 
@@ -465,4 +505,285 @@ function candidateConfidence(representative: Hit, cellKey: string, candidateCoun
   if (representative.rule.confidence_form === "derived") return "interpreted";
   if (BARE_STAGE_ORDINAL.test(representative.matched)) return "interpreted";
   return "authoritative";
+}
+
+// ---------- v3 sectioning (additive; classify above is untouched) ----------
+
+const SECTION_CONNECTORS = new Set([
+  "a", "an", "the", "of", "and", "or", "in", "to", "for", "by", "on", "at", "as", "vs",
+  "de", "la", "le", "les", "des", "du", "et", "en", "au", "aux",
+]);
+
+interface LineInfo { start: number; end: number; text: string; }
+
+function splitLines(region: string): LineInfo[] {
+  const out: LineInfo[] = [];
+  let start = 0;
+  for (let i = 0; i <= region.length; i++) {
+    if (i === region.length || region[i] === "\n") {
+      let end = i;
+      if (end > start && region[end - 1] === "\r") end -= 1;
+      out.push({ start, end, text: region.slice(start, end) });
+      start = i + 1;
+    }
+  }
+  return out;
+}
+
+function namedTier1Map(ruleSet: RuleSet): Map<string, CanonicalStage> {
+  const m = new Map<string, CanonicalStage>();
+  for (const rule of ruleSet.rules) {
+    if (rule.tier === 1 && rule.confidence_form === "named" && rule.stage) {
+      m.set(rule.id, rule.stage);
+    }
+  }
+  return m;
+}
+
+function namedStagesOf(text: string, ruleSet: RuleSet): Set<CanonicalStage> {
+  const nt1 = namedTier1Map(ruleSet);
+  const d = classify(text, { title: "", hint: "UNSTAGED" }, ruleSet);
+  const set = new Set<CanonicalStage>();
+  for (const cand of d.candidates) {
+    if (cand.rule_ids.some((id) => nt1.get(id) === cand.stage)) {
+      set.add(cand.stage as CanonicalStage);
+    }
+  }
+  return set;
+}
+
+function isCombinedStageHeading(t: string): boolean {
+  const a = /\bstages?\b[^.\n]{0,20}\b(?:\d+|one|two|three)\b[^.\n]{0,10}\b(?:and|&|\/|,)\b[^.\n]{0,10}\b(?:\d+|one|two|three)\b/i;
+  const b = /\bstages?\s+(?:\d+|one|two|three)\s*(?:and|&|\/|,)\s*(?:\d+|one|two|three)\b/i;
+  return a.test(t) || b.test(t);
+}
+
+function isReferenceList(t: string): boolean {
+  if (/\b(?:19|20)\d{2}\b/.test(t) && /[,"]/.test(t)) return true;
+  if (/^\p{Lu}[\p{L}'’.-]+(?:\s+\p{Lu}{1,3})?,\s/u.test(t)) return true;
+  return false;
+}
+
+function stripTrailingNumber(t: string): string {
+  const m = t.match(/\s+\d{1,4}\s*$/);
+  if (!m || m.index === undefined) return t.trim();
+  return t.slice(0, m.index).replace(/[.\s]+$/, "").trim();
+}
+
+function rawShape(t: string, ruleSet: RuleSet, cfg: SectionConfig): "numbered" | "allcaps" | "titlecase" | null {
+  const c = collapse(t);
+  if (c.length === 0 || c.length > cfg.max_heading_chars) return null;
+  if (isReferenceList(c)) return null;
+  const nm = c.match(/^(\d{1,3}(?:\.\d{1,3}){0,3})\.?\s+(\S.*)$/);
+  const rm = c.match(/^([IVXLC]{1,6})\.?\s+(\S.*)$/);
+  if (nm || rm) {
+    const rest = (nm || rm)![2];
+    const toks = rest.split(/\s+/);
+    if (toks.length < 1 || toks.length > 10) return null;
+    if (/[.!?]\s+\p{Ll}/u.test(rest) || /[.!?]$/.test(rest)) return null;
+    if (/(?:\.{2,}|…)\s*\d{1,4}$/.test(c)) return null;
+    return "numbered";
+  }
+  if (c.length <= 80 && /\p{L}/u.test(c) && !/\p{Ll}/u.test(c)) {
+    if (/(?:\.{2,}|…)\s*\d{1,4}$/.test(c)) return null;
+    return "allcaps";
+  }
+  const toks = c.split(/\s+/);
+  if (toks.length >= 1 && toks.length <= 16) {
+    let relevant = 0;
+    let title = 0;
+    for (const w of toks) {
+      const stripped = w.replace(/^[^\p{L}]+/u, "");
+      if (!stripped || !/\p{L}/u.test(stripped)) continue;
+      if (SECTION_CONNECTORS.has(stripped.toLowerCase())) continue;
+      relevant++;
+      if (/^\p{Lu}/u.test(stripped)) title++;
+    }
+    if (relevant > 0 && 5 * title >= 3 * relevant) {
+      if (!/[.!?]/.test(c)) {
+        if (/(?:\.{2,}|…)\s*\d{1,4}$/.test(c)) return null;
+        return "titlecase";
+      }
+    }
+  }
+  return null;
+}
+
+interface SegmentedHeading {
+  heading: string;
+  lineEnd: number;
+  span: SectionSpan;
+}
+
+function segmentSections(region: string, ruleSet: RuleSet, cfg: SectionConfig): SegmentedHeading[] {
+  const lines = splitLines(region);
+  const collapsedLines = lines.map((l) => collapse(l.text));
+
+  const tocReject = new Array<boolean>(lines.length).fill(false);
+  for (let i = 0; i < lines.length; i++) {
+    const c = collapsedLines[i];
+    if (!/(?:\s)\d{1,4}\s*$/.test(c)) continue;
+    if (/(?:\.{2,}|…)\s*\d{1,4}$/.test(c)) continue;
+    const prefix = stripTrailingNumber(c);
+    if (!prefix || prefix === c) continue;
+    if (rawShape(prefix, ruleSet, cfg) === null) continue;
+    if (!/\p{L}$/u.test(prefix)) continue;
+    const prefixTokens = prefix.split(/\s+/).slice(0, 4).join(" ").toLowerCase();
+    for (let j = i + 1; j < lines.length; j++) {
+      const other = collapsedLines[j];
+      const otherPrefix = stripTrailingNumber(other);
+      if (otherPrefix === prefix && rawShape(otherPrefix, ruleSet, cfg) !== null) {
+        tocReject[i] = true;
+        break;
+      }
+      const otherIsHeading = rawShape(other, ruleSet, cfg) !== null || rawShape(otherPrefix, ruleSet, cfg) !== null;
+      if (otherIsHeading) {
+        const otherTokens = other.split(/\s+/).slice(0, 4).join(" ").toLowerCase();
+        if (prefixTokens && otherTokens.startsWith(prefixTokens)) {
+          tocReject[i] = true;
+          break;
+        }
+      }
+    }
+  }
+
+  const counts = new Map<string, number>();
+  for (const c of collapsedLines) {
+    if (c.length === 0) continue;
+    counts.set(c, (counts.get(c) ?? 0) + 1);
+  }
+
+  const accepted: { index: number; text: string }[] = [];
+  const acceptedTexts = new Set<string>();
+
+  for (let i = 0; i < lines.length; i++) {
+    const c = collapsedLines[i];
+    if (c.length === 0) continue;
+    if (c.length > cfg.max_heading_chars) continue;
+    if (tocReject[i]) continue;
+    if (/(?:\.{2,}|…)\s*\d{1,4}$/.test(c)) continue;
+
+    const shape = rawShape(c, ruleSet, cfg);
+    if (shape === null) continue;
+
+    if (shape === "titlecase") {
+      if (namedStagesOf(c, ruleSet).size < 1) continue;
+      const repeated = (counts.get(c) ?? 0) >= 3;
+      const prevBlank = i === 0 || collapsedLines[i - 1] === "";
+      const nextBlank = i === lines.length - 1 || collapsedLines[i + 1] === "";
+      const isolated = prevBlank || nextBlank;
+      const headerWindow = lines[i].start < 600;
+      if (!repeated && !isolated && !headerWindow) continue;
+    }
+
+    if (acceptedTexts.has(c)) continue;
+    acceptedTexts.add(c);
+    accepted.push({ index: i, text: c });
+  }
+
+  const headings: SegmentedHeading[] = [];
+  for (let k = 0; k < accepted.length; k++) {
+    const line = lines[accepted[k].index];
+    const start = line.start;
+    const end = k + 1 < accepted.length ? lines[accepted[k + 1].index].start : region.length;
+    headings.push({ heading: accepted[k].text, lineEnd: line.end, span: { start, end } });
+  }
+  return headings;
+}
+
+function clearSections(region: string, ruleSet: RuleSet, cfg: SectionConfig): SectionDecision[] {
+  const nt1 = namedTier1Map(ruleSet);
+  const headings = segmentSections(region, ruleSet, cfg);
+  const out: SectionDecision[] = [];
+  for (const h of headings) {
+    const span = h.span;
+    if (span.start >= 600 && span.end - span.start < cfg.min_section_chars) continue;
+    const headStages = namedStagesOf(region.slice(span.start, h.lineEnd), ruleSet);
+    if (headStages.size !== 1) continue;
+    const stage = [...headStages][0];
+    if (isCombinedStageHeading(collapse(h.heading))) continue;
+    const carryOver = /\bitems\s+raised\s+at\s+(?:the\s+)?(?:previous\s+)?stage\s*(?:\d+|one|two|three)\b/i.test(collapse(h.heading)) &&
+      (/\bprevious\b/i.test(collapse(h.heading)) || /\bstage\s*(?:1|one)\b/i.test(collapse(h.heading)));
+    if (carryOver || /\bprevious\s+stage\b/i.test(collapse(h.heading))) continue;
+    const headingText = region.slice(span.start, h.lineEnd);
+    const hd = classify(headingText, { title: "", hint: "UNSTAGED" }, ruleSet);
+    const c = hd.candidates.find(
+      (cand) => cand.stage === stage && cand.rule_ids.some((id) => nt1.get(id) === stage),
+    );
+    if (!c) continue;
+    const mp = collapse(c.matched_phrase).toLowerCase();
+    if ((mp === "planification" || mp === "planning") &&
+        !/stage|étape|etape|phase|faisabilité|feasibility/i.test(collapse(h.heading))) continue;
+    const absolute = span.start + c.offset;
+    if (!(span.start <= absolute && absolute < span.end)) continue;
+    out.push({
+      heading: collapse(h.heading),
+      span: { start: span.start, end: span.end },
+      candidate: { ...c, offset: absolute },
+      evidence_region: "heading",
+    });
+  }
+  return out;
+}
+
+export function classifyDocument(
+  text: string,
+  ctx: { title: string; hint: string },
+  ruleSet: RuleSet,
+): DocumentDecision {
+  const base = classify(text, ctx, ruleSet);
+  const cfg = ruleSet.sections;
+  if (!cfg?.enabled) return { decision: base, sections: [] };
+
+  const normalize = typeof ruleSet.scan.normalize === "string" ? ruleSet.scan.normalize : null;
+  const region = (normalize ? text.normalize(normalize) : text).slice(0, ruleSet.scan.chars);
+  const sections = clearSections(region, ruleSet, cfg);
+  if (sections.length === 0) return { decision: base, sections: [] };
+
+  const byStage = new Map<CanonicalStage, SectionDecision[]>();
+  for (const s of sections) {
+    const stage = s.candidate.stage as CanonicalStage;
+    const bucket = byStage.get(stage);
+    if (bucket) bucket.push(s);
+    else byStage.set(stage, [s]);
+  }
+
+  const candidates: StageCandidate[] = [];
+  for (const [stage, list] of byStage) {
+    const best = list.reduce((a, b) =>
+      CONFIDENCE_RANK[b.candidate.confidence] > CONFIDENCE_RANK[a.candidate.confidence] ||
+      (CONFIDENCE_RANK[b.candidate.confidence] === CONFIDENCE_RANK[a.candidate.confidence] &&
+        b.span.start < a.span.start)
+        ? b
+        : a,
+    );
+    candidates.push({
+      stage,
+      cell_key: cellOf(ruleSet.cells, stage),
+      confidence: list.reduce<Confidence>((w, s) =>
+        CONFIDENCE_RANK[s.candidate.confidence] < CONFIDENCE_RANK[w]
+          ? s.candidate.confidence
+          : w,
+        list[0].candidate.confidence,
+      ),
+      rule_ids: [...new Set(list.flatMap((s) => s.candidate.rule_ids))],
+      evidence_scope: "body",
+      matched_phrase: best.candidate.matched_phrase,
+      offset: best.candidate.offset,
+    });
+  }
+  if (candidates.length === 0) return { decision: base, sections: [] };
+
+  const ambiguous = candidates.length >= 2;
+  const decision: StageDecision = {
+    ...base,
+    stage: ambiguous ? "MULTI_STAGE" : (candidates[0].stage as StageOrUnstaged),
+    cell_key: ambiguous ? "" : candidates[0].cell_key,
+    confidence: ambiguous ? "inferred" : candidates[0].confidence,
+    ambiguous,
+    candidates,
+    source: "text",
+    scope_basis: "own_scope",
+  };
+  return { decision, sections };
 }

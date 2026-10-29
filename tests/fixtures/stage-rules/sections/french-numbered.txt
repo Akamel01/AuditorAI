@@ -1,0 +1,8 @@
+1. INTRODUCTION
+Texte d'introduction avec suffisamment de caracteres pour depasser la longueur minimale de quatre-vingts caracteres requise.
+
+2. PLANS ET DEVIS PRÉLIMINAIRES
+Cette section decrit les plans et devis preliminaires avec suffisamment de texte pour constituer une vraie section de plus de quatre-vingts caracteres.
+
+3. PLANS ET DEVIS DÉFINITIFS
+Cette section decrit les plans et devis definitifs avec suffisamment de texte pour constituer une vraie section de plus de quatre-vingts caracteres.

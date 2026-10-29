@@ -1,0 +1,28 @@
+Some Title Block
+
+REPORT TITLE LINE
+
+Table of contents
+1. Introduction .... 1
+2. Preliminary Design Stage Audit .. 2
+
+REPORT TITLE LINE
+
+1. INTRODUCTION
+This introduction section contains neutral narrative text that is long enough to exceed the minimum section length of eighty characters easily.
+
+2. PRELIMINARY DESIGN STAGE AUDIT
+The preliminary design stage audit section describes the preliminary design activities and findings in sufficient detail to be a real section.
+
+3. DETAILED DESIGN STAGE AUDIT
+The detailed design stage audit section describes the detailed design activities and findings in sufficient detail to be a real section.
+
+4. FINDINGS
+Findings are listed here in a neutral way without naming any single named tier one stage.
+
+5. STAGE 1 AND STAGE 2 COMBINED AUDIT
+This combined section names both stage one and stage two and is not a clear single stage section.
+
+1 All All Intersections
+
+2 Hildebrand ED, Ross A, Robichaud K "The Effectiveness of Transitional Speed Zones", ITE Journal, October 2004, 30-38.
