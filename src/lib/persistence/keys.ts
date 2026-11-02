@@ -1,6 +1,7 @@
 // Sole owner of the physical key scheme (ADR-0001).
-// Every persistence module imports from here; outside persistence, callers
-// must use Repository.*Key/Prefix helpers (grep ws: outside persistence stays zero).
+// Public home for callers inside and outside persistence: import key/prefix
+// helpers from here rather than re-declaring them. Raw-key handling in the
+// migration tool (src/lib/db/migration.ts) is the deliberate exception.
 
 export function projectKey(ws: string, projectId: string): string {
   return `ws:${ws}:project:${projectId}`;
