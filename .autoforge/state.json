@@ -1,12 +1,12 @@
 {
   "version": "1.0.0",
   "created": "2026-09-14T00:00:00Z",
-  "updated": "2026-11-02T08:50:00Z",
+  "updated": "2026-11-02T08:55:00Z",
   "ticket": "#56",
   "branch": "oc/56",
-  "pull_request": null,
+  "pull_request": "https://github.com/Akamel01/AuditorAI/pull/102",
   "objective": "Ticket #56 (re-scoped 2026-10-25) — daily age-encrypted pg_dump backup with 30-day retention, a restore runbook, and a CI restore drill (G-4); no PITR on the free tier",
-  "phase": "validation",
+  "phase": "pr-open",
   "loop": 1,
   "modules": [
     "M1",
@@ -14,7 +14,7 @@
     "M3"
   ],
   "execution": "M1 backup pipeline, M2 restore path, M3 drill+contract implemented and independently reviewed (M1/M2/M3 APPROVED_WITH_NOTES).",
-  "validation": "GO (CI-gated): 6 PASS / 2 CI-ONLY / 0 FAIL. restore-drill green + measured restore_drill_seconds still outstanding.",
+  "validation": "GO: all PR checks green. restore-drill run 41415827882: counts_match=true, rls_probe=pass, restore_seconds=2, restore_drill_seconds=3 (<14400). A2/A5 behavioral proof now recorded.",
   "artifacts": [
     ".autoforge/discovery/report-t56.md",
     ".autoforge/discovery/tracker-index-t56.md",
@@ -131,8 +131,8 @@
       "run": "2026-11-02",
       "ticket": "#56",
       "branch": "oc/56",
-      "pull_request": null,
-      "phase": "validation",
+      "pull_request": "https://github.com/Akamel01/AuditorAI/pull/102",
+      "phase": "pr-open",
       "loop": 1,
       "objective": "Ticket #56 (re-scoped 2026-10-25) — daily age-encrypted pg_dump backup with 30-day retention, a restore runbook, and a CI restore drill (G-4); no PITR on the free tier",
       "scope_decision": "Free tier: logical daily dump + age encryption + Actions artifact (30d), restore runbook, disposable-Postgres drill. PITR documented as paid upgrade only. Migrations 0001-0005 per orchestrator directive (issue re-scope comment says 0001-0004; 0005 is the current head).",
@@ -141,7 +141,7 @@
         "M2",
         "M3"
       ],
-      "validation": "GO (CI-gated): 6 PASS / 2 CI-ONLY / 0 FAIL; restore-drill run pending."
+      "validation": "GO: all PR checks green; drill 41415827882 counts_match=true rls_probe=pass restore_seconds=2 restore_drill_seconds=3."
     }
   ],
   "other_lane_state_2026_10_22": {

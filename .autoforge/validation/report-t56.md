@@ -6,23 +6,22 @@ claims are bounded by the CI-only drill. No git/vault mutations; no source edits
 
 ## Verdict
 
-**GO (CI-gated)** — **6 PASS / 2 CI-ONLY / 0 FAIL**.
+**GO** — **8 PASS / 0 CI-ONLY / 0 FAIL** after the CI drill.
 
-Every locally provable criterion and every ticket rule passes. A2/A5 behavior is provable only by the
-GitHub Actions `restore-drill`; the branch is not pushed (no remote `oc/56`, workflow lookup 404), so
-no run id or measurement exists. Merge gate: a green `restore-drill` run with `counts_match=true`,
-`rls_probe=pass`, and `restore_drill_seconds < 14400`; record the run id + seconds in the PR. No defect
-found that requires replanning M1/M2/M3.
+Every locally provable criterion and every ticket rule passes. The pre-push verdict was GO (CI-gated);
+the gate is now satisfied: `restore-drill` run 41415827882 is green with `counts_match=true`,
+`rls_probe=pass`, `restore_seconds=2`, `restore_drill_seconds=3` (< 14400). No defect found that
+requires replanning M1/M2/M3.
 
 ## Acceptance criteria
 
 | AC | Status | Evidence (current files / quoted output) |
 |---|---|---|
 | **A1** Daily scheduled Action + `pg_dump` + secret name in `.env.example` and runbook | **PASS** | `backup.yml:4-6` `schedule`/`cron: "17 3 * * *"` + `workflow_dispatch`; `:25-31` runs `scripts/backup/backup.sh` with `:28` `secrets.BACKUP_POSTGRES_URL`; `.env.example:65,68` empty `BACKUP_POSTGRES_URL=` / `BACKUP_AGE_RECIPIENT=`; `restore.md:15` names the secret. `backup.sh:68` is `pg_dump --format=custom --schema=public …`. |
-| **A2** age encryption before upload; public key from repo variable; private key never in repo | **CI-ONLY** (static checks pass) | `backup.sh:106` `tar -C "$workdir" -cf - dump.pgcustom manifest.json \| age -r "$BACKUP_AGE_RECIPIENT" -o "$envelope"`; upload is a later workflow step after `backup.sh` (`backup.yml:25-40`). Public key: `backup.yml:29` `vars.BACKUP_AGE_RECIPIENT`; `.env.example:66-67` says private key is operator-held. `grep -RIn 'AGE-SECRET-KEY' .github scripts docs .env.example` → `NONE`. Decrypt/encrypt round-trip unproven locally; the drill is the only proof. |
+| **A2** age encryption before upload; public key from repo variable; private key never in repo | **PASS** (static + drill) | `backup.sh:106` `tar -C "$workdir" -cf - dump.pgcustom manifest.json \| age -r "$BACKUP_AGE_RECIPIENT" -o "$envelope"`; upload is a later workflow step after `backup.sh` (`backup.yml:25-40`). Public key: `backup.yml:29` `vars.BACKUP_AGE_RECIPIENT`; `.env.example:66-67` says private key is operator-held. `grep -RIn 'AGE-SECRET-KEY' .github scripts docs .env.example` → `NONE`. The green drill 41415827882 encrypts with an ephemeral `age-keygen` recipient and decrypts with its identity, proving the round-trip. |
 | **A3** Off-Supabase storage (Actions artifact), 30-day retention | **PASS** | `backup.yml:32-40`: `actions/upload-artifact@v4`, `path: backup-out/*.tar.age`, `retention-days: 30`, `if-no-files-found: error`, `if: success()`, after the backup step. Artifacts live in GitHub Actions, not Supabase. |
 | **A4** `docs/runbooks/restore.md`: fetch, decrypt, restore into fresh DB, verify row counts and RLS | **PASS** | Fetch `restore.md:19-22` (`gh run list`/`gh run download`); decrypt `:26-32` (`age -d`, `tar -xf`, `sha256sum -c`); fresh DB `:34-56` (`createdb`, empty-`public` query, expect `0`); restore `:58-73` (`restore.sh` or manual `pg_restore --schema=public …` + `0003_roles`/`0004_seats_invites`/`0005_audit_trail` + `ANALYZE`); verify `:75-79` (counts vs manifest, RLS catalog 10/10, role invariant, probe, `restore_seconds`). |
-| **A5** CI drill on disposable Postgres seeded with migrations 0001-0005; measured restore time recorded | **CI-ONLY** (structure passes) | `restore-drill.yml:43-48` applies `0001 0002 0003 0004 0005` in order; `:49-50` applies `drill-seed.sql`; `:51-54` ephemeral `age-keygen`; `:69-70` timer before download; `:76-85` timed restore, `restore_drill_seconds` to `$GITHUB_STEP_SUMMARY`, fail at `>= 14400`. No run exists: `gh run list …--workflow restore-drill.yml` → `HTTP 404: workflow restore-drill.yml not found on the default branch`; `git ls-remote --heads origin oc/56` → empty. OD-4 resolves the issue's "0001–0004" wording to 0005 (current head); the brief accepts 0001–0005. |
+| **A5** CI drill on disposable Postgres seeded with migrations 0001-0005; measured restore time recorded | **PASS** (run 41415827882) | `restore-drill.yml:43-48` applies `0001 0002 0003 0004 0005` in order; `:49-50` applies `drill-seed.sql`; `:51-54` ephemeral `age-keygen`; `:69-70` timer before download; `:76-85` timed restore, `restore_drill_seconds` to `$GITHUB_STEP_SUMMARY`, fail at `>= 14400`. Green run [41415827882](https://github.com/Akamel01/AuditorAI/actions/runs/41415827882): `counts_match=true`, `rls_probe=pass`, `restore_seconds=2`, `restore_drill_seconds=3`. OD-4 resolves the issue's "0001–0004" wording to 0005 (current head); the brief accepts 0001–0005. |
 | **A6** No real DB connection, no account creation, no real secrets anywhere | **PASS** | Only URLs in the ticket files are `postgresql://postgres:drill@localhost:5432/…` (`restore-drill.yml:22-24`) and the `<scratch-url>` placeholder (`restore.md:38`); no `supabase.co`, `pooler.supabase.com`, `/home/oc`, `AGE-SECRET-KEY`, `ghp_`, `github_pat_`, or JWT shapes in implementation files. App never reads the two names (`grep -RIn` over `src` → `APP_HAS_NONE`). Fail-closed exits 1 before any Docker/DB call. The scheduled production job connecting via the operator secret is the intended runtime, not a validation connection. |
 | **A7** PITR documented as paid upgrade path only, not implemented | **PASS** | `restore.md:3` "Full-project disaster recovery requires Supabase Pro + PITR add-on; that is not built here"; `:97-99` "PITR / Not implemented. Paid upgrade path = Supabase Pro + PITR add-on". `grep -RIn 'PITR' scripts/backup .github/workflows` → no hits. |
 | **A8** RPO 24 h / RTO 4 h stated and consistent with implementation | **PASS** | `restore.md:7-8` states RPO 24 h (daily 03:17 UTC, 30-day retention) and RTO 4 h (CI drill + operator live drill); `backup.yml:5` daily cron `17 3 * * *`; `restore-drill.yml:19` 250-min timeout (reachable 14400 s gate) and `:85` `>= 14400` fail. No contradiction. |
@@ -113,3 +112,13 @@ text in `backup.sh:51` and the re-point instruction in `restore.md:83`; neither 
 **GO**, conditional on the CI drill. If `restore-drill` is red, re-enter **M3 only** (workflow/seed/
 test); the M1/M2 artifact and interface contracts are consistent. A5 stays CI-ONLY until a green run
 id and `restore_drill_seconds` are recorded.
+
+## CI result (2026-11-02) — condition satisfied
+
+PR [#102](https://github.com/Akamel01/AuditorAI/pull/102), `restore-drill` run
+[41415827882](https://github.com/Akamel01/AuditorAI/actions/runs/41415827882) is green (46 s job):
+`counts_match=true`, `rls_probe=pass`, `restore_seconds=2` (decrypt + full restore + 0003→0005 +
+counts/RLS), `restore_drill_seconds=3` (download through verification), below the 14400 s gate.
+All other PR checks are green (`lint/typecheck/test/build`, `browser e2e`, `shared-state`,
+`evidence registry`, `vault determinism`, `R13/R17`, `eval-gate freshness`, dependency scan).
+A5 behavior is no longer CI-ONLY; A2's age round-trip is exercised by the same green drill.
