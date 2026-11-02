@@ -2,8 +2,12 @@ name: restore-drill
 
 on:
   pull_request:
+    paths: ["supabase/migrations/**", "scripts/backup/**", ".github/workflows/backup.yml", ".github/workflows/restore-drill.yml"]
   push:
     branches: [main]
+    paths: ["supabase/migrations/**", "scripts/backup/**", ".github/workflows/backup.yml", ".github/workflows/restore-drill.yml"]
+  schedule:
+    - cron: "43 4 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -16,7 +20,7 @@ concurrency:
 jobs:
   drill:
     runs-on: ubuntu-latest
-    timeout-minutes: 250
+    timeout-minutes: 30
     env:
       PG_IMAGE: postgres:17
       DRILL_URL: postgresql://postgres:drill@localhost:5432/drill

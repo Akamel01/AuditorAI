@@ -45,7 +45,7 @@ SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname = current_user;
 SHOW server_version;
 SQL
 
-preflight_out="$(docker run --rm --network host -e BACKUP_POSTGRES_URL -v "$workdir:/work:ro" "$PG_IMAGE" sh -c 'psql "$BACKUP_POSTGRES_URL" -At -v ON_ERROR_STOP=1 -f /work/preflight.sql')"
+preflight_out="$(docker run --rm --network host -e BACKUP_POSTGRES_URL -v "$workdir:/work:ro" "$PG_IMAGE" sh -c 'psql "$BACKUP_POSTGRES_URL" -At -v ON_ERROR_STOP=1 -f /work/preflight.sql')" || { echo "::error::preflight connection failed — use the Supavisor session pooler (port 5432 on aws-0-<region>.pooler.supabase.com, user postgres.<project-ref>)" >&2; exit 1; }
 first_line="$(printf '%s\n' "$preflight_out" | sed -n '1p')"
 if [[ "$first_line" != "t" ]]; then
   echo "::error::role must be superuser or BYPASSRLS; never use TENANT_POSTGRES_URL" >&2

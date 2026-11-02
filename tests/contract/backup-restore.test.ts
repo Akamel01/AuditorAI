@@ -25,10 +25,19 @@ describe("backup/restore contract", () => {
     const backupIdx = steps.findIndex((s) => s.id === "backup");
     const uploadIdx = steps.findIndex((s) => s.uses === "actions/upload-artifact@v4");
     it("backup step exists", () => expect(backupIdx).toBeGreaterThanOrEqual(0));
-    const backupStep = steps[backupIdx];
     it("backup env secrets", () => {
-      expect(backupStep.env.BACKUP_POSTGRES_URL).toContain("secrets.BACKUP_POSTGRES_URL");
-      expect(backupStep.env.BACKUP_AGE_RECIPIENT).toContain("vars.BACKUP_AGE_RECIPIENT");
+      expect(doc.jobs.backup.env.BACKUP_POSTGRES_URL).toContain("secrets.BACKUP_POSTGRES_URL");
+      expect(doc.jobs.backup.env.BACKUP_AGE_RECIPIENT).toContain("vars.BACKUP_AGE_RECIPIENT");
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    it("config step exists", () => expect(steps.some((s: any) => s.id === "config")).toBe(true));
+    it("not configured notice", () => expect(raw).toContain("::notice::backup not configured"));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const installAgeIdx = steps.findIndex((s: any) => s.name === "Install age");
+    it("gated steps", () => {
+      expect(steps[installAgeIdx].if).toBe("steps.config.outputs.configured == 'true'");
+      expect(steps[backupIdx].if).toBe("steps.config.outputs.configured == 'true'");
+      expect(steps[uploadIdx].if).toBe("steps.config.outputs.configured == 'true'");
     });
     const upload = steps[uploadIdx];
     it("upload uses v4", () => expect(upload.uses).toBe("actions/upload-artifact@v4"));
@@ -60,6 +69,8 @@ describe("backup/restore contract", () => {
       expect(raw).not.toContain("${TENANT_POSTGRES_URL");
       expect(raw).not.toContain("$TENANT_POSTGRES_URL");
     });
+    it("preflight connection failed", () => expect(raw).toContain("preflight connection failed"));
+    it("session pooler", () => expect(raw).toContain("session pooler"));
   });
 
   describe("C. restore-drill.yml", () => {
@@ -68,11 +79,14 @@ describe("backup/restore contract", () => {
     const doc = yaml.parse(raw) as any;
     it("pull_request", () => expect(doc.on.pull_request).toBeDefined());
     it("push main", () => expect(doc.on.push.branches).toContain("main"));
+    it("pull_request paths", () => expect(doc.on.pull_request.paths).toEqual(expect.arrayContaining(["supabase/migrations/**", "scripts/backup/**", ".github/workflows/backup.yml", ".github/workflows/restore-drill.yml"])));
+    it("push paths", () => expect(doc.on.push.paths).toEqual(expect.arrayContaining(["supabase/migrations/**", "scripts/backup/**", ".github/workflows/backup.yml", ".github/workflows/restore-drill.yml"])));
+    it("schedule cron", () => expect(doc.on.schedule[0].cron).toBe("43 4 * * 1"));
     it("workflow_dispatch", () => expect(doc.on.workflow_dispatch).toBeDefined());
     it("permissions", () => expect(doc.permissions.contents).toBe("read"));
     it("concurrency group", () => expect(doc.concurrency.group).toBe("restore-drill-${{ github.ref }}"));
     it("cancel true", () => expect(doc.concurrency["cancel-in-progress"]).toBe(true));
-    it("timeout 250", () => expect(doc.jobs.drill["timeout-minutes"]).toBe(250));
+    it("timeout 30", () => expect(doc.jobs.drill["timeout-minutes"]).toBe(30));
     it("service image", () => expect(doc.jobs.drill.services.postgres.image).toBe("postgres:17"));
     it("PG_IMAGE", () => expect(doc.jobs.drill.env.PG_IMAGE).toBe("postgres:17"));
     for (const s of ["scripts/backup/backup.sh", "scripts/backup/restore.sh", "drill-seed.sql", "age-keygen", "14400", "GITHUB_STEP_SUMMARY"]) {
@@ -145,6 +159,8 @@ describe("backup/restore contract", () => {
     it("BACKUP_POSTGRES_URL", () => expect(raw).toMatch(/^BACKUP_POSTGRES_URL=$/m));
     it("BACKUP_AGE_RECIPIENT", () => expect(raw).toMatch(/^BACKUP_AGE_RECIPIENT=$/m));
     it("CI-only", () => expect(raw).toContain("CI-only"));
+    it("pooler", () => expect(raw).toContain("pooler.supabase.com"));
+    it("6543", () => expect(raw).toContain("6543"));
   });
 
   describe("F. runbook", () => {
@@ -153,9 +169,11 @@ describe("backup/restore contract", () => {
     for (const s of ["RPO 24", "RTO 4", "PITR", "Supabase Pro", "gh run download", "age -d", "pg_restore", "0003_roles", "0004_seats_invites", "0005_audit_trail", "auditorai_app", "empty"]) {
       it(`contains ${s}`, () => expect(raw).toContain(s));
     }
-    it("no bad hosts", () => {
-      expect(raw).not.toContain("supabase.co");
-      expect(raw).not.toContain("pooler.supabase.com");
+    it("pooler hosts", () => {
+      expect(raw).toContain("pooler.supabase.com");
+      expect(raw).toContain("5432");
+      expect(raw).toContain("6543");
+      expect(raw).not.toMatch(/\/home\/[a-z]+/);
     });
   });
 

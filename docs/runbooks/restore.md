@@ -13,7 +13,7 @@ Scope: restores the `public` tenant schema only. `auth` and `storage` are NOT ba
   `chmod 600 <identity-file>`.
 - A scratch Postgres 17 target (never production).
 - `gh`, `docker`, `age`, `jq`, `sha256sum`.
-- The backup secret `BACKUP_POSTGRES_URL` is the daily pipeline's owner connection and is NOT needed for a restore (use `RESTORE_DATABASE_URL` for the scratch target).
+- The backup secret `BACKUP_POSTGRES_URL` is the daily pipeline's owner connection and is NOT needed for a restore (use `RESTORE_DATABASE_URL` for the scratch target). It must be the Supavisor SESSION pooler (port 5432 on aws-0-<region>.pooler.supabase.com, user postgres.<project-ref>) which supports pg_dump, never the transaction pooler (port 6543) — the direct db.<ref>.supabase.co host is IPv6-only without the paid IPv4 add-on and GitHub-hosted runners have no IPv6. Must be superuser or BYPASSRLS.
 
 ## Fetch
 
