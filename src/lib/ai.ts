@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { getEvidence } from "@/lib/evidence";
+import { DEFAULT_BASE_URL, DEFAULT_MODEL } from "@/lib/model-config";
 import {
   CircuitBreaker,
   FailoverEndpoint,
@@ -71,9 +72,6 @@ export interface ZenAiConfig {
   fallbackApiKey?: string;
   fetchImpl?: typeof fetch;
 }
-
-const DEFAULT_BASE_URL = "https://opencode.ai/zen/v1";
-const DEFAULT_MODEL = "x-preview-f-free";
 
 interface JsonSchemaish {
   enum?: readonly string[];

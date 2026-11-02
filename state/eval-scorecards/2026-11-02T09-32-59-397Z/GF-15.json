@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-11-02T09-32-59-397Z",
+  "fixture_id": "GF-15",
+  "fixture_name": "34 Street FPS §5.12 traffic safety & mobility review — real CA planning-stage issue/response pair (Strathcona County)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "beam-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/inference/go/openai/v1",
+    "identity": "beam",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF15-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Permissive left turns across three or more opposing lanes at accesses and intersections is a substantive corridor safety concern.",
+        "evidence_grounding": "EV-CA-040 provides a verbatim quote directly supporting the pivotal permissive-left-turn risk claim.",
+        "jurisdiction_correctness": "The finding remains a safety concern and appropriately defers phasing evaluation to later design stages under the planning-stage RSA context.",
+        "recommendation_quality": "The recommendation is specific, actionable, and viable, including explicit VRU exposure consideration.",
+        "vru_coverage": "Pedestrians and cyclists are identified as affected users and their exposure is explicitly carried into the recommendation."
+      }
+    },
+    {
+      "finding_id": "JB-GF15-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "A recorded potential sidewalk discontinuity at a new junction is a substantive pedestrian continuity/compliance issue.",
+        "evidence_grounding": "The cited evidence includes a verbatim quote supporting the recorded potential discontinuity.",
+        "jurisdiction_correctness": "The item is framed as a compliance/continuity question distinct from an asserted crash hazard.",
+        "recommendation_quality": "It gives a specific, actionable, and viable instruction to provide continuous sidewalk through the junction.",
+        "vru_coverage": "Pedestrian impacts are explicitly considered for the sidewalk continuity issue."
+      }
+    }
+  ],
+  "generated_at": "2026-11-02T09:36:04.112Z"
+}

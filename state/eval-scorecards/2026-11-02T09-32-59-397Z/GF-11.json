@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-11-02T09-32-59-397Z",
+  "fixture_id": "GF-11",
+  "fixture_name": "A9 Ballinluig SB signage/VRS-adjacent visibility — real UK Stage 1&2 RSA (Transport Scotland OGL release)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "unlinked",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "beam-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/inference/go/openai/v1",
+    "identity": "beam",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 9.5,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF11-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Stage 1 junction off-slip curve with reduced forward visibility and pedestrian passage is a substantive safety concern.",
+        "evidence_grounding": "EV-UK-025 verbatim quote supports reduced visibility, pedestrian passage, and extended vegetation clearance.",
+        "jurisdiction_correctness": "Presented as a safety concern appropriate to DMRB Stage 1, not a compliance question.",
+        "recommendation_quality": "Recommendation specifies delivering, evidencing, and verifying both visibility and pedestrian passage.",
+        "vru_coverage": "Pedestrians are explicitly identified and their passage is central to the recommendation."
+      }
+    },
+    {
+      "finding_id": "JB-GF11-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Obscured view to slip-road terminus directly reduces slowing awareness at a speed transition, a substantive safety concern.",
+        "evidence_grounding": "EV-UK-025 provides a verbatim quote supporting the pivotal view-and-awareness claim.",
+        "jurisdiction_correctness": "The finding remains a safety concern and does not conflate compliance questions with safety issues.",
+        "recommendation_quality": "The recommendation specifies a post-clearance drive-through at design speed and recording of the check.",
+        "vru_coverage": "Vulnerable road users are explicitly considered and judged not exposed, so non-applicability is acknowledged."
+      }
+    }
+  ],
+  "generated_at": "2026-11-02T09:34:50.307Z"
+}
