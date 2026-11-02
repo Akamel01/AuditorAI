@@ -45,6 +45,9 @@ Thumbs.db
 # Local scratch (never project state)
 tmp/
 
+# Backup envelope output (ticket #56): never commit an encrypted dump
+backup-out/
+
 # Candidate outcome log (ADR-0009): raw auditor work products never enter git.
 state/candidate-outcomes/
 

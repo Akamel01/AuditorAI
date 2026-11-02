@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "ticket": 56,
+  "modules": [
+    {
+      "id": "M1",
+      "title": "Backup pipeline: daily age-encrypted pg_dump, fail-closed, 30-day artifact",
+      "touches": [
+        ".github/workflows/backup.yml",
+        "scripts/backup/backup.sh",
+        ".env.example"
+      ],
+      "blocked_by": [],
+      "acceptance": [
+        "backup.yml parses as YAML with schedule cron '17 3 * * *' and workflow_dispatch, permissions contents: read, concurrency group db-backup with cancel-in-progress false, job timeout 60, env PG_IMAGE postgres:17.",
+        "backup.yml reads secrets.BACKUP_POSTGRES_URL and vars.BACKUP_AGE_RECIPIENT only; uploads exactly one backup-out/*.tar.age with actions/upload-artifact@v4, retention-days 30, if-no-files-found error, compression-level 0, after the backup step and guarded by if: success().",
+        ".env.example contains an empty CI-only BACKUP_POSTGRES_URL and BACKUP_AGE_RECIPIENT block after POSTGRES_PRISMA_URL with comments forbidding TENANT_POSTGRES_URL and stating the private key is operator-held.",
+        "backup.sh fails closed with ::error:: and exit 1 when BACKUP_POSTGRES_URL or BACKUP_AGE_RECIPIENT is unset or the recipient is not age1*, before any Docker or DB call.",
+        "backup.sh runs preflight SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname = current_user (must print t) and fails when server major > 17.",
+        "backup.sh dumps with pg_dump --format=custom --schema=public --no-owner --no-privileges --compress=9 --no-password via docker run postgres:17, generates the ten-table counts query, writes manifest.json {format:1, created_at, run_id, dump_file, dump_sha256, pg_dump_version, server_version, schema:'public', tables:{10 names}}, tars dump.pgcustom + manifest.json and encrypts with age -r, then removes plaintext.",
+        "Artifact name is auditorai-backup-<YYYY-MM-DD>-<run_id> and the file is auditorai-backup-<YYYY-MM-DD>-<run_id>.tar.age; step summary prints artifact name, bytes, dump seconds, ciphertext SHA-256, table_count=10, and never row counts or the URL.",
+        "bash -n scripts/backup/backup.sh, npm run lint, npm run typecheck pass."
+      ],
+      "evidence": [
+        "node -e 'import fs from \"node:fs\"; import yaml from \"yaml\"; yaml.parse(fs.readFileSync(\".github/workflows/backup.yml\",\"utf8\")); console.log(\"yaml-ok\")'",
+        "bash -n scripts/backup/backup.sh",
+        "env -u BACKUP_POSTGRES_URL -u BACKUP_AGE_RECIPIENT bash scripts/backup/backup.sh  # expect exit 1 before Docker",
+        "grep -n 'retention-days: 30\\|if-no-files-found: error\\|17 3 \\* \\* \\*\\|BACKUP_POSTGRES_URL\\|BACKUP_AGE_RECIPIENT' .github/workflows/backup.yml .env.example",
+        "grep -n 'pg_dump --format=custom\\|jsonb_object_agg\\|age -r\\|::error::\\|GITHUB_STEP_SUMMARY' scripts/backup/backup.sh",
+        "npm run lint && npm run typecheck"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Restore path: shared restore.sh (full restore then 0003-0005) and operator runbook",
+      "touches": [
+        "scripts/backup/restore.sh",
+        "docs/runbooks/restore.md"
+      ],
+      "blocked_by": [
+        "M1"
+      ],
+      "acceptance": [
+        "restore.sh fails closed with ::error:: and exit 1 when RESTORE_DATABASE_URL, BACKUP_AGE_IDENTITY, or ENVELOPE is missing or unreadable, before any DB call.",
+        "restore.sh preflights that public is empty (pg_class/pg_namespace count for relkind r,p,v,m,S,f equals 0) and that current_user has rolsuper OR rolbypassrls; otherwise it fails with an actionable message.",
+        "restore.sh decrypts with age -d -i, extracts exactly dump.pgcustom and manifest.json, asserts manifest format 1 / schema public / dump_file dump.pgcustom, and verifies dump_sha256 with sha256sum -c.",
+        "restore.sh performs a full pg_restore --schema=public --no-owner --no-privileges --exit-on-error --no-password into the empty DB (never --data-only; --schema=public suppresses the CREATE SCHEMA public TOC entry), then re-applies supabase/migrations/0003_roles.sql, 0004_seats_invites.sql, 0005_audit_trail.sql with psql -v ON_ERROR_STOP=1, then ANALYZE.",
+        "restore.sh compares the ten-table counts object to manifest.tables with jq -e and prints counts_match=true without printing row counts; runs the RLS catalog assertion (10/10 relrowsecurity AND relforcerowsecurity), the role invariant (auditorai_app exists, not superuser, not bypassrls, owns zero objects), and the read-only cross-tenant projects probe under SET LOCAL ROLE auditorai_app; prints rls_catalog=10/10, rls_role=pass, rls_probe=pass (or skipped only when fewer than two workspaces).",
+        "restore.sh prints restore_seconds measured from decrypt start through verification and appends it to GITHUB_OUTPUT/GITHUB_STEP_SUMMARY when set.",
+        "docs/runbooks/restore.md exists and documents, in order: public-only scope and excluded auth/storage; RPO 24 h and RTO 4 h; PITR not implemented with Supabase Pro + PITR add-on as the paid upgrade path; operator inputs (offline age key, scratch Postgres 17, owner BACKUP_POSTGRES_URL, gh auth); gh run list/download; age decrypt + tar + sha256 check; create empty DB; run restore.sh or the manual pg_restore + 0003-0005 equivalent; counts + RLS verification; set auditorai_app password out of band and repoint TENANT_POSTGRES_URL; failure handling; operator live drill against a scratch target, never production; key custody/rotation.",
+        "docs/runbooks/restore.md uses placeholders only: no real host, connection string, age key, or password; no supabase.co or pooler.supabase.com endpoint.",
+        "bash -n scripts/backup/restore.sh, npm run lint, npm run typecheck pass."
+      ],
+      "evidence": [
+        "bash -n scripts/backup/restore.sh",
+        "env -u RESTORE_DATABASE_URL -u BACKUP_AGE_IDENTITY -u ENVELOPE bash scripts/backup/restore.sh  # expect exit 1 before Docker",
+        "grep -n 'pg_restore --schema=public --no-owner --no-privileges --exit-on-error\\|0003_roles\\|0004_seats_invites\\|0005_audit_trail\\|rls_catalog\\|rls_role\\|rls_probe\\|restore_seconds' scripts/backup/restore.sh",
+        "grep -n 'RPO 24\\|RTO 4\\|PITR\\|Supabase Pro\\|gh run download\\|age -d\\|pg_restore\\|empty\\|auditorai_app' docs/runbooks/restore.md",
+        "grep -RIn 'supabase.co\\|pooler.supabase.com\\|postgres://\\|postgresql://' docs/runbooks scripts/backup  # only placeholders/localhost examples",
+        "npm run lint && npm run typecheck"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Restore drill on disposable postgres:17 and static vitest contract",
+      "touches": [
+        ".github/workflows/restore-drill.yml",
+        "scripts/backup/drill-seed.sql",
+        "tests/contract/backup-restore.test.ts"
+      ],
+      "blocked_by": [
+        "M1",
+        "M2"
+      ],
+      "acceptance": [
+        "drill-seed.sql seeds two fixed workspaces (11111111-1111-4111-8111-111111111111 and 22222222-2222-4222-8222-222222222222) and exactly two rows in each of the ten tenant tables, with valid 0004 role/status/email columns and valid 0005 64-hex hash fields and seq=1.",
+        "restore-drill.yml parses with triggers pull_request, push branches [main], workflow_dispatch; permissions contents: read; concurrency restore-drill-${{ github.ref }} with cancel-in-progress true; job timeout 250 (exceeds the 14400 s gate); postgres:17 service with pg_isready health check; env PG_IMAGE postgres:17.",
+        "restore-drill.yml applies migrations 0001, 0002, 0003, 0004, 0005 in that order to the drill DB, applies scripts/backup/drill-seed.sql, generates an ephemeral age keypair, calls scripts/backup/backup.sh with the drill URL and generated recipient, uploads the artifact with retention 1, creates drill_restore, downloads the artifact, calls scripts/backup/restore.sh, asserts counts_match=true and rls_probe=pass, and never references a repository secret or variable.",
+        "restore-drill.yml starts the timer before actions/download-artifact, ends it after restore.sh verification, writes restore_drill_seconds to GITHUB_STEP_SUMMARY, and fails the step when the value is >= 14400.",
+        "tests/contract/backup-restore.test.ts is static (no Postgres) and asserts: backup cron/dispatch/permissions/concurrency/timeout/PG_IMAGE/upload retention 30/if-no-files-found error/upload after backup/secret and variable names only; backup.sh flags, counts marker, age -r before upload, fail-closed, summary outputs; drill triggers/permissions/concurrency/timeout/service image/PG_IMAGE/both script paths/seed path/age-keygen/migration order/14400/GITHUB_STEP_SUMMARY/no secrets; exactly the ten tenant table names parsed from 0001 + 0005; .env.example names empty with CI-only comment; runbook RPO 24/RTO 4/PITR/Supabase Pro/gh run download/age -d/pg_restore/0003/0004/0005/auditorai_app/empty and placeholder-only endpoints; no TENANT_POSTGRES_URL in scripts; no supabase.co or pooler.supabase.com in workflows; seed SQL references all ten tables and both UUIDs.",
+        "npx vitest run tests/contract/backup-restore.test.ts, npm run test, npm run lint, npm run typecheck, and the pre-commit YAML parse pass.",
+        "CI restore-drill run is green and its step summary records restore_drill_seconds < 14400 with counts_match=true and rls_probe=pass."
+      ],
+      "evidence": [
+        "node -e 'import fs from \"node:fs\"; import yaml from \"yaml\"; for (const f of [\".github/workflows/backup.yml\",\".github/workflows/restore-drill.yml\"]) yaml.parse(fs.readFileSync(f,\"utf8\")); console.log(\"yaml-ok\")'",
+        "npx vitest run tests/contract/backup-restore.test.ts",
+        "npm run test && npm run lint && npm run typecheck",
+        "grep -n '14400\\|GITHUB_STEP_SUMMARY\\|scripts/backup/backup.sh\\|scripts/backup/restore.sh\\|drill-seed.sql\\|age-keygen\\|0001\\|0005' .github/workflows/restore-drill.yml",
+        "grep -n '11111111-1111-4111-8111-111111111111\\|22222222-2222-4222-8222-222222222222\\|workspaces\\|workspace_members\\|workspace_credentials\\|projects\\|audits\\|audit_issues\\|attachments\\|artifacts\\|artifact_summaries\\|audit_trail_entries' scripts/backup/drill-seed.sql",
+        "gh run list --repo Akamel01/AuditorAI --workflow restore-drill.yml --limit 1 && gh run watch <run-id> --repo Akamel01/AuditorAI"
+      ]
+    }
+  ]
+}

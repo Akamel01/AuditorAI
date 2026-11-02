@@ -1,0 +1,51 @@
+name: backup
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PG_IMAGE: postgres:17
+      BACKUP_POSTGRES_URL: ${{ secrets.BACKUP_POSTGRES_URL }}
+      BACKUP_AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check backup configuration
+        id: config
+        run: |
+          if [[ -z "${BACKUP_POSTGRES_URL:-}" || -z "${BACKUP_AGE_RECIPIENT:-}" ]]; then
+            echo "::notice::backup not configured"
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install age
+        if: steps.config.outputs.configured == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+      - name: Backup
+        id: backup
+        if: steps.config.outputs.configured == 'true'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: bash scripts/backup/backup.sh
+      - name: Upload artifact
+        if: steps.config.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.backup.outputs.artifact_name }}
+          path: backup-out/*.tar.age
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 0
