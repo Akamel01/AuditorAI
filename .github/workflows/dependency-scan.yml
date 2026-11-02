@@ -82,7 +82,7 @@ jobs:
 
       - name: upload audit and SBOM
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dependency-scan-${{ github.run_id }}
           path: |
