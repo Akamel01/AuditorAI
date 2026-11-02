@@ -1,0 +1,32 @@
+# Plan critique — ticket #56 (blocking design review)
+
+Verdict: **CHANGES_REQUIRED**. Blocking: **2** (B1, B2). Notes: 4.
+
+## Blocking
+
+**B1 (C1, C2) — the full restore cannot reach 0003–0005: `CREATE SCHEMA public` collides with the existing `public` schema.**
+- `plan-t56.md:130-131` dumps with `--schema=public`; `plan-t56.md:174-175` restores with `--exit-on-error` into a database that already has `public`.
+- PostgreSQL 17 takes the `public` special case only when `schema_include_oids` is empty; with `-n public` the earlier branch wins (REL_17_STABLE `src/bin/pg_dump/pg_dump.c:1797-1801`), `nsinfo->create` stays true, and `dumpNamespace` emits `CREATE SCHEMA public` (`pg_dump.c:10722`). Every `createdb`/`CREATE DATABASE` (and every Supabase project) already has `public`; `pg_restore` then raises `schema "public" already exists` and `--exit-on-error` aborts before any table. PostgreSQL bug #16514 reports exactly this for `pg_dump --schema public` (`CREATE SCHEMA public;` / `ERROR: schema "public" already exists`).
+- The empty-`public` preflight is **not sound**: `plan-t56.md:159-163` counts only `pg_class` relkinds. A standard empty `public` (or a `public` holding only functions/types) returns `0`, so it passes on the exact state that makes the restore fail.
+- C1, assuming the dump is loaded: `0003`, `0004`, `0005` do re-apply cleanly and no object is missing. `0003_roles.sql:18-20` recreates the role and `:39-55` the usage/table/function grants; `0004_seats_invites.sql:14-25` redoes seats and column grants, `:105-123` recreates the membership policies, `:156-158` revokes/regrants member columns; `0005_audit_trail.sql:8-53` is a no-op `create table if not exists` plus RLS/policy/grant re-assertion. The blocker is the schema-create TOC entry, not the migrations.
+- Fix: add `--schema=public` to the `pg_restore` invocation (it filters standalone TOC entries with no namespace, including `SCHEMA public` — `src/bin/pg_dump/pg_backup_archiver.c:3095-3101`), or `DROP SCHEMA public CASCADE` before restore; and make the preflight match the chosen method. Without this the drill fails on its first restore and the runbook cannot work.
+
+**B2 (C4) — the drill's seed and `CREATE DATABASE` are not Dockerized and carry no connection URL.**
+- `plan-t56.md:278` literally runs `psql -f scripts/backup/drill-seed.sql` and `CREATE DATABASE drill_restore`; `plan-t56.md:49` says "never the runner's client 16." No `PGHOST`/`PGUSER`/`PGDATABASE` is set; only `DRILL_URL`/`ADMIN_URL` exist (`plan-t56.md:277`). A literal implementation connects to the runner's default socket (or a missing client) and fails; a host `psql` 16 also violates F3.
+- Fix: `docker run --network host postgres:17 psql "$DRILL_URL" -f /seed.sql` (mount the seed read-only) and `... psql "$ADMIN_URL" -c 'create database drill_restore'`.
+
+## Notes
+- **C3 — secret paths: acceptable, with two caveats.** `plan-t56.md:125-134` expands the URL inside `sh -c`; host argv only has `-e BACKUP_POSTGRES_URL`, and `GITHUB_OUTPUT`/summary/artifact rules (`plan-t56.md:142-144`) exclude counts/URL. Fail-closed is correct (empty URL/recipient exits before Docker; role preflight catches an app-role URL). Caveats: the URL is still in the container environment and in the container's `pg_dump`/`psql` argv (visible to `docker inspect`/`docker top`, not logs), and a malformed URL error may echo the connection string (Actions masks the exact secret). `RUN_ID` is not part of the fail-closed check; harmless, but the contract calls it required.
+- **C4 — other runtime steps look sound.** `--network host` is supported on Linux GitHub runners; `mkdir`/`mktemp` + `--user $(id -u):$(id -g)` keeps mount ownership; `age` is packaged in Ubuntu; `jq` and `sha256sum` are preinstalled; the `postgres:17` service health check and port mapping work with host networking. B2 is the only step that breaks as written.
+- **C5 — seed/probe/counts are valid; timer and error handling need alignment.** The seed rows satisfy `0004` (`role='owner'`, `status='active'`, email) and `0005` (`seq=1`, array/object JSON, 64-hex hashes) and the FK/PK constraints; the probe is read-only (`BEGIN; set_config; SET LOCAL ROLE auditorai_app; SELECT; ROLLBACK`) and its expectation (A=1, B=0) holds for the seeded `projects`; `jsonb_object_agg`/`ORDER BY` matches the manifest keys, so the drill comparison is exact. But `plan-t56.md:275` (30-minute job timeout) makes `plan-t56.md:279` (`>= 14400` gate) unreachable — a completed drill always records `< 1800` s; align the timeout (e.g. `250` min) or the gate, or A5/RTO is not behaviorally evidenced. Also, step 8 (`plan-t56.md:184-186`) does not require `psql -v ON_ERROR_STOP=1`: a raised `DO` block otherwise exits 0, so a failed RLS assertion can false-pass. Add it to every catalog/role/probe invocation.
+- **C6 — no `/home/oc`, no real DB/secret/account.** `grep -RIn "/home/oc"` over the plan/work-order/decision is empty; the only URL is the disposable `postgresql://postgres:drill@localhost:5432/drill` (`plan-t56.md:277`); `Akamel01/AuditorAI` is the repo, not a credential. Scope deviation: the re-scope says "a seeded schema with migrations 0001–0004" (`gh issue view 56 --comments`), while `plan-t56.md:52` uses `0001→0005`; OD-4 documents this (0005 is current head and is seeded, not modified), so it is a justified note, not creep. No other scope creep found.
+
+## A1-A8 (one line each)
+- **A1** — M1, `plan-t56.md:255-265` (cron `17 3 * * *`, dispatch, `secrets.BACKUP_POSTGRES_URL`) + `plan-t56.md:301-310` (`.env.example` names) + `plan-t56.md:366-367` (runbook fetch): covered.
+- **A2** — M1, `plan-t56.md:130-131` (dump) → `plan-t56.md:139-141` (`age -r`) → upload `plan-t56.md:264`, with `BACKUP_AGE_RECIPIENT` documented: covered.
+- **A3** — M1, `plan-t56.md:264` (`actions/upload-artifact@v4`, `retention-days: 30`, `if-no-files-found: error`, upload after backup): covered.
+- **A4** — M2, `plan-t56.md:358-387` runbook sections (fetch, decrypt, empty DB, restore, counts/RLS, failure handling): covered.
+- **A5** — M3, `plan-t56.md:430-453` seed/drill + `plan-t56.md:278-279` timer/summary; blocked by B1/B2 and note C5.
+- **A6** — M1/M2/M3, `plan-t56.md:554`; the only endpoint is the drill's localhost URL: covered.
+- **A7** — M2, `plan-t56.md:385` PITR not implemented; Supabase Pro + PITR add-on documented: covered.
+- **A8** — M1/M2, `plan-t56.md:361-362` RPO 24 h / RTO 4 h + `plan-t56.md:593` PG-major note: covered.

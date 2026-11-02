@@ -1,0 +1,87 @@
+name: restore-drill
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: restore-drill-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 250
+    env:
+      PG_IMAGE: postgres:17
+      DRILL_URL: postgresql://postgres:drill@localhost:5432/drill
+      RESTORE_URL: postgresql://postgres:drill@localhost:5432/drill_restore
+      ADMIN_URL: postgresql://postgres:drill@localhost:5432/postgres
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: drill
+          POSTGRES_DB: drill
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install age
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+      - name: Apply migrations
+        run: |
+          set -euo pipefail
+          for f in 0001_tenant_schema 0002_rls_policies 0003_roles 0004_seats_invites 0005_audit_trail; do
+            docker run --rm --network host -e DRILL_URL -v "$PWD/supabase/migrations:/migrations:ro" "$PG_IMAGE" sh -c "psql \"\$DRILL_URL\" -v ON_ERROR_STOP=1 -f /migrations/${f}.sql"
+          done
+      - name: Seed
+        run: docker run --rm --network host -e DRILL_URL -v "$PWD/scripts/backup:/seed:ro" "$PG_IMAGE" sh -c 'psql "$DRILL_URL" -v ON_ERROR_STOP=1 -f /seed/drill-seed.sql'
+      - name: Ephemeral key
+        run: |
+          age-keygen -o "$RUNNER_TEMP/age-key.txt"
+          age-keygen -y "$RUNNER_TEMP/age-key.txt" > "$RUNNER_TEMP/age-recipient.txt"
+      - name: Backup
+        id: backup
+        run: |
+          BACKUP_POSTGRES_URL="$DRILL_URL" BACKUP_AGE_RECIPIENT="$(cat "$RUNNER_TEMP/age-recipient.txt")" RUN_ID="${{ github.run_id }}" OUT_DIR=backup-out bash scripts/backup/backup.sh
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-drill-${{ github.run_id }}
+          path: backup-out/*.tar.age
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
+      - name: Create restore DB
+        run: docker run --rm --network host -e ADMIN_URL "$PG_IMAGE" sh -c 'psql "$ADMIN_URL" -v ON_ERROR_STOP=1 -c "create database drill_restore"'
+      - name: Start timer
+        run: echo "DRILL_START=$(date +%s)" >> "$GITHUB_ENV"
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: restore-drill-${{ github.run_id }}
+          path: restore-work
+      - name: Timed restore
+        run: |
+          set -euo pipefail
+          ENVELOPE="$(ls restore-work/*.tar.age | head -1)"
+          test -f "$ENVELOPE"
+          RESTORE_DATABASE_URL="$RESTORE_URL" BACKUP_AGE_IDENTITY="$RUNNER_TEMP/age-key.txt" ENVELOPE="$ENVELOPE" bash scripts/backup/restore.sh | tee restore-output.txt
+          END=$(date +%s)
+          seconds=$((END-DRILL_START))
+          echo "restore_drill_seconds=$seconds" >> "$GITHUB_STEP_SUMMARY"
+          grep -q '^counts_match=true$' restore-output.txt
+          grep -q '^rls_probe=pass$' restore-output.txt
+          if [ "$seconds" -ge 14400 ]; then echo "::error::restore exceeded RTO 4h"; exit 1; fi
