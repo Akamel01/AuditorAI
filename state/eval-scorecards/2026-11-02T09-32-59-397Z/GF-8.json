@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-11-02T09-32-59-397Z",
+  "fixture_id": "GF-8",
+  "fixture_name": "Six HAWK pedestrian crossings — US final design (FHWA case study, PD)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "unlinked",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "beam-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/inference/go/openai/v1",
+    "identity": "beam",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF8-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Nighttime HAWK conspicuity and pedestrian exposure is a substantive safety concern.",
+        "evidence_grounding": "The cited quote directly supports driver confusion from competing night-time background elements.",
+        "jurisdiction_correctness": "The finding is correctly framed as a safety concern under US FHWA final-design audit context.",
+        "recommendation_quality": "Installing a reflective border around the HAWK signal is specific and actionable.",
+        "vru_coverage": "Pedestrians are identified as the exposed vulnerable road users and paired with the beacon conspicuity risk."
+      }
+    },
+    {
+      "finding_id": "JB-GF8-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Pedestrian clearance timing for elderly pedestrians at HAWK crossings is a substantive VRU safety issue.",
+        "evidence_grounding": "The cited verbatim quote directly supports the concern that clearance may be short for elderly pedestrians.",
+        "jurisdiction_correctness": "The finding is framed as a safety concern rather than a compliance question under FHWA final-design RSA guidance.",
+        "recommendation_quality": "It gives a specific, actionable mitigation: reprogramme clearance intervals at all six HAWK crossings using a reduced assumed walking speed.",
+        "vru_coverage": "Elderly pedestrians are explicitly identified and addressed."
+      }
+    }
+  ],
+  "generated_at": "2026-11-02T09:33:57.253Z"
+}

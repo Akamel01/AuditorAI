@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-11-02T09-32-59-397Z",
+  "fixture_id": "GF-6",
+  "fixture_name": "M5 Junction 10 Improvements — UK Stage 1 (real scheme, OGL)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "unlinked",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "beam-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/inference/go/openai/v1",
+    "identity": "beam",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 0.5,
+  "passes_corpus_mark": false,
+  "mean_score": 9,
+  "regression_vs_prior": {
+    "regression": true,
+    "delta": -0.5
+  },
+  "tier2_review_required": true,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF6-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "The finding identifies a genuine VRU refuge-width hazard at a Stage 1 junction location.",
+        "evidence_grounding": "A verbatim quote directly supports the pivotal refuge-width/cyclist-clipping safety claim.",
+        "jurisdiction_correctness": "It is correctly framed as a safety concern rather than a compliance question under the Stage 1 RSA context.",
+        "recommendation_quality": "It gives a specific, actionable refuge sizing requirement for named vulnerable users.",
+        "vru_coverage": "Pedestrians, cyclists, and pushchair users are explicitly considered."
+      }
+    },
+    {
+      "finding_id": "JB-GF6-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 1,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 1
+      },
+      "justifications": {
+        "substance": "Large-vehicle swept-path validity at a signalised junction is a substantive compliance and safety verification issue.",
+        "evidence_grounding": "The cited quote supports prior swept-path analysis and vehicle types but not the stop-line repositioning validity claim.",
+        "jurisdiction_correctness": "The finding stays a compliance question and does not conflate verification with an asserted safety defect.",
+        "recommendation_quality": "Re-running swept-path analysis for the adjusted stop-line positions is specific, actionable and viable.",
+        "vru_coverage": "Vulnerable road users are acknowledged, but the question is scoped to large-vehicle swept paths, so score 1."
+      }
+    }
+  ],
+  "generated_at": "2026-11-02T09:33:20.133Z"
+}
