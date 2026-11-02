@@ -41,7 +41,7 @@ lib/
    persistence.ts               DataStore{put,get,getMany,keys,delByPrefix} seam +
                                 Memory/KvRest adapters + Repository — the Postgres tenant store
                                 (src/lib/db/) is the second implementation of this seam; the KV
-                                key scheme stays the sole owner of KV namespacing (static
+                                key scheme has one home in persistence/keys.ts (its own
                                 key/prefix helpers; draft audits, attachments, artifact trails,
                                 immutable issue revisions per ADR-0004); StoreUnavailableError;
                                 resettable singleton for tests
@@ -79,8 +79,8 @@ scripts/lib/                  ← frontmatter.mjs + paths.mjs: shared vault pars
 Depth check (deletion test): delete `src/domain/pipeline/` and every guarantee — stage
 eligibility, input states, rule shaping, wording discipline, artifact trail, deterministic
 reports — vanishes for all five jurisdictions at once. `engine.ts` alone is now an ~20-line
-shell delegating to `pipeline.runAll`; the depth moved inward. Delete the `Repository` key
-helpers and every store address in the app breaks → the key scheme has exactly one home.
+shell delegating to `pipeline.runAll`; the depth moved inward. Delete `persistence/keys.ts`
+and every store address in the app breaks → the key scheme has exactly one home.
 Delete `api.ts` helpers and complexity merely moves into every route → they are thin by design.
 
 ## 3. Audit execution flow

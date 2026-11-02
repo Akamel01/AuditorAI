@@ -1,7 +1,7 @@
 // Persistence seam (ADR-0001): callers depend on this interface only.
 // Adapters: in-memory (tests/dev), Upstash/Vercel-KV REST (production free tier).
-// Swapping stores = env change, never code change. Repository owns the physical
-// key scheme exclusively; no other module assembles or parses storage keys.
+// Swapping stores = env change, never code change. Physical key names live in
+// persistence/keys.ts.
 import type { Attachment, AuditIssue, AuditResult, Project } from "@/domain/types";
 import type { ActorId } from "@/domain/actor";
 import type { AuditArtifact } from "@/domain/pipeline/types";
@@ -17,7 +17,6 @@ import {
   workspaceHash,
 } from "./persistence/store";
 import type { DataStore } from "./persistence/store";
-import * as Keys from "./persistence/keys";
 import { ProjectStore, UnknownAttachmentError } from "./persistence/project-store";
 import {
   ArtifactTrail,
@@ -43,10 +42,9 @@ export { MAX_ARTIFACT_BYTES, ArtifactTooLargeError };
 export type { ArtifactSummary };
 export { ArtifactTrail, IssueRevisionConflictError, IssueLedger };
 
-/** Workspace-scoped repository over the store seam. Sole owner of the physical
- *  key scheme (ADR-0001): everything else addresses records through these
- *  static helpers or through repository methods. Thin facade over ProjectStore,
- *  ArtifactTrail and IssueLedger sharing one DataStore. */
+/** Workspace-scoped repository over the store seam. Callers address records
+ *  through repository methods; physical keys live in persistence/keys.ts. Thin
+ *  facade over ProjectStore, ArtifactTrail and IssueLedger sharing one DataStore. */
 export class Repository {
   private projectStore: ProjectStore;
   private artifactTrail: ArtifactTrail;
@@ -58,48 +56,6 @@ export class Repository {
     this.artifactTrail = new ArtifactTrail(store);
     this.issueLedger = new IssueLedger(store);
     this.trailStore = new TrailStore(store);
-  }
-
-  // ---- Key scheme ---------------------------------------------------------
-
-  static projectKey(ws: string, projectId: string): string {
-    return Keys.projectKey(ws, projectId);
-  }
-  static projectsPrefix(ws: string): string {
-    return Keys.projectsPrefix(ws);
-  }
-  static auditKey(ws: string, projectId: string, auditId: string): string {
-    return Keys.auditKey(ws, projectId, auditId);
-  }
-  static auditsPrefix(ws: string, projectId: string): string {
-    return Keys.auditsPrefix(ws, projectId);
-  }
-  static attachmentKey(ws: string, projectId: string, attachmentId: string): string {
-    return Keys.attachmentKey(ws, projectId, attachmentId);
-  }
-  static attachmentsPrefix(ws: string, projectId: string): string {
-    return Keys.attachmentsPrefix(ws, projectId);
-  }
-  static artifactKey(
-    ws: string,
-    projectId: string,
-    auditId: string,
-    nodeId: string,
-    seq: number,
-  ): string {
-    return Keys.artifactKey(ws, projectId, auditId, nodeId, seq);
-  }
-  static artifactTrailPrefix(ws: string, projectId: string, auditId: string): string {
-    return Keys.artifactTrailPrefix(ws, projectId, auditId);
-  }
-  static artifactSummaryKey(ws: string, projectId: string, auditId: string): string {
-    return Keys.artifactSummaryKey(ws, projectId, auditId);
-  }
-  static issueKey(ws: string, projectId: string, auditId: string, rev: number): string {
-    return Keys.issueKey(ws, projectId, auditId, rev);
-  }
-  static issuesPrefix(ws: string, projectId: string, auditId: string): string {
-    return Keys.issuesPrefix(ws, projectId, auditId);
   }
 
   private trailActorFor(ws: string, actor?: ActorId): ActorId {

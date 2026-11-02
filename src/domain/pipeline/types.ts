@@ -130,7 +130,7 @@ export interface ReportBundleSlice {
 }
 
 /** Stable audit coordinates, never physical storage keys: nodes must not know
- *  the store's key layout (ADR-0001; Repository owns that exclusively). */
+ *  the store's key layout (ADR-0001; physical names live in persistence/keys.ts). */
 export interface PersistenceRefSlice {
   audit_id: string;
   project_id: string;
