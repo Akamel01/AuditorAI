@@ -25,14 +25,14 @@ describe("responsesComplete", () => {
   it("posts to /responses with session header, maps max effort to high, returns text", async () => {
     const fetchImpl = okFetch(msgResp("VERDICT"));
     const out = await responsesComplete(
-      { endpoint: EP, model: "muse-spark-1.3-contributor-free", effort: "max", fetchImpl },
+      { endpoint: EP, model: "responses-model", effort: "max", fetchImpl },
       MSGS,
     );
     expect(out).toBe("VERDICT");
     const [url, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("https://opencode.ai/zen/v1/responses");
     const body = JSON.parse(init.body as string);
-    expect(body.model).toBe("muse-spark-1.3-contributor-free");
+    expect(body.model).toBe("responses-model");
     expect(body.reasoning).toEqual({ effort: "high" });
     expect(body.stream).toBe(false);
     expect((init.headers as Record<string, string>)["x-opencode-session"]).toBe("auditorai-eval-judge");

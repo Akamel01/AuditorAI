@@ -26,6 +26,7 @@ jobs:
       - name: run eval harness
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
         run: npx tsx scripts/run-eval.ts ${{ inputs.mode == 'dry-run' && '--dry-run' || '' }}
       - name: upload scorecards
         uses: actions/upload-artifact@v7

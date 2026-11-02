@@ -32,6 +32,7 @@ export interface ChatCallConfig {
   effort: ReasoningEffort;
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
+  sessionId?: string;
 }
 
 export const DEFAULT_TIMEOUT_MS = 60_000;
@@ -116,6 +117,7 @@ async function completeOnce(
       headers: {
         Authorization: `Bearer ${cfg.endpoint.apiKey}`,
         "Content-Type": "application/json",
+        ...(cfg.sessionId ? { "x-opencode-session": cfg.sessionId } : {}),
       },
       body: JSON.stringify({
         model: cfg.model,

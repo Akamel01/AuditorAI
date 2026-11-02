@@ -103,27 +103,48 @@ describe("judge transport via makeZenJudgeComplete", () => {
   it("posts the rubric request to the zen gateway and returns message content", async () => {
     const calls: string[] = [];
     let capturedBody: Record<string, unknown> | null = null;
+    let capturedHeaders: Record<string, string> | null = null;
     const fetchImpl = (async (url: string | URL | Request, init?: RequestInit) => {
       calls.push(String(url));
       capturedBody = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
+      capturedHeaders = (init?.headers ?? {}) as Record<string, string>;
       return new Response(JSON.stringify({ choices: [{ message: { content: "VERDICT" } }] }), {
         status: 200,
       });
     }) as typeof fetch;
 
     const complete = makeZenJudgeComplete({
-      baseUrl: "https://opencode.ai/zen/v1",
+      baseUrl: "https://opencode.ai/inference/go/openai/v1",
       apiKey: API_KEY,
-      model: "x-preview-f-free",
+      model: "beam-free",
       effort: "max",
       fetchImpl,
+      sessionId: "sess-1",
     });
     const out = await complete([{ role: "system", content: "sys" }]);
 
     expect(out).toBe("VERDICT");
-    expect(calls).toEqual(["https://opencode.ai/zen/v1/chat/completions"]);
-    expect(capturedBody!.model).toBe("x-preview-f-free");
+    expect(calls).toEqual(["https://opencode.ai/inference/go/openai/v1/chat/completions"]);
+    expect(capturedBody!.model).toBe("beam-free");
     expect(capturedBody!.reasoning_effort).toBe("max");
+    expect(capturedHeaders!["x-opencode-session"]).toBe("sess-1");
+  });
+
+  it("omits x-opencode-session when no sessionId is provided", async () => {
+    let capturedHeaders: Record<string, string> | null = null;
+    const fetchImpl = (async (_url: string | URL | Request, init?: RequestInit) => {
+      capturedHeaders = (init?.headers ?? {}) as Record<string, string>;
+      return new Response(JSON.stringify({ choices: [{ message: { content: "VERDICT" } }] }), { status: 200 });
+    }) as typeof fetch;
+    const complete = makeZenJudgeComplete({
+      baseUrl: "https://opencode.ai/inference/go/openai/v1",
+      apiKey: API_KEY,
+      model: "beam-free",
+      effort: "max",
+      fetchImpl,
+    });
+    await complete([{ role: "system", content: "sys" }]);
+    expect(capturedHeaders!["x-opencode-session"]).toBeUndefined();
   });
 
   it("propagates non-ok gateway responses as transport errors", async () => {
@@ -131,7 +152,7 @@ describe("judge transport via makeZenJudgeComplete", () => {
     const complete = makeZenJudgeComplete({
       baseUrl: "https://opencode.ai/zen/v1",
       apiKey: API_KEY,
-      model: "x-preview-f-free",
+      model: "beam-free",
       effort: "max",
       fetchImpl,
     });
@@ -143,7 +164,7 @@ describe("judge transport via makeZenJudgeComplete", () => {
     const complete = makeZenJudgeComplete({
       baseUrl: "https://opencode.ai/zen/v1",
       apiKey: API_KEY,
-      model: "x-preview-f-free",
+      model: "beam-free",
       effort: "max",
       fetchImpl,
     });
@@ -244,7 +265,7 @@ describe("buildScorecard byte-compat shape", () => {
         tier: "corpus",
         roleSection: "unlinked",
         subject: "engine-findings",
-        judge: { complete: async () => "", model: "x-preview-f-free", effort: "max", gateway: "gw" },
+        judge: { complete: async () => "", model: "beam-free", effort: "max", gateway: "gw" },
         priorMean: 7,
         generatedAt: "2026-08-25T00:00:00.000Z",
       },
@@ -525,7 +546,7 @@ describe("ADR-0007 refusal path", () => {
         runId: "2026-08-25T00-00-00-000Z",
         flavor: "corpus",
         tier: "release-test",
-        judge: { complete: null, model: "x-preview-f-free", effort: "max" },
+        judge: { complete: null, model: "beam-free", effort: "max" },
         auditRunner: () => fakeResult([]),
         sinks,
         corpus: { catalogedCount: 99, rolesFor: () => undefined },
@@ -554,7 +575,7 @@ describe("runEvalSuite console + validation-state contract", () => {
         runId: "2026-08-25T00-00-00-000Z",
         flavor: "dry-run",
         tier: "corpus",
-        judge: { complete: null, model: "x-preview-f-free", effort: "max" },
+        judge: { complete: null, model: "beam-free", effort: "max" },
         auditRunner: () => fakeResult([]),
         sinks,
         corpus: { catalogedCount: 78, rolesFor: () => undefined },
@@ -570,7 +591,7 @@ describe("runEvalSuite console + validation-state contract", () => {
       expect(record.scope).toContain("GF-1..5 dry-run");
       expect(record.scope).not.toContain("[live]");
       expect(record.result).toMatch(/^PASSED/);
-      expect(record.method).toContain("ox-alpha judge");
+      expect(record.method).toContain("beam judge");
     } finally {
       spy.mockRestore();
     }

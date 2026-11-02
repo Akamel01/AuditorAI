@@ -122,9 +122,10 @@ describe("ZenAiAdapter", () => {
     expect(out).toHaveLength(1);
     expect(out[0].producer).toBe("safety-reasoning-agent");
     expect(calls[0].url).toBe("https://opencode.ai/zen/v1/chat/completions");
-    expect(calls[0].body.model).toBe("x-preview-f-free");
+    expect(calls[0].body.model).toBe("deepseek-v4.1-flash-free");
     expect(calls[0].body.reasoning_effort).toBe("high");
     expect(calls[0].headers.get("Authorization")).toBe("Bearer sk-test");
+    expect(calls[0].headers.get("x-opencode-session")).toBeNull();
   });
 
   it("repairs malformed JSON once, then accepts", async () => {
