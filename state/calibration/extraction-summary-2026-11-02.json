@@ -1,0 +1,226 @@
+{
+  "summary_version": "1.0.0",
+  "schema_version": "extraction-record-v1",
+  "run_id": "2026-11-02T10-55-33-219Z",
+  "generated_at": "2026-11-02T11:01:43.945Z",
+  "check_version": "verbatim-v1",
+  "prompt_version": "extraction-v1",
+  "verifier_prompt_version": "verifier-v1",
+  "prompt_hash": "f98b919f9d35c9b9ff8bab26ab07077819fc5fe7ff593add3de465467a666333",
+  "verifier_prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+  "models": {
+    "extractor": {
+      "id": "nvidia/nemotron-3.5-super-vl:free",
+      "family": "nemotron",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1"
+    },
+    "verifier": {
+      "id": "opencode-go/beam-free",
+      "family": "beam",
+      "provider": "opencode-go",
+      "base_url": "https://opencode.ai/inference/go/v1"
+    },
+    "family_disjoint": true
+  },
+  "run": {
+    "status": "complete",
+    "started_at": "2026-11-02T10:55:33.219Z",
+    "finished_at": "2026-11-02T11:01:43.945Z",
+    "duration_ms": 370726,
+    "aborted_at": null
+  },
+  "docs": [
+    {
+      "doc_id": "CA-001",
+      "cell_key": "canada:FEASIBILITY_CONCEPT",
+      "status": "complete",
+      "counts": {
+        "raw": 7,
+        "deterministic_passed": 7,
+        "verified": 7,
+        "established": 7,
+        "discarded": 0,
+        "taxonomy_gap": 0,
+        "section_unknown": 0,
+        "cross_page": 0,
+        "scheme": {
+          "raw": 1,
+          "deterministic_passed": 1,
+          "verified": 1,
+          "established": 1,
+          "discarded": 0
+        }
+      },
+      "rates": {
+        "pass": 1,
+        "discard": 0,
+        "verify": 1,
+        "established": 1
+      },
+      "record_path": "state/calibration/extractions/canada/FEASIBILITY_CONCEPT/CA-001.json"
+    },
+    {
+      "doc_id": "CA-002",
+      "cell_key": "canada:PRELIMINARY_DESIGN",
+      "status": "complete",
+      "counts": {
+        "raw": 14,
+        "deterministic_passed": 12,
+        "verified": 12,
+        "established": 12,
+        "discarded": 2,
+        "taxonomy_gap": 0,
+        "section_unknown": 2,
+        "cross_page": 0,
+        "scheme": {
+          "raw": 1,
+          "deterministic_passed": 1,
+          "verified": 0,
+          "established": 0,
+          "discarded": 1
+        }
+      },
+      "rates": {
+        "pass": 0.857143,
+        "discard": 0.142857,
+        "verify": 1,
+        "established": 0.857143
+      },
+      "record_path": "state/calibration/extractions/canada/PRELIMINARY_DESIGN/CA-002.json"
+    },
+    {
+      "doc_id": "CA-007",
+      "cell_key": "canada:DETAILED_DESIGN",
+      "status": "complete",
+      "counts": {
+        "raw": 16,
+        "deterministic_passed": 14,
+        "verified": 14,
+        "established": 14,
+        "discarded": 2,
+        "taxonomy_gap": 0,
+        "section_unknown": 2,
+        "cross_page": 0,
+        "scheme": {
+          "raw": 1,
+          "deterministic_passed": 1,
+          "verified": 1,
+          "established": 1,
+          "discarded": 0
+        }
+      },
+      "rates": {
+        "pass": 0.875,
+        "discard": 0.125,
+        "verify": 1,
+        "established": 0.875
+      },
+      "record_path": "state/calibration/extractions/canada/DETAILED_DESIGN/CA-007.json"
+    }
+  ],
+  "cells": [
+    {
+      "cell_key": "canada:FEASIBILITY_CONCEPT",
+      "docs_requested": 1,
+      "docs_complete": 1,
+      "docs_excluded": 0,
+      "raw": 7,
+      "deterministic_passed": 7,
+      "verified": 7,
+      "established": 7,
+      "rates": {
+        "pass": 1,
+        "discard": 0,
+        "verify": 1,
+        "established": 1
+      },
+      "gate": {
+        "min_established": 20,
+        "min_docs": 3,
+        "met": false
+      }
+    },
+    {
+      "cell_key": "canada:PRELIMINARY_DESIGN",
+      "docs_requested": 1,
+      "docs_complete": 1,
+      "docs_excluded": 0,
+      "raw": 14,
+      "deterministic_passed": 12,
+      "verified": 12,
+      "established": 12,
+      "rates": {
+        "pass": 0.857143,
+        "discard": 0.142857,
+        "verify": 1,
+        "established": 0.857143
+      },
+      "gate": {
+        "min_established": 20,
+        "min_docs": 3,
+        "met": false
+      }
+    },
+    {
+      "cell_key": "canada:DETAILED_DESIGN",
+      "docs_requested": 1,
+      "docs_complete": 1,
+      "docs_excluded": 0,
+      "raw": 16,
+      "deterministic_passed": 14,
+      "verified": 14,
+      "established": 14,
+      "rates": {
+        "pass": 0.875,
+        "discard": 0.125,
+        "verify": 1,
+        "established": 0.875
+      },
+      "gate": {
+        "min_established": 20,
+        "min_docs": 3,
+        "met": false
+      }
+    }
+  ],
+  "totals": {
+    "docs_requested": 3,
+    "docs_complete": 3,
+    "raw": 37,
+    "deterministic_passed": 33,
+    "verified": 33,
+    "established": 33,
+    "discarded": 4,
+    "rates": {
+      "pass": 0.891892,
+      "discard": 0.108108,
+      "verify": 1,
+      "established": 0.891892
+    },
+    "gate": {
+      "min_established": 20,
+      "min_docs": 3,
+      "met": false
+    }
+  },
+  "excluded_docs": [
+    "CA-010"
+  ],
+  "unavailable": [],
+  "fallback_hint": null,
+  "preflight": [
+    {
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "at": "2026-11-02T10:55:34.646Z"
+    }
+  ]
+}
