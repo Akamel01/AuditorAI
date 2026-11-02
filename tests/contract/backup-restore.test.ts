@@ -42,7 +42,7 @@ describe("backup/restore contract", () => {
     it("no bad hosts", () => {
       expect(raw).not.toContain("supabase.co");
       expect(raw).not.toContain("pooler.supabase.com");
-      expect(raw).not.toContain("/home/oc");
+      expect(raw).not.toMatch(/\/home\/[a-z]+/);
     });
   });
 
@@ -89,7 +89,7 @@ describe("backup/restore contract", () => {
     it("no bad hosts", () => {
       expect(raw).not.toContain("supabase.co");
       expect(raw).not.toContain("pooler.supabase.com");
-      expect(raw).not.toContain("/home/oc");
+      expect(raw).not.toMatch(/\/home\/[a-z]+/);
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const drillSteps = doc.jobs.drill.steps as any[];
@@ -123,7 +123,7 @@ describe("backup/restore contract", () => {
     it("no bad hosts", () => {
       expect(raw).not.toContain("supabase.co");
       expect(raw).not.toContain("pooler.supabase.com");
-      expect(raw).not.toContain("/home/oc");
+      expect(raw).not.toMatch(/\/home\/[a-z]+/);
     });
   });
 
