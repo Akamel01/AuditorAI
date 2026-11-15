@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PapyrusCrown } from "./icons";
-import { ThemeToggle } from "./theme-toggle";
 import { MobileNavMenu } from "./mobile-nav";
 
 /*
@@ -32,39 +31,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
               AuditorAI
             </Link>
           </div>
-          <nav className="ml-auto flex flex-nowrap items-center gap-1">
-            <div className="hidden sm:flex flex-nowrap items-center gap-1">
-              <Link
-                href="/#method"
-                className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-              >
-                Method
-              </Link>
-              <Link
-                href="/projects"
-                className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-              >
-                Workspace
-              </Link>
-              <Link
-                href="/audit-trail"
-                className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-              >
-                Audit trail
-              </Link>
-              <Link
-                href="/dev/mission-control"
-                className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-              >
-                Mission Control
-              </Link>
-            </div>
-            <div className="sm:hidden">
-              <MobileNavMenu />
-            </div>
-            <span className="mx-1.5 h-4 w-px bg-hairline" />
-            <ThemeToggle />
-          </nav>
+          <MobileNavMenu />
         </div>
       </header>
 
