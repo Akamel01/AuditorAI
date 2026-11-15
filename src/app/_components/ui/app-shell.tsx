@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { MarkLogo } from "./icons";
+import { PapyrusCrown } from "./icons";
 import { ThemeToggle } from "./theme-toggle";
 
 /*
@@ -12,11 +12,26 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="sticky top-0 z-40 border-b border-hairline bg-canvas">
         <div className={`mx-auto flex h-[58px] items-center gap-5 px-5 ${wide ? "max-w-[1200px]" : "max-w-[1080px]"}`}>
-          <Link href="/" className="flex items-center gap-2.5 text-[15.5px] font-semibold tracking-[-0.01em] text-text no-underline">
-            <MarkLogo size={21} />
-            AuditorAI
-          </Link>
-          <nav className="ml-auto flex items-center gap-1">
+          <div className="inline-flex items-center gap-2 whitespace-nowrap text-[15.5px] font-semibold tracking-[-0.01em] text-text">
+            <a
+              href="https://papyrus-ai.net"
+              aria-label="Papyrus AI"
+              className="inline-flex items-center gap-2 no-underline transition-opacity hover:opacity-85"
+            >
+              <PapyrusCrown size={22} className="text-accent" />
+              <span className="max-[479px]:hidden tracking-[0.02em]">
+                Papyrus <span className="text-accent">AI</span>
+              </span>
+            </a>
+            <span className="mx-[2px] h-4 w-px bg-hairline max-[479px]:hidden" />
+            <Link
+              href="/"
+              className="font-medium text-muted no-underline transition-colors hover:text-text"
+            >
+              AuditorAI
+            </Link>
+          </div>
+          <nav className="ml-auto flex flex-nowrap items-center gap-1">
             <Link
               href="/#method"
               className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
