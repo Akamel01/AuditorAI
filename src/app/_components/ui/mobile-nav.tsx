@@ -89,6 +89,7 @@ export function MobileNavMenu() {
       {open && (
         <div
           id="mobile-nav-menu"
+          role="menu"
           data-testid="mobile-nav-menu"
           className="absolute left-0 right-0 top-full z-50 border-b border-hairline bg-canvas sm:hidden"
         >
