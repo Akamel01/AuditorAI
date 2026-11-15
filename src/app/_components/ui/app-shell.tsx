@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PapyrusCrown } from "./icons";
-import { ThemeToggle } from "./theme-toggle";
+import { MobileNavMenu } from "./mobile-nav";
 
 /*
  * App shell: quiet chrome around the work. The nav never fights the content;
@@ -11,7 +11,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="sticky top-0 z-40 border-b border-hairline bg-canvas">
-        <div className={`mx-auto flex h-[58px] items-center gap-5 px-5 ${wide ? "max-w-[1200px]" : "max-w-[1080px]"}`}>
+          <div className={`relative mx-auto flex h-[58px] items-center gap-5 px-5 ${wide ? "max-w-[1200px]" : "max-w-[1080px]"}`}>
           <div className="inline-flex items-center gap-2 whitespace-nowrap text-[15.5px] font-semibold tracking-[-0.01em] text-text">
             <a
               href="https://papyrus-ai.net"
@@ -31,34 +31,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
               AuditorAI
             </Link>
           </div>
-          <nav className="ml-auto flex flex-nowrap items-center gap-1">
-            <Link
-              href="/#method"
-              className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-            >
-              Method
-            </Link>
-            <Link
-              href="/projects"
-              className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-            >
-              Workspace
-            </Link>
-            <Link
-              href="/audit-trail"
-              className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-            >
-              Audit trail
-            </Link>
-            <Link
-              href="/dev/mission-control"
-              className="rounded-md px-2.5 py-1.5 text-[13.5px] text-muted no-underline transition-colors duration-150 hover:bg-sunken hover:text-text"
-            >
-              Mission Control
-            </Link>
-            <span className="mx-1.5 h-4 w-px bg-hairline" />
-            <ThemeToggle />
-          </nav>
+          <MobileNavMenu />
         </div>
       </header>
 
