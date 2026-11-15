@@ -11,7 +11,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="sticky top-0 z-40 border-b border-hairline bg-canvas">
-          <div className={`relative mx-auto flex h-[58px] items-center gap-5 px-5 ${wide ? "max-w-[1200px]" : "max-w-[1080px]"}`}>
+        <div className={`relative mx-auto flex h-[58px] items-center gap-5 px-5 ${wide ? "max-w-[1200px]" : "max-w-[1080px]"}`}>
           <div className="inline-flex items-center gap-2 whitespace-nowrap text-[15.5px] font-semibold tracking-[-0.01em] text-text">
             <a
               href="https://papyrus-ai.net"
