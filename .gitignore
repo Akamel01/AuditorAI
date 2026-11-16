@@ -80,3 +80,8 @@ docs/RSA-Documents/canada/track-a/
 docs/RSA-Documents/quarantine/track-a/
 docs/RSA-Documents/.track-a/
 docs/RSA-Documents/**/*.pdf
+
+# Licensed or unclear-licence references: keep local, never commit (public repo)
+docs/references/US/AASHTO*.pdf
+docs/references/US/Highway Safety Manual*.pdf
+docs/references/US/boston-complete-streets-guidelines.pdf
