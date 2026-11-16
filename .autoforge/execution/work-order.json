@@ -1,138 +1,73 @@
 {
   "schema_version": "1.0.0",
-  "ticket": "Akamel01/AuditorAI#60",
-  "source_of_record": ".autoforge/plans/plan.md + .autoforge/architecture/report.md",
-  "requirements": ".autoforge/requirements/grilling.md (R1-R47)",
-  "acceptance_source": "Akamel01/AuditorAI#60 body (4 acceptance criteria)",
+  "ticket": "Akamel01/AuditorAI#117",
+  "source_of_record": ".autoforge/plans/plan.md + .autoforge/discovery/report.md",
+  "requirements": ".autoforge/discovery/report.md (candidate availability + gaps)",
+  "acceptance_source": "Akamel01/AuditorAI#117 body (files present + MANIFEST rows complete SHA-256; Gaps table; CI checks)",
+  "scope": "docs/references/US/** + .autoforge/plans/plan.md + .autoforge/execution/work-order.json + .autoforge/execution/M1.md",
   "modules": [
     {
       "id": "M1",
-      "name": "Round-2 discovery (the wide search, keyless via agent-reach's Jina Reader channel)",
-      "touches": ["scripts/harvest-round2-discover.ts"],
+      "name": "Collect US reference PDFs and update MANIFEST",
+      "touches": ["docs/references/US/**", ".autoforge/execution/M1.md"],
       "blocked_by": [],
-      "satisfies": ["R3", "R5", "R18", "O1"],
-      "creates": ["scripts/harvest-round2-discover.ts"],
-      "modifies": [],
-      "outputs": [
-        "docs/RSA-Documents/track-a-round2-candidates.json",
-        ".autoforge/execution/M1.md"
-      ],
-      "acceptance": [
-        "the candidates file exists with one row per candidate URL",
-        "every row carries source_id, source_type, query and discovery_channel",
-        "no URL appears twice",
-        "the run log states the number of queries run and how many returned nothing"
-      ],
-      "verify": [
-        "npx tsx scripts/harvest-round2-discover.ts",
-        "node -e \"const c=require('./docs/RSA-Documents/track-a-round2-candidates.json'); console.log(c.candidates.length)\""
-      ]
-    },
-    {
-      "id": "M2",
-      "name": "Round-2 source list and query set",
-      "touches": ["docs/RSA-Documents/track-a-round2-sources.json"],
-      "blocked_by": [],
-      "satisfies": ["R18", "R20", "R23", "R24", "R28"],
-      "creates": ["docs/RSA-Documents/track-a-round2-sources.json"],
-      "modifies": [],
-      "outputs": [".autoforge/execution/M2.md"],
-      "acceptance": [
-        "every source carries a source_type from the closed 7-type set",
-        "every source carries a licence_default and at least one query",
-        "the unfillable array carries the 13 Track A families forward"
-      ],
-      "verify": ["npx tsx scripts/harvest-round-a.ts selftest"]
-    },
-    {
-      "id": "M3",
-      "name": "Harvester round-2 support (candidate-list strategy, byte cap, additive manifest fields, candidate log, French stages, licence rows per attempted source, round filter)",
-      "touches": ["scripts/harvest-track-a.ts", "scripts/harvest-track-a-report.ts"],
-      "blocked_by": ["M2"],
       "satisfies": [
-        "R2", "R3", "R9", "R27", "R28", "R29", "R30", "R31", "R32",
-        "R34", "R35", "R36", "R37", "R38", "R44"
+        "AC-files-present",
+        "AC-mutcd-revision-verified",
+        "AC-massdot-must-land",
+        "AC-content-length",
+        "AC-manifest-sha256",
+        "AC-gaps-table",
+        "AC-manifest-header",
+        "AC-eval-gate-freshness",
+        "AC-ci-gate",
+        "AC-vault-failure-path",
+        "AC-git-lfs",
+        "AC-staging-hygiene"
       ],
-      "creates": [],
-      "modifies": ["scripts/harvest-track-a.ts", "scripts/harvest-track-a-report.ts"],
-      "outputs": [".autoforge/execution/M3.md"],
-      "acceptance": [
-        "npx tsx scripts/harvest-track-a.ts selftest passes",
-        "the round-1 report is byte-unchanged (git diff --exit-code)",
-        "the candidate log has exactly one row per candidate examined",
-        "no byte is written past the 5 GiB cumulative cap or the 100 MiB per-document cap",
-        "the round filter keeps round-2 rows out of the round-1 report"
-      ],
-      "verify": [
-        "npx tsx scripts/harvest-track-a.ts selftest",
-        "npm run typecheck",
-        "npm run lint",
-        "npx vitest run tests/discovery/harvest-track-a-report.test.ts"
-      ]
-    },
-    {
-      "id": "M4",
-      "name": "Round-2 report generator (AC1-AC4) and its vitest guard",
-      "touches": [
-        "scripts/harvest-track-a-round2-report.ts",
-        "tests/discovery/harvest-track-a-round2-report.test.ts"
-      ],
-      "blocked_by": ["M2", "M3"],
-      "satisfies": ["R6", "R7", "R8", "R10", "R11", "R12", "R13", "R14", "R15", "R16", "R17", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26", "R45", "R46", "R47"],
       "creates": [
-        "scripts/harvest-track-a-round2-report.ts",
-        "tests/discovery/harvest-track-a-round2-report.test.ts"
+        "docs/references/US/mutcd-11th-edition-*.pdf",
+        "docs/references/US/mutcd-final-rule-2023-27178.pdf",
+        "docs/references/US/prowag-final-rule-2023-16149.pdf",
+        "docs/references/US/shs-2004-2012-supplement.pdf",
+        "docs/references/US/massdot-mutcd-11th-amendments-2026.pdf"
       ],
-      "modifies": [],
-      "outputs": [
-        "docs/RSA-Documents/track-a-round2-harvest-report.md",
-        ".autoforge/execution/M4.md"
-      ],
+      "modifies": ["docs/references/US/MANIFEST.md"],
+      "outputs": [".autoforge/execution/M1.md"],
       "acceptance": [
-        "regenerating the report leaves the committed file byte-identical",
-        "the vitest guard passes",
-        "the coverage table's before column equals the committed round-1 numbers",
-        "the yield table's in-scope column equals the coverage table's attribution",
-        "every attempted source type has a row, including honest zeros",
-        "no T0/T1 row appears in any coverage cell"
+        "each of the 5 listed PDFs exists under docs/references/US/ and begins with %PDF magic bytes",
+        "MUTCD cover page inspected; actual edition/revision (original Dec 2023 vs Rev 1 Dec 2025) recorded in filename (glob mutcd-11th-edition-*.pdf) and MANIFEST row; no mislabeling",
+        "MassDOT downloaded from https://www.mass.gov/doc/massachusetts-amendments-to-the-11th-edition-of-the-manual-on-uniform-traffic-control-devices-2026/download with explicit browser headers (User-Agent, Accept, Accept-Language); 5,350,882 B; pub date Jan 2026; access_status public (browser headers); Policy Directive P-26-003 excluded and listed separately; on fetch failure escalate to operator, do not close",
+        "content-length/size check: per-file expected bounds where known (MassDOT 5,350,882 B actual); otherwise non-zero size + %PDF magic + recorded SHA-256; abort on non-2xx, zero-byte, non-%PDF, or out-of-bound size (MassDOT escalates)",
+        "one MANIFEST row per collected file with all 9 columns non-empty including a lowercase hex SHA-256 matching shasum -a 256; full MANIFEST verified via shasum -a 256 -c (all rows)",
+        "Gaps table lists AASHTO Green Book, AASHTO HSM full text, PROWAG consolidated guidelines (HTML only), SHS 2004 per-chapter PDFs (deferred - no single full PDF; 2012 supplement as proxy), MUTCD revision list, MUTCD Revision 1 (govinfo 2026-04365, 91 FR 10771, 2026-03-05 - not collected; separate document), Policy Directive P-26-003 (excluded); Boston Complete Streets Guidelines now collected (M2), each with status and reason",
+        "MANIFEST header retrieved date and tally line updated to this run; tally format: **Successful downloads this run:** N fetched = **N files**.",
+        "eval-gate freshness preflight passes before commit (node scripts/check-eval-gate-freshness.mjs or repo equivalent)",
+        "npm run ci:local passes (full gate); docs/references changes are no-op for state/vault-notes.json and evidence checks (no vault/ or .autoforge/validation/ edits); vault-sync run for hygiene only",
+        "vault failure path: if node scripts/vault-sync.mjs --check reports a diff, abort and escalate; never stash foreign journal files or hand-edit state/vault-notes.json",
+        "Git LFS preflight passes (git lfs available) and post-add verification confirms all new PDFs tracked with no broken pointers",
+        "staging hygiene: only ticket-touched paths staged explicitly; never git add -A"
       ],
       "verify": [
-        "npx tsx scripts/harvest-track-a-round2-report.ts",
-        "npx vitest run tests/discovery/harvest-track-a-round2-report.test.ts",
-        "npm test"
-      ]
-    },
-    {
-      "id": "M5",
-      "name": "Live round-2 execution and committed corpus artefacts",
-      "touches": [
-        "docs/RSA-Documents/track-a-round2-candidates.json",
-        "docs/RSA-Documents/track-a-round2-candidate-log.tsv",
-        "docs/RSA-Documents/track-a-round2-bytes.json",
-        "docs/RSA-Documents/canada-intake-manifest.jsonl",
-        "docs/RSA-Documents/canadian-download-log.tsv",
-        "docs/RSA-Documents/dedupe-index.json",
-        "docs/RSA-Documents/track-a-split.json",
-        "docs/RSA-Documents/LICENSE-REGISTER.md",
-        "docs/RSA-Documents/track-a-round2-harvest-report.md"
+        "git lfs version",
+        "node scripts/check-eval-gate-freshness.mjs || true",
+        "for f in docs/references/US/mutcd-11th-edition-*.pdf docs/references/US/mutcd-final-rule-2023-27178.pdf docs/references/US/prowag-final-rule-2023-16149.pdf docs/references/US/shs-2004-2012-supplement.pdf docs/references/US/massdot-mutcd-11th-amendments-2026.pdf; do head -c 4 \"$f\" | grep -q '%PDF' || echo \"BAD MAGIC: $f\"; done",
+        "cd docs/references/US && shasum -a 256 -c <(awk -F'|' '/^\\|/ && !/filename/ && !/---/ {gsub(/^ +| +$/,\"\",$2); gsub(/^ +| +$/,\"\",$9); if($2!=\"\") print $9\"  \"$2}' MANIFEST.md)",
+        "stat -c '%n %s' docs/references/US/massdot-mutcd-11th-amendments-2026.pdf",
+        "git lfs ls-files --name-only | grep -E 'docs/references/US/.*\\.pdf'",
+        "npm run ci:local",
+        "node scripts/vault-sync.mjs --check"
       ],
-      "blocked_by": ["M1", "M3", "M4"],
-      "satisfies": ["R5", "R13", "R29", "R36", "R38", "R42", "R43", "R45"],
-      "creates": [],
-      "modifies": [],
-      "outputs": [".autoforge/execution/M5.md"],
-      "acceptance": [
-        "every ingested manifest row has a matching candidate-log row",
-        "every source attempted has a licence-register row",
-        "no binary is tracked by git (git ls-files docs/RSA-Documents | grep -ci '\\.pdf$' == 0)",
-        "the round-1 report has no diff",
-        "the byte accounting file's arithmetic holds and corpusBytesAfter <= capBytes"
-      ],
-      "verify": [
-        "git ls-files docs/RSA-Documents | grep -ci '\\.pdf$'",
-        "git diff --exit-code -- docs/RSA-Documents/track-a-harvest-report.md",
-        "node scripts/vault-sync.mjs --check",
-        "npm run ci:local"
+      "agent_role": "document-collection agent",
+      "reviewer_needs": [
+        "verify %PDF magic and SHA-256 match for every new MANIFEST row",
+        "verify full MANIFEST via shasum -a 256 -c (all rows)",
+        "verify Gaps table covers all blocked items from discovery report",
+        "verify no AASHTO paid document was collected",
+        "verify MassDOT row present with exact URL and P-26-003 excluded",
+        "verify MUTCD revision label matches cover page",
+        "verify SHS URL uses /SHSe/ casing",
+        "verify staging hygiene (no git add -A)"
       ]
     }
   ]

@@ -26,8 +26,9 @@
 | prowag-final-rule-2023-16149.pdf | Accessibility Guidelines for Pedestrian Facilities in the Public Right-of-Way (PROWAG) — Final Rule | US Access Board | https://www.access-board.gov/files/prowag/2023-16149.pdf | 2023-08-08 | 2026-11-16 | public | e1424b6ac3de5d07c7ad82021af436a2569eb4544e61cf3f8c2207eb8391d6b8 | 88 FR 53604, effective 2023-09-07. Consolidated PROWAG guidelines are HTML only (see Gaps). |
 | shs-2004-2012-supplement.pdf | Standard Highway Signs and Markings (2004 ed.) — 2012 Supplement | FHWA Office of Transportation Operations | https://mutcd.fhwa.dot.gov/SHSe/shs_2004_2012_sup.pdf | 2012 | 2026-11-16 | public | 6a1bc63b2df1535c35b110f68546eaab285da5473d5c971c7826424712504550 | Single-file supplement to the 2004 per-chapter edition; 2004 edition itself is per-chapter (see Gaps). |
 | massdot-mutcd-11th-amendments-2026.pdf | The Massachusetts Amendments to the 11th Edition of the Manual on Uniform Traffic Control Devices | MassDOT Highway Division | https://www.mass.gov/doc/massachusetts-amendments-to-the-11th-edition-of-the-manual-on-uniform-traffic-control-devices-2026/download | 2026-01 | 2026-11-16 | public (browser headers) | 797f60ed42fdf868080fa75b6c2e528b05158a3b8a4fcf53f443c61dfc43187e | 110 pp; pub date Jan 2026. Fetched with browser headers (Akamai). Policy Directive P-26-003 excluded (see Gaps). |
+| boston-complete-streets-guidelines.pdf | Boston Complete Streets Design Guidelines | City of Boston Transportation Department | https://www.boston.gov/sites/default/files/file/2019/12/BCS_Guidelines.pdf | 2013 | 2026-11-16 | public (browser headers) | f0aacc0155fc64b942bcf21633994da3795665f49365f15e9c70df7d78925422 | 292 pp; Mayor Thomas M. Menino; Commissioner Thomas J. Tinlin. Fetched with browser headers. |
 
-**Successful downloads this run:** 5 fetched = **5 files**.
+**Successful downloads this run:** 6 fetched = **6 files**.
 
 ## Gaps / blocked items
 
@@ -43,4 +44,4 @@
 | MUTCD revision list | covered by FR PDF + hotlinks edition | No separate "revision list" PDF on the MUTCD site; Federal Register final rule PDF (2023-27178) plus hotlinks edition used. |
 | MUTCD Revision 1 (Dec 2025) | not collected — separate document | govinfo 2026-04365, 91 FR 10771, 2026-03-05. Ticket targets 11th ed. Dec 2023; Revision 1 is a separate document. |
 | Policy Directive P-26-003 | excluded | Explicitly excluded per ticket #117 scope; not collected. |
-| Boston Complete Streets Guidelines (full report) | dropped — out of scope | Outside ticket #117 scope; not collected despite public URL availability. |
+
