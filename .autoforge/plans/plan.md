@@ -141,6 +141,3 @@ Single module; no parallelization or blocked-by edges.
   existing MANIFEST entry is added.
 - Git LFS preflight must pass before adding large PDFs; abort if LFS unavailable.
 - Eval-gate freshness preflight must pass before commit.
-(End of file)
-", "filePath">
-/home/oc/.opencode-runs/Akamel01-AuditorAI/117/worktree/.autoforge/plans/plan.md
