@@ -2,7 +2,7 @@
 
 - **Jurisdiction:** United States
 - **Collected by:** AuditorAI document-collection agent (automated)
-- **Retrieved date:** 2026-08-23
+- **Retrieved date:** 2026-11-16
 - **Access policy:** Public-access sources only (federal/state .gov and ROSAP). No paywall circumvention.
 - **Verification:** Every file confirmed to begin with `%PDF` magic bytes at collection time.
 - **Integrity:** SHA-256 recorded per file; re-verify with `shasum -a 256 -c` style checks before citing in fixtures.
@@ -21,7 +21,14 @@
 | idaho-itd-road-safety-audit-manual-2012.pdf | Idaho Transportation Department Road Safety Audit Manual | Idaho Transportation Department | https://apps.itd.idaho.gov/apps/manuals/SafetyAudit/SafetyAudit.pdf | 2012-01 (listed ed.) | 2026-08-23 | public | e52c60ba3ab6d4bae1eae7ae4225f655692f235aa7349269e8ada51d1c9a8d31 | Full state-level RSA program manual (process, team selection, reporting). |
 | fhwa-rsa-case-studies-compilation.pdf | FHWA Road Safety Audit Case Studies (compilation) | FHWA Office of Safety | local triage copy from `tmp/harvest/fhwa-cases.pdf` (original fetch pre-dates this run) | c. 2000s compilation | 2026-08-23 | public (local copy) | de87eee1d7f22c7b1ab8994612bf1041bf3c784b5385801e81239209018e3406 | Copied (not moved) from tmp/harvest per triage instruction; tmp original left intact. Used for corpus fixtures. Original URL not re-verified this run. |
 
-**Successful downloads this run:** 8 fetched + 1 triage copy = **9 files**.
+| mutcd-11th-edition-2023-12.pdf | Manual on Uniform Traffic Control Devices for Streets and Highways (MUTCD), 11th Edition | FHWA Office of Transportation Operations | https://mutcd.fhwa.dot.gov/pdfs/11th_Edition/mutcd11thedition.pdf | 2023-12 | 2026-11-16 | public | a3fd296d8fe2e4747085b4fb758da9794e089c74cf7144416927aed36b40684b | Cover verified: "11th Edition / December 2023" (original edition). Revision 1 (Dec 2025) is a separate document; see Gaps. |
+| mutcd-final-rule-2023-27178.pdf | National Standards for Traffic Control Devices; the Manual on Uniform Traffic Control Devices for Streets and Highways; Revision (Final Rule) | FHWA / Federal Register (88 FR) | https://www.govinfo.gov/content/pkg/FR-2023-12-19/pdf/2023-27178.pdf | 2023-12-19 | 2026-11-16 | public | b327522fdea50181f93865e27e7a60984096202389bf703e6a96692e8e7a790f | Used as the authoritative revision source (no standalone "revision list" PDF on the MUTCD site). |
+| prowag-final-rule-2023-16149.pdf | Accessibility Guidelines for Pedestrian Facilities in the Public Right-of-Way (PROWAG) — Final Rule | US Access Board | https://www.access-board.gov/files/prowag/2023-16149.pdf | 2023-08-08 | 2026-11-16 | public | e1424b6ac3de5d07c7ad82021af436a2569eb4544e61cf3f8c2207eb8391d6b8 | 88 FR 53604, effective 2023-09-07. Consolidated PROWAG guidelines are HTML only (see Gaps). |
+| shs-2004-2012-supplement.pdf | Standard Highway Signs and Markings (2004 ed.) — 2012 Supplement | FHWA Office of Transportation Operations | https://mutcd.fhwa.dot.gov/SHSe/shs_2004_2012_sup.pdf | 2012 | 2026-11-16 | public | 6a1bc63b2df1535c35b110f68546eaab285da5473d5c971c7826424712504550 | Single-file supplement to the 2004 per-chapter edition; 2004 edition itself is per-chapter (see Gaps). |
+| massdot-mutcd-11th-amendments-2026.pdf | The Massachusetts Amendments to the 11th Edition of the Manual on Uniform Traffic Control Devices | MassDOT Highway Division | https://www.mass.gov/doc/massachusetts-amendments-to-the-11th-edition-of-the-manual-on-uniform-traffic-control-devices-2026/download | 2026-01 | 2026-11-16 | public (browser headers) | 797f60ed42fdf868080fa75b6c2e528b05158a3b8a4fcf53f443c61dfc43187e | 110 pp; pub date Jan 2026. Fetched with browser headers (Akamai). Policy Directive P-26-003 excluded (see Gaps). |
+| boston-complete-streets-guidelines.pdf | Boston Complete Streets Design Guidelines | City of Boston Transportation Department | https://www.boston.gov/sites/default/files/file/2019/12/BCS_Guidelines.pdf | 2013 | 2026-11-16 | local only: City of Boston publication, no redistribution licence found; git-ignored, not in the public repo | f0aacc0155fc64b942bcf21633994da3795665f49365f15e9c70df7d78925422 | 292 pp; Mayor Thomas M. Menino; Commissioner Thomas J. Tinlin. Fetched with browser headers. |
+
+**Successful downloads this run:** 6 fetched = **6 files**.
 
 ## Gaps / blocked items
 
@@ -31,3 +38,10 @@
 | highways.dot.gov direct fetches (guidelines + 2020 guide landing pages/PDFs) | blocked during run | Akamai bot protection returned HTTP 403/"Access Denied" HTML even with browser headers; old safety.fhwa.dot.gov URLs 301-redirect into it. All affected documents were obtained via ROSAP mirrors instead. |
 | Highway Safety Manual (HSM) full text (AASHTO, 2010/2023 eds.) | not collected — paid | Published by AASHTO behind a paywall; public access not available. Owner may supply a licensed copy. The two IHSDM/HSM-Part-C flyers above summarize Part C publicly. |
 | MassDOT Road Safety Audit Guidelines | not collected (state cap reached) | Openly referenced by mass.gov but not fetched; cap of 2 state DOT docs met (SCDOT + ITD). Candidate for a later run. |
+| AASHTO Green Book (A Policy on Geometric Design of Highways and Streets) | not collected — paid | Published by AASHTO behind a paywall; operator-supplied only. Never collected by this agent. |
+| PROWAG consolidated guidelines | not collected — HTML only | No single PDF exists (`…/prowag/prowag.pdf` → 404); source is `https://www.access-board.gov/prowag/complete.html`. Print-to-PDF is manual. |
+| SHS 2004 edition (per-chapter PDFs) | deferred — no single full PDF | Published as per-chapter PDFs on the MUTCD site; no single full PDF located (4 common single-file URLs → HTML 404). 2012 supplement collected as proxy; SHS 2024 phased release incomplete. |
+| MUTCD revision list | covered by FR PDF + hotlinks edition | No separate "revision list" PDF on the MUTCD site; Federal Register final rule PDF (2023-27178) plus hotlinks edition used. |
+| MUTCD Revision 1 (Dec 2025) | not collected — separate document | govinfo 2026-04365, 91 FR 10771, 2026-03-05. Ticket targets 11th ed. Dec 2023; Revision 1 is a separate document. |
+| Policy Directive P-26-003 | excluded | Explicitly excluded per ticket #117 scope; not collected. |
+
