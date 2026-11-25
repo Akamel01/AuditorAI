@@ -1,0 +1,1423 @@
+{
+  "record_version": "1.0.0",
+  "schema_version": "extraction-record-v1",
+  "run_id": "2026-11-02T10-55-33-219Z",
+  "doc_id": "CA-007",
+  "sha256": "6c38a1a99caaa666611eb6397d1672926b2b270cf793fc9fff9f448caeba5a9d",
+  "source_url": "https://www.unb.ca/research/transportation-group/_assets/documents/rsa-guidelines.pdf",
+  "source_path": "tests/fixtures/samples/CA/nb-unb-exemplary-audits-appendix-c-1999.pdf",
+  "source_note": "fixture = original pp. 102-162 of the 168-page UNB guidelines; scoped pages 40-51 = printed 141-152",
+  "scope_pages": [
+    40,
+    51
+  ],
+  "scope_note": "Detailed Design example (75% design stage audit, pages 40-51); the fixture also contains existing-road, municipal and pre-opening audits",
+  "cell_key": "canada:DETAILED_DESIGN",
+  "stage": "DETAILED_DESIGN",
+  "licence": "not recorded",
+  "page_count": 61,
+  "document_chars": 97618,
+  "section_count": 268,
+  "heading_rule": "numbered-or-allcaps-v2",
+  "extracted_at": "2026-11-02T11:01:43.941Z",
+  "status": "complete",
+  "models": {
+    "extractor": {
+      "id": "nvidia/nemotron-3.5-super-vl:free",
+      "family": "nemotron",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1"
+    },
+    "verifier": {
+      "id": "opencode-go/beam-free",
+      "family": "beam",
+      "provider": "opencode-go",
+      "base_url": "https://opencode.ai/inference/go/v1"
+    },
+    "family_disjoint": true
+  },
+  "prompt_version": "extraction-v1",
+  "verifier_prompt_version": "verifier-v1",
+  "prompt_hash": "f98b919f9d35c9b9ff8bab26ab07077819fc5fe7ff593add3de465467a666333",
+  "verifier_prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+  "check_version": "verbatim-v1",
+  "config": {
+    "temperature": 0,
+    "seed": 42,
+    "extractor_max_tokens": 32768,
+    "verifier_max_tokens": 4096,
+    "one_shot_char_cap": 300000,
+    "verifier_window_page_pad": 1,
+    "verifier_window_char_cap": 20000,
+    "extractor_timeout_ms": 600000,
+    "verifier_timeout_ms": 120000
+  },
+  "envelope_extra_keys": [],
+  "scheme_description": {
+    "kind": "scheme_description",
+    "item_id": null,
+    "text": "75% design stage audit of the new Route 20 High Speed Connector to Route 21 Interchange facility.",
+    "span": {
+      "quote": "75% DESIGN STAGE AUDIT: ROUTE 20 HIGH SPEED CONNECTOR TO ROUTE 21 INTERCHANGE",
+      "quote_normalized": "75% DESIGN STAGE AUDIT: ROUTE 20 HIGH SPEED CONNECTOR TO ROUTE 21 INTERCHANGE",
+      "word_count": 13,
+      "page": 41,
+      "end_page": 41,
+      "section": "C-40",
+      "section_start": 66516,
+      "model_section": null,
+      "start_offset": 66521,
+      "end_offset": 66598,
+      "raw_start": 66539,
+      "raw_end": 66616,
+      "cross_page": false,
+      "occurrence_count": 1,
+      "occurrence_capped": false
+    },
+    "verification": {
+      "verified": true,
+      "reason": "The quote is an exact substring of the window and faithfully summarizes the audit stage and facility described.",
+      "model_id": "opencode-go/beam-free",
+      "family": "beam",
+      "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+      "window": {
+        "pages": [
+          40,
+          42
+        ],
+        "start_offset": 66263,
+        "end_offset": 69342,
+        "chars": 3079,
+        "truncated": false
+      }
+    }
+  },
+  "findings": [
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F01",
+      "category": "cross_sections_roadside",
+      "location": "approaches to proposed emergency crossovers",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Agreed shoulder widening at emergency crossovers not included in designs seen at this audit.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "Designs seen in this audit appear not to include this agreed change",
+        "quote_normalized": "Designs seen in this audit appear not to include this agreed change",
+        "word_count": 12,
+        "page": 43,
+        "end_page": 43,
+        "section": "PROPOSAL DOCUMENT PLANS",
+        "section_start": 69650,
+        "model_section": null,
+        "start_offset": 70011,
+        "end_offset": 70078,
+        "raw_start": 70029,
+        "raw_end": 70096,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the description that the agreed shoulder widening at emergency crossovers was not included in the designs seen at this audit.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            42,
+            44
+          ],
+          "start_offset": 68408,
+          "end_offset": 71838,
+          "chars": 3430,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F02",
+      "category": "cross_sections_roadside",
+      "location": "existing section A and new sections of the project",
+      "road_users": [
+        "drivers",
+        "passengers",
+        "motorcyclists"
+      ],
+      "description": "Decision to continue flared buried guide rail end treatments; terminal treatments are not crashworthy.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "decision to use the flared, buried end treatment on guide rails",
+        "quote_normalized": "decision to use the flared, buried end treatment on guide rails",
+        "word_count": 11,
+        "page": 50,
+        "end_page": 50,
+        "section": "3. GUIDE RAIL ENDS",
+        "section_start": 84373,
+        "model_section": null,
+        "start_offset": 85054,
+        "end_offset": 85117,
+        "raw_start": 85074,
+        "raw_end": 85137,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote appears verbatim in the window, and the surrounding text supports the safety concern about continuing flared buried guide rail end treatments.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            49,
+            51
+          ],
+          "start_offset": 80822,
+          "end_offset": 87843,
+          "chars": 7021,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F03",
+      "category": "cross_sections_roadside",
+      "location": "section A",
+      "road_users": [
+        "drivers",
+        "passengers",
+        "motorcyclists"
+      ],
+      "description": "Some guide rail in section A is too short to protect steep slopes and obstructions.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "some guide rail in section A is too short",
+        "quote_normalized": "some guide rail in section A is too short",
+        "word_count": 9,
+        "page": 45,
+        "end_page": 45,
+        "section": "2.2 Length of Guide Rail",
+        "section_start": 72827,
+        "model_section": null,
+        "start_offset": 72896,
+        "end_offset": 72937,
+        "raw_start": 72914,
+        "raw_end": 72955,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote appears verbatim in the window and supports the description and safety concern about guide rail being too short to protect steep slopes and obstructions.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            44,
+            46
+          ],
+          "start_offset": 70178,
+          "end_offset": 76534,
+          "chars": 6356,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F05",
+      "category": "cross_sections_roadside",
+      "location": "underpass bridges on the highway",
+      "road_users": [
+        "drivers",
+        "passengers",
+        "motorcyclists"
+      ],
+      "description": "Guide rail placed at back of shoulder at underpass bridges; clear zone not achieved because batter toe is within 10 m.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "guide rail has been placed at the back of the shoulder",
+        "quote_normalized": "guide rail has been placed at the back of the shoulder",
+        "word_count": 11,
+        "page": 46,
+        "end_page": 46,
+        "section": "6.1 On the Highway",
+        "section_start": 76021,
+        "model_section": null,
+        "start_offset": 76349,
+        "end_offset": 76403,
+        "raw_start": 76367,
+        "raw_end": 76421,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window, and the surrounding text supports that at underpass bridges the batter toe is within 10 m, the clear zone is not achieved, and guide rail has been placed at the back of the shoulder, with safety concerns about that treatment.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            45,
+            47
+          ],
+          "start_offset": 71838,
+          "end_offset": 78460,
+          "chars": 6622,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F06",
+      "category": "cross_sections_roadside",
+      "location": "side roads passing under the highway",
+      "road_users": [
+        "drivers",
+        "passengers",
+        "motorcyclists"
+      ],
+      "description": "Bridge abutments or abutment toes within clear zone on side roads under the highway, not shielded.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "abutments (vertical) or abutment toes are within the clear zone",
+        "quote_normalized": "abutments (vertical) or abutment toes are within the clear zone",
+        "word_count": 10,
+        "page": 47,
+        "end_page": 47,
+        "section": "6.2 On Side Roads",
+        "section_start": 77542,
+        "model_section": null,
+        "start_offset": 77628,
+        "end_offset": 77691,
+        "raw_start": 77646,
+        "raw_end": 77709,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the description of unshielded bridge abutments or abutment toes within the clear zone on side roads under the highway.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            46,
+            48
+          ],
+          "start_offset": 74388,
+          "end_offset": 80822,
+          "chars": 6434,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F07",
+      "category": "alignment_visibility",
+      "location": "S-W loop from Route 20 to the highway (east end of section 5)",
+      "road_users": [
+        "drivers",
+        "motorcyclists"
+      ],
+      "description": "S-W loop has decreasing radius curve from 500 mR to 250 mR with potential to be overdriven by trucks.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "decreasing radius curve, from 500 mR to 250 mR",
+        "quote_normalized": "decreasing radius curve, from 500 mR to 250 mR",
+        "word_count": 9,
+        "page": 48,
+        "end_page": 48,
+        "section": "1.1 Route 20 High Speed Connector",
+        "section_start": 78593,
+        "model_section": null,
+        "start_offset": 78711,
+        "end_offset": 78757,
+        "raw_start": 78729,
+        "raw_end": 78775,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the window supports the decreasing-radius curve and overdriving risk, including truck problems.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            47,
+            49
+          ],
+          "start_offset": 76534,
+          "end_offset": 83274,
+          "chars": 6740,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F08",
+      "category": "alignment_visibility",
+      "location": "Section B inner loop from S-W",
+      "road_users": [
+        "drivers",
+        "motorcyclists"
+      ],
+      "description": "Section B inner loop from S-W has potential to be over-driven due to high speeds of approaching northbound traffic.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "has the potential to be over-driven",
+        "quote_normalized": "has the potential to be over-driven",
+        "word_count": 6,
+        "page": 48,
+        "end_page": 48,
+        "section": "1.2 Route High Speed Connector, Section B",
+        "section_start": 79463,
+        "model_section": null,
+        "start_offset": 79560,
+        "end_offset": 79595,
+        "raw_start": 79580,
+        "raw_end": 79615,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The window contains the exact quote and states the Section B inner loop from S-W has the potential to be over-driven due to relatively high speeds of approaching northbound traffic, supporting the description.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            47,
+            49
+          ],
+          "start_offset": 76534,
+          "end_offset": 83274,
+          "chars": 6740,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F10",
+      "category": "signage_markings_lighting",
+      "location": "median service area exits",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Median service area exit has inadequate signs and markings with potential for wrong way right turn exits.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "potential for wrong way(right turn) exits",
+        "quote_normalized": "potential for wrong way(right turn) exits",
+        "word_count": 6,
+        "page": 49,
+        "end_page": 49,
+        "section": "2.1 Median Service Area Exits",
+        "section_start": 82125,
+        "model_section": null,
+        "start_offset": 82239,
+        "end_offset": 82280,
+        "raw_start": 82259,
+        "raw_end": 82300,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote appears verbatim in the window and directly supports the description and safety concern about inadequate signs and markings at median service area exits.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            48,
+            50
+          ],
+          "start_offset": 78460,
+          "end_offset": 85628,
+          "chars": 7168,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F11",
+      "category": "signage_markings_lighting",
+      "location": "service area",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Speed limit through service area should be maximum 80 km/h.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "maximum of 80 km/h",
+        "quote_normalized": "maximum of 80 km/h",
+        "word_count": 4,
+        "page": 49,
+        "end_page": 49,
+        "section": "2.2 Speed Limits",
+        "section_start": 82389,
+        "model_section": null,
+        "start_offset": 82549,
+        "end_offset": 82567,
+        "raw_start": 82569,
+        "raw_end": 82587,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the recommendation that the speed limit through the service area should be a maximum of 80 km/h.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            48,
+            50
+          ],
+          "start_offset": 78460,
+          "end_offset": 85628,
+          "chars": 7168,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F12",
+      "category": "signage_markings_lighting",
+      "location": "end of separation barrier",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Markings separating through lane from other lane barely visible and not installed to design plan.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "barely visible and were not installed to the design plan",
+        "quote_normalized": "barely visible and were not installed to the design plan",
+        "word_count": 10,
+        "page": 50,
+        "end_page": 50,
+        "section": "2.3 Road Markings",
+        "section_start": 83374,
+        "model_section": null,
+        "start_offset": 83531,
+        "end_offset": 83587,
+        "raw_start": 83551,
+        "raw_end": 83607,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the description and safety concern about barely visible markings not installed to the design plan.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            49,
+            51
+          ],
+          "start_offset": 80822,
+          "end_offset": 87843,
+          "chars": 7021,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F13",
+      "category": "signage_markings_lighting",
+      "location": "approach to service area, right side on concrete separation barrier",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Stop Sign Ahead sign visible to through lane drivers but not intended, contributing to stops in through lane.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "visible to drivers in the through lane",
+        "quote_normalized": "visible to drivers in the through lane",
+        "word_count": 7,
+        "page": 50,
+        "end_page": 50,
+        "section": "2.4 Stop Sign Ahead Signs",
+        "section_start": 83756,
+        "model_section": null,
+        "start_offset": 83957,
+        "end_offset": 83995,
+        "raw_start": 83977,
+        "raw_end": 84015,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the description and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            49,
+            51
+          ],
+          "start_offset": 80822,
+          "end_offset": 87843,
+          "chars": 7021,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F14",
+      "category": "alignment_visibility",
+      "location": "steep grades",
+      "road_users": [
+        "drivers",
+        "motorcyclists"
+      ],
+      "description": "Steep uphill grades may reduce loaded truck speeds to as low as 35 km/h in 110 km/h posted speed lane.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "potential for speeds as low as 35 km/h",
+        "quote_normalized": "potential for speeds as low as 35 km/h",
+        "word_count": 8,
+        "page": 51,
+        "end_page": 51,
+        "section": "4. TRUCK OPERATION ON STEEP GRADES",
+        "section_start": 85728,
+        "model_section": null,
+        "start_offset": 85946,
+        "end_offset": 85984,
+        "raw_start": 85968,
+        "raw_end": 86006,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description of steep uphill grades causing loaded truck speeds as low as 35 km/h in a 110 km/h posted-speed lane.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            50,
+            52
+          ],
+          "start_offset": 83274,
+          "end_offset": 88111,
+          "chars": 4837,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F15",
+      "category": "cross_sections_roadside",
+      "location": "River Route through low areas",
+      "road_users": [
+        "drivers",
+        "motorcyclists",
+        "cyclists"
+      ],
+      "description": "Pavement surface on River Route through low areas exhibits excessive mud coverage, especially under wet conditions.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "exhibits excessive mud coverage, especially under wet conditions",
+        "quote_normalized": "exhibits excessive mud coverage, especially under wet conditions",
+        "word_count": 8,
+        "page": 51,
+        "end_page": 51,
+        "section": "5.1 River Works Area",
+        "section_start": 86560,
+        "model_section": null,
+        "start_offset": 86639,
+        "end_offset": 86703,
+        "raw_start": 86661,
+        "raw_end": 86725,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the described mud-related slip hazard and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            50,
+            52
+          ],
+          "start_offset": 83274,
+          "end_offset": 88111,
+          "chars": 4837,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-007-F16",
+      "category": "cross_sections_roadside",
+      "location": "shoulders on the project",
+      "road_users": [
+        "drivers",
+        "motorcyclists",
+        "cyclists"
+      ],
+      "description": "Decision not to install rumble strips along shoulders despite potential to reduce run off road accidents.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "not to install rumble strips along the shoulders",
+        "quote_normalized": "not to install rumble strips along the shoulders",
+        "word_count": 8,
+        "page": 51,
+        "end_page": 51,
+        "section": "5.2 Rumble Strips",
+        "section_start": 86984,
+        "model_section": null,
+        "start_offset": 87046,
+        "end_offset": 87094,
+        "raw_start": 87068,
+        "raw_end": 87116,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the description and safety concern about not installing rumble strips despite their potential to reduce run-off-road accidents.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            50,
+            52
+          ],
+          "start_offset": 83274,
+          "end_offset": 88111,
+          "chars": 4837,
+          "truncated": false
+        }
+      }
+    }
+  ],
+  "counts": {
+    "raw": 16,
+    "deterministic_passed": 14,
+    "verified": 14,
+    "established": 14,
+    "discarded": 2,
+    "taxonomy_gap": 0,
+    "section_unknown": 2,
+    "cross_page": 0,
+    "scheme": {
+      "raw": 1,
+      "deterministic_passed": 1,
+      "verified": 1,
+      "established": 1,
+      "discarded": 0
+    }
+  },
+  "rates": {
+    "pass": 0.875,
+    "discard": 0.125,
+    "verify": 1,
+    "established": 0.875
+  },
+  "failures": [
+    {
+      "failure_id": "CA-007-X4",
+      "scope": "finding",
+      "item_index": 3,
+      "kind": "not_found",
+      "stage": "deterministic",
+      "detail": "quote not found",
+      "raw_item_excerpt": "{\"category\":\"cross_sections_roadside\",\"location\":\"110 km/h roadways\",\"road_users\":[\"drivers\",\"passengers\",\"motorcyclists\"],\"description\":\"Clear zones adopted as 10 m throughout without full TAC curve and backslope considerations.\",\"span\":{\"quote\":\"Clear zones should meet all requirements of the TAC Geometric Design Manual.\",\"page\":46},\"taxonomy_gap\":false}",
+      "raw_item_sha256": "c02b23ec201912a4e950b8538c432ef46bea6c3df77284fc9f0774e71e19bfb2",
+      "raw_verdict_excerpt": null,
+      "raw_verdict_sha256": null,
+      "normalized_quote": "Clear zones should meet all requirements of the TAC Geometric Design Manual.",
+      "claimed_page": 46,
+      "found_page": null,
+      "source_excerpt": null,
+      "at": "2026-11-02T11:01:19.803Z"
+    },
+    {
+      "failure_id": "CA-007-X5",
+      "scope": "finding",
+      "item_index": 8,
+      "kind": "page_mismatch",
+      "stage": "deterministic",
+      "detail": "model page 48; quote found on page 49",
+      "raw_item_excerpt": "{\"category\":\"access_management\",\"location\":\"major interchanges high mast lighting poles\",\"road_users\":[\"drivers\"],\"description\":\"High mast lighting poles on narrow shoulders with guide rail prevent maintenance vehicles parking clear of traffic lanes.\",\"span\":{\"quote\":\"prevent a maintenance vehicle being parked clear of the traffic lanes\",\"page\":48},\"taxonomy_gap\":false}",
+      "raw_item_sha256": "e7ef2c8166241a0792971df8bad4d86cb140c3707407a1a87582ae2947f1e6bb",
+      "raw_verdict_excerpt": null,
+      "raw_verdict_sha256": null,
+      "normalized_quote": "prevent a maintenance vehicle being parked clear of the traffic lanes",
+      "claimed_page": 48,
+      "found_page": 49,
+      "source_excerpt": null,
+      "at": "2026-11-02T11:01:29.200Z"
+    }
+  ],
+  "error": null,
+  "preflight": [
+    {
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "at": "2026-11-02T10:55:34.646Z"
+    }
+  ],
+  "calls": [
+    {
+      "stage": "preflight",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "usage": {
+        "prompt_tokens": 23,
+        "completion_tokens": 8,
+        "total_tokens": 31,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 8,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 403,
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "stage": "preflight",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "usage": {
+        "prompt_tokens": 53,
+        "completion_tokens": 8,
+        "total_tokens": 61,
+        "completion_tokens_details": {
+          "reasoning_tokens": 7
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 53,
+            "output": 8,
+            "reasoning": 7,
+            "cache_read": 0,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 415,
+      "at": "2026-11-02T10:55:34.646Z"
+    },
+    {
+      "stage": "extractor",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793617177-ryId40IMuwbYKL1noBwP",
+      "usage": {
+        "prompt_tokens": 5304,
+        "completion_tokens": 16119,
+        "total_tokens": 21423,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 4336,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 14702,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 446,
+      "at": "2026-11-02T11:01:08.516Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-54c0dbae-7e8e-4960-89b3-66fcfb3da292",
+      "usage": {
+        "prompt_tokens": 1074,
+        "completion_tokens": 319,
+        "total_tokens": 1393,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 287
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 882,
+            "output": 319,
+            "reasoning": 287,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1888,
+      "at": "2026-11-02T11:01:10.406Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-8fd89b10-fb0e-49d5-9d92-ad563280e508",
+      "usage": {
+        "prompt_tokens": 1146,
+        "completion_tokens": 283,
+        "total_tokens": 1429,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 233
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 954,
+            "output": 283,
+            "reasoning": 233,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1527,
+      "at": "2026-11-02T11:01:11.935Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-f9e6a9e9-380a-4f12-b5d3-ddf23c712e30",
+      "usage": {
+        "prompt_tokens": 1731,
+        "completion_tokens": 1081,
+        "total_tokens": 2812,
+        "prompt_tokens_details": {
+          "cached_tokens": 64
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1044
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1667,
+            "output": 1081,
+            "reasoning": 1044,
+            "cache_read": 64,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 6596,
+      "at": "2026-11-02T11:01:18.533Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-e99ab6f0-e0b9-48f7-b780-6ebec161e2bf",
+      "usage": {
+        "prompt_tokens": 1730,
+        "completion_tokens": 200,
+        "total_tokens": 1930,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 160
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1538,
+            "output": 200,
+            "reasoning": 160,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1268,
+      "at": "2026-11-02T11:01:19.803Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-984ebb78-eb3e-45d7-94e3-17df942b1943",
+      "usage": {
+        "prompt_tokens": 1770,
+        "completion_tokens": 685,
+        "total_tokens": 2455,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 618
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1578,
+            "output": 685,
+            "reasoning": 618,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3529,
+      "at": "2026-11-02T11:01:23.333Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-93550cb4-da7c-4194-b717-d757528b4772",
+      "usage": {
+        "prompt_tokens": 1722,
+        "completion_tokens": 232,
+        "total_tokens": 1954,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 185
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1530,
+            "output": 232,
+            "reasoning": 185,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1377,
+      "at": "2026-11-02T11:01:24.711Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-725dd6a1-92c2-4ba5-85fb-1059dd684722",
+      "usage": {
+        "prompt_tokens": 1737,
+        "completion_tokens": 738,
+        "total_tokens": 2475,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 695
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1545,
+            "output": 738,
+            "reasoning": 695,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3037,
+      "at": "2026-11-02T11:01:27.750Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-7efe4c12-6b78-4479-811a-58729b54591d",
+      "usage": {
+        "prompt_tokens": 1706,
+        "completion_tokens": 221,
+        "total_tokens": 1927,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 167
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1514,
+            "output": 221,
+            "reasoning": 167,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1447,
+      "at": "2026-11-02T11:01:29.199Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-96429549-e741-46ba-9e0d-3baae06f68e9",
+      "usage": {
+        "prompt_tokens": 1754,
+        "completion_tokens": 178,
+        "total_tokens": 1932,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 142
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1562,
+            "output": 178,
+            "reasoning": 142,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1205,
+      "at": "2026-11-02T11:01:30.406Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-fb08f0c3-eca3-47ad-bc70-f193b12f9997",
+      "usage": {
+        "prompt_tokens": 1747,
+        "completion_tokens": 212,
+        "total_tokens": 1959,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 170
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1555,
+            "output": 212,
+            "reasoning": 170,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1395,
+      "at": "2026-11-02T11:01:31.804Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-86c7036f-7e30-440e-a28d-11014cdaf071",
+      "usage": {
+        "prompt_tokens": 1717,
+        "completion_tokens": 235,
+        "total_tokens": 1952,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 198
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1525,
+            "output": 235,
+            "reasoning": 198,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1063,
+      "at": "2026-11-02T11:01:32.869Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-69722c2c-6a5a-47ec-b64d-f614a6e24de0",
+      "usage": {
+        "prompt_tokens": 1724,
+        "completion_tokens": 227,
+        "total_tokens": 1951,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 226
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1532,
+            "output": 227,
+            "reasoning": 226,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1414,
+      "at": "2026-11-02T11:01:34.284Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-8928fb20-833c-4c34-8e99-63c9c5e4024b",
+      "usage": {
+        "prompt_tokens": 1314,
+        "completion_tokens": 514,
+        "total_tokens": 1828,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 457
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1122,
+            "output": 514,
+            "reasoning": 457,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 2988,
+      "at": "2026-11-02T11:01:37.274Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-05c734a2-3bf2-45bb-a8e8-5b34006c7ebc",
+      "usage": {
+        "prompt_tokens": 1313,
+        "completion_tokens": 598,
+        "total_tokens": 1911,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 565
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1121,
+            "output": 598,
+            "reasoning": 565,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3462,
+      "at": "2026-11-02T11:01:40.737Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-9bfa5b0d-1368-41c1-9598-3f6b5764df82",
+      "usage": {
+        "prompt_tokens": 1309,
+        "completion_tokens": 560,
+        "total_tokens": 1869,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 513
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1117,
+            "output": 560,
+            "reasoning": 513,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3202,
+      "at": "2026-11-02T11:01:43.941Z"
+    }
+  ]
+}

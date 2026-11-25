@@ -1,0 +1,820 @@
+{
+  "record_version": "1.0.0",
+  "schema_version": "extraction-record-v1",
+  "run_id": "2026-11-02T10-55-33-219Z",
+  "doc_id": "CA-001",
+  "sha256": "0af7ea584ae04908b0f650f4d12ed9cc766c748ab56ef86faa417158e0bdcb95",
+  "source_url": "https://open.alberta.ca/dataset/4f6fb605-f342-46ea-b531-d018fd81d70f/resource/2f0b905f-2c5c-4257-a91b-8272cb605242/download/neahdappendixc.pdf",
+  "source_path": "tests/fixtures/samples/CA/ab-neahd-planning-stage-rsa-2009.pdf",
+  "source_note": null,
+  "scope_pages": [
+    1,
+    10
+  ],
+  "scope_note": null,
+  "cell_key": "canada:FEASIBILITY_CONCEPT",
+  "stage": "FEASIBILITY_CONCEPT",
+  "licence": "CLEAR",
+  "page_count": 10,
+  "document_chars": 9289,
+  "section_count": 35,
+  "heading_rule": "numbered-or-allcaps-v2",
+  "extracted_at": "2026-11-02T10:56:54.001Z",
+  "status": "complete",
+  "models": {
+    "extractor": {
+      "id": "nvidia/nemotron-3.5-super-vl:free",
+      "family": "nemotron",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1"
+    },
+    "verifier": {
+      "id": "opencode-go/beam-free",
+      "family": "beam",
+      "provider": "opencode-go",
+      "base_url": "https://opencode.ai/inference/go/v1"
+    },
+    "family_disjoint": true
+  },
+  "prompt_version": "extraction-v1",
+  "verifier_prompt_version": "verifier-v1",
+  "prompt_hash": "f98b919f9d35c9b9ff8bab26ab07077819fc5fe7ff593add3de465467a666333",
+  "verifier_prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+  "check_version": "verbatim-v1",
+  "config": {
+    "temperature": 0,
+    "seed": 42,
+    "extractor_max_tokens": 32768,
+    "verifier_max_tokens": 4096,
+    "one_shot_char_cap": 300000,
+    "verifier_window_page_pad": 1,
+    "verifier_window_char_cap": 20000,
+    "extractor_timeout_ms": 600000,
+    "verifier_timeout_ms": 120000
+  },
+  "envelope_extra_keys": [],
+  "scheme_description": {
+    "kind": "scheme_description",
+    "item_id": null,
+    "text": "Planning stage road safety audit of the North East Edmonton Ring Road Stage 1 for the 2041 horizon.",
+    "span": {
+      "quote": "NORTH EAST EDMONTON RING ROAD STAGE 1 - 2041",
+      "quote_normalized": "NORTH EAST EDMONTON RING ROAD STAGE 1 - 2041",
+      "word_count": 8,
+      "page": 1,
+      "end_page": 1,
+      "section": "NORTH EAST EDMONTON RING ROAD",
+      "section_start": 43,
+      "model_section": null,
+      "start_offset": 43,
+      "end_offset": 87,
+      "raw_start": 43,
+      "raw_end": 87,
+      "cross_page": false,
+      "occurrence_count": 1,
+      "occurrence_capped": false
+    },
+    "verification": {
+      "verified": true,
+      "reason": "The window contains the exact title phrase and confirms a planning stage road safety audit for North East Edmonton Ring Road Stage 1 for the 2041 horizon.",
+      "model_id": "opencode-go/beam-free",
+      "family": "beam",
+      "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+      "window": {
+        "pages": [
+          1,
+          2
+        ],
+        "start_offset": 0,
+        "end_offset": 813,
+        "chars": 813,
+        "truncated": false
+      }
+    }
+  },
+  "findings": [
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F01",
+      "category": "junctions_interchanges",
+      "location": null,
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Different interchange types on cross roads force drivers to make different decisions, creating indecision and uncertainty that may lead to collisions.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "Drivers on the cross roads are faced with a different decision",
+        "quote_normalized": "Drivers on the cross roads are faced with a different decision",
+        "word_count": 11,
+        "page": 8,
+        "end_page": 8,
+        "section": "4.1 GENERAL COMMENTS",
+        "section_start": 3975,
+        "model_section": null,
+        "start_offset": 4205,
+        "end_offset": 4267,
+        "raw_start": 4206,
+        "raw_end": 4268,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote appears verbatim in the window and supports the description of different interchange decisions causing indecision and uncertainty that may lead to collisions.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            7,
+            9
+          ],
+          "start_offset": 3555,
+          "end_offset": 7476,
+          "chars": 3921,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F02",
+      "category": "junctions_interchanges",
+      "location": null,
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Interchange spacing is too close for a suburban freeway, potentially causing weaving and sign comprehension problems.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The interchange spacing appears to be rather close",
+        "quote_normalized": "The interchange spacing appears to be rather close",
+        "word_count": 8,
+        "page": 8,
+        "end_page": 8,
+        "section": "4.1 GENERAL COMMENTS",
+        "section_start": 3975,
+        "model_section": null,
+        "start_offset": 4447,
+        "end_offset": 4497,
+        "raw_start": 4448,
+        "raw_end": 4498,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and directly supports the description of close interchange spacing causing weaving and sign comprehension issues.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            7,
+            9
+          ],
+          "start_offset": 3555,
+          "end_offset": 7476,
+          "chars": 3921,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F03",
+      "category": "junctions_interchanges",
+      "location": "Anthony Henday ramps to Baseline Road",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Ramp vehicles enter Baseline Road at excessive speed; a yield configuration may be more appropriate.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "Vehicles on the ramp may be entering at too high a speed",
+        "quote_normalized": "Vehicles on the ramp may be entering at too high a speed",
+        "word_count": 12,
+        "page": 9,
+        "end_page": 9,
+        "section": "4.2 Specific Observations",
+        "section_start": 5895,
+        "model_section": null,
+        "start_offset": 6030,
+        "end_offset": 6086,
+        "raw_start": 6031,
+        "raw_end": 6087,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote appears verbatim in the window and supports the description of ramp vehicles entering Baseline Road at excessive speed with a yield configuration suggested.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            8,
+            10
+          ],
+          "start_offset": 3973,
+          "end_offset": 9289,
+          "chars": 5316,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F04",
+      "category": "junctions_interchanges",
+      "location": null,
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Potential weaving issues exist between and within multiple interchanges on Anthony Henday Drive, Highway 16, and Sherwood Park Freeway.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "There are potential weaving issues between and within a number of interchanges",
+        "quote_normalized": "There are potential weaving issues between and within a number of interchanges",
+        "word_count": 12,
+        "page": 8,
+        "end_page": 8,
+        "section": "4.1 GENERAL COMMENTS",
+        "section_start": 3975,
+        "model_section": null,
+        "start_offset": 5082,
+        "end_offset": 5160,
+        "raw_start": 5083,
+        "raw_end": 5161,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text lists weaving issues on Anthony Henday Drive, Highway 16, and Sherwood Park Freeway, supporting the description and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            7,
+            9
+          ],
+          "start_offset": 3555,
+          "end_offset": 7476,
+          "chars": 3921,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F05",
+      "category": "access_management",
+      "location": "west of Anthony Henday Drive to/from Highway 16",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Local access connections within the Anthony Henday/Highway 16 system interchange violate driver expectations and create conflicts between local and through traffic.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "A local connection within a system interchange is inconsistent design",
+        "quote_normalized": "A local connection within a system interchange is inconsistent design",
+        "word_count": 10,
+        "page": 9,
+        "end_page": 9,
+        "section": "4.2 Specific Observations",
+        "section_start": 5895,
+        "model_section": null,
+        "start_offset": 6298,
+        "end_offset": 6367,
+        "raw_start": 6299,
+        "raw_end": 6368,
+        "cross_page": false,
+        "occurrence_count": 2,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the described safety concern about local access connections within the system interchange.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            8,
+            10
+          ],
+          "start_offset": 3973,
+          "end_offset": 9289,
+          "chars": 5316,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F06",
+      "category": "cross_sections_roadside",
+      "location": "Anthony Henday Drive out of the river valley",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Long grades on Anthony Henday Drive out of the river valley may require climbing lanes to separate slow trucks from higher-speed traffic.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "climbing lanes to avoid conflicts between slower moving traffic",
+        "quote_normalized": "climbing lanes to avoid conflicts between slower moving traffic",
+        "word_count": 9,
+        "page": 9,
+        "end_page": 9,
+        "section": "4.2 Specific Observations",
+        "section_start": 5895,
+        "model_section": null,
+        "start_offset": 6949,
+        "end_offset": 7012,
+        "raw_start": 6950,
+        "raw_end": 7013,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description of a potential safety issue involving slow trucks and higher-speed traffic on long grades.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            8,
+            10
+          ],
+          "start_offset": 3973,
+          "end_offset": 9289,
+          "chars": 5316,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-001-F07",
+      "category": "junctions_interchanges",
+      "location": "130th Avenue and Broadmoor Blvd. interchanges",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Service interchanges at 130th Avenue and Broadmoor Blvd. are too close to the Anthony Henday/Highway 16 system interchange, risking congestion and collisions.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The service interchanges are within the functional operating area of the system interchange",
+        "quote_normalized": "The service interchanges are within the functional operating area of the system interchange",
+        "word_count": 13,
+        "page": 9,
+        "end_page": 9,
+        "section": "4.2 Specific Observations",
+        "section_start": 5895,
+        "model_section": null,
+        "start_offset": 7339,
+        "end_offset": 7430,
+        "raw_start": 7340,
+        "raw_end": 7431,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the description and safety concern about the service interchanges being too close to the system interchange, risking congestion and collisions.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            8,
+            10
+          ],
+          "start_offset": 3973,
+          "end_offset": 9289,
+          "chars": 5316,
+          "truncated": false
+        }
+      }
+    }
+  ],
+  "counts": {
+    "raw": 7,
+    "deterministic_passed": 7,
+    "verified": 7,
+    "established": 7,
+    "discarded": 0,
+    "taxonomy_gap": 0,
+    "section_unknown": 0,
+    "cross_page": 0,
+    "scheme": {
+      "raw": 1,
+      "deterministic_passed": 1,
+      "verified": 1,
+      "established": 1,
+      "discarded": 0
+    }
+  },
+  "rates": {
+    "pass": 1,
+    "discard": 0,
+    "verify": 1,
+    "established": 1
+  },
+  "failures": [],
+  "error": null,
+  "preflight": [
+    {
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "at": "2026-11-02T10:55:34.646Z"
+    }
+  ],
+  "calls": [
+    {
+      "stage": "preflight",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "usage": {
+        "prompt_tokens": 23,
+        "completion_tokens": 8,
+        "total_tokens": 31,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 8,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 403,
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "stage": "preflight",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "usage": {
+        "prompt_tokens": 53,
+        "completion_tokens": 8,
+        "total_tokens": 61,
+        "completion_tokens_details": {
+          "reasoning_tokens": 7
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 53,
+            "output": 8,
+            "reasoning": 7,
+            "cache_read": 0,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 415,
+      "at": "2026-11-02T10:55:34.646Z"
+    },
+    {
+      "stage": "extractor",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616934-hNEKf6mq5IWdKGycO00y",
+      "usage": {
+        "prompt_tokens": 2648,
+        "completion_tokens": 10490,
+        "total_tokens": 13138,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 9827,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 273,
+      "at": "2026-11-02T10:56:45.001Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-3c69d15d-1e40-4b57-9eae-ada2b5d75045",
+      "usage": {
+        "prompt_tokens": 530,
+        "completion_tokens": 130,
+        "total_tokens": 660,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 88
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 338,
+            "output": 130,
+            "reasoning": 88,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 918,
+      "at": "2026-11-02T10:56:45.925Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-09d63f91-a1df-46f5-b1fd-5496a93f21d0",
+      "usage": {
+        "prompt_tokens": 1162,
+        "completion_tokens": 211,
+        "total_tokens": 1373,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 175
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 970,
+            "output": 211,
+            "reasoning": 175,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1200,
+      "at": "2026-11-02T10:56:47.127Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-88e19f28-4088-4cbc-8d91-e2d9283aff3a",
+      "usage": {
+        "prompt_tokens": 1154,
+        "completion_tokens": 183,
+        "total_tokens": 1337,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 182
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1026,
+            "output": 183,
+            "reasoning": 182,
+            "cache_read": 128,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1026,
+      "at": "2026-11-02T10:56:48.155Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-83899626-48f1-489b-949a-0e12be774d44",
+      "usage": {
+        "prompt_tokens": 1409,
+        "completion_tokens": 250,
+        "total_tokens": 1659,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 211
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1217,
+            "output": 250,
+            "reasoning": 211,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1094,
+      "at": "2026-11-02T10:56:49.251Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-d090a9be-99b3-4854-8aac-5389c5e59c2c",
+      "usage": {
+        "prompt_tokens": 1168,
+        "completion_tokens": 215,
+        "total_tokens": 1383,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 158
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 976,
+            "output": 215,
+            "reasoning": 158,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1206,
+      "at": "2026-11-02T10:56:50.459Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-5d22c4ee-86e2-490c-8277-dda66a3414cb",
+      "usage": {
+        "prompt_tokens": 1417,
+        "completion_tokens": 229,
+        "total_tokens": 1646,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 190
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1225,
+            "output": 229,
+            "reasoning": 190,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1197,
+      "at": "2026-11-02T10:56:51.659Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-2c18ca43-233d-44fc-b9a4-961155e91994",
+      "usage": {
+        "prompt_tokens": 1415,
+        "completion_tokens": 229,
+        "total_tokens": 1644,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 185
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1223,
+            "output": 229,
+            "reasoning": 185,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1240,
+      "at": "2026-11-02T10:56:52.901Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-cda9d7f5-5dba-4fce-a41f-5aabbfca1bfd",
+      "usage": {
+        "prompt_tokens": 1434,
+        "completion_tokens": 305,
+        "total_tokens": 1739,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 259
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 1242,
+            "output": 305,
+            "reasoning": 259,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1097,
+      "at": "2026-11-02T10:56:54.000Z"
+    }
+  ]
+}

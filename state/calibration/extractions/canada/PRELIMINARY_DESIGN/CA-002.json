@@ -1,0 +1,1231 @@
+{
+  "record_version": "1.0.0",
+  "schema_version": "extraction-record-v1",
+  "run_id": "2026-11-02T10-55-33-219Z",
+  "doc_id": "CA-002",
+  "sha256": "bb9850fe4780789ffe20b17c0a3d3182906b3e4010942d768abab4e920af343d",
+  "source_url": "https://www.calgary.ca/content/dam/www/transportation/tp/documents/projects/current-planning-projects/glenmore-trail-100st/glenmore-tr-e-functional-study-appendix-h-1-road-safety-audit-report.pdf",
+  "source_path": "tests/fixtures/samples/CA/ab-calgary-glenmore-functional-plan-rsa-2017.pdf",
+  "source_note": null,
+  "scope_pages": [
+    1,
+    33
+  ],
+  "scope_note": null,
+  "cell_key": "canada:PRELIMINARY_DESIGN",
+  "stage": "PRELIMINARY_DESIGN",
+  "licence": "not recorded",
+  "page_count": 33,
+  "document_chars": 31095,
+  "section_count": 111,
+  "heading_rule": "numbered-or-allcaps-v2",
+  "extracted_at": "2026-11-02T10:59:36.748Z",
+  "status": "complete",
+  "models": {
+    "extractor": {
+      "id": "nvidia/nemotron-3.5-super-vl:free",
+      "family": "nemotron",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1"
+    },
+    "verifier": {
+      "id": "opencode-go/beam-free",
+      "family": "beam",
+      "provider": "opencode-go",
+      "base_url": "https://opencode.ai/inference/go/v1"
+    },
+    "family_disjoint": true
+  },
+  "prompt_version": "extraction-v1",
+  "verifier_prompt_version": "verifier-v1",
+  "prompt_hash": "f98b919f9d35c9b9ff8bab26ab07077819fc5fe7ff593add3de465467a666333",
+  "verifier_prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+  "check_version": "verbatim-v1",
+  "config": {
+    "temperature": 0,
+    "seed": 42,
+    "extractor_max_tokens": 32768,
+    "verifier_max_tokens": 4096,
+    "one_shot_char_cap": 300000,
+    "verifier_window_page_pad": 1,
+    "verifier_window_char_cap": 20000,
+    "extractor_timeout_ms": 600000,
+    "verifier_timeout_ms": 120000
+  },
+  "envelope_extra_keys": [],
+  "scheme_description": null,
+  "findings": [
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F01",
+      "category": "cross_sections_roadside",
+      "location": "WB Glenmore Trail",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Lane balance issues on WB Glenmore Trail with repeated lane drops and additions causing frequent lane changes.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The number of lanes on WB Glenmore Trail transitions",
+        "quote_normalized": "The number of lanes on WB Glenmore Trail transitions",
+        "word_count": 9,
+        "page": 13,
+        "end_page": 13,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 13196,
+        "end_offset": 13248,
+        "raw_start": 13199,
+        "raw_end": 13251,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports lane balance issues with repeated lane drops/additions causing frequent lane changes and collision risk.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            12,
+            14
+          ],
+          "start_offset": 11815,
+          "end_offset": 14880,
+          "chars": 3065,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F02",
+      "category": "alignment_visibility",
+      "location": "Weaving section in northwest quadrant of 100 Street SE interchange",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Short weaving distance at 100 Street SE basket weave option with limited sight distance due to horizontal curves.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The short weaving distance may result in sideswipe and rear-end collisions.",
+        "quote_normalized": "The short weaving distance may result in sideswipe and rear-end collisions.",
+        "word_count": 11,
+        "page": 14,
+        "end_page": 14,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 14105,
+        "end_offset": 14180,
+        "raw_start": 14110,
+        "raw_end": 14185,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the short weaving distance, limited sight distance due to horizontal curves, and the stated location.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            13,
+            15
+          ],
+          "start_offset": 12823,
+          "end_offset": 16172,
+          "chars": 3349,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F03",
+      "category": "signage_markings_lighting",
+      "location": "All off-ramp terminal intersections",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Signal head positioning at off-ramp terminals may confuse drivers and reduce visibility of traffic lights.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The positioning of the signal heads may introduce driver confusion",
+        "quote_normalized": "The positioning of the signal heads may introduce driver confusion",
+        "word_count": 10,
+        "page": 15,
+        "end_page": 15,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 15087,
+        "end_offset": 15153,
+        "raw_start": 15092,
+        "raw_end": 15158,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description and safety concern about signal head positioning confusing drivers and reducing visibility.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            14,
+            16
+          ],
+          "start_offset": 13902,
+          "end_offset": 17167,
+          "chars": 3265,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F05",
+      "category": "human_factors_expectancy",
+      "location": "Cross-over intersections at all interchanges",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Cross-over intersection geometry at all interchanges may cause driver confusion and wrong-way movements.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "This may result in driver confusion with lane designation",
+        "quote_normalized": "This may result in driver confusion with lane designation",
+        "word_count": 9,
+        "page": 17,
+        "end_page": 17,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 17382,
+        "end_offset": 17439,
+        "raw_start": 17389,
+        "raw_end": 17446,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the described driver confusion and wrong-way movement risk at cross-over intersections.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            16,
+            18
+          ],
+          "start_offset": 16172,
+          "end_offset": 19528,
+          "chars": 3356,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F07",
+      "category": "vulnerable_users",
+      "location": "Conrich Road and Rainbow Road interchanges",
+      "road_users": [
+        "pedestrians",
+        "cyclists"
+      ],
+      "description": "No pedestrian or bicycle facilities indicated at Conrich Road and Rainbow Road interchanges.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "The drawings provided do not indicate any pedestrian or bicycle facilities",
+        "quote_normalized": "The drawings provided do not indicate any pedestrian or bicycle facilities",
+        "word_count": 11,
+        "page": 19,
+        "end_page": 19,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 19602,
+        "end_offset": 19676,
+        "raw_start": 19611,
+        "raw_end": 19685,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring and the window supports the lack of pedestrian and bicycle facilities concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            18,
+            20
+          ],
+          "start_offset": 18379,
+          "end_offset": 21512,
+          "chars": 3133,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F08",
+      "category": "alignment_visibility",
+      "location": "WB Glenmore Trail under Conrich Road and Rainbow Road",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Lane drops under bridges on WB Glenmore Trail may be difficult to identify due to shadows and poor illumination.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "they may be difficult for motorists to identify due to obstructions from the bridge",
+        "quote_normalized": "they may be difficult for motorists to identify due to obstructions from the bridge",
+        "word_count": 14,
+        "page": 20,
+        "end_page": 20,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 20689,
+        "end_offset": 20772,
+        "raw_start": 20698,
+        "raw_end": 20781,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description, location, and driver safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            19,
+            21
+          ],
+          "start_offset": 19528,
+          "end_offset": 22407,
+          "chars": 2879,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F09",
+      "category": "alignment_visibility",
+      "location": "WB Glenmore Trail to NB 100 Street SE",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Right-turn merge from WB Glenmore Trail to NB 100 Street SE occurs on a horizontal curve with reverse curves.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "merges with NB traffic on a horizontal curve",
+        "quote_normalized": "merges with NB traffic on a horizontal curve",
+        "word_count": 8,
+        "page": 21,
+        "end_page": 21,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 21642,
+        "end_offset": 21686,
+        "raw_start": 21651,
+        "raw_end": 21695,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description of a right-turn merge on a horizontal curve with reverse curves.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            20,
+            22
+          ],
+          "start_offset": 20455,
+          "end_offset": 23301,
+          "chars": 2846,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F10",
+      "category": "vulnerable_users",
+      "location": "NB to EB and SB to WB ramps at the 100 Street interchange",
+      "road_users": [
+        "pedestrians",
+        "drivers"
+      ],
+      "description": "Pedestrian crosswalks on high-speed ramps at 100 Street interchange may not be anticipated by motorists.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "they may not anticipate pedestrians so far down the ramp",
+        "quote_normalized": "they may not anticipate pedestrians so far down the ramp",
+        "word_count": 10,
+        "page": 22,
+        "end_page": 22,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 22722,
+        "end_offset": 22778,
+        "raw_start": 22731,
+        "raw_end": 22787,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            21,
+            23
+          ],
+          "start_offset": 21512,
+          "end_offset": 24149,
+          "chars": 2637,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F11",
+      "category": "alignment_visibility",
+      "location": "All Glenmore Trail on-ramps",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Short merge lengths on Glenmore Trail on-ramps increase motorist workload and collision risk.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "the merge of the right-turn with the left-turn exit is relatively short",
+        "quote_normalized": "the merge of the right-turn with the left-turn exit is relatively short",
+        "word_count": 12,
+        "page": 23,
+        "end_page": 23,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 23408,
+        "end_offset": 23479,
+        "raw_start": 23417,
+        "raw_end": 23488,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            22,
+            24
+          ],
+          "start_offset": 22407,
+          "end_offset": 25307,
+          "chars": 2900,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F12",
+      "category": "junctions_interchanges",
+      "location": "NB on 100 Street SE at the left-turn exit",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Limited through lane storage space on NB 100 Street SE may block left-turn lanes and cause rear-end collisions.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "There is limited storage space available for NB through traffic on 100 Street",
+        "quote_normalized": "There is limited storage space available for NB through traffic on 100 Street",
+        "word_count": 13,
+        "page": 24,
+        "end_page": 24,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 24229,
+        "end_offset": 24306,
+        "raw_start": 24238,
+        "raw_end": 24315,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and the surrounding text supports the described storage-space blockage and rear-end collision risk.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            23,
+            25
+          ],
+          "start_offset": 23301,
+          "end_offset": 26137,
+          "chars": 2836,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F13",
+      "category": "junctions_interchanges",
+      "location": "WB Glenmore Trail off-ramp to NB 100 Street SE and Stoney Trail",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Close proximity of exit ramps on WB Glenmore Trail limits decision sight distance for motorists.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "This limits the decision sight distance available",
+        "quote_normalized": "This limits the decision sight distance available",
+        "word_count": 7,
+        "page": 25,
+        "end_page": 25,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 25518,
+        "end_offset": 25567,
+        "raw_start": 25529,
+        "raw_end": 25578,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description and safety concern about close proximity of exit ramps limiting decision sight distance.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            24,
+            26
+          ],
+          "start_offset": 24149,
+          "end_offset": 27250,
+          "chars": 3101,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "kind": "finding",
+      "item_id": "CA-002-F14",
+      "category": "signage_markings_lighting",
+      "location": "NB approach at 100 Street, Conrich Road, and Rainbow Road interchanges",
+      "road_users": [
+        "drivers"
+      ],
+      "description": "Through traffic may mistake long left-turn lanes at all three interchanges for additional through lanes.",
+      "taxonomy_gap": false,
+      "span": {
+        "quote": "through traffic may mistake the lane as an additional through lane",
+        "quote_normalized": "through traffic may mistake the lane as an additional through lane",
+        "word_count": 11,
+        "page": 26,
+        "end_page": 26,
+        "section": "14 Through Traffic May Enter Long Left-Turn Lanes B",
+        "section_start": 12771,
+        "model_section": null,
+        "start_offset": 26522,
+        "end_offset": 26588,
+        "raw_start": 26533,
+        "raw_end": 26599,
+        "cross_page": false,
+        "occurrence_count": 1,
+        "occurrence_capped": false
+      },
+      "verification": {
+        "verified": true,
+        "reason": "The quote is an exact substring of the window and supports the description and safety concern.",
+        "model_id": "opencode-go/beam-free",
+        "family": "beam",
+        "prompt_hash": "f6c970fd2b1692d2dffbffb13f05d4ebd5e3dcdcbf4b0e24ba2633251d6a4d2e",
+        "window": {
+          "pages": [
+            25,
+            27
+          ],
+          "start_offset": 25307,
+          "end_offset": 28393,
+          "chars": 3086,
+          "truncated": false
+        }
+      }
+    }
+  ],
+  "counts": {
+    "raw": 14,
+    "deterministic_passed": 12,
+    "verified": 12,
+    "established": 12,
+    "discarded": 2,
+    "taxonomy_gap": 0,
+    "section_unknown": 2,
+    "cross_page": 0,
+    "scheme": {
+      "raw": 1,
+      "deterministic_passed": 1,
+      "verified": 0,
+      "established": 0,
+      "discarded": 1
+    }
+  },
+  "rates": {
+    "pass": 0.857143,
+    "discard": 0.142857,
+    "verify": 1,
+    "established": 0.857143
+  },
+  "failures": [
+    {
+      "failure_id": "CA-002-X1",
+      "scope": "scheme",
+      "item_index": null,
+      "kind": "verifier_rejected",
+      "stage": "verifier",
+      "detail": "The window supports a Road Safety Audit for Glenmore Trail from 100 Street SE to Rainbow Road, but it does not mention diverging diamond interchanges, so that part of the description is not supported.",
+      "raw_item_excerpt": "{\"text\":\"Road Safety Audit of diverging diamond interchanges on Glenmore Trail from 100 Street SE to Rainbow Road.\",\"span\":{\"quote\":\"Glenmore Trail: 100 Street SE to Rainbow Road\",\"page\":2}}",
+      "raw_item_sha256": "5ed6956b012795a53e9f0f8b63e18d5a535cc60a5c4dd2d89cb5b7741680e174",
+      "raw_verdict_excerpt": "{\"verified\":false,\"reason\":\"The window supports a Road Safety Audit for Glenmore Trail from 100 Street SE to Rainbow Road, but it does not mention diverging diamond interchanges, so that part of the description is not supported.\"}",
+      "raw_verdict_sha256": "03c9122116c1afda933ba471c6ec3334ffb6a4d56dbdf9f50d51da6e8a1cdd46",
+      "normalized_quote": "Glenmore Trail: 100 Street SE to Rainbow Road",
+      "claimed_page": 2,
+      "found_page": null,
+      "source_excerpt": null,
+      "at": "2026-11-02T10:59:15.473Z"
+    },
+    {
+      "failure_id": "CA-002-X2",
+      "scope": "finding",
+      "item_index": 3,
+      "kind": "not_found",
+      "stage": "deterministic",
+      "detail": "quote not found",
+      "raw_item_excerpt": "{\"category\":\"signage_markings_lighting\",\"location\":\"Stop bars at the cross-over intersections at 100 Street SE\",\"road_users\":[\"drivers\"],\"description\":\"Offset stop bars at cross-over intersections at 100 Street SE may cause encroachment into opposing lanes.\",\"span\":{\"quote\":\"The stop bars at the cross-over intersections appear to have significant offsets.\",\"page\":16},\"taxonomy_gap\":false}",
+      "raw_item_sha256": "2e54b3612b1b68537a62907f1592359faa824380024939333914dca5edf638d0",
+      "raw_verdict_excerpt": null,
+      "raw_verdict_sha256": null,
+      "normalized_quote": "The stop bars at the cross-over intersections appear to have significant offsets.",
+      "claimed_page": 16,
+      "found_page": null,
+      "source_excerpt": null,
+      "at": "2026-11-02T10:59:21.331Z"
+    },
+    {
+      "failure_id": "CA-002-X3",
+      "scope": "finding",
+      "item_index": 5,
+      "kind": "not_found",
+      "stage": "deterministic",
+      "detail": "quote not found",
+      "raw_item_excerpt": "{\"category\":\"signage_markings_lighting\",\"location\":\"EB to NB and WB to SB left-turn lanes\",\"road_users\":[\"drivers\"],\"description\":\"EB to NB and WB to SB left-turn lanes may lead motorists into exit lanes causing erratic maneuvers.\",\"span\":{\"quote\":\"Motorists in the left-hand lane entering the exit lane\",\"page\":18},\"taxonomy_gap\":false}",
+      "raw_item_sha256": "33e982729826f18e3c5260b88baecfa77627a37705dd8e678f58d49f2097e1b4",
+      "raw_verdict_excerpt": null,
+      "raw_verdict_sha256": null,
+      "normalized_quote": "Motorists in the left-hand lane entering the exit lane",
+      "claimed_page": 18,
+      "found_page": null,
+      "source_excerpt": null,
+      "at": "2026-11-02T10:59:22.357Z"
+    }
+  ],
+  "error": null,
+  "preflight": [
+    {
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "at": "2026-11-02T10:55:34.646Z"
+    }
+  ],
+  "calls": [
+    {
+      "stage": "preflight",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793616933-guzUkXbK0ESnutHyGsm2",
+      "usage": {
+        "prompt_tokens": 23,
+        "completion_tokens": 8,
+        "total_tokens": 31,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 8,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 403,
+      "at": "2026-11-02T10:55:34.230Z"
+    },
+    {
+      "stage": "preflight",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-a7f8f68e-1290-4f96-b4f9-9ac0b38492b7",
+      "usage": {
+        "prompt_tokens": 53,
+        "completion_tokens": 8,
+        "total_tokens": 61,
+        "completion_tokens_details": {
+          "reasoning_tokens": 7
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 53,
+            "output": 8,
+            "reasoning": 7,
+            "cache_read": 0,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "length",
+      "duration_ms": 415,
+      "at": "2026-11-02T10:55:34.646Z"
+    },
+    {
+      "stage": "extractor",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "http_status": 200,
+      "request_id": "gen-1793617014-HZfLfW0Eel5cndhlLMYP",
+      "usage": {
+        "prompt_tokens": 7659,
+        "completion_tokens": 10233,
+        "total_tokens": 17892,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 4336,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 8974,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 509,
+      "at": "2026-11-02T10:59:12.646Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-786fa730-f8a0-4b6e-a7df-d0fed766e939",
+      "usage": {
+        "prompt_tokens": 404,
+        "completion_tokens": 557,
+        "total_tokens": 961,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 504
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 276,
+            "output": 557,
+            "reasoning": 504,
+            "cache_read": 128,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 2825,
+      "at": "2026-11-02T10:59:15.473Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-39f6cdd3-7bf1-4ce5-a482-45f3d764ccc8",
+      "usage": {
+        "prompt_tokens": 1003,
+        "completion_tokens": 615,
+        "total_tokens": 1618,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 573
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 811,
+            "output": 615,
+            "reasoning": 573,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3358,
+      "at": "2026-11-02T10:59:18.835Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-057c3b3d-d16a-4a85-a928-cebe6e742d2d",
+      "usage": {
+        "prompt_tokens": 1032,
+        "completion_tokens": 254,
+        "total_tokens": 1286,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 210
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 840,
+            "output": 254,
+            "reasoning": 210,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1417,
+      "at": "2026-11-02T10:59:20.253Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-22aa1e58-5cc7-4466-a2e6-d5427bc39a17",
+      "usage": {
+        "prompt_tokens": 996,
+        "completion_tokens": 171,
+        "total_tokens": 1167,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 133
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 804,
+            "output": 171,
+            "reasoning": 133,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1077,
+      "at": "2026-11-02T10:59:21.330Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-f5b3f342-7c78-4d9d-bbd4-10ea6722df9b",
+      "usage": {
+        "prompt_tokens": 1006,
+        "completion_tokens": 178,
+        "total_tokens": 1184,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 144
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 814,
+            "output": 178,
+            "reasoning": 144,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1024,
+      "at": "2026-11-02T10:59:22.356Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-e1c2b474-f9af-4232-a1d7-061c6408ba04",
+      "usage": {
+        "prompt_tokens": 978,
+        "completion_tokens": 785,
+        "total_tokens": 1763,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 750
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 786,
+            "output": 785,
+            "reasoning": 750,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 3513,
+      "at": "2026-11-02T10:59:25.872Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-5745a4f1-f90a-4cbb-80ed-376581f35b71",
+      "usage": {
+        "prompt_tokens": 938,
+        "completion_tokens": 220,
+        "total_tokens": 1158,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 187
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 746,
+            "output": 220,
+            "reasoning": 187,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1350,
+      "at": "2026-11-02T10:59:27.223Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-7d4bbab2-e107-4a1a-9ed2-e2241371947d",
+      "usage": {
+        "prompt_tokens": 949,
+        "completion_tokens": 243,
+        "total_tokens": 1192,
+        "prompt_tokens_details": {
+          "cached_tokens": 64
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 202
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 885,
+            "output": 243,
+            "reasoning": 202,
+            "cache_read": 64,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1267,
+      "at": "2026-11-02T10:59:28.492Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-c4a942c1-4f73-4659-b36b-f1baa88860e9",
+      "usage": {
+        "prompt_tokens": 910,
+        "completion_tokens": 183,
+        "total_tokens": 1093,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 157
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 718,
+            "output": 183,
+            "reasoning": 157,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1172,
+      "at": "2026-11-02T10:59:29.666Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-be0eaebc-2a67-429e-9f3b-7c44cbcda9db",
+      "usage": {
+        "prompt_tokens": 945,
+        "completion_tokens": 217,
+        "total_tokens": 1162,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 191
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 753,
+            "output": 217,
+            "reasoning": 191,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 2883,
+      "at": "2026-11-02T10:59:32.550Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-2f932b86-76cb-452e-907e-c1ec23f5ae66",
+      "usage": {
+        "prompt_tokens": 943,
+        "completion_tokens": 336,
+        "total_tokens": 1279,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 301
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 751,
+            "output": 336,
+            "reasoning": 301,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1716,
+      "at": "2026-11-02T10:59:34.267Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-c9e42eae-4d02-4fe0-8620-8a34b9982819",
+      "usage": {
+        "prompt_tokens": 985,
+        "completion_tokens": 340,
+        "total_tokens": 1325,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 301
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 793,
+            "output": 340,
+            "reasoning": 301,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1350,
+      "at": "2026-11-02T10:59:35.619Z"
+    },
+    {
+      "stage": "verifier",
+      "model": "opencode-go/beam-free",
+      "http_status": 200,
+      "request_id": "chatcmpl-ec177416-4988-447e-ba1d-fe1b44d55142",
+      "usage": {
+        "prompt_tokens": 976,
+        "completion_tokens": 254,
+        "total_tokens": 1230,
+        "prompt_tokens_details": {
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 222
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 0,
+          "allowance": 0,
+          "tokens": {
+            "input": 784,
+            "output": 254,
+            "reasoning": 222,
+            "cache_read": 192,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "finish_reason": "stop",
+      "duration_ms": 1127,
+      "at": "2026-11-02T10:59:36.748Z"
+    }
+  ]
+}
