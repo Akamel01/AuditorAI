@@ -1,0 +1,71 @@
+{
+  "run_id": "2026-11-02T09-32-59-397Z",
+  "fixture_id": "GF-14",
+  "fixture_name": "McGrath Hwy (Rte 28) @ Mystic Ave/Broadway — real US design-stage RSA (MassDOT/HNTB)",
+  "mode": "corpus",
+  "run_tier": "corpus",
+  "role_section": "engine-fewshot",
+  "subject": "judge-baseline",
+  "judge": {
+    "model": "beam-free",
+    "effort": "max",
+    "gateway": "https://opencode.ai/inference/go/openai/v1",
+    "identity": "beam",
+    "prompt_version": 1,
+    "prompt_hash": "caa431b8edd8e466542982c7f759103c3300c091de9600feb7aa27b55a7e5533"
+  },
+  "thresholds": {
+    "perDimensionMinimum": 1,
+    "substanceRequired": 2,
+    "evidenceGroundingRequired": 2,
+    "corpusPassMark": 0.9,
+    "regressionTolerance": 0
+  },
+  "findings_scored": 2,
+  "findings_unscored": [],
+  "pass_rate": 1,
+  "passes_corpus_mark": true,
+  "mean_score": 10,
+  "regression_vs_prior": {
+    "regression": false,
+    "delta": 0
+  },
+  "tier2_review_required": false,
+  "verdicts": [
+    {
+      "finding_id": "JB-GF14-001",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "Existing dysfunctional pedestrian signals at a busy urban intersection present a real pedestrian safety hazard.",
+        "evidence_grounding": "The cited evidence quote verbatim supports the pivotal claim that the pedestrian signals are dysfunctional.",
+        "jurisdiction_correctness": "The finding is correctly framed as a safety concern within the US FHWA preliminary-design audit context.",
+        "recommendation_quality": "The recommendation is actionable and viable: investigate and repair the signals during the current design stage.",
+        "vru_coverage": "Pedestrian impacts are explicitly considered and central to the finding."
+      }
+    },
+    {
+      "finding_id": "JB-GF14-002",
+      "scores": {
+        "substance": 2,
+        "evidence_grounding": 2,
+        "jurisdiction_correctness": 2,
+        "recommendation_quality": 2,
+        "vru_coverage": 2
+      },
+      "justifications": {
+        "substance": "The finding identifies a substantive compliance update across all pedestrian crossings and specific accessibility elements.",
+        "evidence_grounding": "The cited evidence quote verbatim supports the update-to-comply claim.",
+        "jurisdiction_correctness": "It is correctly framed as a compliance question distinct from any safety judgment, with null risk components.",
+        "recommendation_quality": "The recommendation gives a specific, actionable, and viable scope: update all crossings to AAB/ADA Standards within the current design.",
+        "vru_coverage": "Pedestrians as vulnerable road users are directly addressed throughout the finding."
+      }
+    }
+  ],
+  "generated_at": "2026-11-02T09:35:37.163Z"
+}

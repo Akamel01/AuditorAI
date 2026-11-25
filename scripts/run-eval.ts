@@ -4,11 +4,11 @@
 // never gates PRs.
 //
 // Usage:
-//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..16
-//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
+//   OPENCODE_GO_API_KEY=... npx tsx scripts/run-eval.ts            # corpus GF-6..16 (Go Beam judge)
+//   OPENCODE_GO_API_KEY=... npx tsx scripts/run-eval.ts --dry-run  # GF-1..5 known-goods (E1 pre-corpus validation)
 //   npx tsx scripts/run-eval.ts --no-judge                      # deterministic snapshot check only
-//   OPENCODE_API_KEY=... AI_ENABLED=true npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
-//   OPENCODE_API_KEY=... npx tsx scripts/run-eval.ts --mode release-test      # real-sample tier (ADR-0007; refuses while corpus < 100)
+//   OPENCODE_API_KEY=... AI_ENABLED=true OPENCODE_GO_API_KEY=... npx tsx scripts/run-eval.ts --live  # fixtures via runAllLiveArtifacts
+//   OPENCODE_GO_API_KEY=... npx tsx scripts/run-eval.ts --mode release-test      # real-sample tier (ADR-0007; refuses while corpus < 100)
 //
 // Policy (DEC 2026-08-23): --live spends paid inference tokens; owner-run only,
 // on demand, never automated or CI-scheduled.
@@ -52,10 +52,13 @@ try {
   process.exit(1);
 }
 
-const ZEN_BASE = process.env.AI_BASE_URL ?? "https://opencode.ai/zen/v1";
-const JUDGE_MODEL = process.env.AI_MODEL ?? "muse-spark-1.3-contributor-free"; // H7 2026-09-15: x-preview-f-free dead; spark is Responses-routed in makeZenJudgeComplete
-const JUDGE_EFFORT = "max"; // R7 effort map: judge = max
+const JUDGE_BASE = process.env.JUDGE_BASE_URL ?? "https://opencode.ai/inference/go/openai/v1";
+const JUDGE_MODEL = process.env.JUDGE_MODEL ?? "beam-free";
+const JUDGE_EFFORT = "max";
+const JUDGE_SESSION = process.env.OPENCODE_SESSION_ID ?? "auditorai-eval-judge";
 const JUDGE_TIMEOUT_MS = Number(process.env.JUDGE_TIMEOUT_MS ?? 150_000);
+const auditorKey = process.env.OPENCODE_API_KEY ?? "";
+const judgeKey = process.env.OPENCODE_GO_API_KEY ?? "";
 
 const ALL_FILES = DRY_RUN ? KNOWN_FILES["dry-run"] : KNOWN_FILES.corpus;
 const FILES = ONLY ? ALL_FILES.filter((f) => f.includes(ONLY)) : ALL_FILES;
@@ -94,8 +97,7 @@ function makeSinks(outDir: string) {
 
 async function entry() {
   if (TOPUP) {
-    const apiKey = process.env.OPENCODE_API_KEY ?? "";
-    if (!apiKey) { console.error("[eval] OPENCODE_API_KEY required for topup"); process.exit(1); }
+    if (!judgeKey) { console.error("[eval] OPENCODE_GO_API_KEY required for topup"); process.exit(1); }
     const parentDir = path.join(process.cwd(), "state", "eval-scorecards", TOPUP);
     if (!existsSync(parentDir)) {
       // EvalTopupMissingError path prints the identical message + exit 1.
@@ -108,15 +110,16 @@ async function entry() {
       files: loadFixtures(),
       judge: {
         complete: makeZenJudgeComplete({
-          baseUrl: ZEN_BASE,
-          apiKey,
+          baseUrl: JUDGE_BASE,
+          apiKey: judgeKey,
           model: JUDGE_MODEL,
           effort: "max",
           timeoutMs: JUDGE_TIMEOUT_MS,
+          sessionId: JUDGE_SESSION,
         }),
         model: JUDGE_MODEL,
         effort: JUDGE_EFFORT,
-        gateway: ZEN_BASE,
+        gateway: JUDGE_BASE,
       },
       sinks: makeSinks(outDir),
       priorMeanFn: (fid) => findPriorRunMean(fid),
@@ -132,13 +135,12 @@ async function entry() {
     return;
   }
 
-  if (LIVE && (process.env.AI_ENABLED !== "true" || !process.env.OPENCODE_API_KEY)) {
+  if (LIVE && (process.env.AI_ENABLED !== "true" || !auditorKey)) {
     console.error("[eval] --live requires AI_ENABLED=true and OPENCODE_API_KEY in the environment");
     process.exit(1);
   }
-  const apiKey = process.env.OPENCODE_API_KEY ?? "";
-  if (!NO_JUDGE && !apiKey) {
-    console.error("[eval] OPENCODE_API_KEY required for the judge phase (or pass --no-judge)");
+  if (!NO_JUDGE && !judgeKey) {
+    console.error("[eval] OPENCODE_GO_API_KEY required for the judge phase (or pass --no-judge)");
     process.exit(1);
   }
 
@@ -162,15 +164,16 @@ async function entry() {
         complete: NO_JUDGE
           ? null
           : makeZenJudgeComplete({
-              baseUrl: ZEN_BASE,
-              apiKey,
+              baseUrl: JUDGE_BASE,
+              apiKey: judgeKey,
               model: JUDGE_MODEL,
               effort: "max",
               timeoutMs: JUDGE_TIMEOUT_MS,
+              sessionId: JUDGE_SESSION,
             }),
         model: JUDGE_MODEL,
         effort: JUDGE_EFFORT,
-        gateway: ZEN_BASE,
+        gateway: JUDGE_BASE,
       },
       auditRunner: (project, t0) =>
         LIVE

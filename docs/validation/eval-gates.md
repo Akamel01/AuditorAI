@@ -8,7 +8,7 @@
 | Tier | What | Where it runs | Blocking? |
 |---|---|---|---|
 | **Tier 0 — deterministic** | Golden fixtures GF-1..10 byte-stability, schema contracts, lint/typecheck/build | `ci.yml` on every push/PR | **Always.** Red CI = no merge, no deploy |
-| **Tier 1 — judged corpus eval** | ox-alpha-as-judge scorecards over corpus fixtures via `npm run eval` / `eval.yml` | Manual (`workflow_dispatch`) or pre-release run | **On trigger paths** (§2): blocks *release*, not merge |
+| **Tier 1 — judged corpus eval** | judge scorecards over corpus fixtures via `npm run eval` / `eval.yml` | Manual (`workflow_dispatch`) or pre-release run | **On trigger paths** (§2): blocks *release*, not merge |
 | **Tier 2 — owner sign-off** | Human acceptance decision | Release checklist (§4) | Blocks release when invoked |
 
 ## 2. Tier-1 trigger paths (owner-confirmed, E1)
@@ -31,7 +31,7 @@ Everything else ships on Tier 0 alone.
 | Per-finding minimums | every dimension ≥ 1 **and** substance = 2 **and** evidence-grounding = 2 |
 | Corpus pass mark | ≥ 90 % of sampled findings per project meet minimums |
 | Regression tolerance | **zero-drop**: any decline in a project's mean dimension-total vs the prior archived run triggers §5 |
-| Judge identity/effort | recorded per scorecard (`x-preview-f-free`, effort max) — a scorecard without provenance is invalid |
+| Judge identity/effort | recorded per scorecard (`beam-free`, effort max) — a scorecard without provenance is invalid |
 | Rubric clarification (owner, ω 2026-08-22) | **`evidence_grounding=2` requires a verbatim quoted snippet from a cited source supporting the pivotal claim.** Registry-id citation alone scores at most 1. Baselines must carry quotes to pass. |
 | Freshness max age | 7d — Tier-1 scorecards valid for 7 days; older requires fresh `node scripts/tier1-archive.mjs --rebase --topup <runId>` |
 
@@ -42,7 +42,7 @@ Latest archived run: `state/eval-scorecards/<latest>/` (first live archive
 
 Before any release where a §2 trigger path changed:
 
-1. [ ] Run `OPENCODE_API_KEY=… npm run eval -- ` (or dispatch `eval.yml`) — fresh run archived.
+1. [ ] Run `OPENCODE_GO_API_KEY=… npm run eval` (add `OPENCODE_API_KEY=… AI_ENABLED=true` only for `--live`) — fresh run archived.
 2. [ ] Every project in scope shows `passes_corpus_mark: true`.
 3. [ ] No project carries `tier2_review_required: true`; any that does goes to §5.
 4. [ ] Scorecard judge provenance lines match this policy's model/effort.

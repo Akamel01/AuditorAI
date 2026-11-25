@@ -2,8 +2,8 @@
 generated: true
 type: validation-log
 source: state/validation-state.json
-source_hash: 1cdf2e8a686e
-record_count: 38
+source_hash: 41e2536f68c1
+record_count: 39
 ---
 # Validation log
 
@@ -284,3 +284,11 @@ record_count: 38
 - Date: 2026-08-25T20:05:52.538Z
 - Scope: Tier-1 judged evaluation over corpus GF-6..16 (run 2026-08-25T19-54-07-248Z)
 - Result: **PASSED — all sampled projects meet the corpus pass mark**
+
+## VAL-2026-08-22-039
+
+- Date: 2026-11-02T09:36:13.386Z
+- Scope: Tier-1 judged evaluation over corpus GF-6..16 (run 2026-11-02T09-32-59-397Z)
+- Result: **FAILED — one or more projects below the corpus pass mark**
+- Follow-ups:
+  - Tier-2 review of failing projects before next AI-touching change

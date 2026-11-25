@@ -1,4 +1,4 @@
-// E4 eval harness core (C1 deepening): suite driving, ox-alpha judging,
+// E4 eval harness core (C1 deepening): suite driving, beam judging,
 // gate assembly and top-up merging — dependency-injected so tests are
 // hermetic. CLI plane (argv/env/fs sinks) lives in scripts/run-eval.ts.
 //
@@ -91,7 +91,7 @@ export const KNOWN_FILES: Record<"dry-run" | "corpus", string[]> = {
   corpus: CORPUS_FILES,
 };
 
-// ---- Judge client (ox-alpha at effort=max via Zen; free model only) ----------
+// ---- Judge client (beam at effort=max via Go; free model only) ----------
 
 // Doctrine-frozen rubric text (owner checkpoint ω 2026-08-22). Do not edit.
 const JUDGE_SYSTEM = [
@@ -119,6 +119,7 @@ export function makeZenJudgeComplete(opts: {
   effort: ReasoningEffort;
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
+  sessionId?: string;
 }): (messages: ChatMessage[]) => Promise<string> {
   // Responses-native models (muse-spark-*) 500 on /chat/completions by design —
   // route them to /responses (Zen docs 2026-09-07; H7 fix 2026-09-15).
@@ -144,6 +145,7 @@ export function makeZenJudgeComplete(opts: {
         effort: opts.effort,
         timeoutMs: opts.timeoutMs,
         fetchImpl: opts.fetchImpl,
+        sessionId: opts.sessionId,
       },
       messages,
     );
@@ -318,7 +320,7 @@ export function buildScorecard(args: {
             model: meta.judge.model,
             effort: meta.judge.effort,
             ...(meta.judge.gateway !== undefined ? { gateway: meta.judge.gateway } : {}),
-            identity: "ox-alpha",
+            identity: "beam",
             // ADR-0012: engine-side prompt identity in force for this run.
             prompt_version: PROMPT_VERSION,
             prompt_hash: PROMPT_HASH,
@@ -347,7 +349,7 @@ function renderScorecardMd(
     `# Eval scorecard — ${card.fixture_id} (${card.fixture_name})`,
     ``,
     `- Run: \`${card.run_id}\` (${card.mode})`,
-    `- Judge: ${"enabled" in card.judge ? "disabled" : `${card.judge.model} @ effort ${card.judge.effort} (ox-alpha)`}`,
+    `- Judge: ${"enabled" in card.judge ? "disabled" : `${card.judge.model} @ effort ${card.judge.effort} (beam)`}`,
     `- Subject: ${card.subject} (${card.findings_scored} scored${card.findings_unscored.length ? ` · ${card.findings_unscored.length} unscored` : ""})`,
     `- Pass rate: **${Math.round(raw.passRate * 100)}%** vs corpus mark **${THRESHOLDS.corpusPassMark * 100}%** → ${card.passes_corpus_mark ? "PASS" : "**FAIL**"}`,
     `- Mean dimension total: ${card.mean_score}${raw.priorMean !== null ? ` (prior ${raw.priorMean}, delta ${regression.delta}${regression.regression ? " → **REGRESSION — Tier-2 review**" : ""})` : ""}`,
@@ -544,7 +546,7 @@ export async function runEvalSuite(opts: EvalSuiteOpts): Promise<EvalRunSummary>
     date: new Date().toISOString(),
     validator_node: "E4 eval harness",
     scope: `Tier-1 judged evaluation over ${scopeFragment(flavor)} (run ${runId})`,
-    method: `Pipeline-driven audits; ox-alpha judge (${judge.model} @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)`,
+    method: `Pipeline-driven audits; beam judge (${judge.model} @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)`,
     result: anyProjectFailed ? "FAILED — one or more projects below the corpus pass mark" : "PASSED — all sampled projects meet the corpus pass mark",
     follow_ups: anyProjectFailed ? ["Tier-2 review of failing projects before next AI-touching change"] : [],
   });

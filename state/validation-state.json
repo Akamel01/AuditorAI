@@ -391,6 +391,17 @@
       "method": "Pipeline-driven audits; ox-alpha judge (x-preview-f-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
       "result": "PASSED — all sampled projects meet the corpus pass mark",
       "follow_ups": []
+    },
+    {
+      "validation_id": "VAL-2026-08-22-039",
+      "date": "2026-11-02T09:36:13.386Z",
+      "validator_node": "E4 eval harness",
+      "scope": "Tier-1 judged evaluation over corpus GF-6..16 (run 2026-11-02T09-32-59-397Z)",
+      "method": "Pipeline-driven audits; beam judge (beam-free @ max); E1 owner thresholds (all dims>=1 AND substance=2 AND evidence=2; >=90% corpus mark; zero-drop regression)",
+      "result": "FAILED — one or more projects below the corpus pass mark",
+      "follow_ups": [
+        "Tier-2 review of failing projects before next AI-touching change"
+      ]
     }
   ]
 }
